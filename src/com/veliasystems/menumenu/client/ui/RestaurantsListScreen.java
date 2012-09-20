@@ -1,8 +1,5 @@
-package com.veliasystems.menumenu.client.ui.lists;
+package com.veliasystems.menumenu.client.ui;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -12,8 +9,6 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.ui.views.AddRestaurantScreen;
-import com.veliasystems.menumenu.client.ui.views.RestInfoScreen;
 
 public class RestaurantsListScreen extends JQMPage {
 	  

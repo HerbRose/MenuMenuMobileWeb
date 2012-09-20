@@ -2,11 +2,14 @@ package com.veliasystems.menumenu.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 
 /**
  * The client side stub for the RPC service.
  */
-@RemoteServiceRelativePath("greet")
-public interface GreetingService extends RemoteService {
-	String greetServer(String name) throws IllegalArgumentException;
+@RemoteServiceRelativePath("store")
+public interface StoreService extends RemoteService {
+	
+	void saveRestaurant( Restaurant r );
+	
 }

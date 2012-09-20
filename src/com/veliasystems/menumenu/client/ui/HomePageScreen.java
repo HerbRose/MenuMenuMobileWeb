@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.views;
+package com.veliasystems.menumenu.client.ui;
 
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
@@ -6,8 +6,6 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.ui.lists.CityListScreen;
-import com.veliasystems.menumenu.client.ui.lists.RestaurantsListScreen;
 
 public class HomePageScreen extends JQMPage{
 

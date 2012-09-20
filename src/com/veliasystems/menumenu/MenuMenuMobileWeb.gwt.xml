@@ -14,6 +14,12 @@
   <!-- Other module inherits                                      -->
   <inherits name="com.sksamuel.Jqm4gwt"/>
 
+<!--    
+  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
+  <inherits name='com.github.gwtbootstrap.datepicker.Datepicker' />
+  -->
+  <inherits name="com.googlecode.objectify.Objectify" />
+
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.veliasystems.menumenu.client.MenuMenuMobileWeb'/>
 

@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.views;
+package com.veliasystems.menumenu.client.ui;
 
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
