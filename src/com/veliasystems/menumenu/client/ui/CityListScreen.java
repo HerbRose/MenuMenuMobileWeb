@@ -1,5 +1,11 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -8,6 +14,12 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.StoreService;
+import com.veliasystems.menumenu.client.StoreServiceAsync;
+import com.veliasystems.menumenu.client.entities.Restaurant;
+
+
+
 
 public class CityListScreen extends JQMPage{
 	
@@ -16,6 +28,9 @@ public class CityListScreen extends JQMPage{
 	JQMButton addButton;
 	JQMList list;
 	JQMButton backButton;
+	
+	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
+	private List<String> cityList;
 	
 	public CityListScreen() {
 		
@@ -35,11 +50,51 @@ public class CityListScreen extends JQMPage{
 		list = new JQMList();
 	    list.setInset(false);
 	    
-	    list.addItem("Kraków", new CityInfoScreen("Kraków"));
-	    list.addItem("Warszawa", new CityInfoScreen("Warszawa"));
+	    storeService.loadCities(new AsyncCallback<List<String>>() {
+			
+			@Override
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				cityList = new ArrayList<String>();
+				cityList = result;
+				addCities(cityList);
+				Window.alert("done");
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert("done not");
+				System.out.println(caught);
+			}
+		});
 	    
-	    add(list);
+//	    storeService.saveRestaurant(new Restaurant(), new AsyncCallback<Void>() {
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				// TODO Auto-generated method stub
+//				Window.alert("lipa");
+//				System.out.println(caught.getMessage());
+//			}
+//
+//			@Override
+//			public void onSuccess(Void result) {
+//				// TODO Auto-generated method stub
+//				Window.alert("jest");
+//			}
+//		});
 	    
+	    
+	    //add(list);
+	}
+	
+	private void addCities(List<String> list){
+		
+		for(String item: list){
+			this.list.addItem(item);
+		}
 	}
 
 }
