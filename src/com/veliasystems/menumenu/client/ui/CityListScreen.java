@@ -58,36 +58,18 @@ public class CityListScreen extends JQMPage{
 				cityList = new ArrayList<String>();
 				cityList = result;
 				addCities(cityList);
-				Window.alert("done");
+				
 				
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				Window.alert("done not");
+				
 				System.out.println(caught);
 			}
-		});
-	    
-//	    storeService.saveRestaurant(new Restaurant(), new AsyncCallback<Void>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//				Window.alert("lipa");
-//				System.out.println(caught.getMessage());
-//			}
-//
-//			@Override
-//			public void onSuccess(Void result) {
-//				// TODO Auto-generated method stub
-//				Window.alert("jest");
-//			}
-//		});
-	    
-	    
-	    //add(list);
+		}); 
+	    add(list);
 	}
 	
 	private void addCities(List<String> list){
