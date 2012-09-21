@@ -17,4 +17,6 @@ public interface StoreServiceAsync {
 
 	void loadCities(AsyncCallback<List<String>> callback);
 
+	void getRestaurant(String name, AsyncCallback<List<Restaurant>> callback);
+
 }

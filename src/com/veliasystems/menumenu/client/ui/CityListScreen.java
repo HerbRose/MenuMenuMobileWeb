@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -16,7 +16,6 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.StoreService;
 import com.veliasystems.menumenu.client.StoreServiceAsync;
-import com.veliasystems.menumenu.client.entities.Restaurant;
 
 
 
@@ -58,25 +57,29 @@ public class CityListScreen extends JQMPage{
 				cityList = new ArrayList<String>();
 				cityList = result;
 				addCities(cityList);
-				
-				
+				add(list);	
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				
-				System.out.println(caught);
 			}
-		}); 
-	    add(list);
+		});
+	        
 	}
 	
 	private void addCities(List<String> list){
 		
 		for(String item: list){
-			this.list.addItem(item);
+			this.list.addItem(item, new CityInfoScreen(item));
 		}
+	}
+	
+	private void showError(){
+		Label label = new Label();
+		label.setText(Customization.LOADERROR);
+		this.add(label);
 	}
 
 }

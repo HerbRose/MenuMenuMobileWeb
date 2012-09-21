@@ -50,6 +50,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return restQuery.filter("city =", city).order("name").list();
 	}
+
+	@Override
+	public List<Restaurant> getRestaurant(String name) {
+		// TODO Auto-generated method stub
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+
+		return restQuery.filter("name =", name).list();
+	}
 	
 	
 }

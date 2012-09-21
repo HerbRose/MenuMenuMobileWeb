@@ -18,4 +18,5 @@ public interface StoreService extends RemoteService {
 	
 	List<Restaurant> loadRestaurants();
 	List<Restaurant> loadRestaurants(String city);
+	List<Restaurant> getRestaurant(String name);
 }

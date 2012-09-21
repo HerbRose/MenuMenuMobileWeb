@@ -1,5 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -88,30 +90,44 @@ public class AddRestaurantScreen extends JQMPage{
 
 		add(header);			
 		this.add(saveButton);
+		
 		cityLabel = new Label();
 		cityLabel.setText(Customization.CITYONE + ":");
 		
 		content.add(cityLabel);	
 		
-		//cityText.setTitle(Customization.CITYONE);	
-		//content.add(cityText);
+		storeService.loadCities(new AsyncCallback<List<String>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				for(String item: result){
+					cityList.addItem(item);
+					content.add(cityList);
+				}
+				nameLabel = new Label();
+				nameLabel.setText(Customization.RESTAURANTNAME + ":");
+				
+				content.add(nameLabel);	
+				nameText.setTitle(Customization.RESTAURANTNAME);
+				
+				content.add(nameText);		
+				adressLabel = new Label();
+				adressLabel.setText(Customization.RESTAURANTADRESS + ":");
+				
+				content.add(adressLabel);
+				adressText.setTitle(Customization.RESTAURANTADRESS);
+				
+				content.add(adressText);	
+				add(content);	
+			}
+		});
+			
 		
-		
-		nameLabel = new Label();
-		nameLabel.setText(Customization.RESTAURANTNAME + ":");
-		
-		content.add(nameLabel);	
-		nameText.setTitle(Customization.RESTAURANTNAME);
-		
-		content.add(nameText);		
-		adressLabel = new Label();
-		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-		
-		content.add(adressLabel);
-		adressText.setTitle(Customization.RESTAURANTADRESS);
-		
-		content.add(adressText);	
-		this.add(content);	
 		
 		saveButton.addClickHandler(new ClickHandler() {
 			
@@ -119,26 +135,28 @@ public class AddRestaurantScreen extends JQMPage{
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				if(checkFields()){
-				restaurant = new Restaurant();
-				restaurant.setName(nameText.getText());
-				
-				restaurant.setAddress(adressText.getText());
-				
-				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
 					
-					@Override
-					public void onSuccess(Void result) {
-						// TODO Auto-generated method stub
-						Window.alert("save succed");
-					}
+					restaurant = new Restaurant();
+					restaurant.setName(nameText.getText());
 					
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+					restaurant.setAddress(adressText.getText());			
+					int index = cityList.getSelectedIndex();			
+					restaurant.setCity(cityList.getItemText(index));				
+					storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
 						
-					}
-				});
-				
+						@Override
+						public void onSuccess(Void result) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+					
 				}
 				else{
 					showWarning();
@@ -162,8 +180,6 @@ public class AddRestaurantScreen extends JQMPage{
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
 		
-		//saveButton = new JQMButton(Customization.SAVERESTAURANT, new RestaurantSavedScreen(), Transition.SLIDE);
-		
 		saveButton = new JQMButton(Customization.SAVERESTAURANT);		
 		saveButton.setIcon(DataIcon.PLUS);
 		saveButton.setInline();
@@ -173,7 +189,7 @@ public class AddRestaurantScreen extends JQMPage{
 	
 	private boolean checkFields(){
 		
-		if(!cityText.getText().isEmpty() && !nameText.getText().isEmpty() && !adressText.getText().isEmpty()) {
+		if(!nameText.getText().isEmpty() && !adressText.getText().isEmpty()) {
 			return true;
 		}
 		
