@@ -60,8 +60,7 @@ class ErrorWidget extends JQMWidget {
 		
 		initWidget(vp);
 	}
-	
-	
+		
 }
 
 public class RestaurantSavedScreen extends JQMPage {

@@ -15,4 +15,6 @@ public class Customization {
 	public static final String RESTAURANTADRESS = "Adres restauracji";
 	public static final String RESTAURANTSAVED = "Restauracja zapisana";
 	public static final String SAVERRESTAURANTERROR = "Popraw dane";
+	public static final String SLIDERIMAGEID = "123";
+	public static final String SLIDERBUSINESSCARDID = "321";
 };
