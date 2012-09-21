@@ -47,13 +47,10 @@ public class RestaurantsListScreen extends JQMPage {
 	    addButton.setIconPos(IconPos.TOP);
 	    addButton.setTransition(Transition.SLIDE);
 	    addButton.setWidth("100%");
-	    
-	     
+	        
 	    footer = new JQMFooter(addButton);
 	    footer.setFixed(true);
-	    
-	    
-	    
+   
 	    add(footer);
 	    
 	  }

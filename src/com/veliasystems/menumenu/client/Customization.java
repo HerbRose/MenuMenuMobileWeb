@@ -10,4 +10,9 @@ public class Customization {
 	public static final String SAVEPROFILE = "Zapisz profil";
 	public static final String REMOVEPROFILE = "Usuń profil";
 	public static final String SAVERESTAURANT = "Zapisz";
+	public static final String CITYONE = "Miasto";
+	public static final String RESTAURANTNAME = "Nazwa restauracji";
+	public static final String RESTAURANTADRESS = "Adres restauracji";
+	public static final String RESTAURANTSAVED = "Restauracja zapisana";
+	public static final String SAVERRESTAURANTERROR = "Popraw dane";
 };

@@ -74,9 +74,8 @@ public class RestaurantSavedScreen extends JQMPage {
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
-	
-	public RestaurantSavedScreen() {
-		header = new JQMHeader("Restaurant Saved");
+	private void init(){
+		header = new JQMHeader(Customization.RESTAURANTSAVED);
 		header.setFixed(true);
 		
 		backButton = new JQMButton(Customization.BACK);
@@ -84,7 +83,16 @@ public class RestaurantSavedScreen extends JQMPage {
 		backButton.setInline();
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
+	}
+	
+	public RestaurantSavedScreen(Restaurant r){
+		init();
+	}
+	
+	
+	public RestaurantSavedScreen() {
 		
+		init();
 		Restaurant restToSave = new Restaurant();
 		
 		final LoadingStartWidget loadingWidget  = new LoadingStartWidget();

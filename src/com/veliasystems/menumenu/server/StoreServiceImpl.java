@@ -13,7 +13,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public void saveRestaurant(Restaurant r) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("saved succes: " + r.getName());
 	}
 	
+	
+	//TODO add to entity
 }
