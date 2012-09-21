@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -20,6 +21,7 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class AddRestaurantScreen extends JQMPage{
 	
+
 	JQMHeader header;
 	JQMButton backButton;
 	JQMButton saveButton;
@@ -32,6 +34,8 @@ public class AddRestaurantScreen extends JQMPage{
 	TextBox cityText = new TextBox();
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
+	
+	ListBox cityList = new ListBox();
 	
 	Restaurant restaurant;
 	
@@ -88,9 +92,11 @@ public class AddRestaurantScreen extends JQMPage{
 		cityLabel.setText(Customization.CITYONE + ":");
 		
 		content.add(cityLabel);	
-		cityText.setTitle(Customization.CITYONE);	
 		
-		content.add(cityText);
+		//cityText.setTitle(Customization.CITYONE);	
+		//content.add(cityText);
+		
+		
 		nameLabel = new Label();
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
 		
@@ -115,7 +121,7 @@ public class AddRestaurantScreen extends JQMPage{
 				if(checkFields()){
 				restaurant = new Restaurant();
 				restaurant.setName(nameText.getText());
-				restaurant.setCity(cityText.getText());
+				
 				restaurant.setAddress(adressText.getText());
 				
 				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
