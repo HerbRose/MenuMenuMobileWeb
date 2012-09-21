@@ -86,7 +86,9 @@ public class RestaurantsListScreen extends JQMPage {
 	private void addRestaurants(List<Restaurant> list){
 		
 		for(final Restaurant item: list){
-			this.list.addItem(item.getName(), new RestInfoScreen(item.getName()));
+			RestInfoScreen rest = new RestInfoScreen(item.getName());
+			rest.add(new SwipeView());
+			this.list.addItem(item.getName(), rest);//new RestInfoScreen(item.getName()));
 		}
 	}
 	private void showError(){
