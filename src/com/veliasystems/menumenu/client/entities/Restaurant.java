@@ -2,12 +2,15 @@ package com.veliasystems.menumenu.client.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Id;
+
 import com.veliasystems.menumenu.client.Util;
 
 public class Restaurant implements Serializable {
 
 	private static final long serialVersionUID = -421655496163765996L;
 
+	@Id
 	private long id;
 	
 	private String name;
