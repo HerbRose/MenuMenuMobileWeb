@@ -79,7 +79,8 @@ public class RestaurantSavedScreen extends JQMPage {
 		header = new JQMHeader("Restaurant Saved");
 		header.setFixed(true);
 		
-		backButton = new JQMButton(Customization.BACK, new RestaurantsListScreen());
+		backButton = new JQMButton(Customization.BACK);
+		backButton.setBack(true);
 		backButton.setInline();
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
@@ -93,7 +94,7 @@ public class RestaurantSavedScreen extends JQMPage {
 		loadedWidget.setVisible(false);
 		add(loadedWidget);
 		
-		
+		/*
 		storeService.saveRestaurant( restToSave, new AsyncCallback<Void>() {
 			
 			@Override
@@ -109,6 +110,7 @@ public class RestaurantSavedScreen extends JQMPage {
 				add( new ErrorWidget(caught.getMessage()) );
 			}
 		});
+		*/
 		
 		header.setLeftButton(backButton);
 		

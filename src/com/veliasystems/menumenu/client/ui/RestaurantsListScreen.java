@@ -41,11 +41,13 @@ public class RestaurantsListScreen extends JQMPage {
 	    
 	    add(list);
 	    
-	    addButton = new JQMButton(Customization.ADDRESTAURANT, new AddRestaurantScreen());
+	    
+	    addButton = new JQMButton(Customization.ADDRESTAURANT, Pages.PAGE_ADD_RESTAURANT);
 	    addButton.setIcon(DataIcon.PLUS);
 	    addButton.setIconPos(IconPos.TOP);
 	    addButton.setTransition(Transition.SLIDE);
 	    addButton.setWidth("100%");
+	    
 	     
 	    footer = new JQMFooter(addButton);
 	    footer.setFixed(true);

@@ -55,12 +55,13 @@ public class RestInfoScreen extends JQMPage {
 	
 	public RestInfoScreen( String text ) {
 		init();
-		setHeaderText(text);
+		setRestaurant(text);
 	}
 	
 	
-	public void setHeaderText( String text ) {
+	public RestInfoScreen setRestaurant( String text ) {
 		header.setText(text);
+		return this;
 	}
 	
 	

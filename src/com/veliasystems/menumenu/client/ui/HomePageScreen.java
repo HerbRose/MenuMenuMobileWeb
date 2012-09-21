@@ -24,8 +24,8 @@ public class HomePageScreen extends JQMPage{
 		list = new JQMList();
 	    list.setInset(false);
 	    
-	   list.addItem(Customization.CITY, new CityListScreen() );
-	   list.addItem(Customization.RESTAURANTS, new RestaurantsListScreen());
+	   list.addItem(Customization.CITY, Pages.PAGE_CITY_LIST );
+	   list.addItem(Customization.RESTAURANTS, Pages.PAGE_RESTAURANT_LIST );
 	   
 	   add(list);
 	    

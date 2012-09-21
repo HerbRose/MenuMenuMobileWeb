@@ -7,7 +7,7 @@
 
   <servlet-mapping>
     <servlet-name>StoreServiceServlet</servlet-name>
-    <url-pattern>/menumenu/store</url-pattern>
+    <url-pattern>/menumenumobileweb/store</url-pattern>
   </servlet-mapping>
   
   <servlet>

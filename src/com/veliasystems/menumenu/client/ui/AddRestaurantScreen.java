@@ -21,6 +21,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	JQMContent content;
 	
 
+	/*
 	{
 		this.addClickHandler( new ClickHandler() {
 			
@@ -30,6 +31,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 			}
 		});
 	}
+	*/
 	
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -75,10 +77,10 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 		saveButton.setInline();
 		saveButton.setIconPos(IconPos.RIGHT);
 		saveButton.setId("saveButton");
-		
+		header.setRightButton(saveButton);
 		
 		header.setLeftButton(backButton);
-		header.setRightButton(saveButton);
+		
 		
 		
 		add(header);
