@@ -1,5 +1,11 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -8,6 +14,9 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.StoreService;
+import com.veliasystems.menumenu.client.StoreServiceAsync;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class CityInfoScreen extends JQMPage {
 	
@@ -17,6 +26,9 @@ public class CityInfoScreen extends JQMPage {
 	JQMButton saveButton;
 	JQMList list;
 	JQMButton backButton;
+	JQMButton showRestaurant;
+	
+	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private void init(){
 		backButton = new JQMButton(Customization.BACK);
@@ -27,6 +39,40 @@ public class CityInfoScreen extends JQMPage {
 		header.setBackButton(backButton);
 		header.setFixed(true);
 		add(header);
+		
+		showRestaurant = new JQMButton("show rest");
+		showRestaurant.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+			
+				storeService.loadRestaurants(header.getText(), new AsyncCallback<List<Restaurant>>() {
+					
+					@Override
+					public void onSuccess(List<Restaurant> result) {
+						// TODO Auto-generated method stub
+						if(result.size() > 0){
+							JQMList list = new JQMList();
+							for(Restaurant item : result){
+								list.addItem(item.getName());
+							}
+							
+							add(list);
+						}
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				
+			}
+		});
+		
+		add(showRestaurant);
 	}
 	
 	public CityInfoScreen() {
