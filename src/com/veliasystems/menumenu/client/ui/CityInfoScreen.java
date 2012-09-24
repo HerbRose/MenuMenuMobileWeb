@@ -14,9 +14,9 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.StoreService;
-import com.veliasystems.menumenu.client.StoreServiceAsync;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.StoreService;
+import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class CityInfoScreen extends JQMPage {
 	

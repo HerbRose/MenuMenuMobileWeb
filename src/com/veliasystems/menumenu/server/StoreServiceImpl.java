@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
-import com.veliasystems.menumenu.client.StoreService;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.StoreService;
 
 /**
  * The server side implementation of the RPC service.
@@ -55,6 +55,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public List<Restaurant> getRestaurant(String name) {
 		// TODO Auto-generated method stub
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if (restQuery==null) return new ArrayList<Restaurant>();
 
 		return restQuery.filter("name =", name).list();
 	}

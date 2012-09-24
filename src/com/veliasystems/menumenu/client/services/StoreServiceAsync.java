@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client;
+package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
 

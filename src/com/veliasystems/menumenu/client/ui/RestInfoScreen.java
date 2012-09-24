@@ -17,9 +17,9 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.StoreService;
-import com.veliasystems.menumenu.client.StoreServiceAsync;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.StoreService;
+import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class RestInfoScreen extends JQMPage {
 	  
@@ -65,6 +65,19 @@ public class RestInfoScreen extends JQMPage {
 		showButton.setBack(false);
 		showButton.setIcon(DataIcon.INFO);
 		
+		cityLabel = new Label();
+		content.add(cityLabel);
+		cityText = new TextBox();
+		content.add(cityText);
+		nameText = new TextBox();
+		content.add(nameText);	
+		nameLabel = new Label();
+		content.add(nameLabel);
+		adressLabel = new Label();
+		content.add(adressLabel);
+		adressText = new TextBox();
+		content.add(adressText);
+		
 		showButton.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -82,39 +95,28 @@ public class RestInfoScreen extends JQMPage {
 					if(result.size() > 0){
 							Restaurant rest = new Restaurant();
 							rest = result.get(0);
-							cityLabel = new Label();
-							cityLabel.setText(Customization.CITYONE + ":");
-							content.add(cityLabel);
 							
-							cityText = new TextBox();
+							cityLabel.setText(Customization.CITYONE + ":");
+							
 							cityText.setTitle(Customization.CITYONE);
 							cityText.setText(rest.getCity());
-							content.add(cityText);
 							
-							nameLabel = new Label();
 							nameLabel.setText(Customization.RESTAURANTNAME + ":");
-							content.add(nameLabel);
 							
-							nameText = new TextBox();
 							nameText.setTitle(Customization.RESTAURANTNAME);
 							nameText.setText(rest.getName());
-							content.add(nameText);		
 							
-							adressLabel = new Label();
 							adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-							content.add(adressLabel);
 							
-							adressText = new TextBox();
 							adressText.setTitle(Customization.RESTAURANTADRESS);
 							adressText.setText(rest.getAddress());
-							content.add(adressText);
 					}
 					}
 				});
 			}
 		});
-		content.add(showButton);
 		
+		content.add(showButton);
 		
 		
 		add(content);	
