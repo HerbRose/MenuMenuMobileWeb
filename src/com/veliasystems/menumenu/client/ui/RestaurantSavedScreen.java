@@ -1,7 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -92,7 +91,6 @@ public class RestaurantSavedScreen extends JQMPage {
 	public RestaurantSavedScreen() {
 		
 		init();
-		Restaurant restToSave = new Restaurant();
 		
 		final LoadingStartWidget loadingWidget  = new LoadingStartWidget();
 		add(loadingWidget);
@@ -100,24 +98,6 @@ public class RestaurantSavedScreen extends JQMPage {
 		final LoadingStopWidget loadedWidget  = new LoadingStopWidget();
 		loadedWidget.setVisible(false);
 		add(loadedWidget);
-		
-		/*
-		storeService.saveRestaurant( restToSave, new AsyncCallback<Void>() {
-			
-			@Override
-			public void onSuccess(Void result) {
-				loadingWidget.setVisible(false);
-				loadedWidget.setVisible(true);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				loadingWidget.setVisible(false);
-				loadedWidget.setVisible(true);
-				add( new ErrorWidget(caught.getMessage()) );
-			}
-		});
-		*/
 		
 		header.setLeftButton(backButton);
 		

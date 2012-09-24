@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -24,10 +25,11 @@ public class CityInfoScreen extends JQMPage {
 	JQMFooter footer;
 	JQMButton removeButton;
 	JQMButton saveButton;
-	JQMList list;
+	JQMList list = new JQMList();
 	JQMButton backButton;
 	JQMButton showRestaurant;
 	
+	private List<Restaurant> restaurantList;
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private void init(){
@@ -47,18 +49,21 @@ public class CityInfoScreen extends JQMPage {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 			
+				
 				storeService.loadRestaurants(header.getText(), new AsyncCallback<List<Restaurant>>() {
 					
 					@Override
 					public void onSuccess(List<Restaurant> result) {
 						// TODO Auto-generated method stub
 						if(result.size() > 0){
-							JQMList list = new JQMList();
-							for(Restaurant item : result){
-								list.addItem(item.getName());
-							}
-							
-							add(list);
+//							list.clear();
+//							
+//							restaurantList = new ArrayList<Restaurant>();
+//							restaurantList = result;
+//							
+//							list = (JQMList) restaurantList;
+//							
+//							add(list);
 						}
 					}
 					

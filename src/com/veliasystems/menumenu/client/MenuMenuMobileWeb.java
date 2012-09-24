@@ -1,11 +1,9 @@
 package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.veliasystems.menumenu.client.ui.HomePageScreen;
 import com.veliasystems.menumenu.client.ui.Pages;
 
 

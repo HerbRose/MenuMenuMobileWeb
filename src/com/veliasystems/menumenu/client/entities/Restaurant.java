@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Id;
 
@@ -18,9 +19,72 @@ public class Restaurant implements Serializable {
 	private String city;
 	
 	
+	/**
+	 * Lists of url's with images
+	 */
+	private List<String> profileImages;
+	private List<String> boardImages;
+	private List<String> mainImages;
+	
+	/**
+	 * main images
+	 */
+	private String mainProfileImage;
+	private String mainBoardImage;
+	private String mainImage;
+	
 	{
 		id = Util.getRandom(9999999);
 	}
+	
+	public void setMainImage(String mainImage) {
+		this.mainImage = mainImage;
+	}
+	
+	public String getMainImage() {
+		return mainImage;
+	}
+	
+	public void setMainProfileImage(String mainProfileImage) {
+		this.mainProfileImage = mainProfileImage;
+	}
+	
+	public String getMainProfileImage() {
+		return mainProfileImage;
+	}
+	
+	public void setMainBoardImage(String mainBoardImage) {
+		this.mainBoardImage = mainBoardImage;
+	}
+	
+	public List<String> getProfileImages() {
+		return profileImages;
+	}
+
+	public void setProfileImages(List<String> profileImages) {
+		this.profileImages = profileImages;
+	}
+
+	public List<String> getBoardImages() {
+		return boardImages;
+	}
+
+	public void setBoardImages(List<String> boardImages) {
+		this.boardImages = boardImages;
+	}
+
+	public List<String> getMainImages() {
+		return mainImages;
+	}
+
+	public void setMainImages(List<String> mainImages) {
+		this.mainImages = mainImages;
+	}
+
+	public String getMainBoardImage() {
+		return mainBoardImage;
+	}
+	
 	
 	
 	public Restaurant() {}
@@ -61,5 +125,6 @@ public class Restaurant implements Serializable {
 	public long getId() {
 		return id;
 	}
+	
 	
 }

@@ -17,6 +17,11 @@ public interface StoreServiceAsync {
 
 	void loadCities(AsyncCallback<List<String>> callback);
 
-	void getRestaurant(String name, AsyncCallback<List<Restaurant>> callback);
+
+	
+
+	void deleteRestaurant(Restaurant r, AsyncCallback<Void> callback);
+
+	void getRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
 
 }

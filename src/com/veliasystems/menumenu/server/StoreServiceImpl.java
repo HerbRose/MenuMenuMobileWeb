@@ -52,11 +52,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 
 	@Override
-	public List<Restaurant> getRestaurant(String name) {
+	public Restaurant getRestaurant(Restaurant r) {
 		// TODO Auto-generated method stub
-		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		Restaurant tmpr = dao.ofy().get(Restaurant.class, r.getId());
+		return tmpr;	
+	}
 
-		return restQuery.filter("name =", name).list();
+	
+	@Override
+	public void deleteRestaurant(Restaurant r) {
+		dao.ofy().delete(r);
+		
 	}
 	
 	

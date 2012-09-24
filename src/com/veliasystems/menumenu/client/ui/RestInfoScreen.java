@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -31,19 +32,19 @@ public class RestInfoScreen extends JQMPage {
 	JQMButton backButton;
 	JQMButton showButton;
 	
-	Label nameLabel;
-	Label cityLabel;
-	Label adressLabel;
+	Label nameLabel = new Label();
+	Label cityLabel = new Label();
+	Label adressLabel = new Label();
 	
-	TextBox cityText;
-	TextBox nameText;
-	TextBox adressText;
+	TextBox cityText = new TextBox();
+	TextBox nameText = new TextBox();
+	TextBox adressText = new TextBox();
 	
 	JQMPanel content;
 	
-	Restaurant restaurant;
-	private String name;
+	Restaurant restaurant = new Restaurant();
 	
+
 
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
@@ -64,77 +65,78 @@ public class RestInfoScreen extends JQMPage {
 		showButton = new JQMButton("show rest");
 		showButton.setBack(false);
 		showButton.setIcon(DataIcon.INFO);
+		content.add(showButton);
+		cityLabel.setText(Customization.CITYONE + ":");
+		content.add(cityLabel);
+		cityText.setTitle(Customization.CITYONE);
+		content.add(cityText);
+		nameLabel.setText(Customization.RESTAURANTNAME + ":");		
+		content.add(nameLabel);
+		nameText.setTitle(Customization.RESTAURANTNAME);
+		content.add(nameText);
+		adressLabel.setText(Customization.RESTAURANTADRESS + ":");	
+		content.add(adressLabel);
+		adressText.setTitle(Customization.RESTAURANTADRESS);
+		content.add(adressText);
 		
 		showButton.addClickHandler(new ClickHandler() {
+			
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				storeService.getRestaurant(header.getText(), new AsyncCallback<List<Restaurant>>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-				@Override
-					public void onSuccess(List<Restaurant> result) {
+				
+				
+				
+				storeService.getRestaurant(restaurant, new AsyncCallback<Restaurant>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
-					if(result.size() > 0){
-							Restaurant rest = new Restaurant();
-							rest = result.get(0);
-							cityLabel = new Label();
-							cityLabel.setText(Customization.CITYONE + ":");
-							content.add(cityLabel);
-							
-							cityText = new TextBox();
-							cityText.setTitle(Customization.CITYONE);
-							cityText.setText(rest.getCity());
-							content.add(cityText);
-							
-							nameLabel = new Label();
-							nameLabel.setText(Customization.RESTAURANTNAME + ":");
-							content.add(nameLabel);
-							
-							nameText = new TextBox();
-							nameText.setTitle(Customization.RESTAURANTNAME);
-							nameText.setText(rest.getName());
-							content.add(nameText);		
-							
-							adressLabel = new Label();
-							adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-							content.add(adressLabel);
-							
-							adressText = new TextBox();
-							adressText.setTitle(Customization.RESTAURANTADRESS);
-							adressText.setText(rest.getAddress());
-							content.add(adressText);
+						
 					}
+
+					@Override
+					public void onSuccess(Restaurant result) {
+						// TODO Auto-generated method stub
+						cityText.setText(result.getCity());
+						nameText.setText(result.getName());
+						adressText.setText(result.getAddress());
 					}
 				});
 			}
 		});
-		content.add(showButton);
-		
-		
-		
-		add(content);	
-		
-	    removeButton = new JQMButton(Customization.REMOVEPROFILE);
-	    removeButton.setIcon(DataIcon.DELETE);
-	    removeButton.setIconPos(IconPos.TOP);
-	    removeButton.setWidth("50%");
-	    
-	    saveButton = new JQMButton(Customization.SAVEPROFILE);
-	    saveButton.setIcon(DataIcon.CHECK);
-	    saveButton.setIconPos(IconPos.TOP);
-	    saveButton.setWidth("49%");
-	    
-	    footer = new JQMFooter(saveButton, removeButton);
-	    footer.setFixed(true);
-	    
-	    add(footer);
-	}
 	
+		add(content);	
+				
+		removeButton = new JQMButton(Customization.REMOVEPROFILE);
+		removeButton.setIcon(DataIcon.DELETE);
+		removeButton.setIconPos(IconPos.TOP);
+		
+		removeButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+					storeService.deleteRestaurant(restaurant, new AsyncCallback<Void>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							// TODO Auto-generated method stub
+							Window.Location.reload();
+						}
+					});
+			}
+		});
+		
+		add(removeButton);
+	}
 	
 	
 	public RestInfoScreen() {
@@ -142,43 +144,17 @@ public class RestInfoScreen extends JQMPage {
 	  }
 	
 	
-	public RestInfoScreen( String text ) {
+	public RestInfoScreen(Restaurant r) {
 		init();
-		setRestaurant(text);
+		setRestaurant(r);
 	}
 	
 	
-	public RestInfoScreen setRestaurant( String text ) {
-		name = text;
-		header.setText(text);
+	public RestInfoScreen setRestaurant(Restaurant r) {
+
+		header.setText(r.getName());
+		this.restaurant = r;
 		return this;
 	}
-	
-	
-	@Override
-	protected void onLoad() {
-		// TODO Auto-generated method stub
-		//System.out.println("loading");
-	}
 
-	
-	private boolean getData(){
-		
-		storeService.getRestaurant(name, new AsyncCallback<List<Restaurant>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(List<Restaurant> result) {
-				// TODO Auto-generated method stub
-				System.out.println(result.size());
-			}
-		});
-		
-		return true;
-	}
 }

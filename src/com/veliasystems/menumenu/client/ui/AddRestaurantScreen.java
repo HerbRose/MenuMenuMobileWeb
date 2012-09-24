@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -89,6 +88,7 @@ public class AddRestaurantScreen extends JQMPage{
 		header.setLeftButton(backButton);
 
 		add(header);			
+		
 		this.add(saveButton);
 		
 		cityLabel = new Label();
@@ -147,7 +147,8 @@ public class AddRestaurantScreen extends JQMPage{
 						@Override
 						public void onSuccess(Void result) {
 							// TODO Auto-generated method stub
-							
+							System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress());
+							com.google.gwt.user.client.Window.Location.reload();
 						}
 						
 						@Override

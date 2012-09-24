@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -86,9 +84,15 @@ public class RestaurantsListScreen extends JQMPage {
 	private void addRestaurants(List<Restaurant> list){
 		
 		for(final Restaurant item: list){
-			RestInfoScreen rest = new RestInfoScreen(item.getName());
-			rest.add(new SwipeView());
-			this.list.addItem(item.getName(), rest);//new RestInfoScreen(item.getName()));
+//			RestInfoScreen rest = new RestInfoScreen(item.getName());
+//			
+//			rest.add(new SwipeView());
+			
+			RestaurantImageView restaurant = new RestaurantImageView(item);
+			restaurant.add(new SwipeView());
+			restaurant.add(new SwipeView());
+			restaurant.add(new SwipeView());
+			this.list.addItem(item.getName(), restaurant);//new RestInfoScreen(item.getName()));
 		}
 	}
 	private void showError(){
