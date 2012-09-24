@@ -1,25 +1,43 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.googlecode.mgwt.ui.client.widget.Carousel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
 
-public class SwipeView extends Carousel   {
+public class SwipeView extends ScrollPanel   {
 	
 
+	private List<String> imageUrlList;
+	private VerticalPanel vPanel = new VerticalPanel();
+	private HorizontalPanel hPanel = new HorizontalPanel();
+	
 	private void init(){
-		add(new Image("/img/article1.jpg"));
-		add(new Image("/img/article2.jpg"));
-		add(new Image("/img/article3.jpg"));
 		
+		for (String imageUrl : imageUrlList) {
+			hPanel.add(new Image(imageUrl));	
+		}
 		
+		vPanel.add(hPanel);
+		
+		vPanel.addStyleName("myPanel");
+		
+		addStyleName("myScrollPanel");
+		add(vPanel);
+		
+		refresh();
 	}
 	
-	public SwipeView() {
+	public SwipeView( List<String> imageUrlList) {
+		if(imageUrlList == null){
+			this.imageUrlList = new ArrayList<String>();
+		}else{
+			this.imageUrlList = imageUrlList;
+		}
 		init();
 	}
 	
-	public SwipeView(String city){
-		init();
-	}
-
 }

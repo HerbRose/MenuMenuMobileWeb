@@ -19,16 +19,14 @@ public class Restaurant implements Serializable {
 	private String city;
 	
 	
-	/**
-	 * Lists of url's with images
-	 */
+	/**Lists of url's with profile images */
 	private List<String> profileImages;
+	/** Lists of url's with board images */
 	private List<String> boardImages;
+	/** Lists of url's with main images*/
 	private List<String> mainImages;
 	
-	/**
-	 * main images
-	 */
+
 	private String mainProfileImage;
 	private String mainBoardImage;
 	private String mainImage;
