@@ -37,6 +37,7 @@ public class AddRestaurantScreen extends JQMPage{
 	TextBox adressText = new TextBox();
 	
 	ListBox cityList = new ListBox();
+	Label warning = new Label();
 	
 	Restaurant restaurant;
 	
@@ -198,7 +199,7 @@ public class AddRestaurantScreen extends JQMPage{
 	}
 	
 	private void showWarning(){
-		Label warning = new Label();
+		
 		warning.setText(Customization.SAVERRESTAURANTERROR);
 //		warning.addStyleName("color");
 //		warning.setStyleName("red");

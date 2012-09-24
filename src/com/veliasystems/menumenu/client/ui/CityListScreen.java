@@ -27,6 +27,7 @@ public class CityListScreen extends JQMPage{
 	JQMButton addButton;
 	JQMList list;
 	JQMButton backButton;
+	Label label = new Label();
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
 	private List<String> cityList;
@@ -77,7 +78,6 @@ public class CityListScreen extends JQMPage{
 	}
 	
 	private void showError(){
-		Label label = new Label();
 		label.setText(Customization.LOADERROR);
 		this.add(label);
 	}

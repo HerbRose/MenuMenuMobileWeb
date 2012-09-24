@@ -1,15 +1,16 @@
 package com.veliasystems.menumenu.client.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.JQMPanel;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -25,11 +26,13 @@ public class CityInfoScreen extends JQMPage {
 	JQMFooter footer;
 	JQMButton removeButton;
 	JQMButton saveButton;
-	JQMList list = new JQMList();
 	JQMButton backButton;
 	JQMButton showRestaurant;
+	JQMList restList;
+	JQMPanel content;
+	private String title;
 	
-	private List<Restaurant> restaurantList;
+
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private void init(){
@@ -37,18 +40,15 @@ public class CityInfoScreen extends JQMPage {
 		backButton.setBack(true);
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
-		header = new JQMHeader("[Restaurant]");
+		header = new JQMHeader(title);
 		header.setBackButton(backButton);
 		header.setFixed(true);
 		add(header);
 		
-		showRestaurant = new JQMButton("show rest");
-		showRestaurant.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-			
+		content = new JQMPanel();
+		
+		restList = new JQMList();
+		
 				
 				storeService.loadRestaurants(header.getText(), new AsyncCallback<List<Restaurant>>() {
 					
@@ -56,40 +56,41 @@ public class CityInfoScreen extends JQMPage {
 					public void onSuccess(List<Restaurant> result) {
 						// TODO Auto-generated method stub
 						if(result.size() > 0){
-//							list.clear();
-//							
-//							restaurantList = new ArrayList<Restaurant>();
-//							restaurantList = result;
-//							
-//							list = (JQMList) restaurantList;
-//							
-//							add(list);
+							
+							addRestaurants(result);
+							
 						}
 					}
 					
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
-						
+						Window.alert("error");
 					}
 				});
-				
-			}
-		});
+	
+		add(content);
+		content.add(restList);
 		
-		add(showRestaurant);
 	}
 	
 	public CityInfoScreen() {
+		this.title = Customization.CITY;
 		init();
 	}
 	
 	public CityInfoScreen(String city){
+		this.title = city;
 		init();
-		setHeaderText(city);
+		
 	}
 	
-	public void setHeaderText(String text){
-		header.setText(text);
+	
+	
+private void addRestaurants(List<Restaurant> list){
+		
+		for(Restaurant item: list){
+			restList.addItem(item.getName(), new RestInfoScreen(item));
+		}
 	}
 }

@@ -1,6 +1,5 @@
 package com.veliasystems.menumenu.client.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -24,7 +23,7 @@ public class RestaurantsListScreen extends JQMPage {
 	JQMHeader header;
 	JQMFooter footer;
 	JQMButton addButton;
-	JQMList list;
+	JQMList list = new JQMList();
 	JQMButton backButton;
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
@@ -44,20 +43,12 @@ public class RestaurantsListScreen extends JQMPage {
 		header.setBackButton(backButton);
 		add(header);
 	    
-		list = new JQMList();
-	    list.setInset(false);
-	    
-	    list.refresh();
-	    
 	    storeService.loadRestaurants(new AsyncCallback<List<Restaurant>>() {
 			
 			@Override
 			public void onSuccess(List<Restaurant> result) {
 				// TODO Auto-generated method stub
-				restaurantList = new ArrayList<Restaurant>();
-				restaurantList = result;
-				addRestaurants(restaurantList);
-				add(list);
+				addRestaurants(result);			
 			}
 			
 			@Override
@@ -66,6 +57,8 @@ public class RestaurantsListScreen extends JQMPage {
 				showError();
 			}
 		});
+	    
+	    add(list);
 	    
 	    addButton = new JQMButton(Customization.ADDRESTAURANT, Pages.PAGE_ADD_RESTAURANT);
 	    addButton.setIcon(DataIcon.PLUS);
@@ -83,16 +76,12 @@ public class RestaurantsListScreen extends JQMPage {
 	
 	private void addRestaurants(List<Restaurant> list){
 		
-		for(final Restaurant item: list){
-//			RestInfoScreen rest = new RestInfoScreen(item.getName());
-//			
-//			rest.add(new SwipeView());
-			
+		for(Restaurant item: list){			
 			RestaurantImageView restaurant = new RestaurantImageView(item);
 			restaurant.add(new SwipeView());
 			restaurant.add(new SwipeView());
 			restaurant.add(new SwipeView());
-			this.list.addItem(item.getName(), restaurant);//new RestInfoScreen(item.getName()));
+			this.list.addItem(item.getName(), new RestInfoScreen(item));
 		}
 	}
 	private void showError(){

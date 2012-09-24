@@ -47,7 +47,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public List<Restaurant> loadRestaurants( String city ) {
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
-		
+		System.out.println(restQuery.filter("city =", city).order("name").count());
 		return restQuery.filter("city =", city).order("name").list();
 	}
 

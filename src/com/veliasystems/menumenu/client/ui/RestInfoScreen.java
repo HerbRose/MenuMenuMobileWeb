@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -36,13 +37,20 @@ public class RestInfoScreen extends JQMPage {
 	Label cityLabel = new Label();
 	Label adressLabel = new Label();
 	
-	TextBox cityText = new TextBox();
+	ListBox cityList = new ListBox();
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
 	
 	JQMPanel content;
+
 	
 	Restaurant restaurant = new Restaurant();
+	
+	String city;
+	String name;
+	String adress;
+	
+	private int size;
 	
 
 
@@ -62,14 +70,36 @@ public class RestInfoScreen extends JQMPage {
 		
 		content = new JQMPanel();
 		
+		
+		
 		showButton = new JQMButton("show rest");
 		showButton.setBack(false);
 		showButton.setIcon(DataIcon.INFO);
 		content.add(showButton);
 		cityLabel.setText(Customization.CITYONE + ":");
 		content.add(cityLabel);
-		cityText.setTitle(Customization.CITYONE);
-		content.add(cityText);
+		
+		storeService.loadCities(new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				
+				size = result.size();
+				for(String item: result){
+					cityList.addItem(item);
+				}
+			}
+		});
+		
+
+		content.add(cityList);
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");		
 		content.add(nameLabel);
 		nameText.setTitle(Customization.RESTAURANTNAME);
@@ -79,15 +109,16 @@ public class RestInfoScreen extends JQMPage {
 		adressText.setTitle(Customization.RESTAURANTADRESS);
 		content.add(adressText);
 		
+		
+		
+		
 		showButton.addClickHandler(new ClickHandler() {
 			
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				
-				
-				
+					
 				storeService.getRestaurant(restaurant, new AsyncCallback<Restaurant>() {
 
 					@Override
@@ -99,9 +130,23 @@ public class RestInfoScreen extends JQMPage {
 					@Override
 					public void onSuccess(Restaurant result) {
 						// TODO Auto-generated method stub
-						cityText.setText(result.getCity());
+						
 						nameText.setText(result.getName());
 						adressText.setText(result.getAddress());
+						int index = -1;
+						for(int i=0; i< size; i++){
+							if (cityList.getItemText(i).equals(result.getCity())){
+								System.out.println("index of item " + i);
+								index = i;
+								break;
+							}
+						}
+						
+						if(index >= 0){
+							System.out.println("index of item " + index);
+							cityList.setSelectedIndex(index);
+						}
+	
 					}
 				});
 			}
@@ -136,6 +181,67 @@ public class RestInfoScreen extends JQMPage {
 		});
 		
 		add(removeButton);
+		
+		
+		saveButton = new JQMButton(Customization.SAVEPROFILE);
+		saveButton.setIcon(DataIcon.STAR);
+		saveButton.setIconPos(IconPos.TOP);
+		saveButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+				
+				name = nameText.getText();
+				adress = adressText.getText();
+				
+				if(name.isEmpty() && adress.isEmpty()){
+					showWarning();
+				}
+				else
+				{
+					final Restaurant tmpr = new Restaurant();
+					tmpr.setName(name);
+					tmpr.setAddress(adress);
+					tmpr.setCity(cityList.getItemText(cityList.getSelectedIndex()));
+						
+					storeService.saveRestaurant(tmpr, new AsyncCallback<Void>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							// TODO Auto-generated method stub
+							System.out.println("Saved new" + tmpr.getCity() + " " + tmpr.getAddress() + " " + tmpr.getName());
+						}
+					});
+					
+					storeService.deleteRestaurant(restaurant, new AsyncCallback<Void>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							// TODO Auto-generated method stub
+							System.out.println("old restaurant deleted");
+							Window.Location.reload();
+						}
+					});
+				}
+				
+			}
+		});
+		
+		add(saveButton);
 	}
 	
 	
@@ -157,4 +263,7 @@ public class RestInfoScreen extends JQMPage {
 		return this;
 	}
 
+	private void showWarning(){
+		
+	}
 }
