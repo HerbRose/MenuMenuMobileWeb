@@ -90,7 +90,13 @@ public class CityInfoScreen extends JQMPage {
 private void addRestaurants(List<Restaurant> list){
 		
 		for(Restaurant item: list){
-			restList.addItem(item.getName(), new RestInfoScreen(item));
+			
+			RestaurantImageView restaurant = new RestaurantImageView(item);
+			restaurant.add(new SwipeView(item.getMainImages()));
+			restaurant.add(new SwipeView(item.getProfileImages()));
+			restaurant.add(new SwipeView(item.getBoardImages()));
+			
+			restList.addItem(item.getName(),restaurant);
 		}
 	}
 }

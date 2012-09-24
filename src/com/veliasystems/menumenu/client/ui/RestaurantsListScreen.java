@@ -82,7 +82,7 @@ public class RestaurantsListScreen extends JQMPage {
 			restaurant.add(new SwipeView(item.getMainImages()));
 			restaurant.add(new SwipeView(item.getProfileImages()));
 			restaurant.add(new SwipeView(item.getBoardImages()));
-			this.list.addItem(item.getName(), new RestInfoScreen(item));
+			this.list.addItem(item.getName(), restaurant);
 		}
 	}
 	private void showError(){
