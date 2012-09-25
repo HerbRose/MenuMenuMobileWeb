@@ -20,7 +20,7 @@
   -->
   <inherits name="com.googlecode.objectify.Objectify" />
   <inherits name="com.googlecode.mgwt.MGWT" />
-	
+ 	
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.veliasystems.menumenu.client.MenuMenuMobileWeb'/>
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -70,7 +71,6 @@ public class RestaurantsListScreen extends JQMPage {
    
 	    add(footer);
 	        
-	    System.out.println(list.getTitle());
 	  }
 	
 	private void addRestaurants(List<Restaurant> list){
@@ -81,9 +81,9 @@ public class RestaurantsListScreen extends JQMPage {
 			restaurantView.add(new SwipeView(item.getMainImages()));
 			restaurantView.add(new SwipeView(item.getProfileImages()));
 			restaurantView.add(new SwipeView(item.getBoardImages()));
-			
-			System.out.println(item.getName());
-			
+//			
+//			Image image = new Image("http://www.hauser.lu/uploads/images/SAT_et_TNT/HD/zdf-hd.jpg");
+//			CropImage imageToCrop = new CropImage(image);
 			this.list.addItem(item.getName(), restaurantView);
 		}
 	}
