@@ -1,0 +1,10 @@
+<!-- Indices written at Wed, 26 Sep 2012 00:51:25 CEST -->
+
+<datastore-indexes>
+
+     <datastore-index kind="Restaurant" ancestor="false" source="manual">
+        <property name="city" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>
