@@ -79,8 +79,8 @@ public class RestaurantsListScreen extends JQMPage {
 		
 			RestaurantImageView restaurantView = new RestaurantImageView(item);
 			restaurantView.add(new SwipeView(item.getMainImages()));
-			restaurantView.add(new SwipeView(item.getProfileImages()));
-			restaurantView.add(new SwipeView(item.getBoardImages()));
+		//	restaurantView.add(new SwipeView(item.getProfileImages()));
+		//	restaurantView.add(new SwipeView(item.getBoardImages()));
 //			
 //			Image image = new Image("http://www.hauser.lu/uploads/images/SAT_et_TNT/HD/zdf-hd.jpg");
 //			CropImage imageToCrop = new CropImage(image);
