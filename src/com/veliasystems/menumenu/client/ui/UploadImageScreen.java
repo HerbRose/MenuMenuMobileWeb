@@ -12,8 +12,8 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
@@ -29,7 +29,7 @@ class ToRemove {
 
 
 class UploadForm extends FormPanel {
-	private HorizontalPanel mainPanel = new HorizontalPanel();
+	private VerticalPanel mainPanel = new VerticalPanel();
 	private FileUpload fileUpload = new FileUpload();
 	private JQMButton uploadButton = new JQMButton("Upload");
 	JQMTextArea textArea = new JQMTextArea();
