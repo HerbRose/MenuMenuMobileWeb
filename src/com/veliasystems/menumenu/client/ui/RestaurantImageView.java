@@ -1,8 +1,5 @@
 package com.veliasystems.menumenu.client.ui;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -30,17 +27,16 @@ public class RestaurantImageView extends JQMPage{
 		backButton.setBack(true);
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
+		editButton = new JQMButton(Customization.EDIT, new RestInfoScreen(restaurant), Transition.SLIDE);
+		editButton.setIcon(DataIcon.RIGHT);
+		editButton.setIconPos(IconPos.RIGHT);
 		
 		header = new JQMHeader(title);
 		header.setBackButton(backButton);
 		header.setFixed(true);
+		header.setRightButton(editButton);
 		add(header);
-		
-		editButton = new JQMButton(Customization.EDIT, new RestInfoScreen(restaurant), Transition.SLIDE);
-		editButton.setIcon(DataIcon.RIGHT);
-		editButton.setIconPos(IconPos.RIGHT);
-		add(editButton);
-	
+
 	}
 
 	public RestaurantImageView() {
