@@ -18,6 +18,7 @@ import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
@@ -25,6 +26,7 @@ import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
 class ToRemove {
 	public static String REST_ID = "666";  // TODO: to musi byc dynamiczne
+	public static ImageType imgType = ImageType.BOARD;
 }
 
 
@@ -49,7 +51,7 @@ class UploadForm extends FormPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				
-				blobService.getBlobStoreUrl( ToRemove.REST_ID, new AsyncCallback<String>() {
+				blobService.getBlobStoreUrl( ToRemove.REST_ID, ToRemove.imgType, new AsyncCallback<String>() {
 					
 					@Override
 					public void onSuccess(String result) {
@@ -115,7 +117,7 @@ public class UploadImageScreen extends JQMPage {
 				
 				imagesPanel.clear();
 				
-				blobService.getImages(ToRemove.REST_ID, new AsyncCallback<List<ImageBlob>>() {
+				blobService.getBoardImages(ToRemove.REST_ID, new AsyncCallback<List<ImageBlob>>() {
 					
 					@Override
 					public void onSuccess(List<ImageBlob> result) {
@@ -123,7 +125,8 @@ public class UploadImageScreen extends JQMPage {
 							imagesPanel.add(new HTML("No uploads found."));
 						} else {
 							for ( ImageBlob blob : result ) {
-								imagesPanel.add( new Image("/blobServe?blob-key=" + blob.getBlobKey() ) );
+								//imagesPanel.add( new Image("/blobServe?blob-key=" + blob.getBlobKey() ) );
+								imagesPanel.add( new Image( blob.getImageUrl() ) );
 							}
 						}
 					};

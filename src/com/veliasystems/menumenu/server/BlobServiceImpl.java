@@ -8,6 +8,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobData;
 import com.veliasystems.menumenu.client.services.BlobDataFilter;
@@ -22,31 +23,69 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
     
 		private DAO dao = new DAO();
 	
-        @Override
-        public String getBlobStoreUrl() {
-                String url = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blobUpload");
-                return url;
-        }
         
         @Override
-        public String getBlobStoreUrl(String restId) {
-            String url = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blobUpload?restId=" + restId);
+        public String getBlobStoreUrl(String restId, ImageType imageType) {
+            String url = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blobUpload?restId=" + restId + "&imageType=" + imageType.name());
             return url;
         }
         
-        @Override
-        public List<ImageBlob> getImages( Restaurant r ) {
+        private List<ImageBlob> getImages( Restaurant r ) {
         	return getImages("" + r.getId());
         }
         
-        @Override
-        public List<ImageBlob> getImages(String restaurantId) {
+        private List<ImageBlob> getImages(String restaurantId) {
         	List<ImageBlob> images = new ArrayList<ImageBlob>();
         	Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
     		if (imgQuery==null) return images;
     		
     		return imgQuery.filter("restId =", restaurantId).order("-dateCreated").list();
         }
+        
+        private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
+        	List<ImageBlob> allImages = getImages(restaurantId);
+        	List<ImageBlob> ret = new ArrayList<ImageBlob>();
+        	
+        	for ( ImageBlob blob : allImages ) {
+        		if (blob.getImageType() == imageType) {
+        			ret.add(blob);
+        		}
+        	}
+        	
+        	return ret;
+        }
+        
+        
+        @Override
+        public List<ImageBlob> getBoardImages(Restaurant r) {
+	        return getImages( ""+r.getId(), ImageType.BOARD );
+        }
+        
+        @Override
+        public List<ImageBlob> getBoardImages(String restaurantId) {
+        	return getImages( restaurantId, ImageType.BOARD );
+        }
+        
+        @Override
+        public List<ImageBlob> getHeaderImages(Restaurant r) {
+        	return getImages( ""+r.getId(), ImageType.HEADER );
+        }
+        
+        @Override
+        public List<ImageBlob> getHeaderImages(String restaurantId) {
+        	return getImages( restaurantId, ImageType.HEADER );
+        }
+        
+        @Override
+        public List<ImageBlob> getProfileImages(Restaurant r) {
+        	return getImages( ""+r.getId(), ImageType.PROFILE );
+        }
+        
+        @Override
+        public List<ImageBlob> getProfileImages(String restaurantId) {
+        	return getImages( restaurantId, ImageType.PROFILE );
+        }
+        
         
         
         /**

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 
 public class ImageBlob implements Serializable {
@@ -17,7 +18,9 @@ public class ImageBlob implements Serializable {
 	
 	private String blobKey;
     private Date dateCreated;
-
+    
+    private ImageType imageType;
+    
     
     {
 		id = "" + ((long) (Math.random() * 999999999));
@@ -28,10 +31,11 @@ public class ImageBlob implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-    public ImageBlob( String restId, String blobKey, Date dateCreated ) {
+    public ImageBlob( String restId, String blobKey, Date dateCreated, ImageType imageType ) {
     	setRestaurantId(restId);
     	setBlobKey(blobKey);
     	setDateCreated(dateCreated);
+    	setImageType(imageType);
     }
     
 	public String getId() {
@@ -54,6 +58,11 @@ public class ImageBlob implements Serializable {
 	public String getBlobKey() {
 		return blobKey;
 	}
+	
+	@Transient
+	public String getImageUrl() {
+		return "/blobServe?blob-key=" + getBlobKey();
+	}
 
 	public Date getDateCreated() {
 		return dateCreated;
@@ -63,6 +72,12 @@ public class ImageBlob implements Serializable {
 		this.dateCreated = dateCreated;
 	}
     
+    public void setImageType(ImageType imageType) {
+		this.imageType = imageType;
+	}
     
+    public ImageType getImageType() {
+		return imageType;
+	}
 	
 }

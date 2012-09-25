@@ -16,6 +16,7 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.googlecode.objectify.Key;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 
 public class BlobUploadServlet extends HttpServlet {
 
@@ -30,8 +31,11 @@ public class BlobUploadServlet extends HttpServlet {
 
     	
     	String restId = request.getParameter("restId");
-		if (restId==null || restId.isEmpty()){
-//			System.out.println("BlobUploadServlet::doPost: restId is NULL");
+    	String imageType = request.getParameter("imageType");
+    	
+    	
+		if (restId==null || restId.isEmpty() || imageType==null || imageType.isEmpty()){
+			System.out.println("BlobUploadServlet::doPost: restId or imageType is NULL||empty");
 //			res.getWriter().println("BlobUploadServlet::doPost: restId is NULL");
 //			res.getWriter().flush();
 			return;
@@ -77,7 +81,7 @@ public class BlobUploadServlet extends HttpServlet {
                     res.sendRedirect("/");
             } else {
 //            	  System.out.println("BlobUploadServlet::doPost: blobKey is " + blobKey.getKeyString() + ", storing.."); 
-            		storeImageBlob( restId, blobKey );
+            		storeImageBlob( restId, imageType, blobKey );
                     res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
             }
             
@@ -86,11 +90,11 @@ public class BlobUploadServlet extends HttpServlet {
     
     
     
-    void storeImageBlob( String restId, BlobKey blobKey ) {
+    void storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
 		
  //   	System.out.println("BlobUploadServlet::storeImageBlob");
     	
-		ImageBlob imageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date());
+		ImageBlob imageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
 		
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		
