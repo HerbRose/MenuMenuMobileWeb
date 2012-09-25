@@ -20,9 +20,9 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	
 	public void onModuleLoad() {
 	
-		//JQMContext.changePage( Pages.PAGE_HOME );
+		JQMContext.changePage( Pages.PAGE_HOME );
 		
-				JQMContext.changePage( Pages.PAGE_UPLOAD );
+				//JQMContext.changePage( Pages.PAGE_UPLOAD );
 		
 				
 	}

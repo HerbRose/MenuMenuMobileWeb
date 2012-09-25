@@ -60,7 +60,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 
 
-	
 	@Override
 	public void deleteRestaurant(Restaurant r) {
 		dao.ofy().delete(r);

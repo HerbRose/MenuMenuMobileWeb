@@ -5,9 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-/**
- * The async counterpart of <code>GreetingService</code>.
- */
+
 public interface StoreServiceAsync {
 	
 	void saveRestaurant(Restaurant r, AsyncCallback<Void> callback);
@@ -17,6 +15,9 @@ public interface StoreServiceAsync {
 
 	void loadCities(AsyncCallback<List<String>> callback);
 
-	void getRestaurant(String name, AsyncCallback<List<Restaurant>> callback);
+	void deleteRestaurant(Restaurant r, AsyncCallback<Void> callback);
+
+	void getRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
+
 
 }

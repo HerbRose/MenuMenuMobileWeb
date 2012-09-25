@@ -12,11 +12,12 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 @RemoteServiceRelativePath("store")
 public interface StoreService extends RemoteService {
 	
-	void saveRestaurant( Restaurant r );
+void saveRestaurant( Restaurant r );
 	
 	List<String> loadCities();
 	
 	List<Restaurant> loadRestaurants();
 	List<Restaurant> loadRestaurants(String city);
-	List<Restaurant> getRestaurant(String name);
+	Restaurant getRestaurant(Restaurant r);
+	void deleteRestaurant(Restaurant r);
 }

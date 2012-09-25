@@ -92,119 +92,11 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers{
 		showButton = new JQMButton("show rest");
 		showButton.setBack(false);
 		showButton.setIcon(DataIcon.INFO);
-
 		content.add(showButton);
 		cityLabel.setText(Customization.CITYONE + ":");
 		content.add(cityLabel);
-
 		
-		cityLabel = new Label();
-		content.add(cityLabel);
-		cityText = new TextBox();
-		content.add(cityText);
-		nameText = new TextBox();
-		content.add(nameText);	
-		nameLabel = new Label();
-		content.add(nameLabel);
-		adressLabel = new Label();
-		content.add(adressLabel);
-		adressText = new TextBox();
-		content.add(adressText);
-		
-		showButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				storeService.getRestaurant(header.getText(), new AsyncCallback<List<Restaurant>>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-				@Override
-					public void onSuccess(List<Restaurant> result) {
-						// TODO Auto-generated method stub
-					if(result.size() > 0){
-							Restaurant rest = new Restaurant();
-							rest = result.get(0);
-							
-							cityLabel.setText(Customization.CITYONE + ":");
-							
-							cityText.setTitle(Customization.CITYONE);
-							cityText.setText(rest.getCity());
-							
-							nameLabel.setText(Customization.RESTAURANTNAME + ":");
-							
-							nameText.setTitle(Customization.RESTAURANTNAME);
-							nameText.setText(rest.getName());
-							
-							adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-							
-							adressText.setTitle(Customization.RESTAURANTADRESS);
-							adressText.setText(rest.getAddress());
-					}
-					}
-				});
-			}
-		});
->>>>>>> branch 'master' of http://github.com/pjakwert/MenuMenuMobileWeb.git
-		
-<<<<<<< HEAD
 		storeService.loadCities(new AsyncCallback<List<String>>() {
-=======
-		content.add(showButton);
-		
-		
-		add(content);	
-		
-	    removeButton = new JQMButton(Customization.REMOVEPROFILE);
-	    removeButton.setIcon(DataIcon.DELETE);
-	    removeButton.setIconPos(IconPos.TOP);
-	    removeButton.setWidth("50%");
-	    
-	    saveButton = new JQMButton(Customization.SAVEPROFILE);
-	    saveButton.setIcon(DataIcon.CHECK);
-	    saveButton.setIconPos(IconPos.TOP);
-	    saveButton.setWidth("49%");
-	    
-	    footer = new JQMFooter(saveButton, removeButton);
-	    footer.setFixed(true);
-	    
-	    add(footer);
-	}
-	
-	
-	
-	public RestInfoScreen() {
-	    init();
-	  }
-	
-	
-	public RestInfoScreen( String text ) {
-		init();
-		setRestaurant(text);
-	}
-	
-	
-	public RestInfoScreen setRestaurant( String text ) {
-		name = text;
-		header.setText(text);
-		return this;
-	}
-	
-	
-	@Override
-	protected void onLoad() {
-		// TODO Auto-generated method stub
-		//System.out.println("loading");
-	}
-
-	
-	private boolean getData(){
-		
-		storeService.getRestaurant(name, new AsyncCallback<List<Restaurant>>() {
->>>>>>> branch 'master' of http://github.com/pjakwert/MenuMenuMobileWeb.git
 
 			@Override
 			public void onFailure(Throwable caught) {
