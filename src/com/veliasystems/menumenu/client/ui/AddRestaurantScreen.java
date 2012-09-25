@@ -5,9 +5,12 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+<<<<<<< HEAD
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
+=======
+>>>>>>> branch 'master' of http://github.com/pjakwert/MenuMenuMobileWeb.git
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -19,9 +22,9 @@ import com.sksamuel.jqm4gwt.JQMPanel;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.StoreService;
-import com.veliasystems.menumenu.client.StoreServiceAsync;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.StoreService;
+import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	

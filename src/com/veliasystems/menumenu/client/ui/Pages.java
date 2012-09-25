@@ -2,6 +2,8 @@ package com.veliasystems.menumenu.client.ui;
 
 public class Pages {
 	
+	public static UploadImageScreen		PAGE_UPLOAD			= new UploadImageScreen();
+	
 	public static CityInfoScreen		PAGE_CITY_INFO		= new CityInfoScreen();
 	public static CityListScreen		PAGE_CITY_LIST		= new CityListScreen();
 	

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <welcome-file-list>
+    <welcome-file>MenuMenuMobileWeb.html</welcome-file>
+  </welcome-file-list>
   
   <servlet>
     <servlet-name>StoreServiceServlet</servlet-name>
@@ -9,6 +13,38 @@
     <servlet-name>StoreServiceServlet</servlet-name>
     <url-pattern>/menumenumobileweb/store</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>BlobStoreServlet</servlet-name>
+    <servlet-class>com.veliasystems.menumenu.server.BlobServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>BlobStoreServlet</servlet-name>
+    <url-pattern>/menumenumobileweb/blobstore</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+     <servlet-name>BlobUploadServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.BlobUploadServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>BlobUploadServlet</servlet-name>
+     <url-pattern>/blobUpload</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+     <servlet-name>BlobServeServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.BlobServeServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>BlobServeServlet</servlet-name>
+     <url-pattern>/blobServe</url-pattern>
+  </servlet-mapping>
+
+
   
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>
@@ -23,5 +59,7 @@
     <servlet-name>SystemServiceServlet</servlet-name>
     <url-pattern>/_ah/spi/*</url-pattern>
   </servlet-mapping>
+
+  
 
 </web-app>
