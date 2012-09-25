@@ -17,7 +17,7 @@ public interface StoreServiceAsync {
 
 	void deleteRestaurant(Restaurant r, AsyncCallback<Void> callback);
 
-	void getRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
+	
 
 
 }

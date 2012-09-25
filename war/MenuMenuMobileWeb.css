@@ -32,3 +32,10 @@ h1 {
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+
+.warning {
+	color: red;
+	margin-left: 15%;
+	paddin-top: 10px;
+}

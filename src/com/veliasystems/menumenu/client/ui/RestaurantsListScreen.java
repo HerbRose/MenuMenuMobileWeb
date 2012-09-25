@@ -27,7 +27,6 @@ public class RestaurantsListScreen extends JQMPage {
 	JQMButton backButton;
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
-	private List<Restaurant> restaurantList;
 	
 	public RestaurantsListScreen() {
 	    
@@ -78,11 +77,14 @@ public class RestaurantsListScreen extends JQMPage {
 		
 		for(final Restaurant item: list){
 		
-			RestaurantImageView restaurant = new RestaurantImageView(item);
-			restaurant.add(new SwipeView(item.getMainImages()));
-			restaurant.add(new SwipeView(item.getProfileImages()));
-			restaurant.add(new SwipeView(item.getBoardImages()));
-			this.list.addItem(item.getName(), restaurant);
+			RestaurantImageView restaurantView = new RestaurantImageView(item);
+			restaurantView.add(new SwipeView(item.getMainImages()));
+			restaurantView.add(new SwipeView(item.getProfileImages()));
+			restaurantView.add(new SwipeView(item.getBoardImages()));
+			
+			System.out.println(item.getName());
+			
+			this.list.addItem(item.getName(), restaurantView);
 		}
 	}
 	private void showError(){

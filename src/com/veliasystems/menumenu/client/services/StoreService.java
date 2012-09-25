@@ -18,6 +18,5 @@ void saveRestaurant( Restaurant r );
 	
 	List<Restaurant> loadRestaurants();
 	List<Restaurant> loadRestaurants(String city);
-	Restaurant getRestaurant(Restaurant r);
 	void deleteRestaurant(Restaurant r);
 }

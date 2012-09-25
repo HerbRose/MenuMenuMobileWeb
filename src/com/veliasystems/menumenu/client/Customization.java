@@ -17,4 +17,7 @@ public class Customization {
 	public static final String SAVERRESTAURANTERROR = "Popraw dane";
 	public static final String LOADERROR = "Wystąpił błąd, przepraszamy";
 	public static final String EDIT = "Edytuj";
+	public static final String EMPTYBOTHDATA = "Popraw nazwę i adres";
+	public static final String EMPTYNAME = "Popraw nazwę";
+	public static final String EMPTYADRESS = "Popraw adres";
 };

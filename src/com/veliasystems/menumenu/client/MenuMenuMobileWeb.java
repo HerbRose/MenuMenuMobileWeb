@@ -21,7 +21,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	
 		JQMContext.changePage( Pages.PAGE_HOME );
 		
-				//JQMContext.changePage( Pages.PAGE_UPLOAD );
+		//JQMContext.changePage( Pages.PAGE_UPLOAD );
 		
 				
 	}

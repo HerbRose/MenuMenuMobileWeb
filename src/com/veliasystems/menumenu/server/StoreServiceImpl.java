@@ -51,15 +51,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return restQuery.filter("city =", city).order("name").list();
 	}
 
-	@Override
-	public Restaurant getRestaurant(Restaurant r) {
-		// TODO Auto-generated method stub
-
-		Restaurant tmpr = dao.ofy().get(Restaurant.class, r.getId());
-		return tmpr;	
-	}
-
-
+	
 	@Override
 	public void deleteRestaurant(Restaurant r) {
 		dao.ofy().delete(r);

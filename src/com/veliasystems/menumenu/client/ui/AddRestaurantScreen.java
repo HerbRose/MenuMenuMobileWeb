@@ -67,25 +67,16 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	void meClicked( ClickEvent event ) {
 		
 		int clickedX =event.getClientX();
-		int clickedY= event.getClientY();
-		
+		int clickedY= event.getClientY();	
 		int  buttonX= (int) saveButton.getElement().getAbsoluteLeft();
-		int  buttonY= (int) saveButton.getElement().getAbsoluteTop();
-		
-//		if(x == clickedX && y == clickedY){
-//		Window.alert("clicked: " + x + " " + y);
-//		}
-		
-		
+		int  buttonY= (int) saveButton.getElement().getAbsoluteTop();		
 		int buttonWidth = (int) saveButton.getElement().getClientWidth();
 		int buttonHeight = (int) saveButton.getElement().getClientHeight();
 		
-		//Window.alert("button x: " + buttonX + " " + buttonY + "size of button: " + buttonWidth + " " + buttonHeight);
-		
 		if(clickedX>= buttonX && (clickedX <= buttonX + buttonWidth) && clickedY >= buttonY && (clickedY <= buttonY + buttonHeight)){
-			
+		
 			if(checkFields()){
-//				
+			
 				restaurant = new Restaurant();
 				restaurant.setName(nameText.getText());
 				
@@ -109,15 +100,10 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 				});
 				
 			}
-			else{
-				showWarning();
-			}
 				
 		}
 	}
-			
 
-	
 	public AddRestaurantScreen() {
 		
 		setContentHeader();
@@ -166,45 +152,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 				add(content);	
 			}
 		});
-			
-		
-		
-//		saveButton.addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				// TODO Auto-generated method stub
-//				if(checkFields()){
-//					
-//					restaurant = new Restaurant();
-//					restaurant.setName(nameText.getText());
-//					
-//					restaurant.setAddress(adressText.getText());			
-//					int index = cityList.getSelectedIndex();			
-//					restaurant.setCity(cityList.getItemText(index));				
-//					storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
-//						
-//						@Override
-//						public void onSuccess(Void result) {
-//							// TODO Auto-generated method stub
-//							System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress());
-//							com.google.gwt.user.client.Window.Location.reload();
-//						}
-//						
-//						@Override
-//						public void onFailure(Throwable caught) {
-//							// TODO Auto-generated method stub
-//							
-//						}
-//					});
-//					
-//				}
-//				else{
-//					showWarning();
-//				}
-//			}
-//		});
-		
 	
 	}
 	
@@ -229,20 +176,22 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	}
 	
 	private boolean checkFields(){
-		
-		if(!nameText.getText().isEmpty() && !adressText.getText().isEmpty()) {
+		if(!nameText.getText().isEmpty() && !adressText.getText().isEmpty()){
 			return true;
 		}
-		
+		else{
+			if(nameText.getText().isEmpty() && adressText.getText().isEmpty()){
+				warning.setText(Customization.EMPTYBOTHDATA);
+			}else if(nameText.getText().isEmpty()){
+				warning.setText(Customization.EMPTYNAME);
+			}else {
+				warning.setText(Customization.EMPTYADRESS);
+			}
+			warning.setStyleName("warning");
+			add(warning);
+			
+		}
 		return false;
-	}
-	
-	private void showWarning(){
-		
-		warning.setText(Customization.SAVERRESTAURANTERROR);
-//		warning.addStyleName("color");
-//		warning.setStyleName("red");
-		this.add(warning);
 	}
 	
 }
