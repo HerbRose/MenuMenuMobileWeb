@@ -5,6 +5,9 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -20,7 +23,7 @@ import com.veliasystems.menumenu.client.StoreService;
 import com.veliasystems.menumenu.client.StoreServiceAsync;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class AddRestaurantScreen extends JQMPage{
+public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	
 
 	JQMHeader header;
@@ -43,40 +46,75 @@ public class AddRestaurantScreen extends JQMPage{
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
-//	{
-//		this.addClickHandler( new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {			
-//					meClicked(event);
-//			}
-//		});
-//	}
+	{
+		this.addClickHandler( new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {			
+					meClicked(event);
+			}
+		});
+	}
+	
+	@Override
+	public HandlerRegistration addClickHandler(ClickHandler handler) {
+		return addDomHandler(handler, ClickEvent.getType());
+	}
+	
+	
+	void meClicked( ClickEvent event ) {
 		
-//	@Override
-//	public HandlerRegistration addClickHandler(ClickHandler handler) {
-//		return addDomHandler(handler, ClickEvent.getType());
-//	}
-	
-	
-//	void meClicked( ClickEvent e ) {
-//		e.stopPropagation();
-//		
-//		Object o = e.getSource();
-//		
-//		System.out.println(o.toString());
-//		System.out.println(o.getClass().toString());
-//		System.out.println(o.getClass().getName()); 
-//		
-//		if (o instanceof JQMButton) {
-//			JQMButton button = (JQMButton) o;
-//			if (button.getId().equalsIgnoreCase(saveButton.getId())) {
-//				Window.alert("Save Button clicked");
-//				return;
-//			}
+		int clickedX =event.getClientX();
+		int clickedY= event.getClientY();
+		
+		int  buttonX= (int) saveButton.getElement().getAbsoluteLeft();
+		int  buttonY= (int) saveButton.getElement().getAbsoluteTop();
+		
+//		if(x == clickedX && y == clickedY){
+//		Window.alert("clicked: " + x + " " + y);
 //		}
-//			
-//	}
+		
+		
+		int buttonWidth = (int) saveButton.getElement().getClientWidth();
+		int buttonHeight = (int) saveButton.getElement().getClientHeight();
+		
+		//Window.alert("button x: " + buttonX + " " + buttonY + "size of button: " + buttonWidth + " " + buttonHeight);
+		
+		if(clickedX>= buttonX && (clickedX <= buttonX + buttonWidth) && clickedY >= buttonY && (clickedY <= buttonY + buttonHeight)){
+			
+			if(checkFields()){
+//				
+				restaurant = new Restaurant();
+				restaurant.setName(nameText.getText());
+				
+				restaurant.setAddress(adressText.getText());			
+				int index = cityList.getSelectedIndex();			
+				restaurant.setCity(cityList.getItemText(index));				
+				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+						// TODO Auto-generated method stub
+						System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress());
+						com.google.gwt.user.client.Window.Location.reload();
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				
+			}
+			else{
+				showWarning();
+			}
+				
+		}
+	}
+			
+
 	
 	public AddRestaurantScreen() {
 		
@@ -85,12 +123,11 @@ public class AddRestaurantScreen extends JQMPage{
 		
 		content = new JQMPanel();
 		
-		//header.setRightButton(saveButton);
 		header.setLeftButton(backButton);
-
+		header.setRightButton(saveButton);
 		add(header);			
 		
-		this.add(saveButton);
+		//this.add(saveButton);
 		
 		cityLabel = new Label();
 		cityLabel.setText(Customization.CITYONE + ":");
@@ -130,41 +167,41 @@ public class AddRestaurantScreen extends JQMPage{
 			
 		
 		
-		saveButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				if(checkFields()){
-					
-					restaurant = new Restaurant();
-					restaurant.setName(nameText.getText());
-					
-					restaurant.setAddress(adressText.getText());			
-					int index = cityList.getSelectedIndex();			
-					restaurant.setCity(cityList.getItemText(index));				
-					storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
-						
-						@Override
-						public void onSuccess(Void result) {
-							// TODO Auto-generated method stub
-							System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress());
-							com.google.gwt.user.client.Window.Location.reload();
-						}
-						
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-					
-				}
-				else{
-					showWarning();
-				}
-			}
-		});
+//		saveButton.addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				// TODO Auto-generated method stub
+//				if(checkFields()){
+//					
+//					restaurant = new Restaurant();
+//					restaurant.setName(nameText.getText());
+//					
+//					restaurant.setAddress(adressText.getText());			
+//					int index = cityList.getSelectedIndex();			
+//					restaurant.setCity(cityList.getItemText(index));				
+//					storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
+//						
+//						@Override
+//						public void onSuccess(Void result) {
+//							// TODO Auto-generated method stub
+//							System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress());
+//							com.google.gwt.user.client.Window.Location.reload();
+//						}
+//						
+//						@Override
+//						public void onFailure(Throwable caught) {
+//							// TODO Auto-generated method stub
+//							
+//						}
+//					});
+//					
+//				}
+//				else{
+//					showWarning();
+//				}
+//			}
+//		});
 		
 	
 	}

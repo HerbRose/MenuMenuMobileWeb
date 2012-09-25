@@ -5,6 +5,8 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
@@ -23,7 +25,7 @@ import com.veliasystems.menumenu.client.StoreService;
 import com.veliasystems.menumenu.client.StoreServiceAsync;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class RestInfoScreen extends JQMPage {
+public class RestInfoScreen extends JQMPage implements HasClickHandlers{
 	  
 	JQMHeader header;
 	JQMFooter footer;
@@ -51,11 +53,10 @@ public class RestInfoScreen extends JQMPage {
 	String adress;
 	
 	private int size;
-	
-
 
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
+
 	private void init() {
 
 		backButton = new JQMButton(Customization.BACK);
@@ -68,6 +69,22 @@ public class RestInfoScreen extends JQMPage {
 		header.setFixed(true);
 		add(header);
 		
+		removeButton = new JQMButton(Customization.REMOVEPROFILE);
+		removeButton.setIcon(DataIcon.DELETE);
+		removeButton.setIconPos(IconPos.TOP);
+		removeButton.setWidth("49%");
+		
+		saveButton = new JQMButton(Customization.SAVEPROFILE);
+		saveButton.setIcon(DataIcon.STAR);
+		saveButton.setIconPos(IconPos.TOP);
+		saveButton.setWidth("49%");
+		footer = new JQMFooter();
+		
+		footer.setFixed(true);
+		footer.add(removeButton);
+		footer.add(saveButton);
+		
+		add(footer);
 		content = new JQMPanel();
 		
 		
@@ -154,94 +171,90 @@ public class RestInfoScreen extends JQMPage {
 	
 		add(content);	
 				
-		removeButton = new JQMButton(Customization.REMOVEPROFILE);
-		removeButton.setIcon(DataIcon.DELETE);
-		removeButton.setIconPos(IconPos.TOP);
-		
-		removeButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-					storeService.deleteRestaurant(restaurant, new AsyncCallback<Void>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void onSuccess(Void result) {
-							// TODO Auto-generated method stub
-							Window.Location.reload();
-						}
-					});
-			}
-		});
-		
-		add(removeButton);
 		
 		
-		saveButton = new JQMButton(Customization.SAVEPROFILE);
-		saveButton.setIcon(DataIcon.STAR);
-		saveButton.setIconPos(IconPos.TOP);
-		saveButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				
-				
-				name = nameText.getText();
-				adress = adressText.getText();
-				
-				if(name.isEmpty() && adress.isEmpty()){
-					showWarning();
-				}
-				else
-				{
-					final Restaurant tmpr = new Restaurant();
-					tmpr.setName(name);
-					tmpr.setAddress(adress);
-					tmpr.setCity(cityList.getItemText(cityList.getSelectedIndex()));
-						
-					storeService.saveRestaurant(tmpr, new AsyncCallback<Void>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void onSuccess(Void result) {
-							// TODO Auto-generated method stub
-							System.out.println("Saved new" + tmpr.getCity() + " " + tmpr.getAddress() + " " + tmpr.getName());
-						}
-					});
-					
-					storeService.deleteRestaurant(restaurant, new AsyncCallback<Void>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void onSuccess(Void result) {
-							// TODO Auto-generated method stub
-							System.out.println("old restaurant deleted");
-							Window.Location.reload();
-						}
-					});
-				}
-				
-			}
-		});
+//		removeButton.addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				// TODO Auto-generated method stub
+//					storeService.deleteRestaurant(restaurant, new AsyncCallback<Void>() {
+//
+//						@Override
+//						public void onFailure(Throwable caught) {
+//							// TODO Auto-generated method stub
+//							
+//						}
+//
+//						@Override
+//						public void onSuccess(Void result) {
+//							// TODO Auto-generated method stub
+//							Window.Location.reload();
+//						}
+//					});
+//			}
+//		});
+//		
+//		add(removeButton);
 		
-		add(saveButton);
+		
+		
+//		saveButton.addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				// TODO Auto-generated method stub
+//				
+//				
+//				name = nameText.getText();
+//				adress = adressText.getText();
+//				
+//				if(name.isEmpty() && adress.isEmpty()){
+//					showWarning();
+//				}
+//				else
+//				{
+//					final Restaurant tmpr = new Restaurant();
+//					tmpr.setName(name);
+//					tmpr.setAddress(adress);
+//					tmpr.setCity(cityList.getItemText(cityList.getSelectedIndex()));
+//						
+//					storeService.saveRestaurant(tmpr, new AsyncCallback<Void>() {
+//
+//						@Override
+//						public void onFailure(Throwable caught) {
+//							// TODO Auto-generated method stub
+//							
+//						}
+//
+//						@Override
+//						public void onSuccess(Void result) {
+//							// TODO Auto-generated method stub
+//							System.out.println("Saved new" + tmpr.getCity() + " " + tmpr.getAddress() + " " + tmpr.getName());
+//						}
+//					});
+//					
+//					storeService.deleteRestaurant(restaurant, new AsyncCallback<Void>() {
+//
+//						@Override
+//						public void onFailure(Throwable caught) {
+//							// TODO Auto-generated method stub
+//							
+//						}
+//
+//						@Override
+//						public void onSuccess(Void result) {
+//							// TODO Auto-generated method stub
+//							System.out.println("old restaurant deleted");
+//							Window.Location.reload();
+//						}
+//					});
+//				}
+//				
+//			}
+//		});
+//		
+//		add(saveButton);
 	}
 	
 	
@@ -266,4 +279,55 @@ public class RestInfoScreen extends JQMPage {
 	private void showWarning(){
 		
 	}
+
+	{
+		this.addClickHandler( new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {			
+					meClicked(event);
+			}
+		});
+	}
+		
+	@Override
+	public HandlerRegistration addClickHandler(ClickHandler handler) {
+		return addDomHandler(handler, ClickEvent.getType());
+	}
+	
+	private void meClicked(ClickEvent event){
+		
+		if(isClicked(event, removeButton)){
+			Window.alert("remove");
+		}
+		if(isClicked(event, saveButton)){
+			Window.alert("save");
+		}
+		
+		
+	}
+	
+	private boolean isClicked(ClickEvent event, JQMButton button){
+		
+		int clickedX =event.getClientX();
+		int clickedY= event.getClientY();
+		
+		int ButtonX = (int) button.getElement().getAbsoluteLeft();
+		int ButtonY = (int) button.getElement().getAbsoluteTop();
+		int ButtonWidth = (int) button.getElement().getClientWidth();
+		int ButtonHeight = (int) button.getElement().getClientWidth();
+		
+		int ButtonStartX = ButtonX;
+		int ButtonStopX = ButtonX + ButtonWidth;
+		int ButtonStartY = ButtonY;
+		int ButtonStopY = ButtonY + ButtonHeight;
+		
+		if(clickedX >= ButtonStartX && clickedX <= ButtonStopX && clickedY>= ButtonStartY && clickedY <= ButtonStopY){
+			return true;
+		}
+		
+		
+		return false;
+	}
+	
 }
