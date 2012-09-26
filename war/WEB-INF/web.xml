@@ -45,6 +45,20 @@
   </servlet-mapping>
 
 
+
+
+
+    <servlet>
+     <servlet-name>GetCitiesServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetCitiesServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetCitiesServlet</servlet-name>
+     <url-pattern>/getCities</url-pattern>
+  </servlet-mapping>
+
+
   
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>
