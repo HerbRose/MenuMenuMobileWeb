@@ -78,9 +78,9 @@ public class RestaurantsListScreen extends JQMPage {
 		for(final Restaurant item: list){
 		
 			RestaurantImageView restaurantView = new RestaurantImageView(item);
-			restaurantView.add(new SwipeView(item.getMainImages()));
-		//	restaurantView.add(new SwipeView(item.getProfileImages()));
-		//	restaurantView.add(new SwipeView(item.getBoardImages()));
+			restaurantView.addToContent(new SwipeView(item.getMainImages(), "Title" ) );
+			restaurantView.addToContent(new SwipeView(item.getMainImages(), "Title1" ) );
+			restaurantView.addToContent(new SwipeView(item.getMainImages(), "Title2" ) );
 //			
 //			Image image = new Image("http://www.hauser.lu/uploads/images/SAT_et_TNT/HD/zdf-hd.jpg");
 //			CropImage imageToCrop = new CropImage(image);
@@ -92,4 +92,4 @@ public class RestaurantsListScreen extends JQMPage {
 		label.setText(Customization.LOADERROR);
 		this.add(label);
 	}
-	}
+}

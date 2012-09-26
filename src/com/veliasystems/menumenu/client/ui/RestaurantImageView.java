@@ -1,5 +1,11 @@
 package com.veliasystems.menumenu.client.ui;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CustomScrollPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -13,9 +19,11 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 public class RestaurantImageView extends JQMPage{
 	
 	JQMHeader header;
-	JQMPanel content;
+	JQMPanel content ;
 	JQMButton backButton;
 	JQMButton editButton;
+	ScrollPanel contentScroll;
+	VerticalPanel scrollerDiv;
 	
 	private String title;
 	private Restaurant restaurant;
@@ -36,9 +44,25 @@ public class RestaurantImageView extends JQMPage{
 		header.setFixed(true);
 		header.setRightButton(editButton);
 		add(header);
-
+		
+		content = new JQMPanel();
+		contentScroll = new ScrollPanel();
+		contentScroll.setStyleName("mainWrapper");
+		int height = Window.getClientHeight();
+		height -= 62;
+		
+		contentScroll.setHeight(height+"px");
+		scrollerDiv = new VerticalPanel();
+		scrollerDiv.setStyleName("mainScroller");
+		
+		contentScroll.setWidget(scrollerDiv);
+		add(contentScroll);
+		
+		
 	}
 
+	
+	
 	public RestaurantImageView() {
 		// TODO Auto-generated constructor stub
 			init();
@@ -51,5 +75,11 @@ public class RestaurantImageView extends JQMPage{
 		
 	}
 	
+	public void addToContent(Widget widget){
+		
+		//content.add(widget);
+		scrollerDiv.add(widget);
+		
+	}
 		
 }
