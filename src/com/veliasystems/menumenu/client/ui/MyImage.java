@@ -13,7 +13,7 @@ public class MyImage extends Image {
 	public MyImage(String url) {
 	
 		setUrl(url);
-		setStyleName("test"); //only for test
+		setStyleName("image");
 		addClickHandler(new ClickHandler() {
 			
 			@Override
