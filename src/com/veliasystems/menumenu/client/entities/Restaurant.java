@@ -17,6 +17,9 @@ public class Restaurant implements Serializable {
 	private String name;
 	private String address;
 	private String city;
+	private String district;
+	private String lng;
+	private String lat;
 	
 	
 	/**Lists of url's with profile images */
@@ -94,6 +97,10 @@ public class Restaurant implements Serializable {
 		setCity( city );
 	}
 
+	public long getId() {
+		return id;
+	}
+
 	
 	
 	public String getName() {
@@ -120,9 +127,40 @@ public class Restaurant implements Serializable {
 		this.city = city;
 	}
 
-	public long getId() {
-		return id;
+	public String getDistrict() {
+		return district;
 	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getLng() {
+		return lng;
+	}
+
+	public void setLng(String lng) {
+		this.lng = lng;
+	}
+
+	public String getLat() {
+		return lat;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+
+	@Override
+	public String toString() {
+		return "Restaurant [id=" + id + ", name=" + name + ", address="
+				+ address + ", city=" + city + ", district=" + district
+				+ ", lng=" + lng + ", lat=" + lat + ", mainProfileImage="
+				+ mainProfileImage + ", mainBoardImage=" + mainBoardImage
+				+ ", mainImage=" + mainImage + "]";
+	}
+	
+	
 	
 	
 }

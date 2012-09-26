@@ -78,13 +78,13 @@ public class GetRestaurantsServlet extends HttpServlet {
 			map.put( "id", ""+ r.getId());
 			map.put( "name", r.getName());
 			map.put( "city", r.getCity());
-			map.put( "district", "DISTRICT");
+			map.put( "district", r.getDistrict());
 			map.put( "address", r.getAddress());
 			map.put( "logoImage", r.getMainBoardImage());
 			map.put( "menuImage", r.getMainImage());
 			map.put( "profileImage", r.getMainProfileImage());
-			map.put( "lat", "" + 50.05656108029150);
-			map.put( "lng", "" + 19.94965378029150);
+			map.put( "lat", "" + r.getLat());
+			map.put( "lng", "" + r.getLng());
 			
 			attributes.add(map);
 		}
