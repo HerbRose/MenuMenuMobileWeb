@@ -58,6 +58,15 @@
      <url-pattern>/getCities</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+     <servlet-name>GetRestaurantsServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetRestaurantsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetRestaurantsServlet</servlet-name>
+     <url-pattern>/getRestaurants</url-pattern>
+  </servlet-mapping>
 
   
   <servlet>
