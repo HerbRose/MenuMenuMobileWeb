@@ -23,67 +23,19 @@ public class Restaurant implements Serializable {
 	
 	
 	/**Lists of url's with profile images */
-	private List<String> profileImages;
+	private List<ImageBlob> profileImages;
 	/** Lists of url's with board images */
-	private List<String> boardImages;
+	private List<ImageBlob> logoImages;
 	/** Lists of url's with main images*/
-	private List<String> mainImages;
+	private List<ImageBlob> menuImages;
 	
 
-	private String mainProfileImage;
-	private String mainBoardImage;
-	private String mainImage;
+	private ImageBlob mainProfileImage;
+	private ImageBlob mainLogoImage;
+	private ImageBlob mainMenuImage;
 	
 	{
 		id = Util.getRandom(9999999);
-	}
-	
-	public void setMainImage(String mainImage) {
-		this.mainImage = mainImage;
-	}
-	
-	public String getMainImage() {
-		return mainImage;
-	}
-	
-	public void setMainProfileImage(String mainProfileImage) {
-		this.mainProfileImage = mainProfileImage;
-	}
-	
-	public String getMainProfileImage() {
-		return mainProfileImage;
-	}
-	
-	public void setMainBoardImage(String mainBoardImage) {
-		this.mainBoardImage = mainBoardImage;
-	}
-	
-	public List<String> getProfileImages() {
-		return profileImages;
-	}
-
-	public void setProfileImages(List<String> profileImages) {
-		this.profileImages = profileImages;
-	}
-
-	public List<String> getBoardImages() {
-		return boardImages;
-	}
-
-	public void setBoardImages(List<String> boardImages) {
-		this.boardImages = boardImages;
-	}
-
-	public List<String> getMainImages() {
-		return mainImages;
-	}
-
-	public void setMainImages(List<String> mainImages) {
-		this.mainImages = mainImages;
-	}
-
-	public String getMainBoardImage() {
-		return mainBoardImage;
 	}
 	
 	
@@ -151,13 +103,78 @@ public class Restaurant implements Serializable {
 		this.lat = lat;
 	}
 
+	
+	
+	
+	
+	
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", address="
 				+ address + ", city=" + city + ", district=" + district
 				+ ", lng=" + lng + ", lat=" + lat + ", mainProfileImage="
-				+ mainProfileImage + ", mainBoardImage=" + mainBoardImage
-				+ ", mainImage=" + mainImage + "]";
+				+ mainProfileImage + ", mainBoardImage=" + mainMenuImage
+				+ ", mainImage=" + mainLogoImage + "]";
+	}
+
+
+	public List<ImageBlob> getProfileImages() {
+		return profileImages;
+	}
+
+
+	public void setProfileImages(List<ImageBlob> profileImages) {
+		this.profileImages = profileImages;
+	}
+
+
+	public List<ImageBlob> getLogoImages() {
+		return logoImages;
+	}
+
+
+	public void setLogoImages(List<ImageBlob> logoImages) {
+		this.logoImages = logoImages;
+	}
+
+
+	public List<ImageBlob> getMenuImages() {
+		return menuImages;
+	}
+
+
+	public void setMenuImages(List<ImageBlob> menuImages) {
+		this.menuImages = menuImages;
+	}
+
+
+	public ImageBlob getMainProfileImage() {
+		return mainProfileImage;
+	}
+
+
+	public void setMainProfileImage(ImageBlob mainProfileImage) {
+		this.mainProfileImage = mainProfileImage;
+	}
+
+
+	public ImageBlob getMainLogoImage() {
+		return mainLogoImage;
+	}
+
+
+	public void setMainLogoImage(ImageBlob mainLogoImage) {
+		this.mainLogoImage = mainLogoImage;
+	}
+
+
+	public ImageBlob getMainMenuImage() {
+		return mainMenuImage;
+	}
+
+
+	public void setMainMenuImage(ImageBlob mainMenuImage) {
+		this.mainMenuImage = mainMenuImage;
 	}
 	
 	

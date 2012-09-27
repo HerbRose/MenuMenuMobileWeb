@@ -21,7 +21,10 @@ import com.google.code.geocoder.model.GeocoderResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.StoreService;
 
 /**
@@ -31,7 +34,7 @@ import com.veliasystems.menumenu.client.services.StoreService;
 public class StoreServiceImpl extends RemoteServiceServlet implements StoreService {
 
 	private DAO dao = new DAO();
-	
+	private BlobService blobService = new BlobServiceImpl();
 	
 	@Override
 	public List<String> loadCities() {
@@ -138,7 +141,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
 		
-		return restQuery.order("name").list();  
+		return getImageLists( restQuery.order("name").list() );  
 	}
 	
 	@Override
@@ -146,7 +149,40 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
 		System.out.println(restQuery.filter("city =", city).order("name").count());
-		return restQuery.filter("city =", city).order("name").list();
+		return getImageLists( restQuery.filter("city =", city).order("name").list() );
+	}
+	
+	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
+		
+		for ( Restaurant r : restaurants ) {
+			List<ImageBlob> images = blobService.getAllImages(r);
+			
+			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
+			List<ImageBlob> menuImages = new ArrayList<ImageBlob>();
+			List<ImageBlob> profileImages = new ArrayList<ImageBlob>();
+			
+			for ( ImageBlob blob : images ) {
+				
+				switch (blob.getImageType()) {
+				case HEADER : {
+								logoImages.add(blob);
+								break; }
+				case BOARD : {
+								menuImages.add(blob);
+								break; }
+				case PROFILE : {
+								profileImages.add(blob);
+								break; }
+				default : System.out.println("Unknown ImageType found: " + blob.getImageType().name());
+				}
+			}
+			
+			r.setLogoImages(logoImages);
+			r.setMenuImages(menuImages);
+			r.setProfileImages(profileImages);
+		}
+		
+		return restaurants;
 	}
 
 	

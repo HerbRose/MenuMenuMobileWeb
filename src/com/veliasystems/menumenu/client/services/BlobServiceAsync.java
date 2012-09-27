@@ -30,4 +30,9 @@ public interface BlobServiceAsync {
 
 	void getProfileImages(String restaurantId,
 			AsyncCallback<List<ImageBlob>> callback);
+
+	void getAllImages(Restaurant r, AsyncCallback<List<ImageBlob>> callback);
+
+	void getAllImages(String restaurantId,
+			AsyncCallback<List<ImageBlob>> callback);
 }

@@ -30,11 +30,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
             return url;
         }
         
-        private List<ImageBlob> getImages( Restaurant r ) {
-        	return getImages("" + r.getId());
+        public List<ImageBlob> getAllImages( Restaurant r ) {
+        	return getAllImages("" + r.getId());
         }
         
-        private List<ImageBlob> getImages(String restaurantId) {
+        public List<ImageBlob> getAllImages(String restaurantId) {
         	List<ImageBlob> images = new ArrayList<ImageBlob>();
         	Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
     		if (imgQuery==null) return images;
@@ -43,7 +43,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
         }
         
         private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
-        	List<ImageBlob> allImages = getImages(restaurantId);
+        	List<ImageBlob> allImages = getAllImages(restaurantId);
         	List<ImageBlob> ret = new ArrayList<ImageBlob>();
         	
         	for ( ImageBlob blob : allImages ) {

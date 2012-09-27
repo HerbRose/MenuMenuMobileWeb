@@ -18,5 +18,6 @@ void saveRestaurant( Restaurant r );
 	
 	List<Restaurant> loadRestaurants();
 	List<Restaurant> loadRestaurants(String city);
+	
 	void deleteRestaurant(Restaurant r);
 }

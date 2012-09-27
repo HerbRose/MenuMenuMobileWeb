@@ -23,6 +23,8 @@ public interface BlobService extends RemoteService {
         List<ImageBlob> getProfileImages( Restaurant r ); // zdjecia profilowe
         List<ImageBlob> getProfileImages( String restaurantId );
         
+        List<ImageBlob> getAllImages( Restaurant r );
+        List<ImageBlob> getAllImages( String restaurantId );
         
         BlobData[] getBlobs(BlobDataFilter filter);
          
