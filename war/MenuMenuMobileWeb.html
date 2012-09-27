@@ -38,30 +38,8 @@
 
     <script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.js"></script>
-    <script type="text/javascript" language="javascript" src="js/iscroll.js"></script>
-    <script type="text/javascript">
-    var myScroll;
-    function loaded() {
-    	setTimeout(function () {
-    		myScroll = new iScroll('wrapper', {
-    			
-    			hScrollbar: true,
-    			vScrollbar: true });
-    		console.log("loaded");
-    	}, 1000);
-    	
-    }
-    window.addEventListener('load', loaded, false);
-    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
-    /*Use this for high compatibility (iDevice + Android) */
-  //  document.addEventListener('DOMContentLoaded', function () { setTimeout(loaded, 200); }, false);
-    /* Use this for iDevice only*/
-    //document.addEventListener('DOMContentLoaded', loaded, false);
-
-    /*Use this if nothing else works */
-    //window.addEventListener('load', setTimeout(function () { loaded(); }, 200), false);
-    </script>
+    
   </head>
 
   <!--                                           -->
