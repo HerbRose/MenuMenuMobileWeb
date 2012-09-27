@@ -26,7 +26,7 @@ import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
 class ToRemove {
 	public static String REST_ID = "666";  // TODO: to musi byc dynamiczne
-	public static ImageType imgType = ImageType.BOARD;
+	public static ImageType imgType = ImageType.MENU;
 }
 
 

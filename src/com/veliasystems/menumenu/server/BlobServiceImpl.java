@@ -58,22 +58,22 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
         
         @Override
         public List<ImageBlob> getBoardImages(Restaurant r) {
-	        return getImages( ""+r.getId(), ImageType.BOARD );
+	        return getImages( ""+r.getId(), ImageType.MENU );
         }
         
         @Override
         public List<ImageBlob> getBoardImages(String restaurantId) {
-        	return getImages( restaurantId, ImageType.BOARD );
+        	return getImages( restaurantId, ImageType.MENU );
         }
         
         @Override
         public List<ImageBlob> getHeaderImages(Restaurant r) {
-        	return getImages( ""+r.getId(), ImageType.HEADER );
+        	return getImages( ""+r.getId(), ImageType.LOGO );
         }
         
         @Override
         public List<ImageBlob> getHeaderImages(String restaurantId) {
-        	return getImages( restaurantId, ImageType.HEADER );
+        	return getImages( restaurantId, ImageType.LOGO );
         }
         
         @Override

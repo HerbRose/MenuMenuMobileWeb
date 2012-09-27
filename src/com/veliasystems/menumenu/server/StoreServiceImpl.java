@@ -164,10 +164,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			for ( ImageBlob blob : images ) {
 				
 				switch (blob.getImageType()) {
-				case HEADER : {
+				case LOGO : {
 								logoImages.add(blob);
 								break; }
-				case BOARD : {
+				case MENU : {
 								menuImages.add(blob);
 								break; }
 				case PROFILE : {

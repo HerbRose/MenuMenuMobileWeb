@@ -15,6 +15,7 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -78,9 +79,9 @@ public class RestaurantsListScreen extends JQMPage {
 		for(final Restaurant item: list){
 		
 			RestaurantImageView restaurantView = new RestaurantImageView(item);
-			restaurantView.addToContent(new SwipeView("img/article1.jpg", item.getMainImages(), Customization.MAIN_PICTURE ) );
-			restaurantView.addToContent(new SwipeView("img/article2.jpg", item.getMainImages(), Customization.PROFILE_PICTURE ) );
-			restaurantView.addToContent(new SwipeView("img/article3.jpg", item.getMainImages(), Customization.CARD ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
 //			
 //			Image image = new Image("http://www.hauser.lu/uploads/images/SAT_et_TNT/HD/zdf-hd.jpg");
 //			CropImage imageToCrop = new CropImage(image);

@@ -3,17 +3,41 @@ package com.veliasystems.menumenu.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.sksamuel.jqm4gwt.button.JQMButton;
+import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
+import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
 public class SwipeView extends FlowPanel {
 	
-	private List<String> imageUrlList;
+	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
+	
+	private List<ImageBlob> imageUrlList;
+	private ImageBlob mainImage;
+	private String title = "";
+	private String mainImageUrl = "";
 	
 	private CustomScrollPanel wrapper = new CustomScrollPanel();
 	private FlowPanel scrollerContainer = new FlowPanel();
@@ -23,11 +47,42 @@ public class SwipeView extends FlowPanel {
 	private FlowPanel cameraDiv = new FlowPanel();
 	private FlowPanel cameraContainerDiv = new FlowPanel();
 	
-	public SwipeView(String mainImageUrl, List<String> imageUrlList, String title) {
+	private FileUpload fileUpload = new FileUpload();
+	private MyUploadForm formPanel;
+	
+	private Restaurant restaurant;
+	private ImageType imageType;
+	
+	public SwipeView(Restaurant restaurant, ImageType imageType) {
+		
+		switch (imageType) {
+			case LOGO:
+				imageUrlList = restaurant.getLogoImages();
+				title = Customization.LOGO_PICTURE_TITLE;
+				mainImage = restaurant.getMainLogoImage();
+				break;
+			case MENU:
+				imageUrlList = restaurant.getMenuImages();
+				title = Customization.MAENU_PICTURE_TITLE;
+				mainImage = restaurant.getMainMenuImage();
+				break;
+			case PROFILE:
+				imageUrlList = restaurant.getProfileImages();
+				title = Customization.PROFILE_PICTURE_TITLE;
+				mainImage = restaurant.getMainProfileImage();
+				break;
+			default:
+				break;
+		}
+		
+		this.restaurant = restaurant;
+		this.imageType = imageType;
+		
 		if(imageUrlList == null){
-			this.imageUrlList = new ArrayList<String>();
-		}else{
-			this.imageUrlList = imageUrlList;
+			this.imageUrlList = new ArrayList<ImageBlob>();
+		}
+		if(mainImage != null){
+			mainImageUrl = mainImage.getImageUrl();
 		}
 		wrapper.addStyleName("wrapper");
 		
@@ -43,35 +98,17 @@ public class SwipeView extends FlowPanel {
 		
 		scrollerContainer.addStyleName("scroller");
 		
-		MyImage image;
+		MyImage newImage;
 		
-		//only for test
-				MyImage image1;
-				
-				
-				imageUrlList.add("img/article1.jpg"); 
-				imageUrlList.add("img/article2.jpg"); 
-				imageUrlList.add("img/article3.jpg"); 
-				imageUrlList.add("img/article1.jpg"); 
-				imageUrlList.add("img/article2.jpg"); 
-				imageUrlList.add("img/article3.jpg"); 
-				imageUrlList.add("img/article1.jpg"); 
-				imageUrlList.add("img/article2.jpg"); 
-				imageUrlList.add("img/article3.jpg"); 
-				
-				//END - only for test
-		
-		
-		
-		for (String imageUrl : imageUrlList) {	
+		for (ImageBlob image : imageUrlList) {	
 			
-			image = new MyImage(imageUrl, imagesController);
-			if(mainImageUrl.equals(imageUrl)){
-				imagesController.selectImage(image);
-				scrollerContainer.insert(image, 0);
+			newImage = new MyImage(image.getImageUrl(), imagesController);
+			if(mainImageUrl.equals(image.getImageUrl())){
+				imagesController.selectImage(newImage);
+				scrollerContainer.insert(newImage, 0);
 				continue;
 			}
-			scrollerContainer.add(image);
+			scrollerContainer.add(newImage);
 		}
 
 		
@@ -92,16 +129,131 @@ public class SwipeView extends FlowPanel {
 	
 	private void setCameraImage(){
 		
-		cameraDiv.add(new Image("img/camera.png"));
+		Image cameraImg = new Image("img/camera.png");
+		cameraDiv.add( cameraImg );
 		cameraDiv.addStyleName("cameraDiv");
 		
 		cameraContainerDiv.add(cameraDiv);
 		cameraContainerDiv.addStyleName("cameraContainerDiv");
 		
+		fileUpload.setVisible(true);
+		fileUpload.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				
+				clickOnInputFile(formPanel.getUploadButton().getElement());
+			}
+		});
+		formPanel = new MyUploadForm(fileUpload, imageType, restaurant.getId()+"");
+		formPanel.setVisible(false);
+		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.getMainPanel().add(fileUpload);
+		
+		formPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
+			
+			@Override
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				formPanel.reset();
+			//	startNewBlobstoreSession();
+			}
+		});
+		
+		cameraImg.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.alert("Clicked filUpload");
+				clickOnInputFile(fileUpload.getElement());	
+				
+			}
+		});
+		
 		add(cameraContainerDiv);
+		add(formPanel);
+	}
+	private static native void clickOnInputFile(Element elem) /*-{
+		elem.click();
+		elem.ontouch();
+	}-*/;
+
+
+	public ImageType getImageType() {
+		return imageType;
+	}
+}
+
+class ToAddInformation {
+	public String REST_ID = ""; 
+	public ImageType imgType;
+	
+	
+	
+}
+
+
+class MyUploadForm extends FormPanel {
+	private VerticalPanel mainPanel = new VerticalPanel();
+	
+	private JQMButton uploadButton = new JQMButton("Upload");
+	JQMTextArea textArea = new JQMTextArea();
+	ImageType imageType;
+	String restId;
+	
+	
+	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
+	
+	public MyUploadForm( FileUpload fileUpload, ImageType imageType, String restId ) {
+			
+		this.imageType = imageType;
+		this.restId = restId;
+		
+		mainPanel.add(textArea);
+		mainPanel.add(fileUpload);
+		mainPanel.add(uploadButton);
+		
+		fileUpload.setName("image");
+		
+		uploadButton.addClickHandler( new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
+					
+					@Override
+					public void onSuccess(String result) {
+						setAction(result);
+						submit();
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						textArea.setText(caught.getMessage());
+					}
+				});
+				
+			}
+		});
+		
+		setWidget(mainPanel);
+		
+		
 	}
 	
+	public String getRestId() {
+		return restId;
+	}
 	
-
-
+	public ImageType getImageType() {
+		return imageType;
+	}
+	
+	public VerticalPanel getMainPanel() {
+		return mainPanel;
+	}
+	public JQMButton getUploadButton() {
+		return uploadButton;
+	}
 }
