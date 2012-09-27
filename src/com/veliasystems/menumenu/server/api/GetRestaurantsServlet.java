@@ -80,9 +80,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 			map.put( "city", r.getCity());
 			map.put( "district", r.getDistrict());
 			map.put( "address", r.getAddress());
-			map.put( "logoImage", r.getMainBoardImage());
-			map.put( "menuImage", r.getMainImage());
-			map.put( "profileImage", r.getMainProfileImage());
+			map.put( "logoImage", r.getMainLogoImage().getImageUrl());
+			map.put( "menuImage", r.getMainMenuImage().getImageUrl());
+			map.put( "profileImage", r.getMainProfileImage().getImageUrl());
 			map.put( "lat", "" + r.getLat());
 			map.put( "lng", "" + r.getLng());
 			

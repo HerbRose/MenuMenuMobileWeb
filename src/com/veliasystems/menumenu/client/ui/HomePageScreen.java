@@ -28,7 +28,11 @@ public class HomePageScreen extends JQMPage{
 	   list.addItem(Customization.RESTAURANTS, Pages.PAGE_RESTAURANT_LIST );
 	   
 	   add(list);
-	    
+	
+	   /*
+	   this.setWidth("640px");
+	   this.setHeight("960px");
+	   */
 	   
 	}
 }

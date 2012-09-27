@@ -186,11 +186,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers {
 
 			restaurant.setName(nameText.getText());
 			restaurant.setAddress(adressText.getText());
-			restaurant
-					.setCity(cityList.getItemText(cityList.getSelectedIndex()));
-			restaurant.setBoardImages(null);
-			restaurant.setMainImages(null);
-			restaurant.setProfileImages(null);
+			restaurant.setCity(cityList.getItemText(cityList.getSelectedIndex()));
 			if (validate()) {
 				storeService.saveRestaurant(restaurant,
 						new AsyncCallback<Void>() {
