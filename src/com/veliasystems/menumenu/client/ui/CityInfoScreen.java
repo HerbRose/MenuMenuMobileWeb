@@ -92,9 +92,9 @@ private void addRestaurants(List<Restaurant> list){
 		for(Restaurant item: list){
 		
 			RestaurantImageView restaurantView = new RestaurantImageView(item);
-			restaurantView.addToContent(new SwipeView(item.getMainImages(), "Title" ) );
-			restaurantView.addToContent(new SwipeView(item.getMainImages(), "Title1" ) );
-			restaurantView.addToContent(new SwipeView(item.getMainImages(), "Title2" ) );
+			restaurantView.addToContent(new SwipeView("img/article1.jpg", item.getMainImages(), Customization.MAIN_PICTURE ) );
+			restaurantView.addToContent(new SwipeView("img/article2.jpg", item.getMainImages(), Customization.PROFILE_PICTURE ) );
+			restaurantView.addToContent(new SwipeView("img/article3.jpg", item.getMainImages(), Customization.CARD ) );
 			
 			restList.addItem(item.getName(),restaurantView);
 		}

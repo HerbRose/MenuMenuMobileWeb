@@ -20,4 +20,9 @@ public class Customization {
 	public static final String EMPTYBOTHDATA = "Popraw nazwę i adres";
 	public static final String EMPTYNAME = "Popraw nazwę";
 	public static final String EMPTYADRESS = "Popraw adres";
+	public static final String CARD = "Wizytówka";
+	public static final String PROFILE_PICTURE = "Zdjęcie profilowe";
+	public static final String MAIN_PICTURE = "Zdjęcie główne";
+	
+	
 };
