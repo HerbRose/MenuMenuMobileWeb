@@ -5,3 +5,4 @@
 *.ear
 *.rpc
 *.nocache.js
+*.cache.html
