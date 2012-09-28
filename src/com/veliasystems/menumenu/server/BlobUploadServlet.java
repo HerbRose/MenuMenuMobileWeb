@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
 import com.googlecode.objectify.Key;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -95,6 +98,11 @@ public class BlobUploadServlet extends HttpServlet {
  //   	System.out.println("BlobUploadServlet::storeImageBlob");
     	
 		ImageBlob imageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
+		
+        Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
+		
+		imageBlob.setWidth(image.getWidth());
+		imageBlob.setHeight(image.getHeight());
 		
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		

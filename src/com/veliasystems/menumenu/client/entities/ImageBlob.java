@@ -21,6 +21,9 @@ public class ImageBlob implements Serializable {
     
     private ImageType imageType;
     
+    private int width;
+    private int height;
+    
     
     {
 		id = "" + ((long) (Math.random() * 999999999));
@@ -80,4 +83,19 @@ public class ImageBlob implements Serializable {
 		return imageType;
 	}
 	
+    public void setHeight(int height) {
+		this.height = height;
+	}
+    
+    public int getHeight() {
+		return height;
+	}
+    
+    public void setWidth(int width) {
+		this.width = width;
+	}
+    
+    public int getWidth() {
+		return width;
+	}
 }
