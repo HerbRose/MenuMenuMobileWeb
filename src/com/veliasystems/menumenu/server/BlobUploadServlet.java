@@ -18,8 +18,10 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.googlecode.objectify.Key;
+import com.sun.media.jai.rmi.ImageServer;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.google.appengine.api.images.Transform;
 
 public class BlobUploadServlet extends HttpServlet {
 
@@ -100,9 +102,30 @@ public class BlobUploadServlet extends HttpServlet {
 		ImageBlob imageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
 		
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
-		
-		imageBlob.setWidth(image.getWidth());
-		imageBlob.setHeight(image.getHeight());
+        ImagesService imageService = ImagesServiceFactory.getImagesService();
+        
+        /*
+        Transform resize;
+        
+        if (imageType.equalsIgnoreCase(ImageType.LOGO.name())) {
+        	resize = ImagesServiceFactory.makeResize(220, 220, false);
+        } 
+        else if (imageType.equalsIgnoreCase(ImageType.MENU.name())) {
+            	resize = ImagesServiceFactory.makeResize(220, 500, false);
+            }	
+        else {
+        	resize = ImagesServiceFactory.makeResize(420, 280, false);
+        }
+        
+        Image newImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
+        */
+        
+        Transform dummy = ImagesServiceFactory.makeRotate(360);
+        Image newImage = imageService.applyTransform( dummy, image );
+        
+        
+		imageBlob.setWidth(newImage.getWidth());
+		imageBlob.setHeight(newImage.getHeight());
 		
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		
