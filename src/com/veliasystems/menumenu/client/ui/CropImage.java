@@ -21,6 +21,7 @@ import com.veliasystems.menumenu.client.Customization;
 public class CropImage extends JQMPage  {
 
 	Image img;
+	Image original;
 	
 	JQMHeader header;
 	JQMButton saveButton;
@@ -55,13 +56,15 @@ public class CropImage extends JQMPage  {
 	
 	public CropImage(Image imageInsert) {
 		
-		this.backgroundImage = imageInsert.getUrl();
+		backgroundImage = imageInsert.getUrl();
 		imgHeight = imageInsert.getHeight();
 		imgWidth = imageInsert.getWidth();
 		
 		height = Integer.toString(imageInsert.getHeight());
 		width = Integer.toString(imageInsert.getWidth());
+	
 		init();
+		
 	}
 	
 	private void init(){
@@ -84,9 +87,10 @@ public class CropImage extends JQMPage  {
 		image.getElement().getStyle().setBackgroundImage("url('"+ backgroundImage+"')");
 		image.setHeight(height +"px");
 		image.setWidth(width + "px");
+
 		add(image);
 		
-		
+	
 		rect = new FlowPanel();
 		rect.setStyleName("rect");
 		rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
@@ -162,7 +166,7 @@ public class CropImage extends JQMPage  {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(leftOffset > image.getElement().getOffsetLeft() + 2){
+				if(leftOffset > image.getElement().getOffsetLeft() + 3){
 					leftOffset -= 4.0;		
 					rect.getElement().getStyle().setLeft(leftOffset, Unit.PX);
 				}
@@ -211,7 +215,7 @@ public class CropImage extends JQMPage  {
 				// TODO Auto-generated method stub
 				
 				
-				if(cropRectHeight + rect.getElement().getOffsetTop() < imgHeight + image.getElement().getAbsoluteTop()){
+				if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < image.getOffsetHeight() + image.getElement().getOffsetTop() - 4){
 					
 					cropRectWidth += 5.0;
 					cropRectHeight = cropRectWidth *1.5;
@@ -243,11 +247,28 @@ public class CropImage extends JQMPage  {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				
-				img.setUrlAndVisibleRect(backgroundImage, (int) leftOffset, (int) topOffset, (int) cropRectWidth, (int) cropRectHeight);
+				//img.setUrlAndVisibleRect(backgroundImage, (int) leftOffset, (int) topOffset, (int) cropRectWidth, (int) cropRectHeight);
 				
-				img.getElement().getStyle().setTop(imgHeight + 100, Unit.PX);
+				//img.getElement().getStyle().setTop(imgHeight + 100, Unit.PX);
+				
+				
+				int left = (int) leftOffset - image.getElement().getOffsetLeft();
+				int top = (int) topOffset - image.getElement().getOffsetTop();
+				
+				int width = (int) cropRectWidth;
+				
+				int height = (int) cropRectHeight;
+				
+				System.out.println(left + " ; " + top + " ; "  + width + " ; " + height);
+				
+				img.setUrlAndVisibleRect(backgroundImage, left, top, width, height);
+				
+				img.getElement().getStyle().setPosition(Position.ABSOLUTE);
+				img.getElement().getStyle().setTop(imgHeight + image.getElement().getOffsetTop() + zoomButtonPanel.getElement().getOffsetHeight(), Unit.PX);
 				
 				add(img);
+				
+				//add(img);
 		
 			}
 		});
