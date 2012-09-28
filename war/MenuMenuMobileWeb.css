@@ -40,5 +40,27 @@ h1 {
 	paddin-top: 10px;
 }
 
+.rect {
+	position: absolute;
+	border: 2px solid red;
+}
+
+.rightButtons {
+	width: 60px;
+	height: 150px;
+	position: absolute;
+}
+
+.bottomButtons {
+	width: 100px;
+	height: 60px;
+	position: absolute;
+}
+
+.zoomButtons{
+	width: 150px;
+	height: 60px;
+	position: absolute;
+}
 
 
