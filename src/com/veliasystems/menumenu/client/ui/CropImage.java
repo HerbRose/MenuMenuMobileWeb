@@ -79,7 +79,7 @@ public class CropImage extends JQMPage  {
 		
 		img = new Image();
 		
-		cropRectWidth = 200;
+		cropRectWidth = 150;
 		cropRectHeight = cropRectWidth * 1.5;
 		
 		//set background image
