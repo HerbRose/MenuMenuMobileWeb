@@ -6,6 +6,12 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DragEvent;
+import com.google.gwt.event.dom.client.DragHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -198,6 +204,16 @@ public class CropImage extends JQMPage  {
 			}
 		});
 		
+		rect.sinkEvents(Event.MOUSEEVENTS);
+		
+		rect.addHandler(new DragHandler() {
+			
+			@Override
+			public void onDrag(DragEvent event) {
+				// TODO Auto-generated method stub
+				Window.alert("draggin");
+			}
+		}, DragEvent.getType());
 		
 		zoomInButton = new JQMButton("");
 		zoomInButton.setIcon(DataIcon.PLUS);
@@ -218,7 +234,7 @@ public class CropImage extends JQMPage  {
 		
 		zoomButtonPanel.setStyleName("zoomButtons");
 		zoomButtonPanel.getElement().getStyle().setTop(imgHeight + 60, Unit.PX);
-		zoomButtonPanel.getElement().getStyle().setLeft(60, Unit.PX);
+		zoomButtonPanel.getElement().getStyle().setLeft(10, Unit.PX);
 		add(zoomButtonPanel);
 		
 		zoomInButton.addClickHandler(new ClickHandler() {
