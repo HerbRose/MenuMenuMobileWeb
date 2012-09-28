@@ -148,15 +148,15 @@ public class GetRestaurantsServlet extends HttpServlet {
 		String[] menuImages = { "http://graphixshare.com/uploads/posts/2011-05-07/1304774534_kedsbf6ujfqpmv5.jpeg",
 								"http://www.mightysweet.com/mesohungry/wp-content/uploads/2010/08/02-Ukrainian-East-Village-Restaurant-menu-board.jpg",
 								"http://www.mightysweet.com/mesohungry/wp-content/uploads/2011/05/05-La-Norte%C3%B1a-Restaurant-menu.jpg",
-								"http://http://kookykitsch.com/Portals/0/productimages/2790_01c68.jpg",
+								"http://kookykitsch.com/Portals/0/productimages/2790_01c68.jpg",
 								"http://www.tannery.ie/assets/images/tasting.JPG",
-								"http://http://farm2.staticflickr.com/1329/665553384_6229ab7047_z.jpg?zz=1" };
+								"http://farm2.staticflickr.com/1329/665553384_6229ab7047_z.jpg?zz=1" };
 								
 		String[] logoImages = { "http://www.g-renderings.com/images/Logos/400X250/Corporate/BellavinoLogo.jpg",
 								"http://www.hayashi.com.au/logo.gif",
 								"http://www.freelanceforum.org/files/imagecache/screenshot_full/portfolio/Sheryl%20Nelson/1-ID-Zazu.gif",
-								"http://http://m.artician.com/pu/OUHFIQYZPWRDLF3Q2CFR4UYGTUPDH3V5.preview.png",
-								"http://http://eatmoredrinkmore.com/wp-content/uploads/2011/12/Toki-Underground-Logo.jpg",
+								"http://m.artician.com/pu/OUHFIQYZPWRDLF3Q2CFR4UYGTUPDH3V5.preview.png",
+								"http://eatmoredrinkmore.com/wp-content/uploads/2011/12/Toki-Underground-Logo.jpg",
 								"http://www.cityhindusnetwork.org.uk/wp-content/uploads/2011/04/CHN-Networking-Dinner-logo-v2.jpg" };
 		
 		
