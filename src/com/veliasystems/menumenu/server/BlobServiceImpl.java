@@ -42,6 +42,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
     		return imgQuery.filter("restId =", restaurantId).order("-dateCreated").list();
         }
         
+        @Override
+        public ImageBlob getLastUploadedImage(String restaurantId) {
+        	
+        	List<ImageBlob> all = getAllImages(restaurantId);
+        	if (!all.isEmpty()) return all.get(0);
+        	else return null;
+        }
+        
         private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
         	List<ImageBlob> allImages = getAllImages(restaurantId);
         	List<ImageBlob> ret = new ArrayList<ImageBlob>();
