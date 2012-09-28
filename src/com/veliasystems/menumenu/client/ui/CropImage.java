@@ -14,6 +14,7 @@ import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 
 
 
@@ -21,7 +22,7 @@ import com.veliasystems.menumenu.client.Customization;
 public class CropImage extends JQMPage  {
 
 	Image img;
-	Image original;
+	
 	
 	JQMHeader header;
 	JQMButton saveButton;
@@ -53,6 +54,21 @@ public class CropImage extends JQMPage  {
 	FlowPanel bottomButtonPanel;
 	FlowPanel zoomButtonPanel;
 	
+	
+	public CropImage(ImageBlob imageInsert) {
+		
+		Image newImage = new Image(imageInsert.getImageUrl());
+
+		backgroundImage = newImage.getUrl();
+		imgHeight = newImage.getHeight();
+		imgWidth = newImage.getWidth();
+		
+		height = Integer.toString(newImage.getHeight());
+		width = Integer.toString(newImage.getWidth());
+	
+		init();
+		
+	}
 	
 	public CropImage(Image imageInsert) {
 		
@@ -245,31 +261,22 @@ public class CropImage extends JQMPage  {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				
-				//img.setUrlAndVisibleRect(backgroundImage, (int) leftOffset, (int) topOffset, (int) cropRectWidth, (int) cropRectHeight);
-				
-				//img.getElement().getStyle().setTop(imgHeight + 100, Unit.PX);
-				
-				
+	
+	
 				int left = (int) leftOffset - image.getElement().getOffsetLeft();
 				int top = (int) topOffset - image.getElement().getOffsetTop();
 				
 				int width = (int) cropRectWidth;
 				
 				int height = (int) cropRectHeight;
-				
-				System.out.println(left + " ; " + top + " ; "  + width + " ; " + height);
-				
+						
 				img.setUrlAndVisibleRect(backgroundImage, left, top, width, height);
 				
 				img.getElement().getStyle().setPosition(Position.ABSOLUTE);
 				img.getElement().getStyle().setTop(imgHeight + image.getElement().getOffsetTop() + zoomButtonPanel.getElement().getOffsetHeight(), Unit.PX);
 				
 				add(img);
-				
-				//add(img);
-		
+	
 			}
 		});
 		
