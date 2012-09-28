@@ -83,7 +83,7 @@ public class RestaurantsListScreen extends JQMPage {
 			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
 			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
 //			
-//			Image image = new Image("http://www.hauser.lu/uploads/images/SAT_et_TNT/HD/zdf-hd.jpg");
+//			Image image = new Image("img/article1.jpg");
 //			CropImage imageToCrop = new CropImage(image);
 			this.list.addItem(item.getName(), restaurantView);
 		}

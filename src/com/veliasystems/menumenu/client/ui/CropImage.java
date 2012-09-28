@@ -22,7 +22,7 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 public class CropImage extends JQMPage  {
 
 	Image img;
-	
+	Image original;
 	
 	JQMHeader header;
 	JQMButton saveButton;
@@ -54,34 +54,31 @@ public class CropImage extends JQMPage  {
 	FlowPanel bottomButtonPanel;
 	FlowPanel zoomButtonPanel;
 	
+	Image newImage;
 	
 	public CropImage(ImageBlob imageInsert) {
 		
-		Image newImage = new Image(imageInsert.getImageUrl());
-
+		newImage = new Image(imageInsert.getImageUrl());
+		newImage.getElement().setId("loaded-image");
+			
 		backgroundImage = newImage.getUrl();
-		imgHeight = newImage.getHeight();
-		imgWidth = newImage.getWidth();
 		
-		height = Integer.toString(newImage.getHeight());
-		width = Integer.toString(newImage.getWidth());
-	
-		init();
-		
-	}
-	
-	public CropImage(Image imageInsert) {
-		
-		backgroundImage = imageInsert.getUrl();
 		imgHeight = imageInsert.getHeight();
 		imgWidth = imageInsert.getWidth();
 		
-		height = Integer.toString(imageInsert.getHeight());
+		height = Integer.toString(imageInsert.getHeight());	
 		width = Integer.toString(imageInsert.getWidth());
+		
+//		imgHeight = newImage.getHeight();
+//		imgWidth = newImage.getWidth();
+//		
+//		height = Integer.toString(newImage.getHeight());
+//		width = Integer.toString(newImage.getWidth());
 	
 		init();
 		
 	}
+	
 	
 	private void init(){
 		
@@ -261,8 +258,7 @@ public class CropImage extends JQMPage  {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-	
-	
+
 				int left = (int) leftOffset - image.getElement().getOffsetLeft();
 				int top = (int) topOffset - image.getElement().getOffsetTop();
 				
