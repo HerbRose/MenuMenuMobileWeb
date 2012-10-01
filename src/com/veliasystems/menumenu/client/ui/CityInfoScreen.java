@@ -66,7 +66,7 @@ public class CityInfoScreen extends JQMPage {
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
-						Window.alert("error");
+						
 					}
 				});
 	
