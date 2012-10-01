@@ -244,7 +244,7 @@ public class CropImage extends JQMPage  {
 				// TODO Auto-generated method stub
 				
 				
-				if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < image.getOffsetHeight() + image.getElement().getOffsetTop() - 4){
+				if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < image.getOffsetHeight() + image.getElement().getOffsetTop() - 4 && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() < image.getOffsetWidth() + image.getElement().getOffsetLeft() - 4){
 					
 					cropRectWidth += 5.0;
 					cropRectHeight = cropRectWidth *1.5;
