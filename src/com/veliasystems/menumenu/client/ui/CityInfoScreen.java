@@ -89,25 +89,22 @@ public class CityInfoScreen extends JQMPage {
 	
 	
 	
-private void addRestaurants(List<Restaurant> list){
+	private void addRestaurants(List<Restaurant> list){
 		
-	for(final Restaurant item: list){
-		if(RestaurantController.restMapView.containsKey(item.getId())){
-			RestaurantImageView restaurantView = RestaurantController.restMapView.get(item.getId());
-			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
-			restList.addItem(item.getName(), restaurantView);
+		for(final Restaurant item: list){
+			RestaurantImageView restaurantView;
+			if(RestaurantController.restMapView.containsKey(item.getId())){
+				restaurantView = RestaurantController.restMapView.get(item.getId());	
+			}
+			else{
+				restaurantView = new RestaurantImageView(item);
+				RestaurantController.restMapView.put(item.getId(), restaurantView);
+				restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
+			}
 			
+			restList.addItem(item.getName(), restaurantView);
 		}
-		else{
-			RestaurantImageView restaurantView = new RestaurantImageView(item);
-			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
-			restList.addItem(item.getName(), restaurantView);		
-			RestaurantController.restMapView.put(item.getId(), restaurantView);
-		}
-	}
 	}
 }

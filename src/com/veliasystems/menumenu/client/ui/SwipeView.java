@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -55,7 +56,7 @@ public class SwipeView extends FlowPanel {
 	private ImageType imageType;
 	
 	public SwipeView(Restaurant restaurant, ImageType imageType) {
-		
+		//Window.alert(Navigator.getPlatform());
 		switch (imageType) {
 			case LOGO:
 				imageUrlList = restaurant.getLogoImages();
@@ -92,7 +93,6 @@ public class SwipeView extends FlowPanel {
 		setMyTitle(title);
 		
 		addStyleName("swipeView");
-		
 	}
 	
 	private void fillImages(String mainImageUrl){
@@ -146,12 +146,12 @@ public class SwipeView extends FlowPanel {
 				clickOnInputFile(formPanel.getUploadButton().getElement());
 			}
 		});
+		
 		formPanel = new MyUploadForm(fileUpload, imageType, restaurant.getId()+"");
 		formPanel.setVisible(false);
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		formPanel.setMethod(FormPanel.METHOD_POST);
 		formPanel.getMainPanel().add(fileUpload);
-		
 		formPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 			
 			@Override
@@ -175,7 +175,6 @@ public class SwipeView extends FlowPanel {
 					}
 				});
 				formPanel.reset();
-			//	startNewBlobstoreSession();
 			}
 		});
 		
@@ -183,7 +182,7 @@ public class SwipeView extends FlowPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-					
+				
 				
 				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
 					
@@ -204,30 +203,29 @@ public class SwipeView extends FlowPanel {
 				});
 			}
 		});
-		
-		
-		
+
 		add(cameraContainerDiv);
 		add(formPanel);
+		
 	}
+	
 	private static native void clickOnInputFile(Element elem) /*-{
-		elem.click();
+	elem.click();
+	
+}-*/;
 
-		
-	}-*/;
 
-
-	private static native void onUploadFormLoaded(String windowName, Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
-		window.name = windowName;
-		
-		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image";
-		
-		$wnd.Picup2.convertFileInput( fileUpload,  { windowName : encodeURI('My Web App'), 'purpose' : encodeURI(url) });
-		
-		window.open('', '_self', ''); 
-		window.close();  
-		
-	}-*/;
+private static native void onUploadFormLoaded(String windowName, Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
+	window.name = windowName;
+	
+	var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image";
+	
+	$wnd.Picup2.convertFileInput( fileUpload,  { windowName : encodeURI('My Web App'), 'purpose' : encodeURI(url) });
+	
+	window.open('', '_self', ''); 
+	window.close();  
+	
+}-*/;
 
 
 	public String getRestId() {
@@ -237,13 +235,14 @@ public class SwipeView extends FlowPanel {
 	public ImageType getImageType() {
 		return imageType;
 	}
+	
+	
+	
 }
 
 class ToAddInformation {
 	public String REST_ID = ""; 
 	public ImageType imgType;
-	
-	
 	
 }
 
