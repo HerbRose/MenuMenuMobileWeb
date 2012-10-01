@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.Transform;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -23,6 +27,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
     
 		private DAO dao = new DAO();
 	
+		private static final Logger log = Logger.getLogger(BlobServiceImpl.class.getName()); 
         
         @Override
         public String getBlobStoreUrl(String restId, ImageType imageType) {
@@ -131,7 +136,21 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
          
         }
 
-       
+		
+		 @Override
+		public void cropImage(ImageBlob imageBlob, double leftX, double topY,
+			double rightX, double bottomY) {
+			 		 
+			 	BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+			 	ImagesService imagesService = ImagesServiceFactory.getImagesService();
+			 	Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+			 	Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY);
+			 	Image newImage = imagesService.applyTransform(cropTransform, oldImage);
+			 	 	
+		
+		}
+			  
+	
         
         
 }

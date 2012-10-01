@@ -31,6 +31,7 @@ public class BlobUploadServlet extends HttpServlet {
 	
 	// init the blog store service
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    private static final Logger log = Logger.getLogger(BlobUploadServlet.class.getName()); 
 
     public void doPost(HttpServletRequest request, HttpServletResponse res) throws ServletException, IOException {
 
@@ -40,7 +41,8 @@ public class BlobUploadServlet extends HttpServlet {
     	
     	
 		if (restId==null || restId.isEmpty() || imageType==null || imageType.isEmpty()){
-			System.out.println("BlobUploadServlet::doPost: restId or imageType is NULL||empty");
+			//System.out.println("BlobUploadServlet::doPost: restId or imageType is NULL||empty");
+			log.warning("BlobUploadServlet::doPost: restId or imageType is NULL||empty");
 //			res.getWriter().println("BlobUploadServlet::doPost: restId is NULL");
 //			res.getWriter().flush();
 			return;
@@ -132,6 +134,8 @@ public class BlobUploadServlet extends HttpServlet {
 //		System.out.println("Blob saved: " + key.getKind() + ", " + key.getName() + ", blobKey: " + blobKey.getKeyString());
 		
 	}
+    
+    
     
 	
 }

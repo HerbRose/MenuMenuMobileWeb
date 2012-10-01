@@ -2,16 +2,21 @@ package com.veliasystems.menumenu.client.ui;
 
 
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragEvent;
 import com.google.gwt.event.dom.client.DragHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -21,11 +26,14 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
+import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 
 
 
-public class CropImage extends JQMPage  {
+public class CropImage extends JQMPage implements HasClickHandlers {
 
 	Image img;
 	Image original;
@@ -47,6 +55,11 @@ public class CropImage extends JQMPage  {
 	double topOffset;
 	double leftOffset;
 	
+	double leftC;
+	double topC;
+	double widthC;
+	double heightC;
+	
 	FlowPanel rect;
 	JQMButton rightButtonUp;
 	JQMButton rightButtonDown;
@@ -61,9 +74,12 @@ public class CropImage extends JQMPage  {
 	FlowPanel zoomButtonPanel;
 	
 	Image newImage;
+	ImageBlob imageInsert;
+	
+	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
 	public CropImage(ImageBlob imageInsert) {
-		
+		this.imageInsert = imageInsert;
 		newImage = new Image(imageInsert.getImageUrl());
 		newImage.getElement().setId("loaded-image");
 			
@@ -272,9 +288,11 @@ public class CropImage extends JQMPage  {
 				int left = (int) leftOffset - image.getElement().getOffsetLeft();
 				int top = (int) topOffset - image.getElement().getOffsetTop();
 				
-				int width = (int) cropRectWidth;
-				
+				int width = (int) cropRectWidth;			
 				int height = (int) cropRectHeight;
+				
+				
+				
 						
 				img.setUrlAndVisibleRect(backgroundImage, left, top, width, height);
 				
@@ -285,8 +303,75 @@ public class CropImage extends JQMPage  {
 	
 			}
 		});	
-	}	
+	}
+
+
+	{
+		this.addClickHandler( new ClickHandler() {
 			
+			@Override
+			public void onClick(ClickEvent event) {			
+					meClicked(event);
+			}
+		});
+	}
+	
+	private void meClicked(ClickEvent event){
+		
+		if(isClicked(event, saveButton)){
+			
+			leftC = leftOffset - image.getElement().getOffsetLeft();
+			topC =  topOffset - image.getElement().getOffsetTop();	
+			widthC =  cropRectWidth;		
+			heightC =  cropRectHeight;
+			
+			blobService.cropImage(imageInsert, leftC, topC, leftC+widthC, topC+heightC, new AsyncCallback<Void>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					// TODO Auto-generated method stub
+					System.out.println("succes");
+				}
+				
+			});
+			
+		
+		}
+	}
+	
+	@Override
+	public HandlerRegistration addClickHandler(ClickHandler handler) {
+		return addDomHandler(handler, ClickEvent.getType());
+	}
+	
+	private boolean isClicked(ClickEvent event, JQMButton button) {
+
+		int clickedX = event.getClientX();
+		int clickedY = event.getClientY();
+
+		int ButtonX = (int) button.getElement().getAbsoluteLeft();
+		int ButtonY = (int) button.getElement().getAbsoluteTop();
+		int ButtonWidth = (int) button.getElement().getClientWidth();
+		int ButtonHeight = (int) button.getElement().getClientWidth();
+
+		int ButtonStartX = ButtonX;
+		int ButtonStopX = ButtonX + ButtonWidth;
+		int ButtonStartY = ButtonY;
+		int ButtonStopY = ButtonY + ButtonHeight;
+
+		if (clickedX >= ButtonStartX && clickedX <= ButtonStopX
+				&& clickedY >= ButtonStartY && clickedY <= ButtonStopY) {
+			return true;
+		}
+		return false;
+	}
+
 }
 
 

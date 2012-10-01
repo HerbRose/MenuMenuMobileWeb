@@ -38,4 +38,10 @@ public interface BlobServiceAsync {
 
 	void getLastUploadedImage(String restaurantId,
 			AsyncCallback<ImageBlob> callback);
+
+	void cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX,
+			double bottomY, AsyncCallback<Void> callback);
+
+
+	
 }
