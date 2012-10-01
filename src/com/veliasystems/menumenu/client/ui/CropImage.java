@@ -74,13 +74,7 @@ public class CropImage extends JQMPage  {
 		
 		height = Integer.toString(imageInsert.getHeight());	
 		width = Integer.toString(imageInsert.getWidth());
-		
-//		imgHeight = newImage.getHeight();
-//		imgWidth = newImage.getWidth();
-//		
-//		height = Integer.toString(newImage.getHeight());
-//		width = Integer.toString(newImage.getWidth());
-	
+			
 		init();
 		
 	}
@@ -290,10 +284,7 @@ public class CropImage extends JQMPage  {
 				add(img);
 	
 			}
-		});
-		
-	
-		
+		});	
 	}	
 			
 }

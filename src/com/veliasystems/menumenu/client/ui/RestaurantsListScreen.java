@@ -15,6 +15,7 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
@@ -77,15 +78,22 @@ public class RestaurantsListScreen extends JQMPage {
 	private void addRestaurants(List<Restaurant> list){
 		
 		for(final Restaurant item: list){
-		
-			RestaurantImageView restaurantView = new RestaurantImageView(item);
-			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
-//			
-//			Image image = new Image("img/article1.jpg");
-//			CropImage imageToCrop = new CropImage(image);
-			this.list.addItem(item.getName(), restaurantView);
+			if(RestaurantController.restMapView.containsKey(item.getId())){
+				RestaurantImageView restaurantView = RestaurantController.restMapView.get(item.getId());
+				restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
+				this.list.addItem(item.getName(), restaurantView);
+				
+			}
+			else{
+				RestaurantImageView restaurantView = new RestaurantImageView(item);
+				restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
+				this.list.addItem(item.getName(), restaurantView);		
+				RestaurantController.restMapView.put(item.getId(), restaurantView);
+			}
 		}
 	}
 	private void showError(){
