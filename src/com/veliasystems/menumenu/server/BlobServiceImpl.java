@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -23,6 +24,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
     
 		private DAO dao = new DAO();
 	
+		private static final Logger log = Logger.getLogger(BlobServiceImpl.class.getName()); 
         
         @Override
         public String getBlobStoreUrl(String restId, ImageType imageType) {
@@ -40,6 +42,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
     		if (imgQuery==null) return images;
     		
     		return imgQuery.filter("restId =", restaurantId).order("-dateCreated").list();
+        }
+        
+        @Override
+        public ImageBlob getLastUploadedImage(String restaurantId) {
+        	
+        	List<ImageBlob> all = getAllImages(restaurantId);
+        	if (!all.isEmpty()) return all.get(0);
+        	else return null;
         }
         
         private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
