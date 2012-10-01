@@ -10,6 +10,8 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -53,7 +55,7 @@ public class SwipeView extends FlowPanel {
 	private ImageType imageType;
 	
 	public SwipeView(Restaurant restaurant, ImageType imageType) {
-		
+		//Window.alert(Navigator.getPlatform());
 		switch (imageType) {
 			case LOGO:
 				imageUrlList = restaurant.getLogoImages();

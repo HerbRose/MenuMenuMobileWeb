@@ -85,11 +85,11 @@ public class RestaurantsListScreen extends JQMPage {
 			else{
 				restaurantView = new RestaurantImageView(item);
 				RestaurantController.restMapView.put(item.getId(), restaurantView);
+				restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+				restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
 			}
 			
-			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
-			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
 			this.list.addItem(item.getName(), restaurantView);
 		}
 	}
