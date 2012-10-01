@@ -10,7 +10,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -91,7 +90,6 @@ public class SwipeView extends FlowPanel {
 		setMyTitle(title);
 		
 		addStyleName("swipeView");
-		
 	}
 	
 	private void fillImages(String mainImageUrl){
@@ -145,18 +143,17 @@ public class SwipeView extends FlowPanel {
 				clickOnInputFile(formPanel.getUploadButton().getElement());
 			}
 		});
+		
 		formPanel = new MyUploadForm(fileUpload, imageType, restaurant.getId()+"");
 		formPanel.setVisible(false);
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		formPanel.setMethod(FormPanel.METHOD_POST);
 		formPanel.getMainPanel().add(fileUpload);
-		
 		formPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 			
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				formPanel.reset();
-			//	startNewBlobstoreSession();
 			}
 		});
 		
@@ -164,31 +161,66 @@ public class SwipeView extends FlowPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.alert("Clicked filUpload");
-				clickOnInputFile(fileUpload.getElement());	
 				
+				
+				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
+					
+					@Override
+					public void onSuccess(String result) {
+						String callbackURL = "http://mymenumenu.appspot.com";
+						
+						onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
+						
+						clickOnInputFile(fileUpload.getElement());
+						
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+				});
 			}
 		});
-		
+
 		add(cameraContainerDiv);
 		add(formPanel);
+		
 	}
 	private static native void clickOnInputFile(Element elem) /*-{
 		elem.click();
-		elem.ontouch();
+		
 	}-*/;
 
 
+	private static native void onUploadFormLoaded(String windowName, Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
+		window.name = windowName;
+		
+		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image";
+		
+		$wnd.Picup2.convertFileInput( fileUpload,  { windowName : encodeURI('My Web App'), 'purpose' : encodeURI(url) });
+		
+		window.open('', '_self', ''); 
+		window.close();  
+		
+	}-*/;
+
+	
+	public String getRestId() {
+		return restaurant.getId()+"";
+	}
+	
 	public ImageType getImageType() {
 		return imageType;
 	}
+	
+	
+	
 }
 
 class ToAddInformation {
 	public String REST_ID = ""; 
 	public ImageType imgType;
-	
-	
 	
 }
 

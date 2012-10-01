@@ -78,22 +78,19 @@ public class RestaurantsListScreen extends JQMPage {
 	private void addRestaurants(List<Restaurant> list){
 		
 		for(final Restaurant item: list){
+			RestaurantImageView restaurantView;
 			if(RestaurantController.restMapView.containsKey(item.getId())){
-				RestaurantImageView restaurantView = RestaurantController.restMapView.get(item.getId());
-				restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
-				restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
-				restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
-				this.list.addItem(item.getName(), restaurantView);
-				
+				restaurantView = RestaurantController.restMapView.get(item.getId());	
 			}
 			else{
-				RestaurantImageView restaurantView = new RestaurantImageView(item);
-				restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
-				restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
-				restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
-				this.list.addItem(item.getName(), restaurantView);		
+				restaurantView = new RestaurantImageView(item);
 				RestaurantController.restMapView.put(item.getId(), restaurantView);
 			}
+			
+			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
+			this.list.addItem(item.getName(), restaurantView);
 		}
 	}
 	private void showError(){
