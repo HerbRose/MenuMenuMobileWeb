@@ -16,6 +16,7 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
@@ -90,14 +91,23 @@ public class CityInfoScreen extends JQMPage {
 	
 private void addRestaurants(List<Restaurant> list){
 		
-		for(Restaurant item: list){
-		
+	for(final Restaurant item: list){
+		if(RestaurantController.restMapView.containsKey(item.getId())){
+			RestaurantImageView restaurantView = RestaurantController.restMapView.get(item.getId());
+			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
+			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
+			restList.addItem(item.getName(), restaurantView);
+			
+		}
+		else{
 			RestaurantImageView restaurantView = new RestaurantImageView(item);
 			restaurantView.addToContent(new SwipeView(item, ImageType.MENU ) );
 			restaurantView.addToContent(new SwipeView(item, ImageType.PROFILE ) );
 			restaurantView.addToContent(new SwipeView(item, ImageType.LOGO ) );
-			
-			restList.addItem(item.getName(),restaurantView);
+			restList.addItem(item.getName(), restaurantView);		
+			RestaurantController.restMapView.put(item.getId(), restaurantView);
 		}
+	}
 	}
 }
