@@ -1,7 +1,13 @@
 package com.veliasystems.menumenu.server;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.blobstore.BlobKey;
@@ -10,6 +16,12 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.Transform;
+import com.google.appengine.api.urlfetch.FetchOptions;
+import com.google.appengine.api.urlfetch.HTTPHeader;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.URLFetchService;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -141,17 +153,89 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 		 @Override
 		public void cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY) {
-			 		 
+			 		  	
 			 	BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
 			 	ImagesService imagesService = ImagesServiceFactory.getImagesService();
 			 	Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
 			 	Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY);
 			 	Image newImage = imagesService.applyTransform(cropTransform, oldImage);
-			 	 	
-		
+			 	try {
+					sendToBlobstore(imageBlob, "save", newImage.getImageData());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 	
+			 	
 		}
 			  
-	
+    
+		 private void sendToBlobstore(ImageBlob imageBlob, String cmd, byte[] imageBytes) throws IOException{
+			 
+			 String blobKeyToDelete = imageBlob.getBlobKey();
+			  
+			 System.out.println(imageBlob.getRestaurantId() + " crop " + imageBlob.getBlobKey());
+			 
+					 
+			 ImageBlob tmpImage = imageBlob;
+			 
+			 dao.ofy().delete(imageBlob);
+			 			 	 	 			 
+			 BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(blobKeyToDelete));	
+			 		 
+			 String url = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blobUpload?restId=" + tmpImage.getRestaurantId() + "&imageType=" + tmpImage.getImageType().name());
+			 URLFetchService urlFetch = URLFetchServiceFactory.getURLFetchService();
+			 try {
+				String id = tmpImage.getId();
+				HTTPRequest request = new HTTPRequest(new URL(url), HTTPMethod.POST, FetchOptions.Builder.withDeadline(20.0));
+				String boundary = makeBoundary();
+				
+				request.setHeader(new HTTPHeader("Content-Type", "multipart/form-data; boundary=" + boundary));
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				
+				write(baos, "--"+boundary+"\r\n");
+			    writeParameter(baos, "id", id);
+			    write(baos, "--"+boundary+"\r\n");
+			    writeImage(baos, cmd, imageBytes);
+			    write(baos, "--"+boundary+"--\r\n");
+			 
+			    request.setPayload(baos.toByteArray());
+			    try {
+			        urlFetch.fetch(request);
+			    } catch (IOException e) {
+			        // Need a better way of handling Timeout exceptions here - 20 second deadline
+			       
+			    }        
+				
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
+			
+		 }
+		 
+		 private String makeBoundary() {
+			    return "---------------------------" + randomString() + randomString() + randomString();
+			} 
+		 
+		 private static String randomString() {
+			    return Long.toString(random.nextLong(), 36);
+			}
+		 
+		 private static Random random = new Random();
         
-        
+		 private void write(OutputStream os, String s) throws IOException {
+			    os.write(s.getBytes());
+			}
+		 
+		 private void writeParameter(OutputStream os, String name, String value) throws IOException {
+			    write(os, "Content-Disposition: form-data; name=\""+name+"\"\r\n\r\n"+value+"\r\n");
+			}
+			 
+			private void writeImage(OutputStream os, String name, byte[] bs) throws IOException {
+			    write(os, "Content-Disposition: form-data; name=\""+name+"\"; filename=\"image.jpg\"\r\n");
+			    write(os, "Content-Type: image/jpeg\r\n\r\n");
+			    os.write(bs);
+			    write(os, "\r\n");
+			}
 }

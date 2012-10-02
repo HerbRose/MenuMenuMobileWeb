@@ -2,7 +2,6 @@ package com.veliasystems.menumenu.client.ui;
 
 
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -11,8 +10,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragEvent;
 import com.google.gwt.event.dom.client.DragHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -28,7 +25,6 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 
 
@@ -325,7 +321,15 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			widthC =  cropRectWidth;		
 			heightC =  cropRectHeight;
 			
-			blobService.cropImage(imageInsert, leftC, topC, leftC+widthC, topC+heightC, new AsyncCallback<Void>() {
+			
+			
+			
+			double leftXPercentage = leftC/image.getOffsetWidth();
+			double topYPercentage = topC/image.getOffsetHeight();
+			double rightXPercentage = (leftC+widthC)/image.getOffsetWidth();
+			double bottomYPercentage = (topC + heightC)/image.getOffsetHeight();
+			
+			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -336,7 +340,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				@Override
 				public void onSuccess(Void result) {
 					// TODO Auto-generated method stub
-					System.out.println("succes");
+					Window.Location.reload();
 				}
 				
 			});
