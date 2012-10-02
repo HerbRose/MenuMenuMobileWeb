@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.client.services;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
 
@@ -16,6 +17,8 @@ public interface StoreServiceAsync {
 	void loadCities(AsyncCallback<List<String>> callback);
 
 	void deleteRestaurant(Restaurant r, AsyncCallback<Void> callback);
+
+	void setMainImage(ImageBlob imageBlob, AsyncCallback<Void> callback);
 
 	
 

@@ -34,6 +34,10 @@ public class Restaurant implements Serializable {
 	private ImageBlob mainLogoImage;
 	private ImageBlob mainMenuImage;
 	
+	private String mainProfileImageString;
+	private String mainLogoImageString;
+	private String mainMenuImageString;
+	
 	{
 		id = Util.getRandom(9999999);
 	}
@@ -178,6 +182,23 @@ public class Restaurant implements Serializable {
 	}
 	
 	
+	public void setMainLogoImageString(String mainLogoImageString) {
+		this.mainLogoImageString = mainLogoImageString;
+	}
+	public void setMainMenuImageString(String mainMenuImageString) {
+		this.mainMenuImageString = mainMenuImageString;
+	}
+	public void setMainProfileImageString(String mainProfileImageString) {
+		this.mainProfileImageString = mainProfileImageString;
+	}
 	
-	
+	public String getMainLogoImageString() {
+		return mainLogoImageString;
+	}
+	public String getMainMenuImageString() {
+		return mainMenuImageString;
+	}
+	public String getMainProfileImageString() {
+		return mainProfileImageString;
+	}
 }

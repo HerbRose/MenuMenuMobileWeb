@@ -4,8 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.SimpleHttpConnectionManager;
-
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
@@ -22,7 +20,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
-import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.StoreService;
@@ -189,6 +186,49 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public void deleteRestaurant(Restaurant r) {
 		dao.ofy().delete(r);
+		
+	}
+
+	@Override
+	public void setMainImage(ImageBlob imageBlob) {
+		// TODO Auto-generated method stub
+		
+		Long restId = Long.valueOf(imageBlob.getRestaurantId());
+		
+		Restaurant r =dao.ofy().query(Restaurant.class).filter("id =", restId).get();
+		
+//		switch(imageBlob.getImageType()){
+//			case LOGO:
+//				r.setMainLogoImage(imageBlob);
+//				break;
+//			case MENU:
+//				r.setMainMenuImage(imageBlob);
+//				break;
+//			case PROFILE:
+//				r.setMainProfileImage(imageBlob);
+//				break;
+//			
+//		}
+//		
+//		dao.ofy().put(r);
+		
+		System.out.println(r.getName() + " " + r.getId() + " " + r.getCity());
+		
+		System.out.println(imageBlob.getImageType());
+		
+		switch(imageBlob.getImageType()){
+			case PROFILE:
+				r.setMainProfileImageString(imageBlob.getImageUrl());
+				break;
+			case LOGO:
+				r.setMainLogoImageString(imageBlob.getImageUrl());
+				break;
+			case MENU:
+				r.setMainMenuImageString(imageBlob.getImageUrl());
+				break;
+		}
+		
+		dao.ofy().put(r);
 		
 	}
 	

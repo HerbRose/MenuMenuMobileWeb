@@ -37,7 +37,7 @@ public class SwipeView extends FlowPanel {
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
 	private List<ImageBlob> imageUrlList;
-	private ImageBlob mainImage;
+	private String mainImage;
 	private String title = "";
 	private String mainImageUrl = "";
 	
@@ -61,17 +61,17 @@ public class SwipeView extends FlowPanel {
 			case LOGO:
 				imageUrlList = restaurant.getLogoImages();
 				title = Customization.LOGO_PICTURE_TITLE;
-				mainImage = restaurant.getMainLogoImage();
+				mainImage = restaurant.getMainLogoImageString();
 				break;
 			case MENU:
 				imageUrlList = restaurant.getMenuImages();
 				title = Customization.MAENU_PICTURE_TITLE;
-				mainImage = restaurant.getMainMenuImage();
+				mainImage = restaurant.getMainMenuImageString();
 				break;
 			case PROFILE:
 				imageUrlList = restaurant.getProfileImages();
 				title = Customization.PROFILE_PICTURE_TITLE;
-				mainImage = restaurant.getMainProfileImage();
+				mainImage = restaurant.getMainProfileImageString();
 				break;
 			default:
 				break;
@@ -84,7 +84,7 @@ public class SwipeView extends FlowPanel {
 			this.imageUrlList = new ArrayList<ImageBlob>();
 		}
 		if(mainImage != null){
-			mainImageUrl = mainImage.getImageUrl();
+			mainImageUrl = mainImage;
 		}
 		wrapper.addStyleName("wrapper");
 		
@@ -102,8 +102,9 @@ public class SwipeView extends FlowPanel {
 		MyImage newImage;
 		
 		for (ImageBlob image : imageUrlList) {	
-			
-			newImage = new MyImage(image.getImageUrl(), imagesController);
+			System.out.println(image.getImageUrl() + " swipeview");
+			newImage = new MyImage(image.getImageUrl(), imagesController, image);
+			System.out.println(mainImageUrl + " mainimageurl");
 			if(mainImageUrl.equals(image.getImageUrl())){
 				imagesController.selectImage(newImage);
 				scrollerContainer.insert(newImage, 0);
@@ -183,24 +184,25 @@ public class SwipeView extends FlowPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				
+				clickOnInputFile(fileUpload.getElement());
 				
-				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
-					
-					@Override
-					public void onSuccess(String result) {
-						String callbackURL = "http://mymenumenu.appspot.com";
-						
-						onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
-						
-						clickOnInputFile(fileUpload.getElement());
-						
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						
-					}
-				});
+//				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
+//					
+//					@Override
+//					public void onSuccess(String result) {
+//						String callbackURL = "http://mymenumenu.appspot.com";
+//						
+//						onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
+//						
+//						clickOnInputFile(fileUpload.getElement());
+//						
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						
+//					}
+//				});
 			}
 		});
 
