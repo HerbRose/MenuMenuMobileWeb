@@ -25,8 +25,16 @@ public class ImagesController {
 	
 	public void showFlowPanel(MyImage flowPanel){
 		if(selectedFlowPanel != null){
+			
 			selectedFlowPanel.hideFlowPanelButtons();
+			
+			if(selectedFlowPanel.equals(flowPanel)){
+				selectedFlowPanel =  null;
+				return;
+			}
+			
 		}
+
 		flowPanel.showFLowPanelButtons();
 		selectedFlowPanel = flowPanel;
 	}
