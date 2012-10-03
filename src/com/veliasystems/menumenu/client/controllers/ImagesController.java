@@ -5,7 +5,10 @@ import com.veliasystems.menumenu.client.ui.MyImage;
 public class ImagesController {
 
 	
+	
 	private MyImage selectedImage = null;
+	
+	private MyImage selectedFlowPanel = null;
 	
 	public ImagesController() {
 		
@@ -13,10 +16,19 @@ public class ImagesController {
 	
 	public void selectImage(MyImage image){
 		if(selectedImage != null){
-			selectedImage.unselect();
+			selectedImage.unselectImage();
+			
 		}
 		image.setSelected();
 		selectedImage = image;
+	}
+	
+	public void showFlowPanel(MyImage flowPanel){
+		if(selectedFlowPanel != null){
+			selectedFlowPanel.hideFlowPanelButtons();
+		}
+		flowPanel.showFLowPanelButtons();
+		selectedFlowPanel = flowPanel;
 	}
 	
 }

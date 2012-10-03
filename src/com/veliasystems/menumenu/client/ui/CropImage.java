@@ -65,9 +65,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	JQMButton zoomOutButton;
 	JQMButton cropButton;
 	
-	FlowPanel rightButtonPanel;
-	FlowPanel bottomButtonPanel;
-	FlowPanel zoomButtonPanel;
+	
+	FlowPanel toolPanel;
 	
 	Image newImage;
 	ImageBlob imageInsert;
@@ -104,7 +103,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		
 		img = new Image();
 		
-		cropRectWidth = 150;
+		cropRectWidth = 100;
 		cropRectHeight = cropRectWidth * 1.5;
 		
 		//set background image
@@ -112,6 +111,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		image.getElement().getStyle().setBackgroundImage("url('"+ backgroundImage+"')");
 		image.setHeight(height +"px");
 		image.setWidth(width + "px");
+		image.getElement().getStyle().setMarginTop(20, Unit.PX);
 
 		add(image);
 		
@@ -121,12 +121,12 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 		rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
 		rect.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		rect.getElement().getStyle().setTop(70.0, Unit.PX);
+		rect.getElement().getStyle().setTop(90.0, Unit.PX);
 		rect.getElement().getStyle().setLeft(70.0, Unit.PX);
 		
 		image.add(rect);
 		
-		topOffset = 70;
+		topOffset = 90;
 		
 		leftOffset = 70;
 		
@@ -137,17 +137,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		rightButtonDown = new JQMButton("");
 		rightButtonDown.setIcon(DataIcon.DOWN);
 		rightButtonDown.setIconPos(IconPos.NOTEXT);
-		
-		rightButtonPanel = new FlowPanel();
-		rightButtonPanel.add(rightButtonUp);
-		rightButtonPanel.add(rightButtonDown);
 				
-		rightButtonPanel.setStylePrimaryName("rightButtons");
-		rightButtonPanel.getElement().getStyle().setTop(imgHeight/2, Unit.PX);
-		rightButtonPanel.getElement().getStyle().setLeft(imgWidth + 15, Unit.PX);
-		add(rightButtonPanel);
-		
-		
 		rightButtonUp.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -177,16 +167,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		bottomButtonRight = new JQMButton("");
 		bottomButtonRight.setIcon(DataIcon.RIGHT);
 		bottomButtonRight.setIconPos(IconPos.NOTEXT);
-		
-		bottomButtonPanel = new FlowPanel();
-		bottomButtonPanel.add(bottomButtonLeft);
-		bottomButtonPanel.add(bottomButtonRight);
 				
-		bottomButtonPanel.setStylePrimaryName("bottomButtons");
-		bottomButtonPanel.getElement().getStyle().setTop(imgHeight + 60, Unit.PX);
-		bottomButtonPanel.getElement().getStyle().setLeft(imgWidth/2, Unit.PX);
-		add(bottomButtonPanel);
-		
 		bottomButtonLeft.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -233,16 +214,17 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		cropButton.setIcon(DataIcon.CHECK);
 		cropButton.setIconPos(IconPos.NOTEXT);
 		
-		zoomButtonPanel = new FlowPanel();
-		zoomButtonPanel.add(zoomInButton);
-		zoomButtonPanel.add(zoomOutButton);
-		zoomButtonPanel.add(cropButton);
 		
-		zoomButtonPanel.setStyleName("zoomButtons");
-		zoomButtonPanel.getElement().getStyle().setTop(imgHeight + 60, Unit.PX);
-		zoomButtonPanel.getElement().getStyle().setLeft(10, Unit.PX);
-		add(zoomButtonPanel);
-		
+		toolPanel = new FlowPanel();
+		toolPanel.setStyleName("toolPanel");
+		toolPanel.add(rightButtonUp);
+		toolPanel.add(rightButtonDown);
+		toolPanel.add(bottomButtonLeft);
+		toolPanel.add(bottomButtonRight);
+		toolPanel.add(zoomInButton);
+		toolPanel.add(zoomOutButton);
+		toolPanel.add(cropButton);
+		image.add(toolPanel);
 		zoomInButton.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -286,14 +268,13 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				
 				int width = (int) cropRectWidth;			
 				int height = (int) cropRectHeight;
-				
-				
-				
-						
+			
 				img.setUrlAndVisibleRect(backgroundImage, left, top, width, height);
 				
 				img.getElement().getStyle().setPosition(Position.ABSOLUTE);
-				img.getElement().getStyle().setTop(imgHeight + image.getElement().getOffsetTop() + zoomButtonPanel.getElement().getOffsetHeight(), Unit.PX);
+				img.getElement().getStyle().setTop(image.getElement().getOffsetTop(), Unit.PX);
+				img.getElement().getStyle().setLeft(imgWidth + image.getElement().getOffsetLeft() + 50, Unit.PX);
+				
 				
 				add(img);
 	
@@ -320,10 +301,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			topC =  topOffset - image.getElement().getOffsetTop();	
 			widthC =  cropRectWidth;		
 			heightC =  cropRectHeight;
-			
-			
-			
-			
+	
 			double leftXPercentage = leftC/image.getOffsetWidth();
 			double topYPercentage = topC/image.getOffsetHeight();
 			double rightXPercentage = (leftC+widthC)/image.getOffsetWidth();
@@ -377,5 +355,3 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	}
 
 }
-
-
