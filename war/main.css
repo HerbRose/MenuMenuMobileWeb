@@ -132,13 +132,13 @@
 	margin: 5px auto;
 }
 
-.cropLabel{
-	top: -25px;
-	margin-top: -10px;
+.txtLabel{
+	position: absolute;
+	top: 8px;
+	left: 28px;
+	color: #fff;
 }
 
-.mainLabel{
-	top: -25px;
-	margin-top: -10px;
+.toolButtonCointainer{
+	position: relative;
 }
-
