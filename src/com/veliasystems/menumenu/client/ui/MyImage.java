@@ -21,11 +21,12 @@ public class MyImage extends FlowPanel {
 	Image image = new Image();
 	
 	FlowPanel flowPanelButtons = new FlowPanel();
+	FlowPanel flowPanelButton;
 	
 	Image cropImage;
 	Image setMainImage;
 	ImageBlob imgBlob;
-	Label cropLabel;
+	Label txtLabel;
 	Label mainLAbel;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
@@ -74,20 +75,11 @@ public class MyImage extends FlowPanel {
 			}
 		});
 		
-	
-		flowPanelButtons.add(cropImage);
-		cropLabel = new Label();
-		cropLabel.setText(Customization.CROP);
-		cropLabel.setStyleName("cropLabel");
-		flowPanelButtons.add(cropLabel);
-		
-
 		flowPanelButtons.addStyleName("hiddenPanel");
-		mainLAbel = new Label();
-		mainLAbel.setText(Customization.SET_AS_MAIN);
-		mainLAbel.setStyleName("mainLabel");
-		flowPanelButtons.add(mainLAbel);
 		
+		addToolButon(cropImage, "toolButtonCointainer", Customization.CROP);
+		addToolButon(setMainImage, "toolButtonCointainer", Customization.SET_AS_MAIN);
+			
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
 		image.addClickHandler(new ClickHandler() {
@@ -98,9 +90,20 @@ public class MyImage extends FlowPanel {
 			}
 		});
 		
-		flowPanelButtons.add(setMainImage);
+		
 		add(image);
 		add(flowPanelButtons);
+	}
+	
+	private void addToolButon( Image image, String styleName, String labelText){
+		flowPanelButton = new FlowPanel();
+		flowPanelButton.add(image);
+		flowPanelButton.addStyleName(styleName);
+		txtLabel = new Label();
+		txtLabel.setText(labelText);
+		txtLabel.setStyleName("txtLabel");
+		flowPanelButton.add(txtLabel);
+		flowPanelButtons.add(flowPanelButton);
 	}
 	
 	private MyImage getMe(){
