@@ -13,4 +13,6 @@ public class Pages {
 
 	public static HomePageScreen		PAGE_HOME			= new HomePageScreen();
 	
+	public static LoginScreen			PAGE_LOGIN			= new LoginScreen();
+	
 }

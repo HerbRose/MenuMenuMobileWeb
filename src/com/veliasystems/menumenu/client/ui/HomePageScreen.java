@@ -1,5 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
+import com.sksamuel.jqm4gwt.DataIcon;
+import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.list.JQMList;
@@ -13,6 +15,7 @@ public class HomePageScreen extends JQMPage{
 	JQMFooter footer;
 	JQMButton addButton;
 	JQMList list;
+	JQMButton logoutButton;
 	
 	
 	public HomePageScreen(){
@@ -21,6 +24,15 @@ public class HomePageScreen extends JQMPage{
 		header.setText(Customization.MAINTITLE);
 		add(header);
 	    
+		
+		logoutButton = new JQMButton("Logout");
+		logoutButton.setBack(true);
+		logoutButton.setIcon(DataIcon.LEFT);
+		logoutButton.setIconPos(IconPos.LEFT);
+		
+		header.setBackButton(logoutButton);
+		
+		
 		list = new JQMList();
 	    list.setInset(false);
 	    
