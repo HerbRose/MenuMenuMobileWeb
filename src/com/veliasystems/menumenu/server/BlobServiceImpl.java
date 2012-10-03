@@ -159,8 +159,27 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			 	Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
 			 	Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY);
 			 	Image newImage = imagesService.applyTransform(cropTransform, oldImage);
+			 	
+			 	Transform scaleTransform = null;
+			 	switch(imageBlob.getImageType()){
+			 	case PROFILE: 
+			 		scaleTransform = ImagesServiceFactory.makeResize(420, 280);
+			 		break;
+			 	case LOGO:
+			 		scaleTransform = ImagesServiceFactory.makeResize(220, newImage.getHeight());
+			 		break;
+			 	case MENU:
+			 		scaleTransform = ImagesServiceFactory.makeResize(220, newImage.getHeight());
+			 		break;
+			 		
+			 	}
+			 	
+			 	Image scaleImage = imagesService.applyTransform(scaleTransform, newImage);
+			 	
+			 	System.out.println("scaling: " + scaleImage.getHeight() + " " + scaleImage.getWidth());
+			 	
 			 	try {
-					sendToBlobstore(imageBlob, "save", newImage.getImageData());
+					sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
