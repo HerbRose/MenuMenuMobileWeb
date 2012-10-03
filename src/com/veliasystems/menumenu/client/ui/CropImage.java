@@ -103,8 +103,13 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		
 		img = new Image();
 		
-		cropRectWidth = 100;
-		cropRectHeight = cropRectWidth * 1.5;
+		if(cropRectWidth*1.5 < cropRectHeight){	
+				cropRectWidth = imgWidth - imgWidth*0.3;
+				cropRectHeight = cropRectWidth * 1.5;
+		}else{
+			cropRectHeight = imgHeight - imgHeight*0.3;
+			cropRectWidth = cropRectHeight / 1.5;
+		}
 		
 		//set background image
 		image = new FlowPanel();
@@ -122,13 +127,13 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
 		rect.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		rect.getElement().getStyle().setTop(90.0, Unit.PX);
-		rect.getElement().getStyle().setLeft(70.0, Unit.PX);
+		rect.getElement().getStyle().setLeft(20.0, Unit.PX);
 		
 		image.add(rect);
 		
 		topOffset = 90;
 		
-		leftOffset = 70;
+		leftOffset = 20;
 		
 		rightButtonUp = new JQMButton("");
 		rightButtonUp.setIcon(DataIcon.UP);
