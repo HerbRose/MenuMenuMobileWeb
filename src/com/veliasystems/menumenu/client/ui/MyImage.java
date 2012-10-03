@@ -3,14 +3,12 @@ package com.veliasystems.menumenu.client.ui;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.sksamuel.jqm4gwt.DataIcon;
-import com.sksamuel.jqm4gwt.IconPos;
-import com.sksamuel.jqm4gwt.Transition;
-import com.sksamuel.jqm4gwt.button.JQMButton;
+import com.google.gwt.user.client.ui.Label;
+import com.sksamuel.jqm4gwt.JQMContext;
+import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.StoreService;
@@ -24,9 +22,11 @@ public class MyImage extends FlowPanel {
 	
 	FlowPanel flowPanelButtons = new FlowPanel();
 	
-	JQMButton cropButton;
-	JQMButton setMainButton;
+	Image cropImage;
+	Image setMainImage;
 	ImageBlob imgBlob;
+	Label cropLabel;
+	Label mainLAbel;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
@@ -36,18 +36,22 @@ public class MyImage extends FlowPanel {
 		image.setUrl(url);
 		image.setStyleName("image");
 		
-		cropButton = new JQMButton("", new CropImage(imgBlob), Transition.SLIDE);
-		cropButton.setIcon(DataIcon.GEAR);
-		cropButton.setIconPos(IconPos.NOTEXT);
-	
-		flowPanelButtons.add(cropButton);
-		setMainButton = new JQMButton("");
-		setMainButton.setIcon(DataIcon.STAR);
-		setMainButton.setIconPos(IconPos.NOTEXT);
+		cropImage = new Image("img/crop.png");
+		cropImage.setStyleName("toolButton");
+		cropImage.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				JQMContext.changePage(new CropImage(imgBlob));
+			}
+		});
 		
-		flowPanelButtons.add(setMainButton);
+		setMainImage = new Image("img/apply.png");
 		
-		setMainButton.addClickHandler(new ClickHandler() {
+		setMainImage.setStyleName("toolButton");
+		
+		setMainImage.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -69,7 +73,20 @@ public class MyImage extends FlowPanel {
 				});
 			}
 		});
+		
+	
+		flowPanelButtons.add(cropImage);
+		cropLabel = new Label();
+		cropLabel.setText(Customization.CROP);
+		cropLabel.setStyleName("cropLabel");
+		flowPanelButtons.add(cropLabel);
+		
+
 		flowPanelButtons.addStyleName("hiddenPanel");
+		mainLAbel = new Label();
+		mainLAbel.setText(Customization.SET_AS_MAIN);
+		mainLAbel.setStyleName("mainLabel");
+		flowPanelButtons.add(mainLAbel);
 		
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
@@ -77,11 +94,11 @@ public class MyImage extends FlowPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				
 				getImagesController().showFlowPanel(getMe());
 			}
 		});
 		
+		flowPanelButtons.add(setMainImage);
 		add(image);
 		add(flowPanelButtons);
 	}
@@ -102,9 +119,7 @@ public class MyImage extends FlowPanel {
 		
 	}
 	
-	public void hideFlowPanelButtons(){
-	
-		
+	public void hideFlowPanelButtons(){	
 		flowPanelButtons.setStyleName("hiddenPanel");
 		
 	}

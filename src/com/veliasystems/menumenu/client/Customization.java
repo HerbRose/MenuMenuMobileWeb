@@ -23,7 +23,8 @@ public class Customization {
 	public static final String LOGO_PICTURE_TITLE = "Logo";
 	public static final String PROFILE_PICTURE_TITLE = "Profile";
 	public static final String MAENU_PICTURE_TITLE = "Menu";
-	
+	public static final String CROP = "Przytnij";
+	public static final String SET_AS_MAIN = "Główne";
 	public static final String HOST_URL = "http://restauracje-cms.appspot.com/";	
 	
 };
