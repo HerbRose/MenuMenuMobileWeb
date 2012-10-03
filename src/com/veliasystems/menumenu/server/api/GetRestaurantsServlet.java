@@ -138,12 +138,31 @@ public class GetRestaurantsServlet extends HttpServlet {
 		String[] names = { "Pimiento", "Warsztat", "Babcia Malina", "Cosa Nostra", "Ptaszyl", "La Scandale", "El Torro", "Rio Grande", "ChinTin" };
 		String[] addresses = { "Ptasia 5", "Malinowa 45", "Borowkowa 2", "Zielona 55", "Lotnikow 4", "Debow 55" };
 		
-		String[] profileImages = { "http://www.shangrestaurant.com/wp-content/uploads/home-restaurant.jpg", 
+		/*
+		 "http://www.shangrestaurant.com/wp-content/uploads/home-restaurant.jpg", 
 							"http://alltopmovies.net/wp-content/uploads/2009/06/restaurant.jpg",
 							"http://www.nuffy.net/pics/cool/bizarre-restaurants/restaurant_undersea.jpg",
 							"http://www.hoteles-silken.com/hotel-berlaymont-brussels/files/2010/09/Restaurant-LObjectif.jpg",
 							"http://s3.amazonaws.com/sfb111/story_xlimage_2010_08_R5362_Inwood_Restaurant_Grades.jpg",
-							"http://parisparfait.typepad.com/paris_parfait/images/2008/08/31/chinese_restaurant_2.jpg" };
+							"http://parisparfait.typepad.com/paris_parfait/images/2008/08/31/chinese_restaurant_2.jpg" 
+		 */
+		
+		String[] profileImages = {  "http://upload.wikimedia.org/wikipedia/commons/a/a1/Paris-Marais-p1010711.jpg",
+								"http://farm3.static.flickr.com/2271/2228348131_4dab74909a.jpg",
+								"http://www.potatomato.com/mt/archives/image2/DSC04902.jpg",
+								"http://1.bp.blogspot.com/_Mi5VfhVwrzs/R52BDBuluGI/AAAAAAAAG7g/X-k4yjKcCyA/s400/the%2Bmarais%2Bparis.JPG",
+								"http://www.lodjee.com/img/upload/Marais_Apartments_Paris.jpg",
+								"http://2.bp.blogspot.com/-JKLFyOV4HMQ/T37uF7oSKVI/AAAAAAAAAlQ/aXH0HKJJO6k/s1600/18386936_8cbf45c009.jpg",
+								"http://upload.wikimedia.org/wikipedia/commons/b/bb/Jo_Goldenberg_restaurant_Paris_dsc04019.jpg",
+								"http://www.whattoseeinparis.com/images/le-marais-paris.jpg",
+								"http://www.stockphotopro.com/photo-thumbs-2/stockphotopro_3968806PFR_paris_marais.jpg",
+								"http://www.nouveau-paris-ile-de-france.fr/fichiers/cafeRestaurant/images/227633/fr/standard/petit-marcel-ambiance-bistrot-paris-75004-2.jpg",
+								"http://media-cdn.tripadvisor.com/media/photo-s/02/29/67/cf/creperie-beaubourg.jpg",
+								"http://www.lafourchette.com/uploads/restaurant_530_270/19898/117bfcac2546e95e46210c8a15656b7e.jpg",
+								"http://www.lafourchette.com/uploads/restaurant_530_270/19898/b46d1ee73ccc0f17f87b07a41455ae9f.jpg",
+								"http://www.lafourchette.com/uploads/promo/18314.jpg",
+								"http://a34.idata.over-blog.com/0/21/17/79/Le-Comptoir-de-Madame-Tomate.jpg",
+		};
 		
 		String[] menuImages = { "http://graphixshare.com/uploads/posts/2011-05-07/1304774534_kedsbf6ujfqpmv5.jpeg",
 								"http://www.mightysweet.com/mesohungry/wp-content/uploads/2010/08/02-Ukrainian-East-Village-Restaurant-menu-board.jpg",
