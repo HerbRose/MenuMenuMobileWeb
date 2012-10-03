@@ -14,6 +14,7 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class RestaurantImageView extends JQMPage{
@@ -27,6 +28,7 @@ public class RestaurantImageView extends JQMPage{
 	
 	private String title;
 	private Restaurant restaurant;
+	private boolean loaded = false;
 	
 	RestInfoScreen restInfoScreen;
 	
@@ -62,7 +64,16 @@ public class RestaurantImageView extends JQMPage{
 	}
 
 	
-	
+	@Override
+	protected void onPageShow() {
+		super.onPageShow();
+		if(!loaded){
+			addToContent(new SwipeView(restaurant, ImageType.MENU ) );
+			addToContent(new SwipeView(restaurant, ImageType.PROFILE ) );
+			addToContent(new SwipeView(restaurant, ImageType.LOGO ) );
+			loaded = false;
+		}
+	};
 	public RestaurantImageView() {
 		// TODO Auto-generated constructor stub
 			init();
