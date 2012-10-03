@@ -103,13 +103,39 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		
 		img = new Image();
 		
-		if(cropRectWidth*1.5 < cropRectHeight){	
+		cropRectHeight = imgHeight;
+		cropRectWidth = imgWidth;
+		
+		switch(imageInsert.getImageType()){
+		case PROFILE:
+			double tmpSizeHeight = cropRectHeight;
+			double tmpSizeWidth = cropRectWidth;
+				cropRectWidth = tmpSizeHeight;
+				cropRectHeight = tmpSizeWidth;
+				
+				if(cropRectWidth > imgWidth){
+					cropRectWidth = cropRectWidth - cropRectWidth*0.5;
+					cropRectHeight = cropRectWidth / 1.5;
+				}else if(cropRectHeight > imgHeight){
+					cropRectHeight = cropRectHeight - cropRectHeight*0.5;
+					cropRectWidth = cropRectHeight * 1.5;
+				}
+				
+			break;
+		default:
+			
+			if(cropRectWidth*1.5 < cropRectHeight){	
 				cropRectWidth = imgWidth - imgWidth*0.3;
 				cropRectHeight = cropRectWidth * 1.5;
-		}else{
-			cropRectHeight = imgHeight - imgHeight*0.3;
-			cropRectWidth = cropRectHeight / 1.5;
+			}else{
+				cropRectHeight = imgHeight - imgHeight*0.3;
+				cropRectWidth = cropRectHeight / 1.5;
+			}
+			break;
+			
 		}
+			
+		
 		
 		//set background image
 		image = new FlowPanel();
