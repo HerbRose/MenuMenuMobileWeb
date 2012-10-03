@@ -24,5 +24,6 @@ public class Customization {
 	public static final String PROFILE_PICTURE_TITLE = "Profile";
 	public static final String MAENU_PICTURE_TITLE = "Menu";
 	
+	public static final String HOST_URL = "http://restauracje-cms.appspot.com/";	
 	
 };
