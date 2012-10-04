@@ -1,11 +1,9 @@
 package com.veliasystems.menumenu.client.ui;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -13,7 +11,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
-import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -24,7 +21,7 @@ public class MyImage extends FlowPanel {
 	
 	Image image = new Image();
 	
-	FlowPanel flowPanelButtons = new FlowPanel();
+	
 	FlowPanel flowPanelButton;
 	
 	Image cropImage;
@@ -32,11 +29,14 @@ public class MyImage extends FlowPanel {
 	ImageBlob imgBlob;
 	Label txtLabel;
 	Label mainLAbel;
+	String url;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
+	private RestaurantImageView parent;
 	
-	public MyImage(String url, ImagesController imagesController, ImageBlob imageBlob) {
-		
+	public MyImage( ImagesController imagesController, ImageBlob imageBlob, RestaurantImageView parent) {
+		this.url = imageBlob.getImageUrl();
+		this.parent = parent;
 		imgBlob = imageBlob;
 		image.setUrl(url);
 		image.setStyleName("image");
@@ -80,10 +80,8 @@ public class MyImage extends FlowPanel {
 			}
 		});
 		
-		flowPanelButtons.addStyleName("hiddenPanel");
-		
-		addToolButon(cropImage, "toolButtonCointainer", Customization.CROP);
-		addToolButon(setMainImage, "toolButtonCointainer", Customization.SET_AS_MAIN);
+		//flowPanelButtons.addStyleName("hiddenPanel");
+
 			
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
@@ -91,16 +89,46 @@ public class MyImage extends FlowPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				getImagesController().showFlowPanel(getMe());
+				
+				FlowPanel panel = new FlowPanel();
+				panel.getElement().setId("imagePanel");
+				Image tmpImg = new Image(getUrl());
+				tmpImg.getElement().setId("imageClicked");
+				FlowPanel flowPanelButtons = new FlowPanel();
+				flowPanelButtons.getElement().setId("tooltip");
+				flowPanelButtons.add(addToolButon(cropImage, "toolButtonCointainer", Customization.CROP));
+				flowPanelButtons.add(addToolButon(setMainImage, "toolButtonCointainer", Customization.SET_AS_MAIN));
+				
+				tmpImg.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						
+						Document.get().getElementById("imagePanel").removeFromParent();
+						Document.get().getElementById("imageClicked").removeFromParent();
+						Document.get().getElementById("tooltip").removeFromParent();
+						//getImagesController().showFlowPanel(getMe());
+					}
+				});
+				
+				//panel.add(tmpImg);
+				
+				getMyParent().add(panel);
+				getMyParent().add(tmpImg);
+				getMyParent().add(flowPanelButtons);
+
+				//Document.get().getElementById("imagePanel").setClassName("show");
+				
+				
 			}
 		});
 		
 		
 		add(image);
-		add(flowPanelButtons);
+		//add(flowPanelButtons);
 	}
 	
-	private void addToolButon( Image image, String styleName, String labelText){
+	private FlowPanel addToolButon( Image image, String styleName, String labelText){
 		flowPanelButton = new FlowPanel();
 		flowPanelButton.add(image);
 		flowPanelButton.addStyleName(styleName);
@@ -108,7 +136,7 @@ public class MyImage extends FlowPanel {
 		txtLabel.setText(labelText);
 		txtLabel.setStyleName("txtLabel");
 		flowPanelButton.add(txtLabel);
-		flowPanelButtons.add(flowPanelButton);
+		return flowPanelButton;
 	}
 	
 	private MyImage getMe(){
@@ -127,13 +155,12 @@ public class MyImage extends FlowPanel {
 		
 	}
 	
-	public void hideFlowPanelButtons(){	
-		flowPanelButtons.setStyleName("hiddenPanel");
-		
+
+	public String getUrl() {
+		return url;
 	}
-	
-	public void showFLowPanelButtons(){
-		flowPanelButtons.setStyleName("flowPanelButtonsVisible");
+	public RestaurantImageView getMyParent() {
+		return parent;
 	}
 	
 	

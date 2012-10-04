@@ -54,6 +54,7 @@ public class SwipeView extends FlowPanel {
 	
 	private FileUpload fileUpload = new FileUpload();
 	private MyUploadForm formPanel;
+	private RestaurantImageView parent;
 	
 	private Restaurant restaurant;
 	private ImageType imageType;
@@ -63,9 +64,10 @@ public class SwipeView extends FlowPanel {
 	
 	private String osType =Navigator.getPlatform();
 	
-	public SwipeView(Restaurant restaurant, ImageType imageType) {
+	public SwipeView(Restaurant restaurant, ImageType imageType, RestaurantImageView parent) {
 		
 		loadedPageController=LoadedPageController.getInstance();
+		this.parent = parent;
 		
 		switch (imageType) {
 			case LOGO:
@@ -113,7 +115,7 @@ public class SwipeView extends FlowPanel {
 		
 		for (ImageBlob image : imageUrlList) {
 			loadedPageController.addImage(getRestId());
-			newImage = new MyImage(image.getImageUrl(), imagesController, image);
+			newImage = new MyImage(imagesController, image, parent);
 			
 			newImage.image.addLoadHandler(new LoadHandler() {
 				
@@ -279,13 +281,14 @@ public class SwipeView extends FlowPanel {
 	private static native void onUploadFormLoaded(String windowName, Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
 		window.name = windowName;
 		
-		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=false&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image";
+		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=false&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="+encodeURI(callbackURL)+"&returnStatus=false&minVersionRequired=2.1";               
 		
-		window.open('', '_self', ''); 
-		window.close();  
+		
 		
 		$wnd.Picup2.convertFileInput( fileUpload,  { windowName : encodeURI('My Web App'), 'purpose' : encodeURI(url) });
 		
+		window.open('', '_self', ''); 
+		window.close();  
 		
 	}-*/;
 

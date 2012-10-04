@@ -31,7 +31,7 @@ public class LoadedPageController {
 		}else{
 			loadController.put(restaurantId, 1);
 		}
-		Document.get().getElementById("load").setClassName("loading");
+		
 	}
 	
 	public void removeImage(String restaurantId){

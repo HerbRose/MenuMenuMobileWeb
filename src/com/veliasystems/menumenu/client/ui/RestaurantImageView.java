@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -68,9 +69,10 @@ public class RestaurantImageView extends JQMPage{
 	protected void onPageShow() {
 		super.onPageShow();
 		if(!loaded){
-			addToContent(new SwipeView(restaurant, ImageType.MENU ) );
-			addToContent(new SwipeView(restaurant, ImageType.PROFILE ) );
-			addToContent(new SwipeView(restaurant, ImageType.LOGO ) );
+			Document.get().getElementById("load").setClassName("loading");
+			addToContent(new SwipeView(restaurant, ImageType.MENU , this) );
+			addToContent(new SwipeView(restaurant, ImageType.PROFILE , this) );
+			addToContent(new SwipeView(restaurant, ImageType.LOGO , this) );
 			loaded = true;
 		}
 	};
