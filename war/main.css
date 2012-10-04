@@ -1,60 +1,21 @@
-.swipeView{
-	position: relative;
-	padding-top: 40px;
-	white-space: nowrap;
-}
-
-#wrapper, .wrapper {
-	
-	z-index:10;
-	
-	width: 100%;
-	height: 350px;
-	overflow:scroll;
-/* 	position: absolute; */
- 	white-space: nowrap; 
- 	margin-top: 10px;
- 	background: #000 url('img/backgroundForImagesScroll.png') repeat-x ;
- 	text-align: right;
-}
-
-
-#scroller, .scroller {
-
-	z-index:10;
-	-webkit-tap-highlight-color:rgba(0,0,0,0);
-	height: 140px;
-/* 	width: 100%; */
-	margin-left: 130px;
-	padding:0;
-	margin-top: 100px;
-	display: inline-block;
-}
-#scroller td, .scroller td{
-	vertical-align: middle !important;
-	
-}
-
-.titleDiv{
+#load{
 	position: absolute;
-	top: -14px;
-	left: 30px;
+	width: 100%;
+	height: 100%;
+	background: #000 url('img/loader.gif') center no-repeat;
+	filter:alpha(opacity=50);
+	opacity: 0.5;
+	-moz-opacity: 0.5;
 	
-	font-size: 4em;
-	color: #f00;
-	
-	z-index: 20;
-	background-color: transparent;
 }
-.image{
-	
-	margin-right: 10px;
-/* 	width: 100px !important; */
-	height: 140px !important;
+.loaded{
+	display: none;
 }
-.imageSelected{
-	border: #f00 4px solid;
+.loading{
+	display: block;
+	z-index: 99999;
 }
+
 .mainWrapper{
 	width: 100%;
 	overflow:scroll;
@@ -64,50 +25,96 @@
 	width: 100%;
 /* 	height: 800px; */
 }
+
+.swipeView{
+	position: relative;
+	padding-top: 40px;
+	white-space: nowrap;
+}
+
+#wrapper, .wrapper {
+	z-index:10;
+	width: 100%;
+	overflow:scroll;
+ 	white-space: nowrap; 
+ 	text-align: right;
+}
+#wrapper, .wrapper, .cameraContainerDiv{
+	background: #000 url('img/backgroundForImagesScroll.png') repeat-x ;
+	background-size: 20px 100px;
+}
+
+#scroller, .scroller {
+
+	z-index:10;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+	margin-left: 130px;
+	padding:0;
+	margin-top: 29px;
+	display: inline-block;
+}
+#scroller td, .scroller td{
+	vertical-align: middle !important;
+	
+}
+
+#scroller, .scroller, .cameraContainerDiv, .wrapper{
+	height: 100px !important;
+}
+
+.titleDiv{
+	position: absolute;
+	top: 10px;
+	left: 30px;
+	
+	font-size: 2em;
+	color: #f00;
+	
+	z-index: 20;
+	background-color: transparent;
+}
+
+.imagePanel, .image{
+	height: 36px;
+}
+.imagePanel {
+	position: relative;
+	display: inline-block;
+	white-space: nowrap;
+}
+.image{
+	margin-right: 10px;
+}
+.imageSelected{
+	border: #f00 4px solid;
+}
+
 .cameraContainerDiv{
 	position: absolute;
  	width: 128px;/*  .cameraDiv width + .cameraDiv left */
- 	height: 350px; /* like .wrapper */
+/*  	height: 350px; like .wrapper */
 	z-index: 11;
-	top: 50px;
+	top: 40px;
 	
-	background: transparent url('img/backgroundForImagesScroll.png') repeat-x ;
+/* 	background: transparent url('img/backgroundForImagesScroll.png') repeat-x ; */
 	
 }
 .cameraDiv, .androidForm{
 	position: absolute;
 	left: 20px;
 	top: 50%;
-	margin-top: -44px;
+	margin-top: -15px;
 	z-index: 20;
 }
-.androidForm{
+.cameraDiv img{
+	height: 30px;
+}
+.androidForm, .androidForm input{
 	width: 120px;
 	height: 30px;
 }
-#load{
-	position: absolute;
-	display: none;
-}
-#loadDisplay{
-	position: absolute;
-	display: block;
-	
-	width: 100%;
-	height: 100%;
-	background: #000 url('img/loader.gif') center no-repeat;
-	filter:alpha(opacity=50);
-	opacity: 0.5;
-	-moz-opacity: 0.5;
-	
-	z-index: 99999;
-}
-
-.imagePanel {
-	position: relative;
-	display: inline-block;
-	white-space: nowrap;
-	height: 140px;	
+.androidForm{
+	margin-top: -5px;
 }
 
 .flowPanelButtonsVisible{
@@ -121,8 +128,7 @@
 }
 
 .hiddenPanel{
-	display: none;
-	
+	display: none;	
 }
 
 .toolButton{

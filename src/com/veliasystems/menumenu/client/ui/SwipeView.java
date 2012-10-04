@@ -10,6 +10,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Navigator;
@@ -24,6 +28,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -54,9 +59,13 @@ public class SwipeView extends FlowPanel {
 	private ImageType imageType;
 	private Image cameraImg = new Image("img/camera.png");
 	
+	private LoadedPageController loadedPageController;
+	
 	private String osType =Navigator.getPlatform();
 	
 	public SwipeView(Restaurant restaurant, ImageType imageType) {
+		
+		loadedPageController=LoadedPageController.getInstance();
 		
 		switch (imageType) {
 			case LOGO:
@@ -102,9 +111,25 @@ public class SwipeView extends FlowPanel {
 		
 		MyImage newImage;
 		
-		for (ImageBlob image : imageUrlList) {	
-			
+		for (ImageBlob image : imageUrlList) {
+			loadedPageController.addImage(getRestId());
 			newImage = new MyImage(image.getImageUrl(), imagesController, image);
+			
+			newImage.image.addLoadHandler(new LoadHandler() {
+				
+				@Override
+				public void onLoad(LoadEvent event) {
+					loadedPageController.removeImage(getRestId());
+				}
+			});
+			newImage.image.addErrorHandler(new ErrorHandler() {
+				
+				@Override
+				public void onError(ErrorEvent event) {
+					// TODO Auto-generated method stub
+					loadedPageController.removeImage(getRestId());
+				}
+			});
 			
 			if(mainImageUrl.equals(image.getImageUrl())){
 				imagesController.selectImage(newImage);
@@ -112,6 +137,7 @@ public class SwipeView extends FlowPanel {
 				continue;
 			}
 			scrollerContainer.add(newImage);
+			
 		}
 
 		
@@ -134,6 +160,7 @@ public class SwipeView extends FlowPanel {
 		formPanel.setVisible(true);
 		formPanel.addStyleName("androidForm");
 		cameraContainerDiv.add(formPanel);
+		
 	}
 	
 	private void setCameraImg(){
@@ -193,11 +220,9 @@ public class SwipeView extends FlowPanel {
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				formPanel.reset();
-				
-				
 				Window.Location.reload();
 				
-				//Document.get().getElementById("loadDisplay").setId("load");
+				//Document.get().getElementById("load").setClassName("loaded");
 			}
 		});
 		
@@ -223,7 +248,7 @@ public class SwipeView extends FlowPanel {
 					
 					@Override
 					public void onSuccess(String result) {
-						Document.get().getElementById("load").setId("loadDisplay");
+						Document.get().getElementById("load").setClassName("loading");
 						formPanel.setAction(result);
 						formPanel.submit();
 					}

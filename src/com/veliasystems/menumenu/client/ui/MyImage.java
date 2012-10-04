@@ -3,6 +3,9 @@ package com.veliasystems.menumenu.client.ui;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -10,6 +13,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -36,6 +40,7 @@ public class MyImage extends FlowPanel {
 		imgBlob = imageBlob;
 		image.setUrl(url);
 		image.setStyleName("image");
+		
 		
 		cropImage = new Image("img/crop.png");
 		cropImage.setStyleName("toolButton");
