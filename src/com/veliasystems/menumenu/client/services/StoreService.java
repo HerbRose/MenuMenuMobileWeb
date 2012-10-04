@@ -22,4 +22,8 @@ void saveRestaurant( Restaurant r );
 	
 	void deleteRestaurant(Restaurant r);
 	void setMainImage(ImageBlob imageBlob);
+
+	void fillWithData();
+
+	void clearStore();
 }

@@ -68,6 +68,17 @@
      <url-pattern>/getRestaurants</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+     <servlet-name>ServiceServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.ServiceServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>ServiceServlet</servlet-name>
+     <url-pattern>/service</url-pattern>
+  </servlet-mapping>
+
+
   
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>

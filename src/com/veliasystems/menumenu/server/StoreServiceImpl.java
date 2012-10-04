@@ -1,3 +1,4 @@
+
 package com.veliasystems.menumenu.server;
 
 import java.net.URL;
@@ -37,16 +38,109 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public List<String> loadCities() {
 		List<String> cities = new ArrayList<String>();
 		
-			cities.add("Krakow");
-			cities.add("Warszawa");
+			cities.add("Krakow-Kazimierz");
+			cities.add("Paris - Marais");
+			cities.add("Paris - Beaubourg");
+			cities.add("Paris - Louvre");
 			
 		return cities;
 	}
 	
+	
+	@Override
+	public void fillWithData( ) {
+		List<Restaurant> rests = getData();
+		for (Restaurant r : rests) {
+			saveRestaurant(r,true);
+		}
+	}
+	
+	private void saveRestaurant(Restaurant r, boolean trimCity) {
+		try {
+			getGeocoding(r,trimCity);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		dao.ofy().put(r);
+	}
+	
+	
+	private List<Restaurant> getData() {
+		List<Restaurant> r = new ArrayList<Restaurant>();
+		
+		r.add( new Restaurant("Au Gourmand", "17, Rue Molière", "Paris - Beaubourg") );
+		r.add( new Restaurant("Au Père Fouettard", "Rue Pierre Lescot" , "Paris - Beaubourg") );
+		r.add( new Restaurant("Flottes", "2, Rue Cambon", "Paris - Louvre") );
+		r.add( new Restaurant("Le Baudelaire", "8, Rue Duphot", "Paris - Louvre"));
+		r.add( new Restaurant("Le Bistrot Mavrommatis", "18, Rue Duphot", "Paris - Louvre"));
+		r.add( new Restaurant("Le Pharamond", "24, rue de la Grande Truanderie" , "Paris - Beaubourg"));
+		r.add( new Restaurant("Les Fontaines Saint Honoré", "196, Rue Saint Honoré" , "Paris - Louvre"));
+		r.add( new Restaurant("Quai-Quai", "74, quai des Orfèvres", "Paris - Louvre"));
+		r.add( new Restaurant("Rotin's Home", "10, Rue des Pyramides" , "Paris - Louvre"));
+		r.add( new Restaurant("Aux Lyonnais" , "32, rue St Marc" , "Paris - Beaubourg"));
+		r.add( new Restaurant("Bistrot Favart", "1, Rue Favart" , "Paris - Beaubourg"));
+		r.add( new Restaurant("Chez Papa", " Rue Montmartre" , "Paris - Beaubourg"));
+		r.add( new Restaurant("Divinamente Italiano", " 28, Rue Notre Dame des Victoires" , "Paris - Beaubourg"));
+		r.add( new Restaurant("Le Mesturet", "Rue de Richelieu " , "Paris - Beaubourg"));
+		r.add( new Restaurant("Les Alchimistes", "16, Rue Favart", "Paris - Beaubourg"));
+		r.add( new Restaurant("Liza", "14, rue de la Banque", "Paris - Beaubourg"));
+		r.add( new Restaurant("Mori Venice Bar", "27, rue Vivienne", "Paris - Beaubourg"));
+		r.add( new Restaurant("Zinc Opéra", "8, Rue de Hanovre", "Paris - Beaubourg"));
+		r.add( new Restaurant("Refletsduliban",  "25 Rue de Brantôme", "Paris - Marais"));
+		r.add( new Restaurant("Benoit", "20, rue Saint Martin", "Paris - Marais"));
+		r.add( new Restaurant("Chez Oscar",  "11-13 , bd. Beaumarchais",  "Paris - Marais"));
+		r.add( new Restaurant("Icho, Izakaya a la francaise", " 3, rue des Tournellles", "Paris - Marais"));
+		r.add( new Restaurant("Le Colimaçon", " 44, rue Vieille du Temple", "Paris - Marais"));
+		r.add( new Restaurant("Bouilion - Chartier", "rue du Faubourg Montmartre", "Paris - Beaubourg"));
+		r.add( new Restaurant("Bar a vins Mesturet", "77, rue de Richelieu", "Paris - Beaubourg"));
+		r.add( new Restaurant("L’Ami Georges", "5 rue du 4 Septembre", "Paris - Beaubourg"));
+		r.add( new Restaurant("Osteria Ruggera", "35, rue Tiquetonne", "Paris - Beaubourg"));
+		
+		r.add( new Restaurant("Zazie Bistro", "ul. Józefa 34", "Krakow-Kazimierz"));
+		r.add( new Restaurant("Les Scandales","Plac Nowy 9","Krakow-Kazimierz"));
+		r.add( new Restaurant("Piwnica pod kominkiem","ul. Gołębia 6","Krakow-Kazimierz"));
+		r.add( new Restaurant("Restauracja Korsykańska", "ul. Poselska 24","Krakow-Kazimierz"));
+		r.add( new Restaurant("Starka", "ul. Józefa 14","Krakow-Kazimierz"));
+		r.add( new Restaurant("Stukot Bar","ul. Berka Joselewicza 19","Krakow-Kazimierz"));
+		r.add( new Restaurant("Trattoria Pistola","ul. Bożego Ciała 4","Krakow-Kazimierz"));
+		r.add( new Restaurant("Trzy Papryczki",  "ul. Poselska 3","Krakow-Kazimierz"));
+		r.add( new Restaurant("Paragraf",  "ul. Olszewskiego 2","Krakow-Kazimierz"));
+		r.add( new Restaurant("Magiel",   "ul. Beera Meiselsa 9","Krakow-Kazimierz"));
+		r.add( new Restaurant("Bombonierka",  "ul. Beera Meiselsa 24","Krakow-Kazimierz"));
+		r.add( new Restaurant("Kuchnia i wino",  "ul. Józefa 13","Krakow-Kazimierz"));
+		r.add( new Restaurant("Al. Dente",  "ul. Kupa 12","Krakow-Kazimierz"));
+		r.add( new Restaurant("Pimiento",   "ul. Józefa 26","Krakow-Kazimierz"));
+		r.add( new Restaurant("Wręga Klub",   "ul. Józefa 17","Krakow-Kazimierz"));
+		r.add( new Restaurant("Pepe Rosso",   "ul. Kupa 15","Krakow-Kazimierz"));
+		r.add( new Restaurant("Luminaa",  "ul. Kupa 24","Krakow-Kazimierz"));
+		r.add( new Restaurant("Tajemniczy Ogród",  "Plac Nowy 3","Krakow-Kazimierz"));
+		r.add( new Restaurant("Kolanko",  "ul. Józefa 6",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("La Petite France",  "ul. Św. Tomasza 15",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Chili&Cynamon Lunch Bar",  "ul. Berka Joselewicza 9",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Deli Bar - rest. węgierska",  "ul. Beera Meiselsa 5","Krakow-Kazimierz"));
+		r.add( new Restaurant("Barfly Cafe Bar", 	 "Plac Nowy 4","Krakow-Kazimierz"));
+		r.add( new Restaurant("Marchewka z Groszkiem",  "ul. Mostowa 2","Krakow-Kazimierz"));
+		r.add( new Restaurant("Sąsiedzi", "ul. Miodowa 25","Krakow-Kazimierz"));
+		r.add( new Restaurant("Studnia Życzeń", "ul. Beera Meiselsa 24/Plac Nowy 6",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Satori Cafe Bistro",   "ul. Józefa 25",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Bordo",   "ul. Gołębia 3",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Bohema",  "ul.  Gołębia 2",		"Krakow-Kazimierz"));
+		r.add( new Restaurant("Awiw" ,  "ul. Wielopole 3",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Art. Club Cieplarnia",   "ul. Bracka 15",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Cieplarnia" ,	 "Plac Historyczny Galeria Kazimierz, ul. Podgórska 24",	"Krakow-Kazimierz"));
+		r.add( new Restaurant("Podkowa",  "Pl. Wolnica 10",	"Krakow-Kazimierz"));
+		
+		return r;
+	}
+	
+	
+	
 	@Override
 	public void saveRestaurant(Restaurant r) {
 		try {
-			getGeocoding(r);
+			getGeocoding(r,false);
 //			System.out.println( "AFTER GEOCODING: " +  r.toString() );
 		}
 		catch (Exception e) {
@@ -57,10 +151,25 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		System.out.println("saved succes: " + r.getName());
 	}
 	
-	private void getGeocoding( Restaurant r ) throws Exception {
+	private void getGeocoding( Restaurant r, boolean trimCity ) throws Exception {
 	//	Geocoder.setConnectionManager(new SimpleHttpConnectionManager());
 		final Geocoder geocoder = new Geocoder();
-		GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + r.getCity()).setLanguage("en").getGeocoderRequest();
+		
+		GeocoderRequest geocoderRequest;
+		
+		if (trimCity) {
+			String[] split = r.getCity().split("-");
+			String city = split[0].trim();
+			System.out.println("City set to: " + city);
+			
+			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + city).setLanguage("en").getGeocoderRequest();
+		} else {
+			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + r.getCity()).setLanguage("en").getGeocoderRequest();
+		}
+		
+		
+		
+		
 		GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
 		
 		List<GeocoderResult> results = geocoderResponse.getResults();
@@ -187,6 +296,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public void deleteRestaurant(Restaurant r) {
 		dao.ofy().delete(r);
 		
+	}
+	
+	@Override
+	public void clearStore() {
+		dao.ofy().delete( loadRestaurants() );
 	}
 
 	@Override

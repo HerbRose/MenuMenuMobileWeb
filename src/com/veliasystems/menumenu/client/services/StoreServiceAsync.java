@@ -20,6 +20,10 @@ public interface StoreServiceAsync {
 
 	void setMainImage(ImageBlob imageBlob, AsyncCallback<Void> callback);
 
+	void fillWithData(AsyncCallback<Void> callback);
+
+	void clearStore(AsyncCallback<Void> callback);
+
 	
 
 
