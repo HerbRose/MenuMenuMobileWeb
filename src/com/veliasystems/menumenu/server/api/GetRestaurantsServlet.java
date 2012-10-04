@@ -92,9 +92,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 			map.put( "city", r.getCity());
 			map.put( "district", r.getDistrict());
 			map.put( "address", r.getAddress());
-			map.put( "logoImage", (r.getMainLogoImage()!=null) ? (r.getMainLogoImage().getImageUrl()) : "EMPTY");
-			map.put( "menuImage", (r.getMainMenuImage()!=null) ? (r.getMainMenuImage().getImageUrl()) : "EMPTY");
-			map.put( "profileImage", (r.getMainProfileImage()!=null) ? (r.getMainProfileImage().getImageUrl()) : "EMPTY");
+			map.put( "logoImage", (r.getMainLogoImageString()!=null) ? (r.getMainLogoImageString()) : "EMPTY");
+			map.put( "menuImage", (r.getMainMenuImageString()!=null) ? (r.getMainMenuImageString()) : "EMPTY");
+			map.put( "profileImage", (r.getMainProfileImageString()!=null) ? (r.getMainProfileImageString()) : "EMPTY");
 			map.put( "lat", "" + r.getLat());
 			map.put( "lng", "" + r.getLng());
 			
