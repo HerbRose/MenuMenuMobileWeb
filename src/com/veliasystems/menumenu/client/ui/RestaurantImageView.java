@@ -71,7 +71,7 @@ public class RestaurantImageView extends JQMPage{
 			addToContent(new SwipeView(restaurant, ImageType.MENU ) );
 			addToContent(new SwipeView(restaurant, ImageType.PROFILE ) );
 			addToContent(new SwipeView(restaurant, ImageType.LOGO ) );
-			loaded = false;
+			loaded = true;
 		}
 	};
 	public RestaurantImageView() {
