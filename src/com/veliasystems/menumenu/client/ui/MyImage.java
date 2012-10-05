@@ -71,13 +71,15 @@ public class MyImage extends FlowPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				getImagesController().selectImage(getMe());
+				
 				storeService.setMainImage(imgBlob, new AsyncCallback<Void>() {
 					
 					@Override
 					public void onSuccess(Void result) {
+						getImagesController().selectImage(getMe());
+						removeDomItems();
 						// TODO Auto-generated method stub
-						Window.Location.reload();
+						//Window.Location.reload();
 					}
 					
 					@Override
@@ -136,16 +138,15 @@ public class MyImage extends FlowPanel {
 				flowPanelButtons.getElement().setId("tooltip");
 				flowPanelButtons.add(addToolButon(cropImage, "toolButtonCointainer", Customization.CROP));
 				flowPanelButtons.add(addToolButon(setMainImage, "toolButtonCointainer", Customization.SET_AS_MAIN));
-				flowPanelButtons.add(addToolButon(deleteImage, "toolButtonCointainer", Customization.DELETE_IMAGE));
-				
+				if(!isMainImage()){
+					flowPanelButtons.add(addToolButon(deleteImage, "toolButtonCointainer", Customization.DELETE_IMAGE));
+				}
 				tmpImg.addClickHandler(new ClickHandler() {
 					
 					@Override
 					public void onClick(ClickEvent event) {
 						
-						Document.get().getElementById("imagePanel").removeFromParent();
-						Document.get().getElementById("imageClicked").removeFromParent();
-						Document.get().getElementById("tooltip").removeFromParent();
+						removeDomItems();
 						//getImagesController().showFlowPanel(getMe());
 					}
 				});
@@ -187,13 +188,18 @@ public class MyImage extends FlowPanel {
 	
 	public void setSelected(){
 		image.addStyleName("imageSelected");
+		setMain(true);
 	}
 	
 	public void unselectImage(){
 		image.removeStyleName("imageSelected");
-		
+		setMain(false);
 	}
-	
+	public void removeDomItems(){
+		Document.get().getElementById("imagePanel").removeFromParent();
+		Document.get().getElementById("imageClicked").removeFromParent();
+		Document.get().getElementById("tooltip").removeFromParent();
+	}
 
 	public String getUrl() {
 		return url;
@@ -202,8 +208,11 @@ public class MyImage extends FlowPanel {
 		return parent;
 	}
 	
-	public  void setAsMain(){
-		mainImage = true;
+	public void setMain(Boolean isMain){
+		mainImage = isMain;
+	}
+	public boolean isMainImage() {
+		return mainImage;
 	}
 	
 	
