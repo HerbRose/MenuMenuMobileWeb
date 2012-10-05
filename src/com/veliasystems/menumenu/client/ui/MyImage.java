@@ -77,7 +77,7 @@ public class MyImage extends FlowPanel {
 					@Override
 					public void onSuccess(Void result) {
 						// TODO Auto-generated method stub
-					
+						Window.Location.reload();
 					}
 					
 					@Override
