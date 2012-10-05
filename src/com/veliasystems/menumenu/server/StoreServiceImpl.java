@@ -3,7 +3,11 @@ package com.veliasystems.menumenu.server;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
@@ -17,8 +21,12 @@ import com.google.code.geocoder.model.GeocodeResponse;
 import com.google.code.geocoder.model.GeocoderAddressComponent;
 import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.GeocoderResult;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -345,6 +353,66 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(r);
 		
 	}
+
+
+	@Override
+	public String uploadRestaurants(String JSON) {
+		
+	String response = "";
+	
+		try{
+		    JsonObject object = (JsonObject) new com.google.gson.JsonParser().parse(JSON);
+		    Set<Map.Entry<String, JsonElement>> set = object.entrySet();
+		    Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
+
+		    Hashtable<String, Restaurant> map = new Hashtable<String, Restaurant>();
+
+		    while (iterator.hasNext()) {
+		        Map.Entry<String, JsonElement> entry = iterator.next();
+
+		        String key = entry.getKey();
+		        Restaurant value = new Gson().fromJson(entry.getValue(), Restaurant.class);
+
+		        if (value != null) {
+		            map.put(key, value);
+		        }
+
+		    }   
+		    
+		  Set<String> restSet=  map.keySet();
+		  
+		  List<String> city = loadCities();
+		  
+		  List<Restaurant> restaurants= loadRestaurants();
+		  
+		  
+		 
+		  for (String item : restSet) {
+			  
+			 if(city.contains(map.get(item).getCity())){
+				 
+				 	if(!restaurants.contains(map.get(item))){
+				 		saveRestaurant(map.get(item), true);
+				 	}
+				 	else{
+				 		response += map.get(item).getName() + " " + Customization.DOUBLE_RESTAURANT + "\n";
+				 	}
+				 
+			 }else{
+			  response +=  map.get(item).getName() + " " + Customization.CITY_ERROR + "\n";
+			 }	
+			  
+			 
+			  
+		  }
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return e.toString();
+		}
+		return response;
+	}
+	
 	
 	
 }

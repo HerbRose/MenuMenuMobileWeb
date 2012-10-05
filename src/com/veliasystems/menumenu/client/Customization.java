@@ -26,6 +26,10 @@ public class Customization {
 	public static final String CROP = "Przytnij";
 	public static final String SET_AS_MAIN = "Główne";
 	public static final String DELETE_IMAGE = "Usuń";
+	public static final String UPLOAD = "Wgraj restauracje";
+	public static final String EMPTY_JSON = "Puste dane";
+	public static final String CITY_ERROR = "Błedne miasto";
+	public static final String DOUBLE_RESTAURANT = "Restauracja istnieje";
 	public static final String HOST_URL = "http://restauracje-cms.appspot.com/";	
 	
 };

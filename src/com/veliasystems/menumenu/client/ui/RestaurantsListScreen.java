@@ -26,6 +26,7 @@ public class RestaurantsListScreen extends JQMPage {
 	JQMHeader header;
 	JQMFooter footer;
 	JQMButton addButton;
+	JQMButton uploadButton;
 	JQMList list = new JQMList();
 	JQMButton backButton;
 	
@@ -66,9 +67,17 @@ public class RestaurantsListScreen extends JQMPage {
 	    addButton.setIcon(DataIcon.PLUS);
 	    addButton.setIconPos(IconPos.TOP);
 	    addButton.setTransition(Transition.SLIDE);
-	    addButton.setWidth("100%");
+	    addButton.setWidth("49%");
+	    addButton.setInline();
+	    uploadButton = new JQMButton(Customization.UPLOAD, new UploadRestaurantsScreen());
+	    uploadButton.setIcon(DataIcon.FORWARD);
+	    uploadButton.setIconPos(IconPos.TOP);
+	    uploadButton.setTransition(Transition.SLIDE);
+	    uploadButton.setWidth("49%");
+	    uploadButton.setInline();
 	        
 	    footer = new JQMFooter(addButton);
+	    footer.add(uploadButton);
 	    footer.setFixed(true);
    
 	    add(footer);

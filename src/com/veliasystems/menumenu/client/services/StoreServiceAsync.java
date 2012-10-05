@@ -24,6 +24,10 @@ public interface StoreServiceAsync {
 
 	void clearStore(AsyncCallback<Void> callback);
 
+	void uploadRestaurants(String JSON, AsyncCallback<String> callback);
+
+	
+
 	
 
 

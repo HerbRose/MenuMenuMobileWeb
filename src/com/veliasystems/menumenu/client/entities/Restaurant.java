@@ -201,4 +201,21 @@ public class Restaurant implements Serializable {
 	public String getMainProfileImageString() {
 		return mainProfileImageString;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(! (obj instanceof Restaurant)){
+			return false;
+		}
+		
+		Restaurant r = (Restaurant) obj;
+		
+		if(this.getName().equalsIgnoreCase(r.getName()) && this.getCity().equalsIgnoreCase(r.getCity())){
+			return true;
+		}
+		
+		return false;
+		
+	}
 }

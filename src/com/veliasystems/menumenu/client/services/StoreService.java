@@ -26,4 +26,5 @@ void saveRestaurant( Restaurant r );
 	void fillWithData();
 
 	void clearStore();
+	String uploadRestaurants(String JSON);
 }

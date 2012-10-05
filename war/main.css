@@ -176,3 +176,9 @@
 	top: 50px;
 	z-index: 20;
 }
+
+.jsonArea{
+	width: 150px;
+	height: 500px;
+	border: 2px solid black;
+}
