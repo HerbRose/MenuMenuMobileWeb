@@ -25,7 +25,7 @@ public class LoadedPageController {
 	}
 	
 	public void addImage(String restaurantId){
-		
+		Document.get().getElementById("load").setClassName("loading");
 		if(isRestaurant(restaurantId)){
 			loadController.put(restaurantId, loadController.get(restaurantId)+1);
 		}else{

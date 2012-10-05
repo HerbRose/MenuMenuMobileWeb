@@ -25,6 +25,7 @@ public class Customization {
 	public static final String MAENU_PICTURE_TITLE = "Menu";
 	public static final String CROP = "Przytnij";
 	public static final String SET_AS_MAIN = "Główne";
+	public static final String DELETE_IMAGE = "Usuń";
 	public static final String HOST_URL = "http://restauracje-cms.appspot.com/";	
 	
 };

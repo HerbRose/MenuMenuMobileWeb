@@ -30,7 +30,7 @@ public interface BlobService extends RemoteService {
         
         BlobData[] getBlobs(BlobDataFilter filter);
          
-        boolean deleteBlob(String blobKeyString);
+        boolean deleteBlob(ImageBlob imageBlob);
         
         void cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY);
         

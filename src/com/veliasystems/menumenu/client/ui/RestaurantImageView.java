@@ -69,7 +69,7 @@ public class RestaurantImageView extends JQMPage{
 	protected void onPageShow() {
 		super.onPageShow();
 		if(!loaded){
-			Document.get().getElementById("load").setClassName("loading");
+			
 			addToContent(new SwipeView(restaurant, ImageType.MENU , this) );
 			addToContent(new SwipeView(restaurant, ImageType.PROFILE , this) );
 			addToContent(new SwipeView(restaurant, ImageType.LOGO , this) );

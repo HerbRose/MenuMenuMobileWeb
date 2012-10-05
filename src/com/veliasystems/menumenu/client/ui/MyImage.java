@@ -1,9 +1,11 @@
 package com.veliasystems.menumenu.client.ui;
 
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -12,6 +14,8 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
@@ -31,7 +35,12 @@ public class MyImage extends FlowPanel {
 	Label mainLAbel;
 	String url;
 	
+	Image deleteImage;
+	
+	private  boolean mainImage = false;
+	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
+	private BlobServiceAsync blobService = GWT.create(BlobService.class);
 	private RestaurantImageView parent;
 	
 	public MyImage( ImagesController imagesController, ImageBlob imageBlob, RestaurantImageView parent) {
@@ -68,7 +77,7 @@ public class MyImage extends FlowPanel {
 					@Override
 					public void onSuccess(Void result) {
 						// TODO Auto-generated method stub
-						
+					
 					}
 					
 					@Override
@@ -82,6 +91,35 @@ public class MyImage extends FlowPanel {
 		
 		//flowPanelButtons.addStyleName("hiddenPanel");
 
+		deleteImage = new Image("img/delete.png");
+		deleteImage.setStyleName("toolButton");
+		
+		deleteImage.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+				if(!mainImage){
+					blobService.deleteBlob(imgBlob, new AsyncCallback<Boolean>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+	
+						@Override
+						public void onSuccess(Boolean result) {
+							// TODO Auto-generated method stub
+							Window.Location.reload();
+						}
+					});
+				}
+
+			}
+		});
+		
 			
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
@@ -98,6 +136,7 @@ public class MyImage extends FlowPanel {
 				flowPanelButtons.getElement().setId("tooltip");
 				flowPanelButtons.add(addToolButon(cropImage, "toolButtonCointainer", Customization.CROP));
 				flowPanelButtons.add(addToolButon(setMainImage, "toolButtonCointainer", Customization.SET_AS_MAIN));
+				flowPanelButtons.add(addToolButon(deleteImage, "toolButtonCointainer", Customization.DELETE_IMAGE));
 				
 				tmpImg.addClickHandler(new ClickHandler() {
 					
@@ -161,6 +200,10 @@ public class MyImage extends FlowPanel {
 	}
 	public RestaurantImageView getMyParent() {
 		return parent;
+	}
+	
+	public  void setAsMain(){
+		mainImage = true;
 	}
 	
 	

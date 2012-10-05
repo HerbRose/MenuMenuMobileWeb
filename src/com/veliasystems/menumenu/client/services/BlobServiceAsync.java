@@ -14,7 +14,7 @@ public interface BlobServiceAsync {
 	void getBlobStoreUrl(String sectionKey, ImageType imageType,
 			AsyncCallback<String> callback);
 
-	void deleteBlob(String blobKeyString, AsyncCallback<Boolean> callback);
+	void deleteBlob(ImageBlob imageBlob, AsyncCallback<Boolean> callback);
 
 	void getHeaderImages(Restaurant r, AsyncCallback<List<ImageBlob>> callback);
 

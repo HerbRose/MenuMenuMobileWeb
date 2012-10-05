@@ -129,25 +129,24 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
         }
         
         @Override
-        public boolean deleteBlob( String blobKeyString ) {
-        	 if (blobKeyString == null || blobKeyString.isEmpty()) {
+        public boolean deleteBlob( ImageBlob imageBlob ) {
+        	 if (imageBlob == null) {
                  return false;
                }
-               
-        	 BlobKey blobKey = new BlobKey(blobKeyString);
-        	 BlobstoreServiceFactory.getBlobstoreService().delete(blobKey);
-               
+        	 String blobKeyToDelete = imageBlob.getBlobKey();
+        	 dao.ofy().delete(imageBlob);  
+        	 BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(blobKeyToDelete));
                return true;
         }
         
         
-        public boolean deleteBlob(BlobDataFilter filter) {
-          
-          String blobKeyString = filter.getBlobKey();
-          
-          return deleteBlob( blobKeyString );
-         
-        }
+//        public boolean deleteBlob(BlobDataFilter filter) {
+//          
+//          String blobKeyString = filter.getBlobKey();
+//          
+//          return deleteBlob( blobKeyString );
+//         
+//        }
 
 		
 		 @Override
@@ -175,9 +174,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			 	}
 			 	
 			 	Image scaleImage = imagesService.applyTransform(scaleTransform, newImage);
-			 	
-			 	System.out.println("scaling: " + scaleImage.getHeight() + " " + scaleImage.getWidth());
-			 	
+			 	 	
 			 	try {
 					sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
 				} catch (IOException e) {
@@ -192,9 +189,6 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			 
 			 String blobKeyToDelete = imageBlob.getBlobKey();
 			  
-			 System.out.println(imageBlob.getRestaurantId() + " crop " + imageBlob.getBlobKey());
-			 
-					 
 			 ImageBlob tmpImage = imageBlob;
 			 
 			 dao.ofy().delete(imageBlob);

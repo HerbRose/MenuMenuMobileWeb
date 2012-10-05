@@ -134,6 +134,7 @@ public class SwipeView extends FlowPanel {
 			});
 			
 			if(mainImageUrl.equals(image.getImageUrl())){
+				newImage.setAsMain();
 				imagesController.selectImage(newImage);
 				scrollerContainer.insert(newImage, 0);
 				continue;
