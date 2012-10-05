@@ -256,20 +256,37 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		toolPanel.add(zoomOutButton);
 		toolPanel.add(cropButton);
 		image.add(toolPanel);
+		
 		zoomInButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				
-				
-				if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < image.getOffsetHeight() + image.getElement().getOffsetTop() - 4 && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() < image.getOffsetWidth() + image.getElement().getOffsetLeft() - 4){
-					
-					cropRectWidth += 5.0;
-					cropRectHeight = cropRectWidth *1.5;
-					rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
-					rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+				switch(imageInsert.getImageType()){
+					case PROFILE:
+						if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < image.getOffsetHeight() + image.getElement().getOffsetTop() - 4 && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() < image.getOffsetWidth() + image.getElement().getOffsetLeft() - 4){
+							
+							cropRectHeight += 5.0;
+							cropRectWidth = cropRectHeight *1.5;
+							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
+						
+						break;
+						
+					default: 
+						if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < image.getOffsetHeight() + image.getElement().getOffsetTop() - 4 && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() < image.getOffsetWidth() + image.getElement().getOffsetLeft() - 4){
+							
+							cropRectWidth += 5.0;
+							cropRectHeight = cropRectWidth *1.5;
+							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
+					break;
 				}
+				
+				
 			}
 		});
 		
@@ -278,13 +295,27 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				if(cropRectWidth > 0){
-					
-					cropRectWidth -= 5.0;
-					cropRectHeight = cropRectWidth *1.5;
-					rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
-					rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
-				}
+				
+				switch(imageInsert.getImageType()){
+					case PROFILE:
+						if(cropRectWidth > 0){
+							
+							cropRectHeight -= 5.0;
+							cropRectWidth = cropRectHeight *1.5;
+							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
+					break;
+					default:
+						if(cropRectWidth > 0){
+							
+							cropRectWidth -= 5.0;
+							cropRectHeight = cropRectWidth *1.5;
+							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
+						break;
+				}		
 			}
 		});
 		
