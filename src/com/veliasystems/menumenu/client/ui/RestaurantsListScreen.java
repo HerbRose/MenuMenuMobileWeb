@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.client.ui;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -15,6 +16,7 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -104,5 +106,13 @@ public class RestaurantsListScreen extends JQMPage {
 		Label label = new Label();
 		label.setText(Customization.LOADERROR);
 		this.add(label);
+	}
+	@Override
+	protected void onPageShow() {
+		// TODO Auto-generated method stub
+		super.onPageShow();
+		if(Cookies.getCookie(R.lastPage) != null){
+			Cookies.removeCookie(R.lastPage);
+		}
 	}
 }

@@ -87,7 +87,7 @@ public class RestaurantImageView extends JQMPage{
 		Date data = new Date();
 		Long milisec = data.getTime();
 		milisec += (1000 * 5 * 60); 
-		Cookies.setCookie(R.lastPage, restaurant.getId()+"", new Date(milisec));
+		Cookies.setCookie(R.lastPage, restaurant.getId()+"");//, new Date(milisec));
 		
 	};
 	public RestaurantImageView() {

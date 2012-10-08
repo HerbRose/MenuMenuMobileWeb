@@ -245,19 +245,22 @@ public class SwipeView extends FlowPanel {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
+				Document.get().getElementById("load").setClassName("loading");
 				//clickOnInputFile(formPanel.getUploadButton().getElement());
 				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
 					
 					@Override
 					public void onSuccess(String result) {
-						Document.get().getElementById("load").setClassName("loading");
+						
 						formPanel.setAction(result);
 						formPanel.submit();
 					}
 					
 					@Override
 					public void onFailure(Throwable caught) {
+						Document.get().getElementById("load").setClassName("loaded");
 						Window.alert("Problem with upload. Try again");
+						
 					}
 				});
 				

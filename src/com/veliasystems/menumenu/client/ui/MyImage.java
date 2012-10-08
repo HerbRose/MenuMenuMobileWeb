@@ -5,6 +5,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -71,11 +75,12 @@ public class MyImage extends FlowPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				
+				Document.get().getElementById("load").setClassName("show");
 				storeService.setMainImage(imgBlob, new AsyncCallback<Void>() {
 					
 					@Override
 					public void onSuccess(Void result) {
+						Document.get().getElementById("load").setClassName("hide");
 						getImagesController().selectImage(getMe());
 						removeDomItems();
 						// TODO Auto-generated method stub
@@ -103,6 +108,7 @@ public class MyImage extends FlowPanel {
 				// TODO Auto-generated method stub
 				
 				if(!mainImage){
+					Document.get().getElementById("load").setClassName("show");
 					blobService.deleteBlob(imgBlob, new AsyncCallback<Boolean>() {
 	
 						@Override
@@ -130,17 +136,26 @@ public class MyImage extends FlowPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				
+				Document.get().getElementById("load").setClassName("show");
+				
 				FlowPanel panel = new FlowPanel();
 				panel.getElement().setId("imagePanel");
+				
+				FlowPanel panelForImage = new FlowPanel();
+				panelForImage.getElement().setId("imageClickedDiv");
+				
 				Image tmpImg = new Image(getUrl());
 				tmpImg.getElement().setId("imageClicked");
+				
 				FlowPanel flowPanelButtons = new FlowPanel();
 				flowPanelButtons.getElement().setId("tooltip");
+				
 				flowPanelButtons.add(addToolButon(cropImage, "toolButtonCointainer", Customization.CROP));
 				flowPanelButtons.add(addToolButon(setMainImage, "toolButtonCointainer", Customization.SET_AS_MAIN));
 				if(!isMainImage()){
 					flowPanelButtons.add(addToolButon(deleteImage, "toolButtonCointainer", Customization.DELETE_IMAGE));
 				}
+				
 				tmpImg.addClickHandler(new ClickHandler() {
 					
 					@Override
@@ -150,11 +165,28 @@ public class MyImage extends FlowPanel {
 						//getImagesController().showFlowPanel(getMe());
 					}
 				});
+				tmpImg.addLoadHandler(new LoadHandler() {
+					
+					@Override
+					public void onLoad(LoadEvent event) {
+						
+						Document.get().getElementById("load").setClassName("hide");
+						
+					}
+				});
+				tmpImg.addErrorHandler(new ErrorHandler() {
+					
+					@Override
+					public void onError(ErrorEvent event) {
+						Document.get().getElementById("load").setClassName("hide");
+						
+					}
+				});
 				
 				//panel.add(tmpImg);
-				
+				panelForImage.add(tmpImg);
 				getMyParent().add(panel);
-				getMyParent().add(tmpImg);
+				getMyParent().add(panelForImage);
 				getMyParent().add(flowPanelButtons);
 
 				//Document.get().getElementById("imagePanel").setClassName("show");
@@ -196,9 +228,13 @@ public class MyImage extends FlowPanel {
 		setMain(false);
 	}
 	public void removeDomItems(){
+		Document.get().getElementById("load").setClassName("show");
+		
 		Document.get().getElementById("imagePanel").removeFromParent();
-		Document.get().getElementById("imageClicked").removeFromParent();
+		Document.get().getElementById("imageClickedDiv").removeFromParent();
 		Document.get().getElementById("tooltip").removeFromParent();
+		
+		Document.get().getElementById("load").setClassName("hide");
 	}
 
 	public String getUrl() {
