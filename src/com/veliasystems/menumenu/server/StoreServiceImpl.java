@@ -45,12 +45,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public List<String> loadCities() {
-//		List<String> cities = new ArrayList<String>();
-//		
-//			cities.add("Krakow-Kazimierz");
-//			cities.add("Paris - Marais");
-//			cities.add("Paris - Beaubourg");
-//			cities.add("Paris - Louvre");
 		
 		Query<City> cityQuery = dao.ofy().query(City.class);
 		
@@ -281,6 +275,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
+		List<String> cityList = loadCities();
+		
 		for ( Restaurant r : restaurants ) {
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
@@ -307,6 +303,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setLogoImages(logoImages);
 			r.setMenuImages(menuImages);
 			r.setProfileImages(profileImages);
+			
+			
+			
+			
 		}
 		
 		return restaurants;

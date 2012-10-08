@@ -17,7 +17,7 @@ public class Restaurant implements Serializable {
 	private String name;
 	private String address;
 	private String city;
-	private String cityId;
+	private long cityId;
 	private String district;
 	private String lng;
 	private String lat;
@@ -27,6 +27,15 @@ public class Restaurant implements Serializable {
 	private List<ImageBlob> profileImages;
 	/** Lists of url's with board images */
 	private List<ImageBlob> logoImages;
+	public long getCityId() {
+		return cityId;
+	}
+
+
+	public void setCityId(long cityId) {
+		this.cityId = cityId;
+	}
+
 	/** Lists of url's with main images*/
 	private List<ImageBlob> menuImages;
 	
