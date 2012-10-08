@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.client.services;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
@@ -25,6 +26,8 @@ public interface StoreServiceAsync {
 	void clearStore(AsyncCallback<Void> callback);
 
 	void uploadRestaurants(String JSON, AsyncCallback<String> callback);
+
+	void addCity(String cityName, AsyncCallback<Void> callback);
 
 	
 

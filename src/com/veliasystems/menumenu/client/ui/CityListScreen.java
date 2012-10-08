@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -27,7 +28,6 @@ public class CityListScreen extends JQMPage{
 	JQMButton addButton;
 	JQMList list;
 	JQMButton backButton;
-
 	
 	Label label = new Label();
 	
@@ -70,7 +70,17 @@ public class CityListScreen extends JQMPage{
 			}
 		});
 	    
+	    footer = new JQMFooter();
+	    footer.setFixed(true);
+	    footer.setWidth("100%");
+	    add(footer);
 	   
+	    addButton = new JQMButton(Customization.ADD_CITY, new AddCity(), Transition.SLIDE);
+	    addButton.setWidth("100%");
+	    addButton.setIcon(DataIcon.PLUS);
+	    addButton.setIconPos(IconPos.TOP);
+	    
+	    footer.add(addButton);
 	        
 	}
 	

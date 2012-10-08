@@ -17,6 +17,7 @@ public class Restaurant implements Serializable {
 	private String name;
 	private String address;
 	private String city;
+	private String cityId;
 	private String district;
 	private String lng;
 	private String lat;

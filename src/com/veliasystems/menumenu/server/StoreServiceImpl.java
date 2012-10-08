@@ -28,6 +28,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -44,14 +45,26 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public List<String> loadCities() {
-		List<String> cities = new ArrayList<String>();
+//		List<String> cities = new ArrayList<String>();
+//		
+//			cities.add("Krakow-Kazimierz");
+//			cities.add("Paris - Marais");
+//			cities.add("Paris - Beaubourg");
+//			cities.add("Paris - Louvre");
 		
-			cities.add("Krakow-Kazimierz");
-			cities.add("Paris - Marais");
-			cities.add("Paris - Beaubourg");
-			cities.add("Paris - Louvre");
-			
-		return cities;
+		Query<City> cityQuery = dao.ofy().query(City.class);
+		
+		if(cityQuery == null) return new ArrayList<String>();
+		
+		List<String> cityListString = new ArrayList<String>();
+		
+		List<City> cityList = cityQuery.list();
+		
+		for (City city : cityList) {
+			cityListString.add(city.getCity());
+		}
+		
+		return cityListString;
 	}
 	
 	
@@ -411,6 +424,16 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			return e.toString();
 		}
 		return response;
+	}
+
+
+	@Override
+	public void addCity(String cityName) {
+		
+		City c = new City();
+		c.setCity(cityName);
+		dao.ofy().put(c);
+		
 	}
 	
 	

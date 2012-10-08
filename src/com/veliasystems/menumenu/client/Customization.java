@@ -30,6 +30,9 @@ public class Customization {
 	public static final String EMPTY_JSON = "Puste dane";
 	public static final String CITY_ERROR = "Błedne miasto";
 	public static final String DOUBLE_RESTAURANT = "Restauracja istnieje";
+	public static final String ADD_CITY = "Dodaj miasto";
+	public static final String SAVE = "Zapisz";
+	public static final String WRONG_CITY_NAME = "Nazwa musi zawierać '-' ";
 	public static final String HOST_URL = "http://restauracje-cms.appspot.com/";	
 	
 };
