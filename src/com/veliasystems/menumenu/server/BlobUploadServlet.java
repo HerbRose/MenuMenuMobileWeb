@@ -1,9 +1,14 @@
 package com.veliasystems.menumenu.server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -19,6 +24,12 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.Transform;
+import com.google.appengine.api.urlfetch.FetchOptions;
+import com.google.appengine.api.urlfetch.HTTPHeader;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.URLFetchService;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.googlecode.objectify.Key;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -102,30 +113,30 @@ public class BlobUploadServlet extends HttpServlet {
  //   	System.out.println("BlobUploadServlet::storeImageBlob");
     	
 		ImageBlob imageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
-		
+			
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
         ImagesService imageService = ImagesServiceFactory.getImagesService();
-        
-        /*
-        Transform resize;
-        
-        if (imageType.equalsIgnoreCase(ImageType.LOGO.name())) {
-        	resize = ImagesServiceFactory.makeResize(220, 220, false);
-        } 
-        else if (imageType.equalsIgnoreCase(ImageType.MENU.name())) {
-            	resize = ImagesServiceFactory.makeResize(220, 500, false);
-            }	
-        else {
-        	resize = ImagesServiceFactory.makeResize(420, 280, false);
-        }
-        
-        Image newImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
-        */
         
         Transform dummy = ImagesServiceFactory.makeRotate(360);
         Image newImage = imageService.applyTransform( dummy, image );
         
-        
+//        int ratio = image.getWidth() / 220;
+//        
+//        Transform resize;
+//        
+//        if (imageType.equalsIgnoreCase(ImageType.LOGO.name())) {
+//        	resize = ImagesServiceFactory.makeResize(220, newImage.getHeight() / ratio);
+//        } 
+//        else if (imageType.equalsIgnoreCase(ImageType.MENU.name())) {
+//            	resize = ImagesServiceFactory.makeResize(220, newImage.getHeight() / ratio);
+//            }	
+//        else {
+//        	resize = ImagesServiceFactory.makeResize(420, 280);
+//        }
+//    
+//        Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
+//       
+    
 		imageBlob.setWidth(newImage.getWidth());
 		imageBlob.setHeight(newImage.getHeight());
 		
@@ -133,9 +144,8 @@ public class BlobUploadServlet extends HttpServlet {
 		
 //		System.out.println("Blob saved: " + key.getKind() + ", " + key.getName() + ", blobKey: " + blobKey.getKeyString());
 		
+		
 	}
     
-    
-    
-	
+  
 }
