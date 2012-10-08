@@ -275,7 +275,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
-		List<String> cityList = loadCities();
+		List<City> cityList = dao.ofy().query(City.class).list();
 		
 		for ( Restaurant r : restaurants ) {
 			List<ImageBlob> images = blobService.getAllImages(r);
@@ -306,7 +306,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			
 			
 			
-			
+			for (City item : cityList) {			
+					if(r.getCity().equalsIgnoreCase(item.getCity())){
+						r.setCityId(item.getId());
+					}	
+			}			
+					
 		}
 		
 		return restaurants;

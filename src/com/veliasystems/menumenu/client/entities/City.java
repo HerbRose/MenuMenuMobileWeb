@@ -33,6 +33,21 @@ public class City implements Serializable{
 	}
 	
 	
-	
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(!(obj instanceof City)) return false;
+		
+		City c = (City) obj;
+		
+		if(this.getCity().equalsIgnoreCase(c.getCity())){
+			return true;
+		}
+		return false;
+	}
 	
 }
