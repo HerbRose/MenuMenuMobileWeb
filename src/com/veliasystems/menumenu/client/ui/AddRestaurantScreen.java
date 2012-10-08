@@ -44,6 +44,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	ListBox cityList = new ListBox();
 	Label warning = new Label();
 	
+	String city;
 	Restaurant restaurant;
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
@@ -103,8 +104,8 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 				
 		}
 	}
-
-	public AddRestaurantScreen() {
+	
+	private void init(boolean isToCity){
 		
 		setContentHeader();
 		setButtons();
@@ -121,37 +122,64 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 		cityLabel.setText(Customization.CITYONE + ":");
 		
 		content.add(cityLabel);	
-		
-		storeService.loadCities(new AsyncCallback<List<String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void onSuccess(List<String> result) {
-				// TODO Auto-generated method stub
-				for(String item: result){
-					cityList.addItem(item);
-					content.add(cityList);
+		if(!isToCity){
+			storeService.loadCities(new AsyncCallback<List<String>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
 				}
-				nameLabel = new Label();
-				nameLabel.setText(Customization.RESTAURANTNAME + ":");
-				
-				content.add(nameLabel);	
-				nameText.setTitle(Customization.RESTAURANTNAME);
-				
-				content.add(nameText);		
-				adressLabel = new Label();
-				adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-				
-				content.add(adressLabel);
-				adressText.setTitle(Customization.RESTAURANTADRESS);
-				
-				content.add(adressText);	
-				add(content);	
-			}
-		});
+				@Override
+				public void onSuccess(List<String> result) {
+					// TODO Auto-generated method stub
+					for(String item: result){
+						cityList.addItem(item);
+						content.add(cityList);
+					}
+					
+					setLabels();
+				}
+			});
+		}
+		
+		if(isToCity){
+			cityList.addItem(city);
+			content.add(cityList);
+			setLabels();
+		}
+	
+		
+	}	
+	
+	private void setLabels(){
+		
+		nameLabel = new Label();
+		nameLabel.setText(Customization.RESTAURANTNAME + ":");
+		
+		content.add(nameLabel);	
+		nameText.setTitle(Customization.RESTAURANTNAME);
+		
+		content.add(nameText);		
+		adressLabel = new Label();
+		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
+		
+		content.add(adressLabel);
+		adressText.setTitle(Customization.RESTAURANTADRESS);
+		
+		content.add(adressText);	
+		add(content);	
+	}
+	
+	public AddRestaurantScreen(String city){
+		this.city = city;
+		init(true);
+	}
+
+	
+	
+	public AddRestaurantScreen() {
+		
+		init(false);
 	
 	}
 	

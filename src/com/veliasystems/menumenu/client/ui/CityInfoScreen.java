@@ -11,6 +11,7 @@ import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.JQMPanel;
+import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -76,7 +77,7 @@ public class CityInfoScreen extends JQMPage {
 		content.add(restList);
 		
 		 	footer = new JQMFooter();
-		    addButton = new JQMButton(Customization.ADDRESTAURANT);
+		    addButton = new JQMButton(Customization.ADDRESTAURANT, new AddRestaurantScreen(title), Transition.SLIDE);
 		    addButton.setWidth("100%");
 		    addButton.setIcon(DataIcon.PLUS);
 		    addButton.setIconPos(IconPos.TOP);
