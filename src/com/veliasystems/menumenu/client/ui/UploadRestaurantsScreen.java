@@ -5,10 +5,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
+import com.sksamuel.jqm4gwt.DataIcon;
+import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -25,6 +27,7 @@ public class UploadRestaurantsScreen extends JQMPage implements HasClickHandlers
 	JQMButton backButton;
 	JQMButton uploadButton;
 	Label label = new Label(Customization.EMPTY_JSON);
+	Image jsonImage;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
@@ -110,15 +113,23 @@ public class UploadRestaurantsScreen extends JQMPage implements HasClickHandlers
 		
 		jsonArea = new TextArea();
 		jsonArea.setHeight("400px");
-		jsonArea.setWidth("400px");
+		jsonArea.setWidth("50%");
+		
+		jsonImage = new Image("img/goodJson.png");
+		jsonImage.setStyleName("goodJson");
+		add(jsonImage);
 		add(jsonArea);
+		
 		
 		footer = new JQMFooter();
 		uploadButton = new JQMButton(Customization.UPLOAD);
-		add(uploadButton);
+		uploadButton.setWidth("100%");
+		uploadButton.setIcon(DataIcon.FORWARD);
+		uploadButton.setIconPos(IconPos.TOP);
 		
 		footer.setFixed(true);
 		add(footer);
+		footer.add(uploadButton);
 	}
 	
 	private boolean validate(){
