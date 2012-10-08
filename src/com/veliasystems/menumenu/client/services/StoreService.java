@@ -29,4 +29,6 @@ void saveRestaurant( Restaurant r );
 	void clearStore();
 	String uploadRestaurants(String JSON);
 	void addCity(String cityName);
+
+	Restaurant loadRestaurant(Long id);
 }

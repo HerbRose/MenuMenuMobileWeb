@@ -273,6 +273,20 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return getImageLists( restQuery.filter("city =", city).order("name").list() );
 	}
 	
+	@Override
+	public Restaurant loadRestaurant( Long id ){
+		
+		Restaurant restaurantTmp = dao.ofy().query(Restaurant.class).filter("id", id).get();
+		
+		if(restaurantTmp != null){
+			List<Restaurant> listTmp = new ArrayList<Restaurant>();
+			listTmp.add(restaurantTmp);
+			restaurantTmp = getImageLists(listTmp).get(0);
+		}
+		
+		return restaurantTmp;
+	}
+	
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
 		List<City> cityList = dao.ofy().query(City.class).list();

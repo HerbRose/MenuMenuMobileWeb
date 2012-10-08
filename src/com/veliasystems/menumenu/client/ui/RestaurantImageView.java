@@ -1,6 +1,9 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.Date;
+
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -15,6 +18,7 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
@@ -75,6 +79,16 @@ public class RestaurantImageView extends JQMPage{
 			addToContent(new SwipeView(restaurant, ImageType.LOGO , this) );
 			loaded = true;
 		}
+		
+		if(Cookies.getCookie(R.lastPage) != null){
+			Cookies.removeCookie(R.lastPage);
+		}
+		
+		Date data = new Date();
+		Long milisec = data.getTime();
+		milisec += (1000 * 5 * 60); 
+		Cookies.setCookie(R.lastPage, restaurant.getId()+"", new Date(milisec));
+		
 	};
 	public RestaurantImageView() {
 		// TODO Auto-generated constructor stub

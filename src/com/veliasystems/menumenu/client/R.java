@@ -7,5 +7,6 @@ public class R {
 	
 	public final static String UTF8 = "UTF-8";
 	public final static String loggedIn = "loggedIn";
+	public final static String lastPage = "lastPage";
 	
 }

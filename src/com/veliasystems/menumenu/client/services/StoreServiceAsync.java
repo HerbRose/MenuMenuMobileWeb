@@ -29,6 +29,8 @@ public interface StoreServiceAsync {
 
 	void addCity(String cityName, AsyncCallback<Void> callback);
 
+	void loadRestaurant(Long id, AsyncCallback<Restaurant> callback);
+
 	
 
 	
