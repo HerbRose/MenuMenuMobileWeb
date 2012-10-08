@@ -26,6 +26,7 @@ public class CityInfoScreen extends JQMPage {
 	
 	JQMHeader header;
 	JQMFooter footer;
+	JQMButton addButton;
 	JQMButton removeButton;
 	JQMButton saveButton;
 	JQMButton backButton;
@@ -73,6 +74,16 @@ public class CityInfoScreen extends JQMPage {
 	
 		add(content);
 		content.add(restList);
+		
+		 	footer = new JQMFooter();
+		    addButton = new JQMButton(Customization.ADDRESTAURANT);
+		    addButton.setWidth("100%");
+		    addButton.setIcon(DataIcon.PLUS);
+		    addButton.setIconPos(IconPos.TOP);
+		    footer.add(addButton);
+		    footer.setFixed(true);
+		    footer.setWidth("100%");
+		    add(footer);
 		
 	}
 	
