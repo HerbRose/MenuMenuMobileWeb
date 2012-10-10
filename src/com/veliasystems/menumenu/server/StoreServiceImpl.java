@@ -161,7 +161,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		r.setLogoImages(null);
+		r.setMenuImages(null);
+		r.setProfileImages(null);
 		dao.ofy().put(r);
 //		System.out.println("saved succes: " + r.getName());
 	}
