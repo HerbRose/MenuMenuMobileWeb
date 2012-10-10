@@ -180,8 +180,13 @@
 }
 #tooltip{
 	position: absolute;
-	top: 50px;
+	top: 150px;
 	z-index: 20;
+}
+
+.toolPanel{
+	width: 500px;
+	top: 0px;
 }
 
 .jsonArea{
