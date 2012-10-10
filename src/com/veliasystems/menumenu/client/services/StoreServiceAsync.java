@@ -31,6 +31,8 @@ public interface StoreServiceAsync {
 
 	void loadRestaurant(Long id, AsyncCallback<Restaurant> callback);
 
+	void loadCitiesEntity(AsyncCallback<List<City>> callback);
+
 	
 
 	

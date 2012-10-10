@@ -31,4 +31,6 @@ void saveRestaurant( Restaurant r );
 	void addCity(String cityName);
 
 	Restaurant loadRestaurant(Long id);
+
+	List<City> loadCitiesEntity();
 }
