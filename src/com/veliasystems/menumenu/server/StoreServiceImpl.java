@@ -60,6 +60,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return cityListString;
 	}
+	@Override
+	public List<City> loadCitiesEntity() {
+		return dao.ofy().query(City.class).list();
+	}
 	
 	
 	@Override
@@ -456,7 +460,24 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(c);
 		
 	}
-	
+	/**
+	 * filling field cityId in Restaurant.java. Comparing restaurant.getCity() with city.getCity(), if equals cityId in restaurant is filling by cityId 
+	 * 
+	 */
+	public void fillCityId(){
+		List <Restaurant> restaurants = loadRestaurants();
+		List<City> cities = loadCitiesEntity();
+		
+		for (Restaurant restaurant : restaurants) {
+			for (City city : cities) {
+				if(restaurant.getCity().equals(city.getCity())){
+					restaurant.setCityId(city.getId());
+					saveRestaurant(restaurant, false);
+					continue;
+				}
+			}
+		}
+	}
 	
 	
 }
