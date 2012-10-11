@@ -7,4 +7,9 @@
         <property name="name" direction="asc"/>
     </datastore-index>
 
+    <datastore-index kind="ImageBlob" ancestor="false" source="manual">
+        <property name="restId" direction="asc"/>
+        <property name="dateCreated" direction="desc"/>
+    </datastore-index>
+
 </datastore-indexes>
