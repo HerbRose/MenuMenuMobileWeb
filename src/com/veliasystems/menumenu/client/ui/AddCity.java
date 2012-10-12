@@ -71,6 +71,11 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 		init();
 	}
 	
+	@Override
+	protected void onPageShow() {
+		// TODO Auto-generated method stub
+		nameCity.setText("");
+	}
 	private void init(){
 		header = new  JQMHeader(Customization.ADD_CITY);
 		header.setFixed(true);

@@ -184,6 +184,12 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	
 	}
 	
+	@Override
+	protected void onPageShow() {
+		nameText.setText("");
+		adressText.setText("");
+	}
+	
 	private void setContentHeader(){
 		header = new JQMHeader(Customization.RESTAURANTS);
 		header.setFixed(true);
