@@ -56,7 +56,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 				RestaurantController.getInstance().setRestaurants(restaurantsFromServer);
 				CityController.getInstance().setCities(citiesFromServer);
 				
-				Pages.PAGE_CITY_INFO = new CityInfoScreen();
+//				Pages.PAGE_CITY_INFO = new CityInfoScreen();
 				Pages.PAGE_CITY_LIST = new CityListScreen();
 				
 				Pages.PAGE_ADD_RESTAURANT = new AddRestaurantScreen();

@@ -18,18 +18,20 @@ import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class RestaurantsListScreen extends JQMPage {
+public class RestaurantsListScreen extends JQMPage implements IObserver {
 	  
 	JQMHeader header;
 	JQMFooter footer;
 	JQMButton addButton;
 	JQMButton uploadButton;
-	JQMList list = new JQMList();
+	JQMList restaurantList = new JQMList();
 	JQMButton backButton;
 	
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
-
+	private List<Restaurant> restaurants;
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	public RestaurantsListScreen() {
+		
+		restaurantController.addObserver(this);
 		
 		header = new JQMHeader(Customization.RESTAURANTS);
 		header.setFixed(true);
@@ -43,24 +45,11 @@ public class RestaurantsListScreen extends JQMPage {
 		header.setBackButton(backButton);
 		add(header);
 	    
-//	    storeService.loadRestaurants(new AsyncCallback<List<Restaurant>>() {
-//			
-//			@Override
-//			public void onSuccess(List<Restaurant> result) {
-//				// TODO Auto-generated method stub
-//				addRestaurants(result);			
-//			}
-//			
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//				showError();
-//			}
-//		});
+	    addRestaurants(restaurantController.getRestaurantsList());
+		restaurants = restaurantController.getRestaurantsList();
+	    addRestaurants(restaurants);
 	    
-	    addRestaurants(RestaurantController.getInstance().getRestaurantsList());
-	    
-	    add(list);
+	    add(restaurantList);
 	    
 	    addButton = new JQMButton(Customization.ADDRESTAURANT, Pages.PAGE_ADD_RESTAURANT);
 	    addButton.setIcon(DataIcon.PLUS);
@@ -96,7 +85,7 @@ public class RestaurantsListScreen extends JQMPage {
 				
 			}
 			
-			this.list.addItem(item.getName(), restaurantView);
+			this.restaurantList.addItem(item.getName(), restaurantView);
 		}
 	}
 	private void showError(){
@@ -106,10 +95,29 @@ public class RestaurantsListScreen extends JQMPage {
 	}
 	@Override
 	protected void onPageShow() {
-		// TODO Auto-generated method stub
 		super.onPageShow();
 		if(Cookies.getCookie(R.lastPage) != null){
 			Cookies.removeCookie(R.lastPage);
 		}
+		List<Restaurant> newRestaurants = restaurantController.getRestaurantsList();
+		
+		if(restaurants.size() != newRestaurants.size() ){
+			restaurants = newRestaurants;
+			refreshRestaurantList();
+		}
 	}
+	@Override
+	public void onChange() {
+		
+	}
+
+	private void refreshRestaurantList() {
+		
+		restaurantList.clear();
+		addRestaurants(restaurants);
+		restaurantList.refresh();
+		
+	}
+	
+	
 }
