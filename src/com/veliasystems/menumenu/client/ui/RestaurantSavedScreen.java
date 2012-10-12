@@ -13,8 +13,6 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 class LoadingStartWidget extends JQMWidget {
 	
@@ -70,7 +68,7 @@ public class RestaurantSavedScreen extends JQMPage {
 	JQMContent content;
 	
 	
-	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private void init(){
 		header = new JQMHeader(Customization.RESTAURANTSAVED);

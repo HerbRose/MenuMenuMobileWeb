@@ -21,6 +21,9 @@ import com.sksamuel.jqm4gwt.JQMPanel;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -47,7 +50,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	String city;
 	Restaurant restaurant;
 	
-	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -83,22 +86,23 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 				
 				restaurant.setAddress(adressText.getText());			
 				int index = cityList.getSelectedIndex();			
-				restaurant.setCity(cityList.getItemText(index));				
-				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
-					
-					@Override
-					public void onSuccess(Void result) {
-						// TODO Auto-generated method stub
-						System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress());
-						com.google.gwt.user.client.Window.Location.reload();
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
+				restaurant.setCity(cityList.getItemText(index));		
+//				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
+//					
+//					@Override
+//					public void onSuccess(Void result) {
+//						// TODO Auto-generated method stub
+//						//System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress()); // unused in appspot 
+//						//com.google.gwt.user.client.Window.Location.reload();
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//				});
+				RestaurantController.getInstance().saveRestaurant(restaurant);
 				
 			}
 				
@@ -123,31 +127,39 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 		
 		content.add(cityLabel);	
 		if(!isToCity){
-			storeService.loadCities(new AsyncCallback<List<String>>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-				@Override
-				public void onSuccess(List<String> result) {
-					// TODO Auto-generated method stub
-					for(String item: result){
-						cityList.addItem(item);
-						content.add(cityList);
-					}
-					
-					setLabels();
-				}
-			});
+//			storeService.loadCities(new AsyncCallback<List<String>>() {
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					// TODO Auto-generated method stub
+//					
+//				}
+//				@Override
+//				public void onSuccess(List<String> result) {
+//					// TODO Auto-generated method stub
+//					for(String item: result){
+//						cityList.addItem(item);
+//						content.add(cityList); // -??????????????? 
+//					}
+//					
+//					setLabels();
+//				}
+//			});
+			for (City city : CityController.getInstance().getCitiesList()) {
+				cityList.addItem(city.getCity());
+				content.add(cityList);
+			}
+			
 		}
+		
+		
+		
 		
 		if(isToCity){
 			cityList.addItem(city);
 			content.add(cityList);
-			setLabels();
+			//setLabels();
 		}
-	
+		setLabels();
 		
 	}	
 	

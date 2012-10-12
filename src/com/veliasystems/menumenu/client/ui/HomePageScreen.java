@@ -20,6 +20,7 @@ public class HomePageScreen extends JQMPage{
 	
 	
 	public HomePageScreen(){
+		
 		header = new JQMHeader(Customization.APPNAME);
 		header.setFixed(true);
 		header.setText(Customization.MAINTITLE);

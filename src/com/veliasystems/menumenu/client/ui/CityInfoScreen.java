@@ -34,10 +34,10 @@ public class CityInfoScreen extends JQMPage {
 	JQMButton showRestaurant;
 	JQMList restList;
 	JQMPanel content;
-	private String title;
+	private String title; //city name or Customization.CITY
 	
 
-	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private void init(){
 		backButton = new JQMButton(Customization.BACK);
@@ -54,25 +54,25 @@ public class CityInfoScreen extends JQMPage {
 		restList = new JQMList();
 		
 				
-				storeService.loadRestaurants(header.getText(), new AsyncCallback<List<Restaurant>>() {
-					
-					@Override
-					public void onSuccess(List<Restaurant> result) {
-						// TODO Auto-generated method stub
-						if(result.size() > 0){
-							
-							addRestaurants(result);
-							
-						}
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
-	
+//				storeService.loadRestaurants(header.getText(), new AsyncCallback<List<Restaurant>>() {
+//					
+//					@Override
+//					public void onSuccess(List<Restaurant> result) {
+//						// TODO Auto-generated method stub
+//						if(result.size() > 0){
+//							
+//							addRestaurants(result);
+//							
+//						}
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//				});
+		addRestaurants(RestaurantController.getInstance().getRestaurantsInCity(title));
 		add(content);
 		content.add(restList);
 		

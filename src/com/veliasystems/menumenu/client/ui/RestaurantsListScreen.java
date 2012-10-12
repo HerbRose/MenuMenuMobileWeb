@@ -2,10 +2,7 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -17,11 +14,9 @@ import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
-import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class RestaurantsListScreen extends JQMPage {
 	  
@@ -32,10 +27,10 @@ public class RestaurantsListScreen extends JQMPage {
 	JQMList list = new JQMList();
 	JQMButton backButton;
 	
-	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
-	
+//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+
 	public RestaurantsListScreen() {
-	    
+		
 		header = new JQMHeader(Customization.RESTAURANTS);
 		header.setFixed(true);
 		header.setText(Customization.RESTAURANTS);
@@ -48,20 +43,22 @@ public class RestaurantsListScreen extends JQMPage {
 		header.setBackButton(backButton);
 		add(header);
 	    
-	    storeService.loadRestaurants(new AsyncCallback<List<Restaurant>>() {
-			
-			@Override
-			public void onSuccess(List<Restaurant> result) {
-				// TODO Auto-generated method stub
-				addRestaurants(result);			
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				showError();
-			}
-		});
+//	    storeService.loadRestaurants(new AsyncCallback<List<Restaurant>>() {
+//			
+//			@Override
+//			public void onSuccess(List<Restaurant> result) {
+//				// TODO Auto-generated method stub
+//				addRestaurants(result);			
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				// TODO Auto-generated method stub
+//				showError();
+//			}
+//		});
+	    
+	    addRestaurants(RestaurantController.getInstance().getRestaurantsList());
 	    
 	    add(list);
 	    

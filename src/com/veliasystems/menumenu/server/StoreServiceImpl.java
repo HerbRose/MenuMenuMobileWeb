@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.server;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -181,7 +182,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if (trimCity) {
 			String[] split = r.getCity().split("-");
 			String city = split[0].trim();
-			System.out.println("City set to: " + city);
+			//System.out.println("City set to: " + city);
 			
 			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + city).setLanguage("en").getGeocoderRequest();
 		} else {
@@ -275,7 +276,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public List<Restaurant> loadRestaurants( String city ) {
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
-		System.out.println(restQuery.filter("city =", city).order("name").count());
+		//System.out.println(restQuery.filter("city =", city).order("name").count());
 		return getImageLists( restQuery.filter("city =", city).order("name").list() );
 	}
 	
@@ -316,7 +317,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				case PROFILE : {
 								profileImages.add(blob);
 								break; }
-				default : System.out.println("Unknown ImageType found: " + blob.getImageType().name());
+				default : //System.out.println("Unknown ImageType found: " + blob.getImageType().name());
 				}
 			}
 			
@@ -372,9 +373,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		
 //		dao.ofy().put(r);
 		
-		System.out.println(r.getName() + " " + r.getId() + " " + r.getCity());
+		//System.out.println(r.getName() + " " + r.getId() + " " + r.getCity());
 		
-		System.out.println(imageBlob.getImageType());
+		//System.out.println(imageBlob.getImageType());
 		
 		switch(imageBlob.getImageType()){
 			case PROFILE:
@@ -453,12 +454,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 
 	@Override
-	public void addCity(String cityName) {
+	public City addCity(String cityName) {
 		
 		City c = new City();
 		c.setCity(cityName);
 		dao.ofy().put(c);
-		
+		return c;
 	}
 	/**
 	 * filling field cityId in Restaurant.java. Comparing restaurant.getCity() with city.getCity(), if equals cityId in restaurant is filling by cityId 
@@ -479,5 +480,15 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 	}
 	
+	@Override
+	public Map<String, Object> getAllData(){
+		Map<String, Object> allData = new HashMap<String, Object>();
+		
+		allData.put("Restaurants", loadRestaurants());
+		allData.put("Cities", loadCitiesEntity());
+		
+		return allData;
+		
+	}
 	
 }

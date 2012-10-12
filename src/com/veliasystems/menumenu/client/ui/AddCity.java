@@ -15,12 +15,13 @@ import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class AddCity extends JQMPage implements HasClickHandlers{
 
-	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	JQMHeader header;
 	JQMButton backButton;
@@ -46,20 +47,21 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	private void meClicked(ClickEvent event){
 		if(isClicked(event, saveButton)){
 			if(validate()){
-				storeService.addCity(nameCity.getText(), new AsyncCallback<Void>() {
-					
-					@Override
-					public void onSuccess(Void result) {
-						// TODO Auto-generated method stub
-							Window.Location.reload();
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-				} );
+				CityController.getInstance().saveCity(nameCity.getText());
+//				storeService.addCity(nameCity.getText(), new AsyncCallback<Void>() {
+//					
+//					@Override
+//					public void onSuccess(Void result) {
+//						// TODO Auto-generated method stub
+//							Window.Location.reload();
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//				} );
 			}
 		}
 	}

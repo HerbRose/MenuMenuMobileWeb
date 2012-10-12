@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -28,9 +29,11 @@ void saveRestaurant( Restaurant r );
 
 	void clearStore();
 	String uploadRestaurants(String JSON);
-	void addCity(String cityName);
+	City addCity(String cityName);
 
 	Restaurant loadRestaurant(Long id);
 
 	List<City> loadCitiesEntity();
+
+	Map<String, Object> getAllData();
 }

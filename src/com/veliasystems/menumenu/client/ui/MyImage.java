@@ -5,6 +5,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DragStartEvent;
+import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
@@ -74,7 +76,7 @@ public class MyImage extends FlowPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				
 				Document.get().getElementById("load").setClassName("show");
 				storeService.setMainImage(imgBlob, new AsyncCallback<Void>() {
 					
@@ -83,13 +85,13 @@ public class MyImage extends FlowPanel {
 						Document.get().getElementById("load").setClassName("hide");
 						getImagesController().selectImage(getMe());
 						removeDomItems();
-						// TODO Auto-generated method stub
+						
 						//Window.Location.reload();
 					}
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						
 						
 					}
 				});

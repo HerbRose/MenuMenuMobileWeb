@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.City;
@@ -27,11 +28,13 @@ public interface StoreServiceAsync {
 
 	void uploadRestaurants(String JSON, AsyncCallback<String> callback);
 
-	void addCity(String cityName, AsyncCallback<Void> callback);
+	void addCity(String cityName, AsyncCallback<City> callback);
 
 	void loadRestaurant(Long id, AsyncCallback<Restaurant> callback);
 
 	void loadCitiesEntity(AsyncCallback<List<City>> callback);
+
+	void getAllData(AsyncCallback<Map<String, Object>> callback);
 
 	
 

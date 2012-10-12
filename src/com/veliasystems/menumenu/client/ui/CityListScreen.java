@@ -1,11 +1,8 @@
 package com.veliasystems.menumenu.client.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -17,8 +14,8 @@ import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.entities.City;
 
 
 
@@ -33,8 +30,8 @@ public class CityListScreen extends JQMPage{
 	
 	Label label = new Label();
 	
-	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
-	private List<String> cityList;
+//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
+	private List<City> cityList;
 	
 	public CityListScreen() {
 		
@@ -54,23 +51,26 @@ public class CityListScreen extends JQMPage{
 		list = new JQMList();
 	    list.setInset(false);
 	    
-	    storeService.loadCities(new AsyncCallback<List<String>>() {
-			
-			@Override
-			public void onSuccess(List<String> result) {
-				// TODO Auto-generated method stub
-				cityList = new ArrayList<String>();
-				cityList = result;
-				addCities(cityList);
-				add(list);	
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				showError();
-			}
-		});
+//	    storeService.loadCities(new AsyncCallback<List<String>>() {
+//			
+//			@Override
+//			public void onSuccess(List<String> result) {
+//				// TODO Auto-generated method stub
+//				cityList = new ArrayList<String>();
+//				cityList = result;
+//				addCities(cityList);
+//				add(list);	
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				// TODO Auto-generated method stub
+//				showError();
+//			}
+//		});
+	    cityList = CityController.getInstance().getCitiesList();
+	    addCities(cityList);
+	    add(list);
 	    
 	    footer = new JQMFooter();
 	    footer.setFixed(true);
@@ -86,17 +86,17 @@ public class CityListScreen extends JQMPage{
 	        
 	}
 	
-	private void addCities(List<String> list){
+	private void addCities(List<City> cities){
 		
-		for(String item: list){
-			this.list.addItem(item, new CityInfoScreen(item));
+		for(City city: cities){
+			this.list.addItem(city.getCity(), new CityInfoScreen(city.getCity()));
 		}
 	}
 	
-	private void showError(){
-		label.setText(Customization.LOADERROR);
-		this.add(label);
-	}
+//	private void showError(){
+//		label.setText(Customization.LOADERROR);
+//		this.add(label);
+//	}
 	@Override
 	protected void onPageShow() {
 		// TODO Auto-generated method stub

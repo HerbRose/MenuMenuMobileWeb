@@ -2,17 +2,17 @@ package com.veliasystems.menumenu.client.ui;
 
 public class Pages {
 	
-	public static UploadImageScreen		PAGE_UPLOAD			= new UploadImageScreen();
+	//public static UploadImageScreen		PAGE_UPLOAD			= new UploadImageScreen();
 	
-	public static CityInfoScreen		PAGE_CITY_INFO		= new CityInfoScreen();
-	public static CityListScreen		PAGE_CITY_LIST		= new CityListScreen();
+	public static CityInfoScreen		PAGE_CITY_INFO		;//= new CityInfoScreen();
+	public static CityListScreen		PAGE_CITY_LIST		;//= new CityListScreen();
 	
-	public static AddRestaurantScreen	PAGE_ADD_RESTAURANT = new AddRestaurantScreen();
-	public static RestaurantSavedScreen	PAGE_SAVE_RESTAURANT = new RestaurantSavedScreen();
-	public static RestaurantsListScreen	PAGE_RESTAURANT_LIST = new RestaurantsListScreen();
+	public static AddRestaurantScreen	PAGE_ADD_RESTAURANT ;//= new AddRestaurantScreen();
+	public static RestaurantSavedScreen	PAGE_SAVE_RESTAURANT ;//= new RestaurantSavedScreen();
+	public static RestaurantsListScreen	PAGE_RESTAURANT_LIST ;//= new RestaurantsListScreen();
 
-	public static HomePageScreen		PAGE_HOME			= new HomePageScreen();
+	public static HomePageScreen		PAGE_HOME			;//= new HomePageScreen();
 	
-	public static LoginScreen			PAGE_LOGIN			= new LoginScreen();
+	public static LoginScreen			PAGE_LOGIN			;//= new LoginScreen();
 	
 }
