@@ -48,13 +48,10 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		
 		header.setBackButton(backButton);
 		add(header);
-	    	    
-	    addRestaurants(restaurantController.getRestaurantsList());
-
-	    addRestaurants(restaurantController.getRestaurantsList());
 		restaurants = restaurantController.getRestaurantsList();
+	    	    
 	    addRestaurants(restaurants);
-	    
+
 	    add(restaurantList);
 
 	    
