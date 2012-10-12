@@ -22,13 +22,14 @@ import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
-public class RestInfoScreen extends JQMPage implements HasClickHandlers {
+public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserver {
 
 	JQMHeader header;
 	JQMFooter footer;
@@ -42,7 +43,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers {
 	Label cityLabel = new Label();
 	Label adressLabel = new Label();
 
-	ListBox cityList = new ListBox();
+	ListBox cityListBox = new ListBox();
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
 
@@ -50,11 +51,11 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers {
 	Label warning = new Label();
 
 	Restaurant restaurant;
-
+	private CityController cityController = CityController.getInstance();
 //	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
 	public RestInfoScreen(Restaurant r) {
-
+		cityController.addObserver(this);
 		setRestaurant(r);
 		init();
 
@@ -130,19 +131,19 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers {
 //			}
 //		});
 		
-		int k=0;
-		for(City city: CityController.getInstance().getCitiesList()){
-			cityList.addItem(city.getCity());
-			if(city.getCity().equalsIgnoreCase(restaurant.getCity())){
-				cityList.setSelectedIndex(k);
-			}
-			k++;
-		}
-		
+//		int k=0;
+//		for(City city: CityController.getInstance().getCitiesList()){
+//			cityListBox.addItem(city.getCity());
+//			if(city.getCity().equalsIgnoreCase(restaurant.getCity())){
+//				cityListBox.setSelectedIndex(k);
+//			}
+//			k++;
+//		}
+		addCities(cityController.getCitiesList());
 		
 		//System.out.println(restaurant.getName());
 		
-		content.add(cityList);
+		content.add(cityListBox);
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
 		content.add(nameLabel);
 		nameText.setTitle(Customization.RESTAURANTNAME);
@@ -199,7 +200,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers {
 
 			restaurant.setName(nameText.getText());
 			restaurant.setAddress(adressText.getText());
-			restaurant.setCity(cityList.getItemText(cityList.getSelectedIndex()));
+			restaurant.setCity(cityListBox.getItemText(cityListBox.getSelectedIndex()));
 			if (validate()) {
 //				storeService.saveRestaurant(restaurant,
 //						new AsyncCallback<Void>() {
@@ -265,6 +266,26 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers {
 
 		}
 		return false;
+	}
+	
+	@Override
+	public void onChange() {
+		refreshCityList();
+	}
+	private void refreshCityList(){
+		cityListBox.clear();
+		addCities(cityController.getCitiesList());
+	}
+	
+	private void addCities(List<City> cities){
+		int k=0;
+		for(City city: CityController.getInstance().getCitiesList()){
+			cityListBox.addItem(city.getCity());
+			if(city.getCity().equalsIgnoreCase(restaurant.getCity())){
+				cityListBox.setSelectedIndex(k);
+			}
+			k++;
+		}
 	}
 
 }

@@ -78,6 +78,7 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 		backButton = new JQMButton(Customization.BACK);
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
+		backButton.setBack(true);
 		header.add(backButton);
 		
 		saveButton = new JQMButton(Customization.SAVE);

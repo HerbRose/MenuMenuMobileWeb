@@ -30,9 +30,6 @@ public class RestaurantController {
 	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
 
-	public void addOserver(IObserver observer){
-		observers.add(observer);
-	}
 	
 	private RestaurantController() {
 		
