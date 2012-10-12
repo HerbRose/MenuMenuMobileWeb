@@ -15,12 +15,13 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.entities.City;
 
 
 
 
-public class CityListScreen extends JQMPage{
+public class CityListScreen extends JQMPage implements IObserver{
 	
 	JQMHeader header;
 	JQMFooter footer;
@@ -29,11 +30,13 @@ public class CityListScreen extends JQMPage{
 	JQMButton backButton;
 	
 	Label label = new Label();
-	
+	CityController cityController = CityController.getInstance();
 //	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
 	private List<City> cityList;
 	
 	public CityListScreen() {
+		
+		cityController.addObserver(this);
 		
 		header = new JQMHeader(Customization.CITY);
 		header.setFixed(true);
@@ -87,9 +90,15 @@ public class CityListScreen extends JQMPage{
 	}
 	
 	private void addCities(List<City> cities){
-		
+		CityInfoScreen cityInfoScreen;
 		for(City city: cities){
-			this.list.addItem(city.getCity(), new CityInfoScreen(city.getCity()));
+			if(CityController.cityMapView.containsKey(city.getId())){
+				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
+			}else{
+				cityInfoScreen = new CityInfoScreen(city.getCity());
+				CityController.cityMapView.put(city.getId(), cityInfoScreen);
+			}
+			list.addItem(city.getCity(), cityInfoScreen);
 		}
 	}
 	
@@ -106,4 +115,14 @@ public class CityListScreen extends JQMPage{
 		}
 	}
 
+	@Override
+	public void onChange() {
+		refreshCityList();
+	}
+	private void refreshCityList(){
+		list.clear();
+		cityList = cityController.getCitiesList();
+	    addCities(cityList);
+		list.refresh();
+	}
 }

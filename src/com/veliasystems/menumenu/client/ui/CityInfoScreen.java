@@ -2,11 +2,6 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -17,13 +12,11 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
-import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
-public class CityInfoScreen extends JQMPage {
+public class CityInfoScreen extends JQMPage implements IObserver{
 	
 	JQMHeader header;
 	JQMFooter footer;
@@ -32,14 +25,17 @@ public class CityInfoScreen extends JQMPage {
 	JQMButton saveButton;
 	JQMButton backButton;
 	JQMButton showRestaurant;
-	JQMList restList;
+	JQMList restaurantsList;
 	JQMPanel content;
 	private String title; //city name or Customization.CITY
 	
-
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
-	
-	private void init(){
+	private RestaurantController restaurantController = RestaurantController.getInstance();
+		
+	public CityInfoScreen(String city){
+		restaurantsList = new JQMList();
+		restaurantController.addObserver(this);
+		title = city;
+		
 		backButton = new JQMButton(Customization.BACK);
 		backButton.setBack(true);
 		backButton.setIcon(DataIcon.LEFT);
@@ -49,32 +45,10 @@ public class CityInfoScreen extends JQMPage {
 		header.setFixed(true);
 		add(header);
 		
-		content = new JQMPanel();
-		
-		restList = new JQMList();
-		
 				
-//				storeService.loadRestaurants(header.getText(), new AsyncCallback<List<Restaurant>>() {
-//					
-//					@Override
-//					public void onSuccess(List<Restaurant> result) {
-//						// TODO Auto-generated method stub
-//						if(result.size() > 0){
-//							
-//							addRestaurants(result);
-//							
-//						}
-//					}
-//					
-//					@Override
-//					public void onFailure(Throwable caught) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//				});
-		addRestaurants(RestaurantController.getInstance().getRestaurantsInCity(title));
-		add(content);
-		content.add(restList);
+		addRestaurants(restaurantController.getRestaurantsInCity(title));
+		
+		add(restaurantsList);
 		
 		 	footer = new JQMFooter();
 		    addButton = new JQMButton(Customization.ADDRESTAURANT, new AddRestaurantScreen(title), Transition.SLIDE);
@@ -86,22 +60,11 @@ public class CityInfoScreen extends JQMPage {
 		    footer.setWidth("100%");
 		    add(footer);
 		
-	}
-	
-	public CityInfoScreen() {
-		this.title = Customization.CITY;
-		init();
-	}
-	
-	public CityInfoScreen(String city){
-		this.title = city;
-		init();
 		
 	}
 	
-	
-	
-	private void addRestaurants(List<Restaurant> list){
+
+private void addRestaurants(List<Restaurant> list){
 		
 		for(final Restaurant item: list){
 			RestaurantImageView restaurantView;
@@ -110,11 +73,27 @@ public class CityInfoScreen extends JQMPage {
 			}
 			else{
 				restaurantView = new RestaurantImageView(item);
-				RestaurantController.restMapView.put(item.getId(), restaurantView);
-				
+				RestaurantController.restMapView.put(item.getId(), restaurantView);				
 			}
 			
-			restList.addItem(item.getName(), restaurantView);
+			restaurantsList.addItem(item.getName(), restaurantView);
 		}
 	}
+	
+	@Override
+	public void onChange() {
+		
+		
+		List<Restaurant> refreshList = restaurantController.getRestaurantsInCity(title);
+		
+		if(!refreshList.isEmpty()){
+			
+			restaurantsList.clear();
+			addRestaurants(restaurantController.getRestaurantsInCity(title));
+			
+			
+		}
+	
+	}
+	
 }

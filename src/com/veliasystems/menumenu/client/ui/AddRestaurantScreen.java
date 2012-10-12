@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -44,9 +45,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	String city;
 	Restaurant restaurant;
 	private CityController cityController = CityController.getInstance();
-	private RestaurantController restauarantController = RestaurantController.getInstance();
-	
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -142,8 +140,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 //			});
 			addCities(cityController.getCitiesList());
 			content.add(cityListBox);
-			}
-			
+		}
 		if(isToCity){
 			cityListBox.addItem(city);
 			content.add(cityListBox);
@@ -172,7 +169,9 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		add(content);	
 	}
 	
-	public AddRestaurantScreen(String city){		
+
+	public AddRestaurantScreen(String city){
+		
 		this.city = city;
 		init(true);
 	}
@@ -180,7 +179,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	
 	
 	public AddRestaurantScreen() {
-
 		cityController.addObserver(this);
 		init(false);
 	
@@ -225,7 +223,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		return false;
 	}
 
-	
+		
 	@Override
 	public void onChange() {
 		refreshCityList();

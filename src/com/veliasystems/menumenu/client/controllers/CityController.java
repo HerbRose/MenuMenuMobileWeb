@@ -12,6 +12,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.ui.CityInfoScreen;
+import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 /**
  * Singleton.
@@ -21,6 +23,7 @@ import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 public class CityController {
 
 	private List<IObserver> observers = new ArrayList<IObserver>();
+	public static Map<Long, CityInfoScreen> cityMapView = new HashMap<Long, CityInfoScreen>();
 	private static final Logger log = Logger.getLogger(CityController.class.getName());
 	private static CityController instance = null ; //instance of controller
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
@@ -94,6 +97,7 @@ public class CityController {
 			@Override
 			public void onSuccess(City result) {
 				cities.put(result.getId(), result);
+				notifyAllObservers();
 			}
 			@Override
 			public void onFailure(Throwable caught) {
