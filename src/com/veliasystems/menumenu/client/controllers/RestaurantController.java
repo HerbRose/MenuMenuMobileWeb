@@ -166,7 +166,7 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(Void result) {
 				restaurants.remove(restaurantToDelete.getId());	 //removing restaurant from our list
-				JQMContext.changePage(Pages.PAGE_HOME);
+				historyGoBack();
 				notifyAllObservers();
 			}
 			@Override
@@ -177,4 +177,9 @@ public class RestaurantController {
 		});
 		
 	}
+	
+	private static native void historyGoBack() /*-{
+	history.go(-2);
+
+}-*/;
 }
