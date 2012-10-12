@@ -99,6 +99,29 @@ public class BlobUploadServlet extends HttpServlet {
                     res.sendRedirect("/");
             } else {
 //            	  System.out.println("BlobUploadServlet::doPost: blobKey is " + blobKey.getKeyString() + ", storing.."); 
+            		
+//            		ImagesService imageService = ImagesServiceFactory.getImagesService();
+//            		Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);  		
+//  
+//                    Transform dummy = ImagesServiceFactory.makeRotate(360);
+//                    Image newImage = imageService.applyTransform( dummy, image );
+//                    
+//                    //int ratio = newImage.getWidth() / 220;
+//                    
+//            		Transform resize;
+//            		
+//            		 if (imageType.equalsIgnoreCase(ImageType.LOGO.name())) {
+//            	        	resize = ImagesServiceFactory.makeResize(220, 300);
+//            	        } 
+//            	        else if (imageType.equalsIgnoreCase(ImageType.MENU.name())) {
+//            	            	resize = ImagesServiceFactory.makeResize(220, 300);
+//            	            }	
+//            	        else {
+//            	        	resize = ImagesServiceFactory.makeResize(420, 280);
+//            	        }
+//            		
+//            		Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
+            		
             		storeImageBlob( restId, imageType, blobKey );
                     res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
             }
@@ -106,6 +129,13 @@ public class BlobUploadServlet extends HttpServlet {
     }
     
     
+    public HTTPRequest makeResize(String restId, Image image, ImageType imageType, HttpServletRequest req){
+    	
+    	String uploadUrl = blobstoreService.createUploadUrl("/blobUpload?restId=" + restId + "&imageType=" + imageType.name());
+    	
+		return null;
+    	
+    }
     
     
     void storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
@@ -135,7 +165,8 @@ public class BlobUploadServlet extends HttpServlet {
 //        }
 //    
 //        Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
-//       
+     
+        
     
 		imageBlob.setWidth(newImage.getWidth());
 		imageBlob.setHeight(newImage.getHeight());

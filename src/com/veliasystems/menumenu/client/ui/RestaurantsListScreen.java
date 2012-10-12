@@ -24,11 +24,15 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 	JQMFooter footer;
 	JQMButton addButton;
 	JQMButton uploadButton;
+
 	JQMList restaurantList = new JQMList();
+
 	JQMButton backButton;
 	
+
 	private List<Restaurant> restaurants;
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+
 	public RestaurantsListScreen() {
 		
 		restaurantController.addObserver(this);
@@ -44,12 +48,15 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		
 		header.setBackButton(backButton);
 		add(header);
-	    
+	    	    
+	    addRestaurants(restaurantController.getRestaurantsList());
+
 	    addRestaurants(restaurantController.getRestaurantsList());
 		restaurants = restaurantController.getRestaurantsList();
 	    addRestaurants(restaurants);
 	    
 	    add(restaurantList);
+
 	    
 	    addButton = new JQMButton(Customization.ADDRESTAURANT, Pages.PAGE_ADD_RESTAURANT);
 	    addButton.setIcon(DataIcon.PLUS);
@@ -81,11 +88,12 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 			}
 			else{
 				restaurantView = new RestaurantImageView(item);
-				RestaurantController.restMapView.put(item.getId(), restaurantView);
-				
+				RestaurantController.restMapView.put(item.getId(), restaurantView);				
 			}
 			
+
 			this.restaurantList.addItem(item.getName(), restaurantView);
+
 		}
 	}
 	private void showError(){
@@ -106,6 +114,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 			refreshRestaurantList();
 		}
 	}
+
 	@Override
 	public void onChange() {
 		
@@ -119,5 +128,5 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		
 	}
 	
-	
+
 }

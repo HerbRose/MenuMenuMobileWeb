@@ -12,11 +12,10 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class CityInfoScreen extends JQMPage {
+public class CityInfoScreen extends JQMPage{
 	
 	JQMHeader header;
 	JQMFooter footer;
@@ -25,12 +24,15 @@ public class CityInfoScreen extends JQMPage {
 	JQMButton saveButton;
 	JQMButton backButton;
 	JQMButton showRestaurant;
+
 	JQMList restaurantList = new JQMList();;
+
 	JQMPanel content;
 	private String title; //city name or Customization.CITY
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private List<Restaurant> restaurants;
 	
+
     public CityInfoScreen(String city){
         restaurantList = new JQMList();
         
@@ -65,6 +67,7 @@ public class CityInfoScreen extends JQMPage {
 	
 	
 	private void addRestaurants(List<Restaurant> list){
+
 		
 		for(final Restaurant item: list){
 			RestaurantImageView restaurantView;
@@ -73,11 +76,16 @@ public class CityInfoScreen extends JQMPage {
 			}
 			else{
 				restaurantView = new RestaurantImageView(item);
+
 				RestaurantController.restMapView.put(item.getId(), restaurantView);
+
 			}
+
 			restaurantList.addItem(item.getName(), restaurantView);
+
 		}
 	}
+
 
 	@Override
 	protected void onPageShow() {
@@ -94,4 +102,5 @@ public class CityInfoScreen extends JQMPage {
 		addRestaurants(restaurants);
 		restaurantList.refresh();	
 	}
+
 }

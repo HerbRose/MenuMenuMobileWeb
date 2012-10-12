@@ -5,12 +5,8 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -26,8 +22,6 @@ import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IObserver{
 	
@@ -51,7 +45,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	String city;
 	Restaurant restaurant;
 	private CityController cityController = CityController.getInstance();
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -148,7 +141,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 			addCities(cityController.getCitiesList());
 			content.add(cityListBox);
 		}
-		
 		if(isToCity){
 			cityListBox.addItem(city);
 			content.add(cityListBox);
@@ -177,6 +169,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		add(content);	
 	}
 	
+
 	public AddRestaurantScreen(String city){
 		
 		this.city = city;
@@ -189,6 +182,12 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		cityController.addObserver(this);
 		init(false);
 	
+	}
+	
+	@Override
+	protected void onPageShow() {
+		nameText.setText("");
+		adressText.setText("");
 	}
 	
 	private void setContentHeader(){
@@ -229,7 +228,8 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		}
 		return false;
 	}
-	
+
+		
 	@Override
 	public void onChange() {
 		refreshCityList();
