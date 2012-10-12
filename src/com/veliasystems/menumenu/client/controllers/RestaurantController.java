@@ -29,10 +29,10 @@ public class RestaurantController {
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
+	
+	
 
-	public void addOserver(IObserver observer){
-		observers.add(observer);
-	}
+
 	
 	private RestaurantController() {
 		
@@ -88,6 +88,7 @@ public class RestaurantController {
 		for (Long restaurantId : getRestaurantsKey()) {
 			restaurantsList.add(restaurants.get(restaurantId));
 		}
+		
 		return restaurantsList;
 	}
 	/**
@@ -132,7 +133,6 @@ public class RestaurantController {
 				restaurants.add(restaurant);
 			}
 		}
-		
 		return restaurants;
 	}
 	
@@ -142,12 +142,12 @@ public class RestaurantController {
 	}
 	
 	public void saveRestaurant(Restaurant restaurant){
-		
 		final Restaurant restaurantToSave = restaurant;
 		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
+				notifyAllObservers();
 			}
 			@Override
 			public void onFailure(Throwable caught) {	

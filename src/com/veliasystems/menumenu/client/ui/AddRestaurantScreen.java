@@ -2,15 +2,10 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -22,13 +17,12 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
-public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
+public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IObserver{
 	
 
 	JQMHeader header;
@@ -44,11 +38,13 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
 	
-	ListBox cityList = new ListBox();
+	ListBox cityListBox = new ListBox();
 	Label warning = new Label();
 	
 	String city;
 	Restaurant restaurant;
+	private CityController cityController = CityController.getInstance();
+	private RestaurantController restauarantController = RestaurantController.getInstance();
 	
 //	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
@@ -85,8 +81,8 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 				restaurant.setName(nameText.getText());
 				
 				restaurant.setAddress(adressText.getText());			
-				int index = cityList.getSelectedIndex();			
-				restaurant.setCity(cityList.getItemText(index));		
+				int index = cityListBox.getSelectedIndex();			
+				restaurant.setCity(cityListBox.getItemText(index));		
 //				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
 //					
 //					@Override
@@ -144,19 +140,13 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 //					setLabels();
 //				}
 //			});
-			for (City city : CityController.getInstance().getCitiesList()) {
-				cityList.addItem(city.getCity());
-				content.add(cityList);
+			addCities(cityController.getCitiesList());
+			content.add(cityListBox);
 			}
 			
-		}
-		
-		
-		
-		
 		if(isToCity){
-			cityList.addItem(city);
-			content.add(cityList);
+			cityListBox.addItem(city);
+			content.add(cityListBox);
 			//setLabels();
 		}
 		setLabels();
@@ -182,7 +172,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 		add(content);	
 	}
 	
-	public AddRestaurantScreen(String city){
+	public AddRestaurantScreen(String city){		
 		this.city = city;
 		init(true);
 	}
@@ -190,7 +180,8 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 	
 	
 	public AddRestaurantScreen() {
-		
+
+		cityController.addObserver(this);
 		init(false);
 	
 	}
@@ -232,6 +223,22 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers{
 			
 		}
 		return false;
+	}
+
+	
+	@Override
+	public void onChange() {
+		refreshCityList();
+	}
+	private void refreshCityList(){
+		cityListBox.clear();
+		addCities(cityController.getCitiesList());
+	}
+	
+	private void addCities(List<City> cities){
+		for(City city: CityController.getInstance().getCitiesList()){
+			cityListBox.addItem(city.getCity());
+		}
 	}
 	
 }
