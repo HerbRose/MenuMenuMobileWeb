@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.services.StoreService;
@@ -98,6 +99,7 @@ public class CityController {
 			public void onSuccess(City result) {
 				cities.put(result.getId(), result);
 				notifyAllObservers();
+				History.back();
 			}
 			@Override
 			public void onFailure(Throwable caught) {

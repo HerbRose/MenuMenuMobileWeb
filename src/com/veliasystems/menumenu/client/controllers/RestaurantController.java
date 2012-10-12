@@ -8,10 +8,14 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.ui.Pages;
 import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 
@@ -146,6 +150,7 @@ public class RestaurantController {
 			public void onSuccess(Void result) {
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
 				notifyAllObservers();
+				History.back();
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
@@ -161,6 +166,8 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(Void result) {
 				restaurants.remove(restaurantToDelete.getId());	 //removing restaurant from our list
+				JQMContext.changePage(Pages.PAGE_HOME);
+				notifyAllObservers();
 			}
 			@Override
 			public void onFailure(Throwable caught) {
