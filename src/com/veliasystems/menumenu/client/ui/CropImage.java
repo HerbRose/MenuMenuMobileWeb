@@ -10,6 +10,7 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -480,7 +481,14 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			double topYPercentage = topC/(bckImage.getOffsetHeight()/ratioH);
 			double rightXPercentage = (leftC+widthC)/(bckImage.getOffsetWidth()/ratioW);
 			double bottomYPercentage = (topC + heightC)/(bckImage.getOffsetHeight()/ratioH);
-
+			
+			if(rightXPercentage > 1){
+				rightXPercentage = 1;
+			}
+			if(bottomYPercentage > 1){
+				bottomYPercentage = 1;
+			}
+				
 			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
 
 				@Override
