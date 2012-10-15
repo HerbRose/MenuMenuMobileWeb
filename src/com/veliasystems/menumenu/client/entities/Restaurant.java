@@ -21,6 +21,12 @@ public class Restaurant implements Serializable {
 	private String district;
 	private String lng;
 	private String lat;
+	private String mailRestaurant = "";
+	private String phoneRestaurant = "";
+	private String mailUser = "";
+	private String phoneUser = "";
+	private String nameUser = "";
+	private String surnameUser = "";
 	
 	
 	/**Lists of url's with profile images */
@@ -210,6 +216,42 @@ public class Restaurant implements Serializable {
 	}
 	public String getMainProfileImageString() {
 		return mainProfileImageString;
+	}
+	public String getMailRestaurant() {
+		return mailRestaurant;
+	}
+	public void setMailRestaurant(String mailRestaurant) {
+		this.mailRestaurant = mailRestaurant;
+	}
+	public String getPhoneRestaurant() {
+		return phoneRestaurant;
+	}
+	public void setPhoneRestaurant(String phoneRestaurant) {
+		this.phoneRestaurant = phoneRestaurant;
+	}
+	public String getMailUser() {
+		return mailUser;
+	}
+	public void setMailUser(String mailUser) {
+		this.mailUser = mailUser;
+	}
+	public String getPhoneUser() {
+		return phoneUser;
+	}
+	public void setPhoneUser(String phoneUser) {
+		this.phoneUser = phoneUser;
+	}
+	public String getNameUser() {
+		return nameUser;
+	}
+	public void setNameUser(String nameUser) {
+		this.nameUser = nameUser;
+	}
+	public String getSurnameUser() {
+		return surnameUser;
+	}
+	public void setSurnameUser(String surnameUser) {
+		this.surnameUser = surnameUser;
 	}
 	
 	@Override

@@ -34,11 +34,22 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	Label nameLabel;
 	Label cityLabel;
 	Label adressLabel;
+	Label mailRestaurant;
+	Label phoneRestaurant;
+	Label mailUser;
+	Label phoneUser;
+	Label nameUser;
+	Label surnameUser;
 	
 	TextBox cityText = new TextBox();
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
-	
+	TextBox mailRestaurantTextBox = new TextBox();
+	TextBox phoneRestaurantTextBox = new  TextBox();
+	TextBox mailUserTextBox = new TextBox();
+	TextBox phoneUserTextBox = new TextBox();
+	TextBox nameUserTextBox = new TextBox();
+	TextBox surnameUserTextBox = new TextBox();
 	ListBox cityListBox = new ListBox();
 	Label warning = new Label();
 	
@@ -81,21 +92,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 				restaurant.setAddress(adressText.getText());			
 				int index = cityListBox.getSelectedIndex();			
 				restaurant.setCity(cityListBox.getItemText(index));		
-//				storeService.saveRestaurant(restaurant, new AsyncCallback<Void>() {
-//					
-//					@Override
-//					public void onSuccess(Void result) {
-//						// TODO Auto-generated method stub
-//						//System.out.println(restaurant.getName() + ' ' + restaurant.getCity() + ' ' + restaurant.getAddress()); // unused in appspot 
-//						//com.google.gwt.user.client.Window.Location.reload();
-//					}
-//					
-//					@Override
-//					public void onFailure(Throwable caught) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//				});
 				RestaurantController.getInstance().saveRestaurant(restaurant);
 				
 			}
@@ -121,30 +117,12 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		
 		content.add(cityLabel);	
 		if(!isToCity){
-//			storeService.loadCities(new AsyncCallback<List<String>>() {
-//				@Override
-//				public void onFailure(Throwable caught) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//				@Override
-//				public void onSuccess(List<String> result) {
-//					// TODO Auto-generated method stub
-//					for(String item: result){
-//						cityList.addItem(item);
-//						content.add(cityList); // -??????????????? 
-//					}
-//					
-//					setLabels();
-//				}
-//			});
 			addCities(cityController.getCitiesList());
 			content.add(cityListBox);
 		}
 		if(isToCity){
 			cityListBox.addItem(city);
 			content.add(cityListBox);
-			//setLabels();
 		}
 		setLabels();
 		
@@ -154,18 +132,58 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		
 		nameLabel = new Label();
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
-		
 		content.add(nameLabel);	
-		nameText.setTitle(Customization.RESTAURANTNAME);
 		
+		nameText.setTitle(Customization.RESTAURANTNAME);
 		content.add(nameText);		
+		
 		adressLabel = new Label();
 		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-		
 		content.add(adressLabel);
-		adressText.setTitle(Customization.RESTAURANTADRESS);
 		
+		adressText.setTitle(Customization.RESTAURANTADRESS);
 		content.add(adressText);	
+		
+		mailRestaurant = new Label();
+		mailRestaurant.setText(Customization.RESTAURANT_MAIL + ":");
+		content.add(mailRestaurant);
+		
+		mailRestaurantTextBox.setTitle(Customization.RESTAURANT_MAIL);
+		content.add(mailRestaurantTextBox);
+		
+		phoneRestaurant = new Label();
+		phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
+		content.add(phoneRestaurant);
+		
+		phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
+		content.add(phoneRestaurantTextBox);
+		
+		surnameUser = new Label();
+		surnameUser.setText(Customization.USER_SURNAME +":");
+		content.add(surnameUser);
+		
+		surnameUserTextBox.setTitle(Customization.USER_NAME);
+		content.add(surnameUserTextBox);
+		
+		nameUser = new Label();
+		nameUser.setText(Customization.USER_NAME + ":");
+		content.add(nameUser);
+		
+		nameUserTextBox.setTitle(Customization.USER_NAME);
+		content.add(nameUserTextBox);
+		
+		phoneUser = new Label();
+		phoneUser.setText(Customization.USER_PHONE +":");
+		content.add(phoneUser);
+		
+		phoneUserTextBox.setTitle(Customization.USER_PHONE);
+		content.add(phoneUserTextBox);
+		
+		mailUser = new Label(Customization.USER_MAIL+":");
+		content.add(mailUser);
+		
+		mailUserTextBox.setTitle(Customization.USER_MAIL);
+		content.add(mailUserTextBox);
 		add(content);	
 	}
 	

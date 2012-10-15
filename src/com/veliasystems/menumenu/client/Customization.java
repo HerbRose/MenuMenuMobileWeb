@@ -33,6 +33,12 @@ public class Customization {
 	public static final String ADD_CITY = "Dodaj miasto";
 	public static final String SAVE = "Zapisz";
 	public static final String WRONG_CITY_NAME = "Nazwa musi zawierać '-' ";
+	public static final String RESTAURANT_MAIL = "E-mail restauracji";
+	public static final String RESTAURANT_PHONE = "Telefon do restauracji";
+	public static final String USER_MAIL = "E-mail do kontaktu";
+	public static final String USER_PHONE = "Telefon do kontaktu";
+	public static final String USER_NAME = "Imię";
+	public static final String USER_SURNAME = "Nazwisko";
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
 	public static final String LOGOUT = "Logout";
 	
