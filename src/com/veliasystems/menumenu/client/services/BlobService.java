@@ -33,5 +33,9 @@ public interface BlobService extends RemoteService {
         boolean deleteBlob(ImageBlob imageBlob);
         
         void cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY);
+
+		List<ImageBlob> getImagesByType(Long restaurantId, ImageType imageType);
+
+		ImageBlob getLastUploadedImage(Long restaurantId, ImageType imageType);
         
 }

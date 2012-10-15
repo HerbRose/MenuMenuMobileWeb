@@ -42,7 +42,7 @@ h1 {
 
 .rect {
 	position: absolute;
-	border: 5px solid red;
+	border: 2px solid red;
 }
 
 .rightButtons {

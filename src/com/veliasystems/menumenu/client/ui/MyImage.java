@@ -42,10 +42,12 @@ public class MyImage extends FlowPanel {
 	Label mainLAbel;
 	String url;
 	
-	Image deleteImage;
+
+	
 	FlowPanel detailsPanel;
 	HTML detailsContent;
 	
+
 	private  boolean mainImage = false;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
@@ -92,14 +94,17 @@ public class MyImage extends FlowPanel {
 		detailsPanel.add(detailsContent);
 		detailsContent.setStyleName("detailsContent");
 		//flowPanelButtons.addStyleName("hiddenPanel");
-
 		
-			
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
 		add(image);
+
 	}
 		
+
+		//add(flowPanelButtons);
+	}
+
 	
 	private MyImage getMe(){
 		return this;
@@ -117,7 +122,9 @@ public class MyImage extends FlowPanel {
 		image.removeStyleName("imageSelected");
 		setMain(false);
 	}
-	
+
+
+
 	public String getUrl() {
 		return url;
 	}

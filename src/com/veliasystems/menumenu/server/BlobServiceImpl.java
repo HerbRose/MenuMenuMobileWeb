@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -65,6 +67,18 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
         	
         	List<ImageBlob> all = getAllImages(restaurantId);
         	if (!all.isEmpty()) return all.get(0);
+        	else return null;
+        }
+        
+        @Override
+        public ImageBlob getLastUploadedImage(Long restaurantId, ImageType imageType ) {
+        	
+        	List<ImageBlob> all = dao.ofy().query(ImageBlob.class).filter("restId", restaurantId+"").filter("imageType", imageType).list();
+        	
+        	if (!all.isEmpty()){
+        		Collections.sort(all, new MyComparator());
+        		return all.get(0);
+        	}
         	else return null;
         }
         
@@ -183,9 +197,13 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 				} 	
 			 	
 		}
-			  
+		
+		 @Override
+		public List<ImageBlob> getImagesByType( Long restaurantId, ImageType imageType){
+			return dao.ofy().query(ImageBlob.class).filter("restId", restaurantId+"").filter("imageType", imageType).list();
+		}
     
-		 private void sendToBlobstore(ImageBlob imageBlob, String cmd, byte[] imageBytes) throws IOException{
+		private void sendToBlobstore(ImageBlob imageBlob, String cmd, byte[] imageBytes) throws IOException{
 			 
 			 String blobKeyToDelete = imageBlob.getBlobKey();
 			  
@@ -251,4 +269,17 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			    os.write(bs);
 			    write(os, "\r\n");
 			}
+}
+
+class MyComparator implements Comparator<ImageBlob>{ 
+    public int compare(ImageBlob o1, ImageBlob o2) { 
+            if (o1.getDateCreated().getTime() > o2.getDateCreated().getTime()) { 
+            return -1; 
+    } 
+            else if (o1.getDateCreated().getTime() < o2.getDateCreated().getTime()) { 
+           return 1; 
+    } 
+        return 0; 
+    } 
+    
 }

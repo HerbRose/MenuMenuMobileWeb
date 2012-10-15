@@ -28,6 +28,7 @@ import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
@@ -96,9 +97,12 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	double stopY;
 	
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
+	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private Long restaurantId;
 	
-	public CropImage(ImageBlob imageInsert) {
+	public CropImage(ImageBlob imageInsert, Long restaurantId) {
 		this.imageInsert = imageInsert;
+		this.restaurantId = restaurantId;
 		newImage = new Image(imageInsert.getImageUrl());
 		imgHeight = imageInsert.getHeight();
 		imgWidth = imageInsert.getWidth();	
@@ -242,7 +246,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				}
 			}
 		});
-				
+		
 		toolPanel = new FlowPanel();
 		toolPanel.setStyleName("toolPanel");
 		
@@ -443,11 +447,12 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				double moveY = stopY - startY;
 				topOffset = topOffset + moveY;
 				leftOffset = leftOffset + moveX;	
+
 			}
 		});
-		
-		
+
 	}
+
 
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -486,8 +491,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 
 				@Override
 				public void onSuccess(Void result) {
-					// TODO Auto-generated method stub
-					Window.Location.reload();
+					restaurantController.afterCrop(restaurantId, imageInsert.getImageType());
+					
 				}
 				
 			});	

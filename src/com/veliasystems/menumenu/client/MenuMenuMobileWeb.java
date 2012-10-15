@@ -7,12 +7,14 @@ import java.util.Map;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -34,6 +36,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 
 	public static boolean loggedIn = false;
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
 	public void onModuleLoad() {
 	
@@ -53,7 +56,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 				for (City city : cities) {
 					citiesFromServer.put(city.getId(), city);
 				}
-				RestaurantController.getInstance().setRestaurants(restaurantsFromServer);
+				restaurantController.setRestaurants(restaurantsFromServer);
 				CityController.getInstance().setCities(citiesFromServer);
 				
 //				Pages.PAGE_CITY_INFO = new CityInfoScreen();
@@ -116,10 +119,19 @@ public class MenuMenuMobileWeb implements EntryPoint {
 			if(lastOpenRestaurant == null){
 				JQMContext.changePage(Pages.PAGE_HOME);
 			}else{
+				String imageType = Cookies.getCookie(R.imageType);
 				RestaurantImageView restaurantView = new RestaurantImageView(lastOpenRestaurant);
 				RestaurantController.restMapView.put(lastOpenRestaurant.getId(), restaurantView);
-				JQMContext.changePage(Pages.PAGE_HOME);
-				JQMContext.changePage(restaurantView, Transition.SLIDE);
+				if(imageType != null){
+					JQMContext.changePage(Pages.PAGE_HOME);
+					
+					//JQMContext.changePage(restaurantView, Transition.SLIDE);
+					restaurantController.cropImageApple(lastPageId, ImageType.valueOf(imageType));
+				}else{
+					JQMContext.changePage(Pages.PAGE_HOME);
+					JQMContext.changePage(restaurantView, Transition.SLIDE);
+				}
+				
 			}
 //			storeService.loadRestaurant(lastPageId, new AsyncCallback<Restaurant>() {
 //				
