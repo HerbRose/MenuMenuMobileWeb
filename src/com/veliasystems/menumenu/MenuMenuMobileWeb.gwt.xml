@@ -13,15 +13,12 @@
 
   <!-- Other module inherits                                      -->
   <inherits name="com.sksamuel.Jqm4gwt"/>
-  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
-  <inherits name="com.google.gwt.i18n.I18N"/>
 
 <!--    
   <inherits name="com.github.gwtbootstrap.Bootstrap"/>
   <inherits name='com.github.gwtbootstrap.datepicker.Datepicker' />
   -->
   <inherits name="com.googlecode.objectify.Objectify" />
-  
  	
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.veliasystems.menumenu.client.MenuMenuMobileWeb'/>
@@ -33,4 +30,8 @@
   <!--  <set-property name="user.agent" value="ie6,ie8,ie9,gecko1_8,safari,opera"/>  -->
 
   <script src="/js/picup.2.1.1.js"></script>
+  
+  <extend-property name="locale" values="en"/>
+  <extend-property name="locale" values="fr"/>
+  <extend-property name="locale" values="pl"/>
 </module>

@@ -8,6 +8,18 @@ public class R {
 	public final static String UTF8 = "UTF-8";
 	public final static String loggedIn = "loggedIn";
 	public final static String lastPage = "lastPage";
-	public final static String imageType = "imageType";
 	
+	// languages
+    public static final String ARABIC_NAME = "Arabic";
+    public static final String ARABIC_CODE = "ar";
+    public static final String CHINESE_NAME = "Chinese";
+    public static final String CHINESE_CODE = "zv";
+    public static final String GERMAN_NAME = "Deutsch";
+    public static final String GERMAN_CODE = "de";
+    public static final String ENGLISH_NAME = "English";
+    public static final String ENGLISH_CODE = "en";
+    public static final String FRENCH_NAME = "French";
+    public static final String FRENCH_CODE = "fr";
+    public static final String POLISH_NAME = "Polski";
+    public static final String POLISH_CODE = "pl";
 }

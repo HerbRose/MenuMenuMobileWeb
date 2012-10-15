@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
@@ -15,6 +16,8 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.translations.Messages;
+
 
 public class LoginScreen extends JQMPage{
 
@@ -24,22 +27,25 @@ public class LoginScreen extends JQMPage{
 	JQMButton cancelButton;
 	JQMText nameBox;
 	JQMPassword passwordBox;
+	LanguageCombo lcombo = new LanguageCombo();
 	
+	Messages translated = GWT.create(Messages.class);
 	
 	public LoginScreen(){
-		header = new JQMHeader("Please login");
+		
+		header = new JQMHeader(translated.pleaseLogin());
 		header.setFixed(true);
 		header.setText(Customization.MAINTITLE);
 		add(header);
 	    
-		nameBox = new JQMText("name", "Login:");
+		nameBox = new JQMText("name", translated.login());
 		add(nameBox);
 		
-		passwordBox = new JQMPassword("passwd", "Password:");
+		passwordBox = new JQMPassword("passwd", translated.password());
 		add(passwordBox);
 		
 		HorizontalPanel hp = new HorizontalPanel();
-	    okButton = new JQMButton("OK");
+	    okButton = new JQMButton(translated.ok());
 	    
 	    okButton.addClickHandler( new ClickHandler() {
 			
@@ -57,9 +63,11 @@ public class LoginScreen extends JQMPage{
 		});
 	    
 	    hp.add(okButton);
-	    cancelButton = new JQMButton("Cancel");
+	    cancelButton = new JQMButton(translated.cancel());
 	    hp.add(cancelButton);
 	    hp.setWidth("100%");
+	    
+	    add(lcombo);
 	    
 	    add(hp);
 	    
