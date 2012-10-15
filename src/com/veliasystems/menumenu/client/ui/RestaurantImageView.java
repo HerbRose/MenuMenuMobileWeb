@@ -1,6 +1,8 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
@@ -34,6 +36,7 @@ public class RestaurantImageView extends JQMPage{
 	private String title;
 	private Restaurant restaurant;
 	private boolean loaded = false;
+	private List<SwipeView> swipeViews = new ArrayList<SwipeView>(); 
 	
 	RestInfoScreen restInfoScreen;
 	
@@ -73,11 +76,21 @@ public class RestaurantImageView extends JQMPage{
 	protected void onPageShow() {
 		super.onPageShow();
 		if(!loaded){
-			
-			addToContent(new SwipeView(restaurant, ImageType.MENU , this) );
-			addToContent(new SwipeView(restaurant, ImageType.PROFILE , this) );
-			addToContent(new SwipeView(restaurant, ImageType.LOGO , this) );
+			SwipeView swipeView = new SwipeView(restaurant, ImageType.MENU , this);
+			swipeViews.add(swipeView);
+			addToContent( swipeView );
+			swipeView = new SwipeView(restaurant, ImageType.PROFILE , this);
+			swipeViews.add(swipeView);
+			addToContent( swipeView );
+			swipeView = new SwipeView(restaurant, ImageType.LOGO , this);
+			swipeViews.add(swipeView);
+			addToContent( swipeView );
 			loaded = true;
+		}else{
+			System.out.println("RestaurantImageView::onPageShow(). swipeViews.size(): "+ swipeViews.size());
+			for (SwipeView swipeView : swipeViews) {
+				swipeView.checkChanges();
+			}
 		}
 		
 		if(Cookies.getCookie(R.lastPage) != null){

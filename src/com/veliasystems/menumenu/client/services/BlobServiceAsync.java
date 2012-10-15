@@ -36,11 +36,15 @@ public interface BlobServiceAsync {
 	void getAllImages(String restaurantId,
 			AsyncCallback<List<ImageBlob>> callback);
 
-	void getLastUploadedImage(String restaurantId,
-			AsyncCallback<ImageBlob> callback);
+	void getLastUploadedImage(String restaurantId,AsyncCallback<ImageBlob> callback);
+	
+	void getLastUploadedImage(Long restaurantId, ImageType imageType, AsyncCallback<ImageBlob> callback);
 
 	void cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX,
 			double bottomY, AsyncCallback<Void> callback);
+
+	void getImagesByType(Long restaurantId, ImageType imageType,
+			AsyncCallback<List<ImageBlob>> callback);
 
 
 	

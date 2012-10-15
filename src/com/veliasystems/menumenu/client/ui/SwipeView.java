@@ -1,7 +1,9 @@
 package com.veliasystems.menumenu.client.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -14,6 +16,7 @@ import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Navigator;
@@ -27,8 +30,10 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -39,7 +44,7 @@ public class SwipeView extends FlowPanel {
 	
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
-	private List<ImageBlob> imageUrlList;
+	private List<ImageBlob> imageBlobList;
 	private String mainImage;
 	private String title = "";
 	private String mainImageUrl = "";
@@ -63,6 +68,7 @@ public class SwipeView extends FlowPanel {
 	private LoadedPageController loadedPageController;
 	
 	private String osType =Navigator.getPlatform();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
 	public SwipeView(Restaurant restaurant, ImageType imageType, RestaurantImageView parent) {
 		
@@ -71,17 +77,17 @@ public class SwipeView extends FlowPanel {
 		
 		switch (imageType) {
 			case LOGO:
-				imageUrlList = restaurant.getLogoImages();
+				imageBlobList = restaurant.getLogoImages();
 				title = Customization.LOGO_PICTURE_TITLE;
 				mainImage = restaurant.getMainLogoImageString();
 				break;
 			case MENU:
-				imageUrlList = restaurant.getMenuImages();
+				imageBlobList = restaurant.getMenuImages();
 				title = Customization.MAENU_PICTURE_TITLE;
 				mainImage = restaurant.getMainMenuImageString();
 				break;
 			case PROFILE:
-				imageUrlList = restaurant.getProfileImages();
+				imageBlobList = restaurant.getProfileImages();
 				title = Customization.PROFILE_PICTURE_TITLE;
 				mainImage = restaurant.getMainProfileImageString();
 				break;
@@ -92,8 +98,8 @@ public class SwipeView extends FlowPanel {
 		this.restaurant = restaurant;
 		this.imageType = imageType;
 		
-		if(imageUrlList == null){
-			this.imageUrlList = new ArrayList<ImageBlob>();
+		if(imageBlobList == null){
+			this.imageBlobList = new ArrayList<ImageBlob>();
 		}
 		if(mainImage != null){
 			mainImageUrl = mainImage;
@@ -101,7 +107,11 @@ public class SwipeView extends FlowPanel {
 		wrapper.addStyleName("wrapper");
 		
 		setUpload();
+		scrollerContainer.addStyleName("scroller");
+		
 		fillImages(mainImageUrl);
+		wrapper.setWidget(scrollerContainer);
+		add(wrapper);
 		setMyTitle(title);
 		
 		addStyleName("swipeView");
@@ -109,44 +119,38 @@ public class SwipeView extends FlowPanel {
 	
 	private void fillImages(String mainImageUrl){
 		
-		scrollerContainer.addStyleName("scroller");
-		
-		MyImage newImage;
-		
-		for (ImageBlob image : imageUrlList) {
-			loadedPageController.addImage(getRestId());
-			newImage = new MyImage(imagesController, image, parent);
-			
-			newImage.image.addLoadHandler(new LoadHandler() {
-				
-				@Override
-				public void onLoad(LoadEvent event) {
-					loadedPageController.removeImage(getRestId());
-				}
-			});
-			newImage.image.addErrorHandler(new ErrorHandler() {
-				
-				@Override
-				public void onError(ErrorEvent event) {
-					// TODO Auto-generated method stub
-					loadedPageController.removeImage(getRestId());
-				}
-			});
-			
-			if(mainImageUrl.equals(image.getImageUrl())){
-				imagesController.selectImage(newImage);
-				scrollerContainer.insert(newImage, 0);
-				continue;
-			}
-			scrollerContainer.add(newImage);
+		for (ImageBlob imageBlob : imageBlobList) {
+			addImage(imageBlob);
 			
 		}
-
+	}
+	private void addImage(ImageBlob imageBlob){
+		MyImage newImage;
+		loadedPageController.addImage(getRestId());
+		newImage = new MyImage(imagesController, imageBlob, parent);
 		
+		newImage.image.addLoadHandler(new LoadHandler() {
+			
+			@Override
+			public void onLoad(LoadEvent event) {
+				loadedPageController.removeImage(getRestId());
+			}
+		});
+		newImage.image.addErrorHandler(new ErrorHandler() {
+			
+			@Override
+			public void onError(ErrorEvent event) {
+				// TODO Auto-generated method stub
+				loadedPageController.removeImage(getRestId());
+			}
+		});
 		
-		//add(scrollerDiv);
-		wrapper.setWidget(scrollerContainer);
-		add(wrapper);
+		if(mainImageUrl.equals(imageBlob.getImageUrl())){
+			imagesController.selectImage(newImage);
+			scrollerContainer.insert(newImage, 0);
+			return;
+		}
+		scrollerContainer.add(newImage);
 	}
 	
 	private void setMyTitle( String title ) {
@@ -186,6 +190,8 @@ public class SwipeView extends FlowPanel {
 							
 							onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
 							
+							Cookies.setCookie(R.imageType, imageType.toString());
+							
 							clickOnInputFile(fileUpload.getElement());
 							
 						}
@@ -221,10 +227,11 @@ public class SwipeView extends FlowPanel {
 			
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				formPanel.reset();
-				Window.Location.reload();
 				
-				//Document.get().getElementById("load").setClassName("loaded");
+				//Window.Location.reload();
+				Document.get().getElementById("load").setClassName("loaded");
+				restaurantController.cropImage(restaurant.getId(), imageType);
+				formPanel.reset();
 			}
 		});
 		
@@ -304,6 +311,11 @@ public class SwipeView extends FlowPanel {
 		return imageType;
 	}
 	
+	public void checkChanges(){
+		
+		scrollerContainer.clear();
+		fillImages(mainImageUrl);
+	}
 	
 	
 }

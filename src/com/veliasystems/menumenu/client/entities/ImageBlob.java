@@ -98,4 +98,21 @@ public class ImageBlob implements Serializable {
     public int getWidth() {
 		return width;
 	}
+    
+    @Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(! (obj instanceof ImageBlob)){
+			return false;
+		}
+		
+		ImageBlob imageBlob = (ImageBlob) obj;
+		
+		if(this.getImageUrl().equalsIgnoreCase(imageBlob.getImageUrl()) && this.getRestaurantId().equalsIgnoreCase(imageBlob.getRestaurantId()) && this.getImageType() == imageBlob.getImageType()){
+			return true;
+		}
+		
+		return false;
+		
+	}
 }

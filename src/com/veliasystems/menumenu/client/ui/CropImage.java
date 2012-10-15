@@ -122,10 +122,11 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		header.setRightButton(saveButton);
 		header.setLeftButton(backButton);
 		add(header);	
+		
 		img = new Image();		
 		image = new FlowPanel();
 		bckImage = new Image(backgroundImage);
-	
+		
 		switch (imageInsert.getImageType()) {
 		case MENU:
 			bckImage.setWidth("220px");
@@ -245,7 +246,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				}
 			}
 		});
-			
+		
 		toolPanel = new FlowPanel();
 		toolPanel.setStyleName("toolPanel");
 		
@@ -295,7 +296,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		toolPanel.add(zoomOutButton);
 		//toolPanel.add(cropButton);
 		image.add(toolPanel);
-		
+	
 		zoomInButton.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -315,23 +316,19 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 						break;
 						
 					default: 
-						if(rect.getOffsetHeight() + rect.getAbsoluteTop() < bckImage.getHeight() + bckImage.getAbsoluteTop()){			
+						if(rect.getOffsetHeight() + rect.getAbsoluteTop() < bckImage.getHeight() + bckImage.getAbsoluteTop() ){			
 							cropRectHeight +=5.0;
 							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 						}
 					break;
-				}
-				
-				
+				}			
 			}
 		});
 		
 		zoomOutButton.addClickHandler(new ClickHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
-				
-				
+			public void onClick(ClickEvent event) {			
 				double ratioH = imgHeight / bckImage.getHeight();
 				double ratioW = imgWidth / bckImage.getWidth();
 				
@@ -348,8 +345,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 					default:
 						if(cropRectHeight > 10){
 							cropRectHeight -= 5.0;
-							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
-							
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);						
 						}
 						break;
 				}		
@@ -360,10 +356,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		switch(imageInsert.getImageType()){
 		case PROFILE:
 			break;
-			default:
-				
-				
-				
+			default:	
 				moveLeftButton.addClickHandler(new ClickHandler() {
 					
 					@Override
@@ -375,8 +368,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
 						}	
 					}
-				});
-				
+				});			
 				moveRightButton.addClickHandler(new ClickHandler() {
 					
 					@Override
@@ -386,20 +378,11 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 						if(cropRectWidth > 0 && cropRectWidth * ratioW > 220 ){
 							cropRectWidth -= 5.0;
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
-						}
-						
+						}						
 					}
-				});
-				
-				
-				
+				});			
 		}
-
-		
 	
-		
-		
-		
 		cropButton.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -414,10 +397,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				
 				int width = (int) ((int) cropRectWidth / ratioW);			
 				int height = (int) ((int) cropRectHeight / ratioW);
-				
-				
-			
-				
+		
 				img.setUrlAndVisibleRect(backgroundImage, left, top, width, height);
 				img.getElement().getStyle().setPosition(Position.ABSOLUTE);
 				img.getElement().getStyle().setTop(image.getElement().getOffsetTop(), Unit.PX);
@@ -467,10 +447,12 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				double moveY = stopY - startY;
 				topOffset = topOffset + moveY;
 				leftOffset = leftOffset + moveX;	
-	}
+
+			}
 		});
 
 	}
+
 
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -498,7 +480,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			double topYPercentage = topC/(bckImage.getOffsetHeight()/ratioH);
 			double rightXPercentage = (leftC+widthC)/(bckImage.getOffsetWidth()/ratioW);
 			double bottomYPercentage = (topC + heightC)/(bckImage.getOffsetHeight()/ratioH);
-			
 
 			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
 
@@ -514,9 +495,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 					
 				}
 				
-			});
-		
-		
+			});	
 		}
 	}
 	

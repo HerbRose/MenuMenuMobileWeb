@@ -1,21 +1,29 @@
 package com.veliasystems.menumenu.client.controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.Transition;
+import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.Pages;
+import com.veliasystems.menumenu.client.ui.CropImage;
 import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 
@@ -31,10 +39,9 @@ public class RestaurantController {
 	public static Map<Long, RestaurantImageView> restMapView = new HashMap<Long, RestaurantImageView>();
 	private static RestaurantController instance = null ; //instance of controller
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
-	
-	
 
 	private RestaurantController() {
 		
@@ -81,7 +88,7 @@ public class RestaurantController {
 	/**
 	 * It should be called only once!!!
 	 */
-	public void setRestaurants(Map<Long, Restaurant> restaurants) {// it shuldn't by used
+	public void setRestaurants(Map<Long, Restaurant> restaurants) {
 		this.restaurants = restaurants;
 	}
 	
@@ -145,10 +152,18 @@ public class RestaurantController {
 	
 	public void saveRestaurant(Restaurant restaurant){
 		final Restaurant restaurantToSave = restaurant;
+		
 		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
+				
+				restaurantToSave.setLogoImages(new ArrayList<ImageBlob>());
+				restaurantToSave.setProfileImages(new ArrayList<ImageBlob>());
+				restaurantToSave.setMenuImages(new ArrayList<ImageBlob>());
+				
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
+				
+				
 				notifyAllObservers();
 				History.back();
 			}
@@ -166,7 +181,7 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(Void result) {
 				restaurants.remove(restaurantToDelete.getId());	 //removing restaurant from our list
-				historyGoBack();
+				historyGoBack(2);
 				notifyAllObservers();
 			}
 			@Override
@@ -178,8 +193,126 @@ public class RestaurantController {
 		
 	}
 	
-	private static native void historyGoBack() /*-{
-	history.go(-2);
-
-}-*/;
+	public void cropImage(long restaurantId, ImageType imageType){
+		
+		
+		final long myRestaurantId = restaurantId;
+		final ImageType myImageType = imageType;
+		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
+		Cookies.removeCookie(R.imageType);
+		
+		
+		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
+			@Override
+			public void onSuccess(List<ImageBlob> result) {
+				System.out.println("RestaurantController::cropImage result.size(): " + result.size() + ", for restaurant is: " + myRestaurantId);
+				
+				for (ImageBlob imageBlob : result) {
+					boolean isIn = false;
+					if(oldImages != null){
+						for (ImageBlob oldImageBlob : oldImages) {
+							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
+								isIn = true;
+								
+							}
+						}
+					}
+					if (!isIn && imageBlob != null) {
+						System.out.println("RestaurantController::cropImage. imageBlob.getBlobKey()= "+ imageBlob.getBlobKey() );
+						
+						JQMContext.changePage(new CropImage(imageBlob, myRestaurantId), Transition.SLIDE);
+					}
+				}
+				
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+		});
+	}
+	
+	public void cropImageApple(long restaurantId, ImageType imageType){
+		
+		final long myRestaurantId = restaurantId;
+		final ImageType myImageType = imageType;
+		
+		Cookies.removeCookie(R.imageType);
+		
+		Window.alert("restaurantId: " + restaurantId +", myImageType:" + myImageType);
+		blobService.getLastUploadedImage(restaurantId, myImageType, new AsyncCallback<ImageBlob>() {
+			@Override
+			public void onSuccess(ImageBlob result) {
+				JQMContext.changePage(new CropImage(result, myRestaurantId), Transition.SLIDE);
+				
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	public List<ImageBlob> getImagesList(ImageType imageType, Long restaurantId){
+		
+		List<ImageBlob> oldImages;
+		
+		switch (imageType) {
+		case LOGO:
+			oldImages = restaurants.get(restaurantId).getLogoImages();
+			break;
+		case MENU:
+			oldImages = restaurants.get(restaurantId).getMenuImages();
+			break;
+		case PROFILE:
+			oldImages = restaurants.get(restaurantId).getProfileImages();
+			break;
+		default:
+			oldImages = new ArrayList<ImageBlob>();
+		}
+		
+		return oldImages;
+	}
+	
+	public void afterCrop(Long restaurantId, ImageType imageType) {
+		
+		final long myRestaurantId = restaurantId;
+		final ImageType myImageType = imageType;
+		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
+		
+		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
+			@Override
+			public void onSuccess(List<ImageBlob> result) {
+				System.out.println("RestaurantController::afterCrop. result.size(): " + result.size()+ ", restaurantId = " + myRestaurantId);
+				for (ImageBlob imageBlob : result) {
+					boolean isIn = false;
+					if(oldImages != null){
+						for (ImageBlob oldImageBlob : oldImages) {
+							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
+								isIn = true;
+							}
+						}
+					}
+					if (!isIn) {
+						System.out.println("RestaurantController::afterCrop. newImageBlob = imageBlob. imageBlob.getBlobKey(): "+ imageBlob.getBlobKey() + " " );
+						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
+						if(imagList == null){
+							imagList = new ArrayList<ImageBlob>();
+						}
+						imagList.add(imageBlob);
+						//historyGoBack(1); //
+					}
+				}
+				JQMContext.changePage(restMapView.get(myRestaurantId));
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+		});
+		
+	}
+	
+	private static native void historyGoBack(int howMany) /*-{
+		history.go(-howMany);
+	}-*/;	
 }

@@ -20,6 +20,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
@@ -46,13 +47,26 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 	ListBox cityListBox = new ListBox();
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
+	
+	Label mailRestaurant = new Label();
+	Label phoneRestaurant = new Label();
+	Label mailUser = new Label();
+	Label phoneUser = new Label();
+	Label nameUser = new Label();
+	Label surnameUser = new Label();
+	
+	TextBox mailRestaurantTextBox = new TextBox();
+	TextBox phoneRestaurantTextBox = new  TextBox();
+	TextBox mailUserTextBox = new TextBox();
+	TextBox phoneUserTextBox = new TextBox();
+	TextBox nameUserTextBox = new TextBox();
+	TextBox surnameUserTextBox = new TextBox();
 
 	JQMPanel content;
 	Label warning = new Label();
 
 	Restaurant restaurant;
 	private CityController cityController = CityController.getInstance();
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 
 	public RestInfoScreen(Restaurant r) {
 		cityController.addObserver(this);
@@ -95,53 +109,11 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 		add(footer);
 		content = new JQMPanel();
 
-		// showButton = new JQMButton("show rest");
-		// showButton.setBack(false);
-		// showButton.setIcon(DataIcon.INFO);
-		// content.add(showButton);
 		cityLabel.setText(Customization.CITYONE + ":");
 		content.add(cityLabel);
 
-//		storeService.loadCities(new AsyncCallback<List<String>>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void onSuccess(List<String> result) {
-//				// TODO Auto-generated method stub
-//
-//				// size = result.size();
-//				for (String item : result) {
-//					cityList.addItem(item);
-//				}
-//				
-//				int k=0;
-//				for (String s : result) {
-//					
-//					if (s.equalsIgnoreCase(restaurant.getCity())) {
-//						cityList.setSelectedIndex(k);
-//					}
-//					k++;
-//				}
-//						
-//			}
-//		});
-		
-//		int k=0;
-//		for(City city: CityController.getInstance().getCitiesList()){
-//			cityListBox.addItem(city.getCity());
-//			if(city.getCity().equalsIgnoreCase(restaurant.getCity())){
-//				cityListBox.setSelectedIndex(k);
-//			}
-//			k++;
-//		}
+
 		addCities(cityController.getCitiesList());
-		
-		//System.out.println(restaurant.getName());
 		
 		content.add(cityListBox);
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
@@ -154,11 +126,45 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 		adressText.setTitle(Customization.RESTAURANTADRESS);
 		adressText.setText(restaurant.getAddress());
 		content.add(adressText);
-
-	
+		
+		mailRestaurant.setText(Customization.RESTAURANT_MAIL + ":");
+		content.add(mailRestaurant);
+		
+		mailRestaurantTextBox.setText(restaurant.getMailRestaurant());
+		content.add(mailRestaurantTextBox);
+		
+		phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
+		content.add(phoneRestaurant);
+		
+		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
+		content.add(phoneRestaurantTextBox);
+		
+		surnameUser.setText(Customization.USER_SURNAME +":");
+		content.add(surnameUser);
+		
+		surnameUserTextBox.setText(restaurant.getSurnameUser());
+		content.add(surnameUserTextBox);
+		
+		nameUser.setText(Customization.USER_NAME + ":");
+		content.add(nameUser);
+		
+		nameUserTextBox.setText(restaurant.getNameUser());
+		content.add(nameUserTextBox);
+		
+		phoneUser.setText(Customization.USER_PHONE +":");
+		content.add(phoneUser);
+		
+		phoneUserTextBox.setText(restaurant.getPhoneUser());
+		content.add(phoneUserTextBox);
+		
+		mailUser.setText(Customization.USER_MAIL+":");
+		content.add(mailUser);
+		
+		mailUserTextBox.setText(restaurant.getMailUser());
+		content.add(mailUserTextBox);
+		
 		add(content);
 	}
-
 
 
 	{
@@ -179,21 +185,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 	private void meClicked(ClickEvent event) {
 
 		if (isClicked(event, removeButton)) {
-//			storeService.deleteRestaurant(restaurant,new AsyncCallback<Void>() {
-//
-//						@Override
-//						public void onFailure(Throwable caught) {
-//							// TODO Auto-generated method stub
-//
-//						}
-//
-//						@Override
-//						public void onSuccess(Void result) {
-//							// TODO Auto-generated method stub
-//							restaurant = null;
-//							Window.Location.reload();
-//						}
-//					});
+
 			RestaurantController.getInstance().deleteRestaurant(restaurant);
 		}
 		if (isClicked(event, saveButton)) {
@@ -201,26 +193,14 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 			restaurant.setName(nameText.getText());
 			restaurant.setAddress(adressText.getText());
 			restaurant.setCity(cityListBox.getItemText(cityListBox.getSelectedIndex()));
+			restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
+			restaurant.setPhoneRestaurant(phoneRestaurantTextBox.getText());
+			restaurant.setMailUser(mailUserTextBox.getText());
+			restaurant.setPhoneUser(phoneUserTextBox.getText());
+			restaurant.setNameUser(nameUserTextBox.getText());
+			restaurant.setSurnameUser(surnameUserTextBox.getText());
 			if (validate()) {
-//				storeService.saveRestaurant(restaurant,
-//						new AsyncCallback<Void>() {
-//
-//							@Override
-//							public void onFailure(Throwable caught) {
-//								// TODO Auto-generated method stub
-//								Window.alert("error");
-//							}
-//
-//							@Override
-//							public void onSuccess(Void result) {
-//								// TODO Auto-generated method stub
-//								System.out.println("Saved new"
-//										+ restaurant.getCity() + " "
-//										+ restaurant.getAddress() + " "
-//										+ restaurant.getName());
-//								Window.Location.reload();
-//							}
-//						});
+
 				RestaurantController.getInstance().saveRestaurant(restaurant);
 
 			}
