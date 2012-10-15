@@ -160,13 +160,6 @@
 	display: none;	
 }
 
-.toolButton{
-	width: 70px;
-	height: 35px;
-	display: block;
-	margin: 5px auto;
-}
-
 .txtLabel{
 	position: absolute;
 	top: 8px;
@@ -174,10 +167,6 @@
 	color: #fff;
 }
 
-.toolButtonCointainer{
-	position: relative;
-	width: 100px
-}
 #tooltip{
 	position: absolute;
 	top: 150px;
@@ -186,7 +175,7 @@
 
 .toolPanel{
 	width: 500px;
-	top: 0px;
+	top: 30px;
 }
 
 .jsonArea{
