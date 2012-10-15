@@ -238,7 +238,6 @@ public class RestaurantController {
 		
 		Cookies.removeCookie(R.imageType);
 		
-		Window.alert("restaurantId: " + restaurantId +", myImageType:" + myImageType);
 		blobService.getLastUploadedImage(restaurantId, myImageType, new AsyncCallback<ImageBlob>() {
 			@Override
 			public void onSuccess(ImageBlob result) {

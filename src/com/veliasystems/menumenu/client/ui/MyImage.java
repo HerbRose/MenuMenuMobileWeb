@@ -86,15 +86,13 @@ public class MyImage extends FlowPanel {
 		detailsPanel = new FlowPanel();
 		detailsPanel.setStyleName("details");
 		
-		String dateTimeFormat = DateTimeFormat.getShortDateFormat().format(imageBlob.getDateCreated(), null);
-
-		
+		String dateTimeFormat = DateTimeFormat.getShortDateFormat().format(imageBlob.getDateCreated(), null);	
 		detailsContent = new HTML(dateTimeFormat);
 		
 		detailsPanel.add(detailsContent);
 		detailsContent.setStyleName("detailsContent");
 		//flowPanelButtons.addStyleName("hiddenPanel");
-		
+		add(detailsPanel);
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
 		add(image);
@@ -103,7 +101,7 @@ public class MyImage extends FlowPanel {
 		
 
 		//add(flowPanelButtons);
-	}
+	
 
 	
 	private MyImage getMe(){
