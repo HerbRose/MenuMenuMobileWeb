@@ -92,9 +92,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 			map.put( "city", r.getCity());
 			map.put( "district", r.getDistrict());
 			map.put( "address", r.getAddress());
-			map.put( "logoImage", (r.getMainLogoImageString()!=null) ? (r.getMainLogoImageString()) : "EMPTY");
-			map.put( "menuImage", (r.getMainMenuImageString()!=null) ? (r.getMainMenuImageString()) : "EMPTY");
-			map.put( "profileImage", (r.getMainProfileImageString()!=null) ? (r.getMainProfileImageString()) : "EMPTY");
+			map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
+			map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : "EMPTY");
+			map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
 			map.put( "lat", "" + r.getLat());
 			map.put( "lng", "" + r.getLng());
 			
@@ -109,6 +109,28 @@ public class GetRestaurantsServlet extends HttpServlet {
 		resp.flushBuffer();
 		
 	}
+	
+	
+	private String addHostToUrl( String url ) {
+		if (url.startsWith("http://")) return url;
+		return getHostName() + url;
+	}
+	
+	
+	public static final String getHostName() {
+    	String hostUrl; 
+        String environment = System.getProperty("com.google.appengine.runtime.environment");
+        if (environment.equalsIgnoreCase("Production")) {
+            String applicationId = System.getProperty("com.google.appengine.application.id");
+            String version = System.getProperty("com.google.appengine.application.version");
+            //hostUrl = "http://"+version+"."+applicationId+".appspot.com/";
+            hostUrl = "http://"+applicationId+".appspot.com/"; // without version
+        } else {
+            hostUrl = "http://localhost:8888";
+        }
+        return hostUrl;
+    }
+	
 	
 	
 	private void doTest( HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

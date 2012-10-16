@@ -25,4 +25,8 @@ public class R {
     public static final String FRENCH_CODE = "fr";
     public static final String POLISH_NAME = "Polski";
     public static final String POLISH_CODE = "pl";
+    
+    
+    
+    
 }
