@@ -113,8 +113,24 @@ public class GetRestaurantsServlet extends HttpServlet {
 	
 	private String addHostToUrl( String url ) {
 		if (url.startsWith("http://")) return url;
-		return R.getHostName() + url;
+		return getHostName() + url;
 	}
+	
+	
+	public static final String getHostName() {
+    	String hostUrl; 
+        String environment = System.getProperty("com.google.appengine.runtime.environment");
+        if (environment.equalsIgnoreCase("Production")) {
+            String applicationId = System.getProperty("com.google.appengine.application.id");
+            String version = System.getProperty("com.google.appengine.application.version");
+            //hostUrl = "http://"+version+"."+applicationId+".appspot.com/";
+            hostUrl = "http://"+applicationId+".appspot.com/"; // without version
+        } else {
+            hostUrl = "http://localhost:8888";
+        }
+        return hostUrl;
+    }
+	
 	
 	
 	private void doTest( HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
