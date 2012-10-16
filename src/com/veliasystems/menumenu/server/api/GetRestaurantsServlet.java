@@ -92,9 +92,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 			map.put( "city", r.getCity());
 			map.put( "district", r.getDistrict());
 			map.put( "address", r.getAddress());
-			map.put( "logoImage", (r.getMainLogoImageString()!=null) ? (r.getMainLogoImageString()) : "EMPTY");
-			map.put( "menuImage", (r.getMainMenuImageString()!=null) ? (r.getMainMenuImageString()) : "EMPTY");
-			map.put( "profileImage", (r.getMainProfileImageString()!=null) ? (r.getMainProfileImageString()) : "EMPTY");
+			map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
+			map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : "EMPTY");
+			map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
 			map.put( "lat", "" + r.getLat());
 			map.put( "lng", "" + r.getLng());
 			
@@ -108,6 +108,12 @@ public class GetRestaurantsServlet extends HttpServlet {
 		}
 		resp.flushBuffer();
 		
+	}
+	
+	
+	private String addHostToUrl( String url ) {
+		if (url.startsWith("http://")) return url;
+		return R.getHostName() + url;
 	}
 	
 	
