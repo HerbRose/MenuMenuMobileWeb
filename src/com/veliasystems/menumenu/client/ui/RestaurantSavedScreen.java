@@ -1,6 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -12,6 +12,7 @@ import com.sksamuel.jqm4gwt.JQMWidget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
 class LoadingStartWidget extends JQMWidget {
@@ -68,8 +69,6 @@ public class RestaurantSavedScreen extends JQMPage {
 	JQMContent content;
 	
 	
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
-	
 	private void init(){
 		header = new JQMHeader(Customization.RESTAURANTSAVED);
 		header.setFixed(true);
@@ -79,10 +78,6 @@ public class RestaurantSavedScreen extends JQMPage {
 		backButton.setInline();
 		backButton.setIcon(DataIcon.LEFT);
 		backButton.setIconPos(IconPos.LEFT);
-	}
-	
-	public RestaurantSavedScreen(Restaurant r){
-		init();
 	}
 	
 	
@@ -100,6 +95,13 @@ public class RestaurantSavedScreen extends JQMPage {
 		header.setLeftButton(backButton);
 		
 		add(header);
+	}
+	
+	@Override
+	protected void onPageShow() {
+		// TODO Auto-generated method stub
+		super.onPageShow();
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 }
 

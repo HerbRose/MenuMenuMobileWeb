@@ -190,7 +190,7 @@ public class SwipeView extends FlowPanel {
 							
 							onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
 							
-							Cookies.setCookie(R.imageType, imageType.toString());
+							Cookies.setCookie(R.IMAGE_TYPE, imageType.toString());
 							
 							clickOnInputFile(fileUpload.getElement());
 							

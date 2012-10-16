@@ -1,23 +1,23 @@
 package com.veliasystems.menumenu.client.ui;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
-import com.veliasystems.menumenu.client.services.StoreService;
-import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 
 public class AddCity extends JQMPage implements HasClickHandlers{
 
@@ -28,6 +28,8 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	JQMButton saveButton;
 	TextBox nameCity;
 	Label warningLabel = new Label();
+	
+	private boolean loaded = false;
 	
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -48,20 +50,6 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 		if(isClicked(event, saveButton)){
 			if(validate()){
 				CityController.getInstance().saveCity(nameCity.getText());
-//				storeService.addCity(nameCity.getText(), new AsyncCallback<Void>() {
-//					
-//					@Override
-//					public void onSuccess(Void result) {
-//						// TODO Auto-generated method stub
-//							Window.Location.reload();
-//					}
-//					
-//					@Override
-//					public void onFailure(Throwable caught) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//				} );
 			}
 		}
 	}
@@ -74,17 +62,30 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	@Override
 	protected void onPageShow() {
 		// TODO Auto-generated method stub
+		
+		if(!loaded){
+			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+			
+			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+			backButton.setIcon(DataIcon.LEFT);
+			backButton.setIconPos(IconPos.LEFT);
+			
+			backButton.getElement().setInnerHTML(span);
+			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+			
+			header.add(backButton);
+
+			loaded = true;
+		}
+		
 		nameCity.setText("");
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
+
 	private void init(){
 		header = new  JQMHeader(Customization.ADD_CITY);
 		header.setFixed(true);
 		
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setIcon(DataIcon.LEFT);
-		backButton.setIconPos(IconPos.LEFT);
-		backButton.setBack(true);
-		header.add(backButton);
 		
 		saveButton = new JQMButton(Customization.SAVE);
 		saveButton.setIcon(DataIcon.PLUS);

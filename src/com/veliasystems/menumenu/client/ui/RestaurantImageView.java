@@ -21,6 +21,9 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
@@ -37,20 +40,22 @@ public class RestaurantImageView extends JQMPage{
 	private Restaurant restaurant;
 	private boolean loaded = false;
 	private List<SwipeView> swipeViews = new ArrayList<SwipeView>(); 
+	RestaurantController restaurantController = RestaurantController.getInstance();
+	private JQMPage back;
 	
 	RestInfoScreen restInfoScreen;
 	
-	private void init(){
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setBack(true);
-		backButton.setIcon(DataIcon.LEFT);
-		backButton.setIconPos(IconPos.LEFT);
-		editButton = new JQMButton(Customization.EDIT, new RestInfoScreen(restaurant), Transition.SLIDE);
+	public RestaurantImageView(Restaurant r, JQMPage back){
+		this.back = back;
+		this.restaurant = r;
+		this.title = r.getName();
+		
+		editButton = new JQMButton(Customization.EDIT, new RestInfoScreen(restaurant, this), Transition.SLIDE);
 		editButton.setIcon(DataIcon.RIGHT);
 		editButton.setIconPos(IconPos.RIGHT);
 		
 		header = new JQMHeader(title);
-		header.setBackButton(backButton);
+		
 		header.setFixed(true);
 		header.setRightButton(editButton);
 		add(header);
@@ -85,35 +90,45 @@ public class RestaurantImageView extends JQMPage{
 			swipeView = new SwipeView(restaurant, ImageType.LOGO , this);
 			swipeViews.add(swipeView);
 			addToContent( swipeView );
+			
 			loaded = true;
 		}else{
+
+			header.remove(backButton);
+			
 			System.out.println("RestaurantImageView::onPageShow(). swipeViews.size(): "+ swipeViews.size());
 			for (SwipeView swipeView : swipeViews) {
 				swipeView.checkChanges();
 			}
+			
+		}
+		if(restaurantController.isFromCityView()){
+			backButton = new JQMButton(Customization.BACK, back, Transition.SLIDE);
+		}else{
+			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
 		}
 		
-		if(Cookies.getCookie(R.lastPage) != null){
-			Cookies.removeCookie(R.lastPage);
+		String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+		backButton.setIcon(DataIcon.LEFT);
+		backButton.setIconPos(IconPos.LEFT);
+		
+		backButton.getElement().setInnerHTML(span);
+		backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+		
+		header.add(backButton);
+		if(Cookies.getCookie(R.LAST_PAGE) != null){
+			Cookies.removeCookie(R.LAST_PAGE);
 		}
 		
 		Date data = new Date();
 		Long milisec = data.getTime();
 		milisec += (1000 * 5 * 60); 
-		Cookies.setCookie(R.lastPage, restaurant.getId()+"");//, new Date(milisec));
+		Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");//, new Date(milisec));
+		
+		//Document.get().getElementById("load").setClassName(R.LOADED);
 		
 	};
-	public RestaurantImageView() {
-		// TODO Auto-generated constructor stub
-			init();
-	}
-	
-	public RestaurantImageView(Restaurant r){
-		this.restaurant = r;
-		this.title = r.getName();
-		init();
-		
-	}
+
 	
 	public void addToContent(Widget widget){
 		

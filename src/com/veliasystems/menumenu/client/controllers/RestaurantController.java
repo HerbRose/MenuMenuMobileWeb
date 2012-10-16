@@ -41,10 +41,19 @@ public class RestaurantController {
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
+	private boolean fromCityView = true;
+	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
 
 	private RestaurantController() {
 		
+	}
+	
+	public void setFromCityView(boolean from) {
+		this.fromCityView = from;
+	}
+	public boolean isFromCityView() {
+		return fromCityView;
 	}
 	
 	public static RestaurantController getInstance(){
@@ -199,7 +208,7 @@ public class RestaurantController {
 		final long myRestaurantId = restaurantId;
 		final ImageType myImageType = imageType;
 		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
-		Cookies.removeCookie(R.imageType);
+		Cookies.removeCookie(R.IMAGE_TYPE);
 		
 		
 		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
@@ -236,7 +245,7 @@ public class RestaurantController {
 		final long myRestaurantId = restaurantId;
 		final ImageType myImageType = imageType;
 		
-		Cookies.removeCookie(R.imageType);
+		Cookies.removeCookie(R.IMAGE_TYPE);
 		
 		blobService.getLastUploadedImage(restaurantId, myImageType, new AsyncCallback<ImageBlob>() {
 			@Override

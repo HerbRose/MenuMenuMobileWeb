@@ -137,5 +137,4 @@ public class MyImage extends FlowPanel {
 		return mainImage;
 	}
 	
-	
 }

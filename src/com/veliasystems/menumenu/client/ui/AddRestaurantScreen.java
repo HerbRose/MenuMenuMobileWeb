@@ -2,7 +2,7 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -14,11 +14,15 @@ import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.JQMPanel;
+import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -55,6 +59,10 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	
 	String city;
 	Restaurant restaurant;
+	
+	private boolean isToCity;
+	private boolean loaded = false;
+	
 	private CityController cityController = CityController.getInstance();
 
 	{
@@ -101,12 +109,13 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	
 	private void init(boolean isToCity){
 		
+		this.isToCity = isToCity;
+		
 		setContentHeader();
 		setButtons();
 		
 		content = new JQMPanel();
 		
-		header.setLeftButton(backButton);
 		header.setRightButton(saveButton);
 		add(header);			
 		
@@ -118,12 +127,12 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		content.add(cityLabel);	
 		if(!isToCity){
 			addCities(cityController.getCitiesList());
-			content.add(cityListBox);
-		}
-		if(isToCity){
+			
+		}else{
 			cityListBox.addItem(city);
-			content.add(cityListBox);
+			
 		}
+		content.add(cityListBox);
 		setLabels();
 		
 	}	
@@ -204,8 +213,27 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	
 	@Override
 	protected void onPageShow() {
+		
+		if(!loaded){
+			if(isToCity){
+				backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE );
+			}else{
+				backButton = new JQMButton(Customization.BACK,  PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE );
+			}
+			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+			backButton.setIcon(DataIcon.LEFT);
+			backButton.setIconPos(IconPos.LEFT);
+			
+			backButton.getElement().setInnerHTML(span);
+			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+			
+			header.add(backButton);
+			loaded = true;
+		}
+		
 		nameText.setText("");
 		adressText.setText("");
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	
 	private void setContentHeader(){
@@ -214,12 +242,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		header.setText(Customization.RESTAURANTS);
 	}
 	
-	private void setButtons(){
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setBack(true);
-		backButton.setInline();
-		backButton.setIcon(DataIcon.LEFT);
-		backButton.setIconPos(IconPos.LEFT);
+	private void setButtons( ){
 		
 		saveButton = new JQMButton(Customization.SAVERESTAURANT);		
 		saveButton.setIcon(DataIcon.PLUS);

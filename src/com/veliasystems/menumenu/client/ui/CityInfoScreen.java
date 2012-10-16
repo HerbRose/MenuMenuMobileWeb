@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -12,6 +13,9 @@ import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
@@ -31,6 +35,7 @@ public class CityInfoScreen extends JQMPage{
 	private String title; //city name or Customization.CITY
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private List<Restaurant> restaurants;
+	private boolean loaded = false;
 	
 
     public CityInfoScreen(String city){
@@ -38,12 +43,8 @@ public class CityInfoScreen extends JQMPage{
         
         title = city;
         
-        backButton = new JQMButton(Customization.BACK);
-        backButton.setBack(true);
-        backButton.setIcon(DataIcon.LEFT);
-        backButton.setIconPos(IconPos.LEFT);
+        
         header = new JQMHeader(title);
-        header.setBackButton(backButton);
         header.setFixed(true);
         add(header);
         
@@ -75,7 +76,7 @@ public class CityInfoScreen extends JQMPage{
 				restaurantView = RestaurantController.restMapView.get(item.getId());	
 			}
 			else{
-				restaurantView = new RestaurantImageView(item);
+				restaurantView = new RestaurantImageView(item, this);
 
 				RestaurantController.restMapView.put(item.getId(), restaurantView);
 
@@ -92,10 +93,24 @@ public class CityInfoScreen extends JQMPage{
 		super.onPageShow();
 		List<Restaurant> newRestaurants = restaurantController.getRestaurantsInCity(title);
 		
+		if(!loaded){
+			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+			backButton.setIcon(DataIcon.LEFT);
+			backButton.setIconPos(IconPos.LEFT);
+			
+			backButton.getElement().setInnerHTML(span);
+			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+			
+			header.add(backButton);
+	        loaded = true;
+		}
+		
 		if(restaurants.size() != newRestaurants.size() ){
 			restaurants = newRestaurants;
 			refreshRestaurantList();
 		}
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	private void refreshRestaurantList() {
 		restaurantList.clear();

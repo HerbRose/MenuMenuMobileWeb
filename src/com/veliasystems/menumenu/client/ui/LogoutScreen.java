@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -20,10 +21,11 @@ public class LogoutScreen extends JQMPage{
 		// TODO Auto-generated method stub
 		super.onPageShow();
 		
-		if(Cookies.getCookie(R.loggedIn) != null){
-			Cookies.removeCookie(R.loggedIn);
+		if(Cookies.getCookie(R.LOGGED_IN) != null){
+			Cookies.removeCookie(R.LOGGED_IN);
 			Window.Location.reload();
 		}
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	
 	

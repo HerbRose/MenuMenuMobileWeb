@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
@@ -55,8 +56,8 @@ public class LoginScreen extends JQMPage{
 				String text = nameBox.getValue();
 				if (text.equalsIgnoreCase("agnieszka")) {
 					MenuMenuMobileWeb.loggedIn = true;
-					Cookies.setCookie(R.loggedIn, "YES");
-					JQMContext.changePage(Pages.PAGE_HOME);
+					Cookies.setCookie(R.LOGGED_IN, "YES");
+					JQMContext.changePage(new LoadDataScreen());
 				}
 				else Window.alert("Wrong username or password.");
 			}
@@ -79,8 +80,9 @@ public class LoginScreen extends JQMPage{
 		passwordBox.setValue("");
 		
 		MenuMenuMobileWeb.loggedIn = false;
-		Cookies.removeCookie(R.loggedIn);
+		Cookies.removeCookie(R.LOGGED_IN);
 		
+		Document.get().getElementById("load").setClassName(R.LOADED);
 		super.onPageShow();
 	}
 	

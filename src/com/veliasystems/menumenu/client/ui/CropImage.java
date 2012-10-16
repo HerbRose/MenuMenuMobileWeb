@@ -29,6 +29,7 @@ import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -50,7 +51,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	
 	JQMHeader header;
 	JQMButton saveButton;
-	JQMButton backButton;
+//	JQMButton backButton;
 	String backgroundImage;
 	FlowPanel image;
 	
@@ -118,10 +119,10 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		
 		header = new JQMHeader("Crop image");
 		saveButton = new JQMButton(Customization.SAVEPROFILE);
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setBack(true);
+//		backButton = new JQMButton(Customization.BACK);
+//		backButton.setBack(true);
 		header.setRightButton(saveButton);
-		header.setLeftButton(backButton);
+//		header.setLeftButton(backButton);
 		add(header);	
 		
 		img = new Image();		
@@ -532,6 +533,12 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	protected void onPageShow() {
+		super.onPageShow();
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 
 }

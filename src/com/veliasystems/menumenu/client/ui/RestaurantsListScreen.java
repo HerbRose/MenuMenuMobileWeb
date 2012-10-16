@@ -2,7 +2,10 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -15,6 +18,8 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
@@ -32,7 +37,8 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 
 	private List<Restaurant> restaurants;
 	private RestaurantController restaurantController = RestaurantController.getInstance();
-
+	private boolean loaded = false;
+	
 	public RestaurantsListScreen() {
 		
 		restaurantController.addObserver(this);
@@ -41,12 +47,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		header.setFixed(true);
 		header.setText(Customization.RESTAURANTS);
 		
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setBack(true);
-		backButton.setIcon(DataIcon.LEFT);
-		backButton.setIconPos(IconPos.LEFT);
 		
-		header.setBackButton(backButton);
 		add(header);
 		restaurants = restaurantController.getRestaurantsList();
 	    	    
@@ -55,7 +56,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 	    add(restaurantList);
 
 	    
-	    addButton = new JQMButton(Customization.ADDRESTAURANT, Pages.PAGE_ADD_RESTAURANT);
+	    addButton = new JQMButton(Customization.ADDRESTAURANT, PagesController.getPage(Pages.PAGE_ADD_RESTAURANT) );
 	    addButton.setIcon(DataIcon.PLUS);
 	    addButton.setIconPos(IconPos.TOP);
 	    addButton.setTransition(Transition.SLIDE);
@@ -84,7 +85,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 				restaurantView = RestaurantController.restMapView.get(item.getId());	
 			}
 			else{
-				restaurantView = new RestaurantImageView(item);
+				restaurantView = new RestaurantImageView(item, this);
 				RestaurantController.restMapView.put(item.getId(), restaurantView);				
 			}
 			
@@ -101,15 +102,36 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		if(Cookies.getCookie(R.lastPage) != null){
-			Cookies.removeCookie(R.lastPage);
+		if(Cookies.getCookie(R.LAST_PAGE) != null){
+			Cookies.removeCookie(R.LAST_PAGE);
 		}
 		List<Restaurant> newRestaurants = restaurantController.getRestaurantsList();
+		
+		if(!loaded){
+			
+			backButton = new JQMButton("" , PagesController.getPage(Pages.PAGE_HOME), Transition.SLIDE);
+			
+			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+			backButton.setIcon(DataIcon.LEFT);
+			backButton.setIconPos(IconPos.LEFT);
+			
+			backButton.getElement().setInnerHTML(span);
+			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+			
+			header.add(backButton);
+			loaded = true;
+		}
+		
+		restaurantController.setFromCityView(false);
 		
 		if(restaurants.size() != newRestaurants.size() ){
 			restaurants = newRestaurants;
 			refreshRestaurantList();
 		}
+		
+		Cookies.removeCookie(R.LAST_PAGE);
+		
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 
 	@Override

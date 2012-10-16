@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.ui;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -16,6 +17,9 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 
 
@@ -33,6 +37,8 @@ public class CityListScreen extends JQMPage implements IObserver{
 	CityController cityController = CityController.getInstance();
 //	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
 	private List<City> cityList;
+	private boolean loaded = false;
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
 	public CityListScreen() {
 		
@@ -42,12 +48,7 @@ public class CityListScreen extends JQMPage implements IObserver{
 		header.setFixed(true);
 		header.setText(Customization.CITY);
 		
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setBack(true);
-		backButton.setIcon(DataIcon.LEFT);
-		backButton.setIconPos(IconPos.LEFT);
 		
-		header.setBackButton(backButton);
 		
 		add(header);
 		
@@ -108,11 +109,27 @@ public class CityListScreen extends JQMPage implements IObserver{
 //	}
 	@Override
 	protected void onPageShow() {
-		// TODO Auto-generated method stub
 		super.onPageShow();
-		if(Cookies.getCookie(R.lastPage) != null){
-			Cookies.removeCookie(R.lastPage);
+		
+		if( !loaded){
+			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_HOME), Transition.SLIDE);
+			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+			backButton.setIcon(DataIcon.LEFT);
+			backButton.setIconPos(IconPos.LEFT);
+			
+			backButton.getElement().setInnerHTML(span);
+			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+			
+			header.add(backButton);
+			loaded = true;
 		}
+		
+		restaurantController.setFromCityView(true);
+		
+		if(Cookies.getCookie(R.LAST_PAGE) != null){
+			Cookies.removeCookie(R.LAST_PAGE);
+		}
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 
 	@Override

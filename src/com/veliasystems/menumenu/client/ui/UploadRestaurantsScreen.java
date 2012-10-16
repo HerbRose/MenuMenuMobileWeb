@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -16,6 +17,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
@@ -30,6 +32,8 @@ public class UploadRestaurantsScreen extends JQMPage implements HasClickHandlers
 	Image jsonImage;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
+	private boolean loaded = false;
+	
 	
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -106,9 +110,6 @@ public class UploadRestaurantsScreen extends JQMPage implements HasClickHandlers
 		
 		header = new JQMHeader(Customization.UPLOAD);
 		header.setFixed(true);
-		backButton = new JQMButton(Customization.BACK);
-		backButton.setBack(true);
-		header.add(backButton);
 		add(header);
 		
 		jsonArea = new TextArea();
@@ -146,6 +147,29 @@ public class UploadRestaurantsScreen extends JQMPage implements HasClickHandlers
 	private void showWarning(){
 		label.setStyleName("warning");
 		add(label);
+	}
+	
+	@Override
+	protected void onPageShow() {
+		// TODO Auto-generated method stub
+		super.onPageShow();
+		
+		if(!loaded){
+			backButton = new JQMButton(Customization.BACK);
+			backButton.setBack(true);
+			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
+			backButton.setIcon(DataIcon.LEFT);
+			backButton.setIconPos(IconPos.LEFT);
+			
+			backButton.getElement().setInnerHTML(span);
+			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+			
+			header.add(backButton);
+			
+			loaded = true;
+		}
+		
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 
 }
