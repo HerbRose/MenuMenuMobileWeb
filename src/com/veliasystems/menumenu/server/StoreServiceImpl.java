@@ -169,8 +169,16 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setLogoImages(null);
 		r.setMenuImages(null);
 		r.setProfileImages(null);
+		r.setCityId(getCityId(r.getCity()));
 		dao.ofy().put(r);
 //		System.out.println("saved succes: " + r.getName());
+	}
+	
+	private Long getCityId(String city){
+		
+		City newCity = dao.ofy().query(City.class).filter("city", city).get();
+		
+		return newCity.getId();
 	}
 	
 	private void getGeocoding( Restaurant r, boolean trimCity ) throws Exception {

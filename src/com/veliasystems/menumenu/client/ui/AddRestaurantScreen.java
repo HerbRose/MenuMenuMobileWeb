@@ -99,7 +99,8 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 				
 				restaurant.setAddress(adressText.getText());			
 				int index = cityListBox.getSelectedIndex();			
-				restaurant.setCity(cityListBox.getItemText(index));		
+				restaurant.setCity(cityListBox.getItemText(index));	
+				
 				RestaurantController.getInstance().saveRestaurant(restaurant);
 				
 			}

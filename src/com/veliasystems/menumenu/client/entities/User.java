@@ -10,15 +10,16 @@ public class User implements Serializable {
 	
 	@Id
 	private String email; //login
-	
-	
+	private String phoneNumber;
+	private String addedByUser;
 	
 	private String name;
 	private String surname;
 	private String password;
+	private boolean isAdmin = false;
 	
-	
-	private List<Long> restaurantsId;
+	private List<Long> restaurantsId = null;
+	private List<Long> citiesId = null;
 	
 	/**
 	 * email must be valid e-mail address. Check it before creating new user
@@ -27,5 +28,7 @@ public class User implements Serializable {
 	public User( String email) {
 		this.email = email;
 	}
+	
+	
 	
 }
