@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.entities.User;
 
 
 public interface StoreServiceAsync {
@@ -34,7 +35,12 @@ public interface StoreServiceAsync {
 
 	void loadCitiesEntity(AsyncCallback<List<City>> callback);
 
-	void getAllData(AsyncCallback<Map<String, Object>> callback);
+	void getAllData(String login, String password,AsyncCallback<Map<String, Object>> callback);
+	void getAllData(String login, AsyncCallback<Map<String, Object>> callback);
+
+	void addUser(User user, AsyncCallback<Void> callback);
+
+	void getUsers(AsyncCallback<List<User>> callback);
 
 	
 

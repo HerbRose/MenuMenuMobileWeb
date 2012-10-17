@@ -52,14 +52,15 @@ public class LoginScreen extends JQMPage{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println(nameBox.getTitle());
 				String text = nameBox.getValue();
-				if (text.equalsIgnoreCase("agnieszka")) {
-					MenuMenuMobileWeb.loggedIn = true;
-					Cookies.setCookie(R.LOGGED_IN, "YES");
-					JQMContext.changePage(new LoadDataScreen());
-				}
-				else Window.alert("Wrong username or password.");
+				System.out.println(text);
+//				if (text.equalsIgnoreCase("agnieszka")) {
+//					MenuMenuMobileWeb.loggedIn = true;
+//					Cookies.setCookie(R.LOGGED_IN, "YES");
+				System.out.println("login");
+					JQMContext.changePage(new LoadDataScreen(nameBox.getValue(), passwordBox.getValue()));
+//				}
+//				else Window.alert("Wrong username or password.");
 			}
 		});
 	    

@@ -18,7 +18,6 @@ public class PagesController {
 			return pagesMap.get(page);
 		}else{
 			JQMPage newPage = setMyPage(page);
-			System.out.println(page);
 			pagesMap.put(page, newPage);
 			return newPage;
 		}

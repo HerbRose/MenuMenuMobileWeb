@@ -32,10 +32,10 @@ public class CityListScreen extends JQMPage implements IObserver{
 	JQMButton addButton;
 	JQMList list;
 	JQMButton backButton;
+	JQMButton addUser;
 	
 	Label label = new Label();
 	CityController cityController = CityController.getInstance();
-//	private final StoreServiceAsync storeService = GWT.create(StoreService.class);	
 	private List<City> cityList;
 	private boolean loaded = false;
 	private RestaurantController restaurantController = RestaurantController.getInstance();
@@ -47,31 +47,12 @@ public class CityListScreen extends JQMPage implements IObserver{
 		header = new JQMHeader(Customization.CITY);
 		header.setFixed(true);
 		header.setText(Customization.CITY);
-		
-		
-		
+	
 		add(header);
 		
 		list = new JQMList();
 	    list.setInset(false);
-	    
-//	    storeService.loadCities(new AsyncCallback<List<String>>() {
-//			
-//			@Override
-//			public void onSuccess(List<String> result) {
-//				// TODO Auto-generated method stub
-//				cityList = new ArrayList<String>();
-//				cityList = result;
-//				addCities(cityList);
-//				add(list);	
-//			}
-//			
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//				showError();
-//			}
-//		});
+
 	    cityList = CityController.getInstance().getCitiesList();
 	    addCities(cityList);
 	    add(list);
@@ -82,11 +63,18 @@ public class CityListScreen extends JQMPage implements IObserver{
 	    add(footer);
 	   
 	    addButton = new JQMButton(Customization.ADD_CITY, new AddCity(), Transition.SLIDE);
-	    addButton.setWidth("100%");
+	    addButton.setWidth("49%");
 	    addButton.setIcon(DataIcon.PLUS);
 	    addButton.setIconPos(IconPos.TOP);
-	    
+	    addButton.setInline();
 	    footer.add(addButton);
+	    
+	    addUser = new JQMButton(Customization.ADD_USER, new AddUsersScreen(this), Transition.SLIDE);
+	    addUser.setWidth("49%");
+	    addUser.setIcon(DataIcon.PLUS);
+	    addUser.setIconPos(IconPos.TOP);
+	    addUser.setInline();
+	    footer.add(addUser);
 	        
 	}
 	
@@ -103,10 +91,6 @@ public class CityListScreen extends JQMPage implements IObserver{
 		}
 	}
 	
-//	private void showError(){
-//		label.setText(Customization.LOADERROR);
-//		this.add(label);
-//	}
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();

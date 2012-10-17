@@ -39,6 +39,13 @@ public class Customization {
 	public static final String USER_PHONE = "Telefon do kontaktu";
 	public static final String USER_NAME = "Imię";
 	public static final String USER_SURNAME = "Nazwisko";
+	public static final String ADD_USER = "Dodaj użytkownika";
+	public static final String ADD_ADMIN = "Dodaj administratora";
+	public static final String ADD_AGENT = "Dodaj przedstawiciela";
+	public static final String ADD_RESTAURATOR = "Dodaj restauratora";
+	public static final String IS_ADMIN = "Administrator";
+	public static final String INPUT_EMAIL= "Podaj e-mail";
+	public static final String INPUT_PASSWORD = "Ustal hasło";
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
 	public static final String LOGOUT = "Logout";
 	

@@ -4,6 +4,7 @@ package com.veliasystems.menumenu.server;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.StoreService;
 
@@ -61,6 +63,41 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return cityListString;
 	}
+	
+	private List<City> loadCitiesForUser(User user){
+		
+		List<Long> tmpList = user.getCitiesId();
+		
+		Query<City> cityQuery = dao.ofy().query(City.class);
+		if(cityQuery == null) return null;
+		List<City> listCities = cityQuery.filter("id IN", tmpList).list();
+		if(listCities == null) return null;
+		return listCities;
+		
+	}
+	
+	private List<City> loadCitiesByRestaurant(List<Restaurant> restList){
+		Set<Long> citiesId = new HashSet<Long>();		
+		for (Restaurant restaurant : restList) {
+			citiesId.add(restaurant.getCityId());
+		}	
+		Query<City> cityQuery = dao.ofy().query(City.class);
+		if(cityQuery == null) return null;
+		List<City> cityList = cityQuery.filter("id IN", citiesId).list();	
+		return cityList;	
+	}
+	
+	private List<Restaurant> loadRestaurantsByCities(List<City> citiesList){
+		Set<Long> restaurantsId = new HashSet<Long>();
+		for (City city : citiesList) {
+			restaurantsId.add(city.getId());
+		}
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if(restQuery == null) return null;
+		List<Restaurant> restList = restQuery.filter("cityId IN", citiesList).list();
+		return restList;
+	} 
+	
 	@Override
 	public List<City> loadCitiesEntity() {
 		return dao.ofy().query(City.class).list();
@@ -302,6 +339,18 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return restaurantTmp;
 	}
 	
+	private List<Restaurant> loadRestaurantsForUser(User user){
+		
+		List<Long> tmpList = user.getRestaurantsId();
+		
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if(restQuery == null) return null;
+		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
+		if(listRestaurant == null) return null;
+		return listRestaurant;
+		
+	}
+	
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
 		List<City> cityList = dao.ofy().query(City.class).list();
@@ -489,14 +538,70 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public Map<String, Object> getAllData(){
+	public Map<String, Object> getAllData(String login, String password){
 		Map<String, Object> allData = new HashMap<String, Object>();
+		Query<User> userQuery = dao.ofy().query(User.class);
+		if(userQuery == null) return null;
+		User user = userQuery.filter("email", login).get();
+		if(user == null || !(user.getPassword().equals(password))) return null;
+		System.out.println(user.isAdmin());
+		if(user.isAdmin()){
+			allData.put("Restaurants", loadRestaurants());
+			allData.put("Cities", loadCitiesEntity());
+		}
+		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
+			List<Restaurant> tmp = loadRestaurantsForUser(user);
+			allData.put("Restaurants", tmp);	
+			allData.put("Cities", loadCitiesByRestaurant(tmp));
+		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
+			List<City> tmp = loadCitiesForUser(user);
+			allData.put("Cities", tmp);
+			allData.put("Restaurants", loadRestaurantsByCities(tmp));
+		}
 		
-		allData.put("Restaurants", loadRestaurants());
-		allData.put("Cities", loadCitiesEntity());
 		
+		allData.put("Users", getUsers());
 		return allData;
 		
+	}
+	
+	@Override
+	public Map<String, Object> getAllData(String login){
+		Map<String, Object> allData = new HashMap<String, Object>();
+		Query<User> userQuery = dao.ofy().query(User.class);
+		if(userQuery == null) return null;
+		User user = userQuery.filter("email", login).get();
+		if(user == null) return null;
+		System.out.println(user.isAdmin());
+		if(user.isAdmin()){
+			allData.put("Restaurants", loadRestaurants());
+			allData.put("Cities", loadCitiesEntity());
+		}
+		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
+			List<Restaurant> tmp = loadRestaurantsForUser(user);
+			allData.put("Restaurants", tmp);	
+			allData.put("Cities", loadCitiesByRestaurant(tmp));
+		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
+			List<City> tmp = loadCitiesForUser(user);
+			allData.put("Cities", tmp);
+			allData.put("Restaurants", loadRestaurantsByCities(tmp));
+		}
+		
+		
+		allData.put("Users", getUsers());
+		return allData;
+		
+	}
+	
+	@Override
+	public void addUser(User user){
+		dao.ofy().put(user);
+	}
+	@Override
+	public List<User> getUsers(){
+		Query<User> users = dao.ofy().query(User.class);
+		if(users == null) return new ArrayList<User>();
+		return users.order("email").list();
 	}
 	
 }
