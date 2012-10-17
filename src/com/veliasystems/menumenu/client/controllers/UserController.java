@@ -20,11 +20,10 @@ public class UserController {
 	private static UserController instance  = null;
 	private static final Logger log = Logger.getLogger(UserController.class.getName());
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
-	private Map<Long, User> users = new HashMap<Long, User>();
-	
+	private Map<String, User> users = new HashMap<String, User>();
+	private UserType userType;
 	private UserController() {
 	}
-	
 	public static UserController getInstance(){
 		if(instance == null){
 			
@@ -70,7 +69,19 @@ public class UserController {
 		});
 	}
 	
-
+	public void setUsers(Map<String, User> users) {
+		this.users = users;
+	}
+	
+	public void setUserType(String login) {
+		User user = users.get(login);
+		if(user.isAdmin()) userType = UserType.ADMIN;
+		else if(user.getCitiesId() != null) userType = UserType.AGENT;
+		else userType = UserType.RESTAURATOR;
+	}
+	public UserType getUserType(){
+		return userType;
+	}
 	
 	
 	
