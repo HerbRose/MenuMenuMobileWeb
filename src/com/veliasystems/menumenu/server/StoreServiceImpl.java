@@ -558,7 +558,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
 		}
-		
+
 		
 		allData.put("Users", getUsers());
 		return allData;
@@ -571,8 +571,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<User> userQuery = dao.ofy().query(User.class);
 		if(userQuery == null) return null;
 		User user = userQuery.filter("email", login).get();
-		if(user == null) return null;
-		System.out.println(user.isAdmin());
+		if(user == null) return null;;
 		if(user.isAdmin()){
 			allData.put("Restaurants", loadRestaurants());
 			allData.put("Cities", loadCitiesEntity());
