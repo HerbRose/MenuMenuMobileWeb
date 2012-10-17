@@ -16,6 +16,7 @@ import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -27,6 +28,7 @@ public class LoadDataScreen extends JQMPage {
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private UserController userController = UserController.getInstance();
 	private String email;
 	
 	public LoadDataScreen(String login){
@@ -56,7 +58,7 @@ public class LoadDataScreen extends JQMPage {
 					for (User user : users) {
 						usersFromServer.put(user.getEmail(), user);
 					}
-					
+					userController.setUsers(usersFromServer);
 					restaurantController.setRestaurants(restaurantsFromServer);
 					CityController.getInstance().setCities(citiesFromServer);
 					

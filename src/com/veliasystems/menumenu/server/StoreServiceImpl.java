@@ -30,6 +30,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -602,5 +603,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(users == null) return new ArrayList<User>();
 		return users.order("email").list();
 	}
+	
+	
 	
 }

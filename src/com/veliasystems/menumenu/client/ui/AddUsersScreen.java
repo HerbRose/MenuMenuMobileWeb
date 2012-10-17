@@ -6,6 +6,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
@@ -33,6 +35,7 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	private JQMPassword password;
 	private Label mailLabel;
 	private Label passwordLabe;
+	private SuggestBox suggestBox;
 	
 	private boolean loaded = false;
 	
@@ -84,6 +87,19 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	private void setFooter(){
 		footer = new JQMFooter();
 		footer.setFixed(true);
+		
+		switch(userController.getUserType()){
+		case ADMIN:
+			setAdminButtons();
+			break;
+		default:
+			setAgentButtons();
+		}		
+		add(footer);
+		
+	}
+	
+	private void setAdminButtons(){
 		addAdmin = new JQMButton(Customization.ADD_ADMIN);
 		addAdmin.setIcon(DataIcon.PLUS);
 		addAdmin.setIconPos(IconPos.TOP);
@@ -96,11 +112,14 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		addRestaurator.setIcon(DataIcon.PLUS);
 		addRestaurator.setIconPos(IconPos.TOP);
 		footer.add(addRestaurator);
-		add(footer);
-		
-		
-		
 	}
+	private void setAgentButtons(){
+		addRestaurator = new JQMButton(Customization.ADD_RESTAURATOR);
+		addRestaurator.setIcon(DataIcon.PLUS);
+		addRestaurator.setIconPos(IconPos.TOP);
+		footer.add(addRestaurator);
+	}
+	
 
 	private boolean isClicked(ClickEvent event, JQMButton button) {
 
