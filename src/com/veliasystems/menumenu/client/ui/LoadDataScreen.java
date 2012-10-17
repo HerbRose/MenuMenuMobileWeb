@@ -7,19 +7,19 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
-import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
@@ -27,37 +27,103 @@ public class LoadDataScreen extends JQMPage {
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private String email;
 	
-	public LoadDataScreen() {
+	public LoadDataScreen(String login){
 		Document.get().getElementById("load").setClassName(R.LOADING);
 		
-		storeService.getAllData(new AsyncCallback<Map<String,Object>>() {
+		storeService.getAllData(login, new AsyncCallback<Map<String,Object>>() {
 			
 			@Override
 			public void onSuccess(Map<String, Object> result) {
-				List<Restaurant> restaurants = (List<Restaurant>) result.get("Restaurants") ;
-				Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
-				for (Restaurant restaurant : restaurants) {
-					restaurantsFromServer.put(restaurant.getId(), restaurant);
+				if(result == null){
+					JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME));
+				}
+				else{
+					List<Restaurant> restaurants = (List<Restaurant>) result.get("Restaurants") ;
+					Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
+					for (Restaurant restaurant : restaurants) {
+						restaurantsFromServer.put(restaurant.getId(), restaurant);
+					}
+					
+					List<City> cities = (List<City>) result.get("Cities") ;
+					Map<Long, City> citiesFromServer = new HashMap<Long, City>();
+					for (City city : cities) {
+						citiesFromServer.put(city.getId(), city);
+					}
+					List<User> users = (List<User>) result.get("Users");
+					Map<String, User> usersFromServer = new HashMap<String, User>();
+					for (User user : users) {
+						usersFromServer.put(user.getEmail(), user);
+					}
+					
+					restaurantController.setRestaurants(restaurantsFromServer);
+					CityController.getInstance().setCities(citiesFromServer);
+					
+//					Pages.PAGE_CITY_LIST = new CityListScreen();
+					
+//					Pages.PAGE_SAVE_RESTAURANT = new RestaurantSavedScreen();
+//					Pages.PAGE_RESTAURANT_LIST = new RestaurantsListScreen();
+//					Pages.PAGE_HOME = new HomePageScreen();
+//					Pages.PAGE_ADD_RESTAURANT = new AddRestaurantScreen();
+//					Pages.PAGE_LOGIN = new LoginScreen();
+					Cookies.setCookie(R.LOGGED_IN, email);
+					changePage();	
 				}
 				
-				List<City> cities = (List<City>) result.get("Cities") ;
-				Map<Long, City> citiesFromServer = new HashMap<Long, City>();
-				for (City city : cities) {
-					citiesFromServer.put(city.getId(), city);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
+	
+	public LoadDataScreen(String login, String password) {
+		this.email = login;
+		Document.get().getElementById("load").setClassName(R.LOADING);
+		storeService.getAllData(login, password, new AsyncCallback<Map<String,Object>>() {
+			
+			@Override
+			public void onSuccess(Map<String, Object> result) {
+				if(result == null){
+					JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME));
+				}
+				else{
+					List<Restaurant> restaurants = (List<Restaurant>) result.get("Restaurants") ;
+					Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
+					for (Restaurant restaurant : restaurants) {
+						restaurantsFromServer.put(restaurant.getId(), restaurant);
+					}
+					
+					List<City> cities = (List<City>) result.get("Cities") ;
+					Map<Long, City> citiesFromServer = new HashMap<Long, City>();
+					for (City city : cities) {
+						citiesFromServer.put(city.getId(), city);
+					}
+					List<User> users = (List<User>) result.get("Users");
+					Map<String, User> usersFromServer = new HashMap<String, User>();
+					for (User user : users) {
+						usersFromServer.put(user.getEmail(), user);
+					}
+					
+					restaurantController.setRestaurants(restaurantsFromServer);
+					CityController.getInstance().setCities(citiesFromServer);
+					
+//					Pages.PAGE_CITY_LIST = new CityListScreen();
+					
+//					Pages.PAGE_SAVE_RESTAURANT = new RestaurantSavedScreen();
+//					Pages.PAGE_RESTAURANT_LIST = new RestaurantsListScreen();
+//					Pages.PAGE_HOME = new HomePageScreen();
+//					Pages.PAGE_ADD_RESTAURANT = new AddRestaurantScreen();
+//					Pages.PAGE_LOGIN = new LoginScreen();
+					Cookies.setCookie(R.LOGGED_IN, email);
+					changePage();	
 				}
 				
-				restaurantController.setRestaurants(restaurantsFromServer);
-				CityController.getInstance().setCities(citiesFromServer);
-//				Pages.PAGE_CITY_LIST = new CityListScreen();
-				
-//				Pages.PAGE_SAVE_RESTAURANT = new RestaurantSavedScreen();
-//				Pages.PAGE_RESTAURANT_LIST = new RestaurantsListScreen();
-//				Pages.PAGE_HOME = new HomePageScreen();
-//				Pages.PAGE_ADD_RESTAURANT = new AddRestaurantScreen();
-//				Pages.PAGE_LOGIN = new LoginScreen();
-				
-				changePage();	
 			}
 			
 			@Override

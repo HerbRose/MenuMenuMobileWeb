@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.entities.User;
 
 /**
  * The client side stub for the RPC service.
@@ -35,5 +36,11 @@ void saveRestaurant( Restaurant r );
 
 	List<City> loadCitiesEntity();
 
-	Map<String, Object> getAllData();
+	Map<String, Object> getAllData(String login, String password);
+
+	void addUser(User user);
+
+	List<User> getUsers();
+
+	Map<String, Object> getAllData(String login);
 }
