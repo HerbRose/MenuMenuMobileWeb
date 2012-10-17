@@ -27,7 +27,7 @@ public class Restaurant implements Serializable {
 	private String phoneUser = "";
 	private String nameUser = "";
 	private String surnameUser = "";
-	
+	private boolean isVisibleForApp = false;
 	
 	/**Lists of url's with profile images */
 	private List<ImageBlob> profileImages;
@@ -253,7 +253,13 @@ public class Restaurant implements Serializable {
 	public void setSurnameUser(String surnameUser) {
 		this.surnameUser = surnameUser;
 	}
+	public void setVisibleForApp(boolean isVisibleForApp) {
+		this.isVisibleForApp = isVisibleForApp;
+	}
 	
+	public boolean isVisibleForApp() {
+		return isVisibleForApp;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
