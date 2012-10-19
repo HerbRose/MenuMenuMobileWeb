@@ -22,14 +22,13 @@ public class UserController {
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private Map<String, User> users = new HashMap<String, User>();
 	private UserType userType;
+	
 	private UserController() {
 	}
 	public static UserController getInstance(){
 		if(instance == null){
-			
 			instance = new UserController();
 		}
-		
 		return instance;
 	}
 	
@@ -51,11 +50,14 @@ public class UserController {
 	}
 	
 	public void addUser(User user){
+		
+		final User userToAdd = user;
 		storeService.addUser(user, new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
 				// TODO Auto-generated method stub
+				users.put(userToAdd.getEmail(), userToAdd);
 				notifyAllObservers();
 				History.back();
 			}
@@ -64,7 +66,7 @@ public class UserController {
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				log.warning(caught.getMessage());
-				Window.alert("error");
+				Window.alert("Connection error. Please try again later");
 			}
 		});
 	}
@@ -75,6 +77,7 @@ public class UserController {
 	
 	public void setUserType(String login) {
 		User user = users.get(login);
+		
 		if(user.isAdmin()) userType = UserType.ADMIN;
 		else if(user.getCitiesId() != null) userType = UserType.AGENT;
 		else userType = UserType.RESTAURATOR;
@@ -83,6 +86,9 @@ public class UserController {
 		return userType;
 	}
 	
+	public boolean isUserInStor(String email){
+		return users.containsKey(email);
+	}
 	
 	
 }

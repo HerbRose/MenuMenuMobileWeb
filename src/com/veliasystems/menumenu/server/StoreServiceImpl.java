@@ -95,7 +95,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if(restQuery == null) return null;
-		List<Restaurant> restList = restQuery.filter("cityId IN", citiesList).list();
+		System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
+		List<Restaurant> restList = restQuery.filter("cityId in", restaurantsId).list();
 		return restList;
 	} 
 	
@@ -524,7 +525,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * 
 	 */
 	public void fillCityId(){
-		List <Restaurant> restaurants = loadRestaurants();
+		
+		Query<Restaurant> query = dao.ofy().query(Restaurant.class);
+		List <Restaurant> restaurants = new ArrayList<Restaurant>();
+		if(query != null) restaurants=query.list();
 		List<City> cities = loadCitiesEntity();
 		
 		for (Restaurant restaurant : restaurants) {
@@ -545,7 +549,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(userQuery == null) return null;
 		User user = userQuery.filter("email", login).get();
 		if(user == null || !(user.getPassword().equals(password))) return null;
-		System.out.println(user.isAdmin());
+
 		if(user.isAdmin()){
 			allData.put("Restaurants", loadRestaurants());
 			allData.put("Cities", loadCitiesEntity());

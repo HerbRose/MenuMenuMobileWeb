@@ -15,7 +15,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		
 		String logged = Cookies.getCookie(R.LOGGED_IN);
 		
-		if (!logged.equals("null")) loggedIn = true;
+		if (logged != null && !logged.equals("null")) loggedIn = true; //it's weird, but it seems to be working
 		
 		if (loggedIn) {
 			JQMContext.changePage( new LoadDataScreen(logged) );

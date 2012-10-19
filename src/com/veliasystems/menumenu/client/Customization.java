@@ -1,5 +1,7 @@
 package com.veliasystems.menumenu.client;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
+
 public class Customization {
 	public static final String CITY = "Miasta";
 	public static final String RESTAURANTS = "Restauracje";  
@@ -46,7 +48,9 @@ public class Customization {
 	public static final String IS_ADMIN = "Administrator";
 	public static final String INPUT_EMAIL= "Podaj e-mail";
 	public static final String INPUT_PASSWORD = "Ustal hasło";
+	public static final String REPEAT_PASSWORD = "Powtórz hasło";
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
 	public static final String LOGOUT = "Logout";
+	public static final String RESTAURATIUN_MANAGER = "Zarządzanie restauracjami";
 	
 };
