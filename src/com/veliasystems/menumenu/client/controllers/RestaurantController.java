@@ -325,7 +325,6 @@ public class RestaurantController {
 			restaurants.add(this.restaurants.get(restaurantId));
 		}
 		
-		storeService.setVisableRestaurants
 		
 	}
 	
