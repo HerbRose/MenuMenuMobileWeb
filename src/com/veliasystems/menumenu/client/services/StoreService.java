@@ -44,7 +44,7 @@ void saveRestaurant( Restaurant r );
 
 	Map<String, Object> getAllData(String login);
 
-	void setVisibleRestaurants(List<Restaurant> restaurants);
+	Map<Long, Boolean> setVisibilityRestaurants(List<Restaurant> restaurants);
 
-	void setInVisibleRestaurants(List<Restaurant> restaurants);
+
 }

@@ -612,24 +612,19 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public void setVisibleRestaurants(List<Restaurant> restaurants){
+	public Map<Long, Boolean> setVisibilityRestaurants(List<Restaurant> restaurants){
+		
+		Map<Long, Boolean> changedRestaurnts = new HashMap<Long, Boolean>();
 		
 		for (Restaurant restaurant : restaurants) {
-			restaurant.setVisibleForApp(true);
+			restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
+			changedRestaurnts.put(restaurant.getId(), restaurant.isVisibleForApp());
 		}
 		
 		dao.ofy().put(restaurants);
-	}
-	
-	@Override
-	public void setInVisibleRestaurants(List<Restaurant> restaurants){
 		
-		for (Restaurant restaurant : restaurants) {
-			restaurant.setVisibleForApp(false);
-		}
-		
-		dao.ofy().put(restaurants);
+		return changedRestaurnts;
 	}
-	
+
 
 }

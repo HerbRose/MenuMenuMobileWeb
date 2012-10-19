@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
@@ -318,12 +319,33 @@ public class RestaurantController {
 		
 	}
 	
-	private void setRestaurantsVisable(List<Long> visableRestaurants){
-		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+	private void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){
+		List<Restaurant> restaurantsToChange = new ArrayList<Restaurant>();
 		
-		for (Long restaurantId : visableRestaurants) {
-			restaurants.add(this.restaurants.get(restaurantId));
+		Set<Long> restaurantKey = restaurantMap.keySet();
+		for (Long restaurantId : restaurantKey) {
+			if(restaurants.containsKey(restaurantId)){
+				if(restaurantMap.get(restaurantId) != restaurants.get(restaurantId).isVisibleForApp()){
+					restaurantsToChange.add(restaurants.get(restaurantId));
+				}
+			}
 		}
+		
+		storeService.setVisibilityRestaurants(restaurantsToChange, new AsyncCallback<Map<Long, Boolean>>() {
+			@Override
+			public void onSuccess(Map<Long, Boolean> result) {
+				Set<Long> changedRestaurantIds = result.keySet();
+				for (Long changedRestaurantId : changedRestaurantIds) {
+					restaurants.get(changedRestaurantId).setVisibleForApp(result.get(changedRestaurantId));
+					History.back();
+				}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Connection problem. Please try again later");
+				
+			}
+		});
 		
 		
 	}
