@@ -52,5 +52,6 @@ public class Customization {
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
 	public static final String LOGOUT = "Logout";
 	public static final String RESTAURATIUN_MANAGER = "Zarządzanie restauracjami";
+	public static final String ADRESS = "Adres";
 	
 };

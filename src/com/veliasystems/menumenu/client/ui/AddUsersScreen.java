@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,13 +9,8 @@ import java.util.Set;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -29,19 +25,16 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.sksamuel.jqm4gwt.form.JQMForm;
-import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
 import com.sksamuel.jqm4gwt.form.elements.JQMPassword;
-import com.sksamuel.jqm4gwt.html.FormLabel;
-import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
-import com.sksamuel.jqm4gwt.toolbar.JQMToolbar;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
@@ -103,7 +96,6 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	private UserController userController = UserController.getInstance();
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
-
 	
 	private Map<Integer, Widget> panelList = new HashMap<Integer, Widget>();
 	private Integer panelCount = 0;
@@ -113,7 +105,10 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	private FlowPanel agentPanel;
 	private FlowPanel restauratorPanel;
 
+	private SingleSelectionModel<String> selectionModelCities;
+	private SingleSelectionModel<String> selectionModelRestaurant;
 	
+	private List<Long> restaurantsIdList = new ArrayList<Long>();
 	public AddUsersScreen(JQMPage back) {
 		pageToBack = back;
 		userType = userController.getUserType();
@@ -152,58 +147,27 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 				setAgentButtons();
 			}		
 	}
-	
-//	private void setFooter(){
-//		footer = new JQMFooter();
-//		footer.setFixed(true);
-//		
-//		
-//		add(footer);
-//		
-//	}
-	
+		
 	private void setAdminButtons(){
-		setAdminPanel();
-//		addAdmin = new JQMButton(Customization.ADD_ADMIN);
-//		addAdmin.setIcon(DataIcon.PLUS);
-//		addAdmin.setIconPos(IconPos.TOP);
-//		footer.add(addAdmin);
-		
+		setAdminPanel();		
 		setAgentPanel();
-//		addAgent = new JQMButton(Customization.ADD_AGENT);
-//		addAgent.setIcon(DataIcon.PLUS);
-//		addAgent.setIconPos(IconPos.TOP);
-//		footer.add(addAgent);
-		
+	
 		setRestauratorPanel();
-//		addRestaurator = new JQMButton(Customization.ADD_RESTAURATOR);
-//		addRestaurator.setIcon(DataIcon.PLUS);
-//		addRestaurator.setIconPos(IconPos.TOP);
-//		footer.add(addRestaurator);
 		addRestaurantsManager();
 	}
 	
 	private void setAdminPanel(){
-		adminPanel = new FlowPanel();
-		
-		//panelList.add(adminPanel);
-		
+		adminPanel = new FlowPanel();		
 		addAddUserTab(adminPanel, UserType.ADMIN);
 		hidePanels();
 	}
 	private void setAgentPanel(){
 		agentPanel = new FlowPanel();
-		
-		//panelList.add(agentPanel);
-		//panelList.put(panelCount++, agentPanel);
 		addAddUserTab(agentPanel, UserType.AGENT);
 		hidePanels();
 	}
 	private void setRestauratorPanel(){
 		restauratorPanel = new FlowPanel();
-		
-		//panelList.add(restauratorPanel);
-		//panelList.put(panelCount++, restauratorPanel);
 		addAddUserTab(restauratorPanel, UserType.RESTAURATOR);
 		
 		hidePanels();
@@ -214,7 +178,6 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		addRestaurator = new JQMButton(Customization.ADD_RESTAURATOR);
 		addRestaurator.setIcon(DataIcon.PLUS);
 		addRestaurator.setIconPos(IconPos.TOP);
-		//footer.add(addRestaurator);
 	}
 
 	private void addAddUserTab(FlowPanel panel, UserType userType){
@@ -266,10 +229,11 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 				@Override
 				public void onClick(ClickEvent event) {
 					if(checkCity(citySuggestBox.getValue().trim())){
-						addedCities.add(citySuggestBox.getValue());
-						citiesCellList.setRowData(addedCities);
-						citiesCellList.setRowCount(addedCities.size());
-						citiesCellList.redraw();
+							//addedCities = new ArrayList<String>();
+							addedCities.add(citySuggestBox.getValue());					
+							citiesCellList.setRowData(addedCities);
+							citiesCellList.setRowCount(addedCities.size());
+							citiesCellList.redraw();
 					}
 					
 				}
@@ -278,9 +242,25 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			TextCell cityTextCell = new TextCell();
 			addedCities = new ArrayList<String>();
 			citiesCellList = new CellList<String>(cityTextCell);
+			selectionModelCities = new SingleSelectionModel<String>();
+			citiesCellList.setSelectionModel(selectionModelCities);
+			selectionModelCities.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+				
+				@Override
+				public void onSelectionChange(SelectionChangeEvent event) {
+					// TODO Auto-generated method stub
+					String selected = selectionModelCities.getSelectedObject();
+					 if (selected != null) {			 
+						 addedCities.remove(selected);
+						 selectionModelCities.setSelected(selectionModelCities.getSelectedObject(), false);
+				         citiesCellList.setRowData(addedCities);
+				         citiesCellList.setRowCount(addedCities.size());
+				         citiesCellList.redraw();
+				        }
+				}
+			});
 			citiesCellList.setRowData(addedCities);
 			citiesCellList.setRowCount(addedCities.size());
-			
 			saveAgentButton = new JQMButton(Customization.SAVE);
 			saveAgentButton.addClickHandler(new ClickHandler() {
 				
@@ -298,10 +278,8 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 										cityId.add(city.getId());
 									}
 								}
-							}
-							
+							}							
 						}
-						
 						agent.setCitiesId(cityId);
 						addUser(agent);
 					}else{
@@ -338,13 +316,14 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			inputEmailRestaurator = new TextBox();
 			restaurantSuggest = new MultiWordSuggestOracle();
 			restaurantSuggestBox = new SuggestBox(restaurantSuggest);
+			
 			addRestaurantToRestaurantTextBox = new JQMButton("+");
 			addRestaurantToRestaurantTextBox.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
 					if(checkRestaurant(restaurantSuggestBox.getValue())){
-						addedRestauration.add(restaurantSuggestBox.getValue());
+						setRestauransId(true);
 						restaurantCellList.setRowData(addedRestauration);
 						restaurantCellList.setRowCount(addedRestauration.size());
 						restaurantCellList.redraw();
@@ -356,6 +335,25 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			TextCell restaurationTextCell = new TextCell();
 			restaurantCellList = new CellList<String>(restaurationTextCell);
 			addedRestauration = new ArrayList<String>();
+			selectionModelRestaurant = new SingleSelectionModel<String>();
+			restaurantCellList.setSelectionModel(selectionModelRestaurant);
+			selectionModelRestaurant.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+				
+				@Override
+				public void onSelectionChange(SelectionChangeEvent event) {
+					// TODO Auto-generated method stub
+					String selected = selectionModelRestaurant.getSelectedObject();
+					 if (selected != null) {
+						 
+						 //addedRestauration.remove(selected);
+						 setRestauransId(false);
+						 selectionModelRestaurant.setSelected(selectionModelRestaurant.getSelectedObject(), false);
+				         restaurantCellList.setRowData(addedRestauration);
+				         restaurantCellList.setRowCount(addedRestauration.size());
+				         restaurantCellList.redraw();
+				        }
+				}
+			});
 			restaurantCellList.setRowData(addedRestauration);
 			restaurantCellList.setRowCount(addedRestauration.size());
 
@@ -368,18 +366,17 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 					if(validData(UserType.RESTAURATOR)){
 						User restaurator = new User(inputEmailRestaurator.getValue().trim());
 						restaurator.setPassword(passwordRestaurator.getValue().trim());
-						
-						List<Long> restaurationId = new ArrayList<Long>();
-						for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
-							for (String restaurationName : addedRestauration) {
-								if(restaurant.getName().equals(restaurationName)){
-									if(!restaurationId.contains(restaurant.getId())){
-										restaurationId.add(restaurant.getId());
-									}
-								}
-							}
-						}
-						restaurator.setRestaurantsId(restaurationId);
+//						for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
+//							for (String restaurationName : addedRestauration) {
+//								if(restaurant.getName().equals(restaurationName)){
+//									if(!restaurationId.contains(restaurant.getId())){
+//										restaurationId.add(restaurant.getId());
+//									}
+//								}
+//							}
+//						}
+						System.out.println(restaurantsIdList.toString());
+						restaurator.setRestaurantsId(restaurantsIdList);
 						addUser(restaurator);
 					}else{
 						Window.alert("Wrong data");
@@ -395,7 +392,7 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			panel.add(repeatPasswordLabe);
 			panel.add(passwordRestaurator2);
 			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
-				restaurantSuggest.add(restaurant.getName());
+				restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
 			}
 			
 			panel.add(restaurantSuggestBox);
@@ -420,65 +417,23 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		panelList.put(panelCount++, checkBoxsPanel);
 		tabBar.addTab(Customization.RESTAURATIUN_MANAGER);
 		checkBoxs = new ArrayList<CheckBox>();
-		JQMCheckset aaa = new JQMCheckset("sss");
+		JQMCheckset checkBoxes = new JQMCheckset("");
 		
 		for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
-			CheckBox cb = new CheckBox(restaurant.getName());
-			
-			aaa.addCheck(restaurant.getId()+"", restaurant.getName());
+			CheckBox cb = new CheckBox(restaurant.getName());		
+			checkBoxes.addCheck(restaurant.getId()+"", restaurant.getName());
 			
 		}
-		checkBoxsPanel.add(aaa);
+		checkBoxsPanel.add(checkBoxes);
 		add(checkBoxsPanel);
 	}
-//	private boolean isClicked(ClickEvent event, JQMButton button) {
-//
-//		int clickedX = event.getClientX();
-//		int clickedY = event.getClientY();
-//
-//		int ButtonX = (int) button.getElement().getAbsoluteLeft();
-//		int ButtonY = (int) button.getElement().getAbsoluteTop();
-//		int ButtonWidth = (int) button.getElement().getClientWidth();
-//		int ButtonHeight = (int) button.getElement().getClientWidth();
-//
-//		int ButtonStartX = ButtonX;
-//		int ButtonStopX = ButtonX + ButtonWidth;
-//		int ButtonStartY = ButtonY;
-//		int ButtonStopY = ButtonY + ButtonHeight;
-//
-//		if (clickedX >= ButtonStartX && clickedX <= ButtonStopX
-//				&& clickedY >= ButtonStartY && clickedY <= ButtonStopY) {
-//			return true;
-//		}
-//		return false;
-//	}
+
 
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) {
 		return addDomHandler(handler, ClickEvent.getType());
 	}
 	
-//	{
-//		this.addClickHandler(new ClickHandler() {
-//
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				meClicked(event);
-//			}
-//		});
-//	}
-	
-//	private void meClicked(ClickEvent event){
-//		if(isClicked(event, addAdmin)){
-//			showPanel(adminPanel);
-//		}else if(isClicked(event, addAgent)){
-//			showPanel(agentPanel);
-//		}else if(isClicked(event, addRestaurator)){
-//			showPanel(restauratorPanel);
-//		}
-//	}
-
-
 	private void hidePanels(){
 		Set<Integer> panelKeys = panelList.keySet();
 		
@@ -514,13 +469,17 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			passwordAgent.setValue("");
 			passwordAgent2.setValue("");
 			addedCities.clear();
+			citiesCellList.setRowData(addedCities);
 			citiesCellList.redraw();
+			citySuggestBox.setText("");
 			
 			inputEmailRestaurator.setValue("");
 			passwordRestaurator.setValue("");
 			passwordRestaurator2.setValue("");
 			addedRestauration.clear();
+			restaurantCellList.setRowData(addedRestauration);
 			restaurantCellList.redraw();
+			restaurantSuggestBox.setText("");
 			break;
 
 		default:
@@ -528,7 +487,9 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			passwordRestaurator.setValue("");
 			passwordRestaurator2.setValue("");
 			addedRestauration.clear();
+			restaurantCellList.setRowData(addedRestauration);
 			restaurantCellList.redraw();
+			restaurantSuggestBox.setText("");
 			break;
 		}
 		
@@ -597,13 +558,86 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		return isCorrect;
 	}
 	private boolean checkRestaurant(String restaurantName){
-		Window.alert("ZAIMPLEMENTOWAC SPRAWDZANIE RESTAURACJI");
-		return true;
+		int indexOfCity = restaurantName.indexOf("(" + Customization.CITYONE);
+		if(indexOfCity < 1) return false;
+		String restName = restaurantName.substring(0, indexOfCity - 1);
+		
+		List<Restaurant> restaurants = restaurantController.getRestaurantsList();
+		List<String> restaurantList = new ArrayList<String>();
+		for (Restaurant	 restaurant : restaurants) {
+			restaurantList.add(restaurant.getName());
+		}
+		if(restaurantList.contains(restName)){
+			if(!addedRestauration.contains(restaurantName)) {
+				return true;
+			}
+			
+		}
+		return false;
+		
 	}
 	
 	private boolean checkCity(String CityName){
-		Window.alert("ZAIMPLEMENTOWAC SPRAWDZANIE MIASTA");
-		return true;
+		List<City> cities = cityController.getCitiesList();
+		List<String> citiesName = new ArrayList<String>();
+		for (City city : cities) {
+			citiesName.add(city.getCity());
+		}
+		if(citiesName.contains(CityName)){
+			if(!addedCities.contains(CityName)) return true;
+		}
+		return false;
+	}
+	
+	private void setRestauransId(boolean isAdded){
+		if(isAdded){	
+			String fullRestName = restaurantSuggestBox.getValue();
+			int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
+			if(indexOfCity < 1) return;
+			String restNameNoCity = fullRestName.substring(0, indexOfCity - 1);
+			
+			int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":", indexOfCity);
+			indexOfCity += Customization.CITY.length();
+			String city = fullRestName.substring(indexOfCity + 3, indexOfAdress - 2);
+			
+			indexOfAdress +=Customization.ADRESS.length();
+			String adress = fullRestName.substring(indexOfAdress + 2, fullRestName.length() - 1);
+	
+			List<Restaurant> restList = restaurantController.getRestaurantsList();
+			for (Restaurant restaurant : restList) {
+				System.out.println();
+				System.out.println(restNameNoCity + " " + city + " " + adress);
+				System.out.println(restaurant.getName() + " " + restaurant.getCity()  + " " + restaurant.getAddress());
+				System.out.println();
+				if(restaurant.getName().equals(restNameNoCity) && restaurant.getCity().equals(city) && restaurant.getAddress().equals(adress)){
+					addedRestauration.add(restaurantSuggestBox.getValue());
+					restaurantsIdList.add(restaurant.getId());
+				}
+			}
+			
+		}else{		
+			String fullRestName = selectionModelRestaurant.getSelectedObject();		
+			int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
+			if(indexOfCity < 1) return;
+			String restNameNoCity = fullRestName.substring(0, indexOfCity - 1);
+	
+			int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":", indexOfCity);
+			indexOfCity += Customization.CITY.length();
+			String city = fullRestName.substring(indexOfCity + 3, indexOfAdress - 2);
+			
+			indexOfAdress +=Customization.ADRESS.length();
+			String adress = fullRestName.substring(indexOfAdress + 2, fullRestName.length() - 1);
+			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
+				System.out.println(restNameNoCity + " " + city + " " + adress);
+				System.out.println(restaurant.getName() + " " + restaurant.getCity()  + " " + restaurant.getAddress());
+				if(restaurant.getName().equals(restNameNoCity) && restaurant.getCity().equals(city) && restaurant.getAddress().equals(adress)){
+					addedRestauration.remove(selectionModelRestaurant.getSelectedObject());
+					restaurantsIdList.remove(restaurant.getId());
+				}
+			}	
+			
+		}
+		
 	}
 	
 	@Override

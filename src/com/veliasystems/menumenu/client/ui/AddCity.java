@@ -62,7 +62,7 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	@Override
 	protected void onPageShow() {
 		// TODO Auto-generated method stub
-		
+		warningLabel.setText("");
 		if(!loaded){
 			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
 			
@@ -73,8 +73,7 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 			backButton.getElement().setInnerHTML(span);
 			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
 			
-			header.add(backButton);
-
+			header.setLeftButton(backButton);
 			loaded = true;
 		}
 		
@@ -90,7 +89,7 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 		saveButton = new JQMButton(Customization.SAVE);
 		saveButton.setIcon(DataIcon.PLUS);
 		saveButton.setIconPos(IconPos.RIGHT);
-		header.add(saveButton);
+		header.setRightButton(saveButton);
 		add(header);
 		
 		nameCity = new TextBox();
