@@ -319,7 +319,7 @@ public class RestaurantController {
 		
 	}
 	
-	private void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){
+	public void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){
 		List<Restaurant> restaurantsToChange = new ArrayList<Restaurant>();
 		
 		Set<Long> restaurantKey = restaurantMap.keySet();
@@ -331,14 +331,15 @@ public class RestaurantController {
 			}
 		}
 		
+		
 		storeService.setVisibilityRestaurants(restaurantsToChange, new AsyncCallback<Map<Long, Boolean>>() {
 			@Override
 			public void onSuccess(Map<Long, Boolean> result) {
 				Set<Long> changedRestaurantIds = result.keySet();
 				for (Long changedRestaurantId : changedRestaurantIds) {
 					restaurants.get(changedRestaurantId).setVisibleForApp(result.get(changedRestaurantId));
-					History.back();
 				}
+				History.back();
 			}
 			@Override
 			public void onFailure(Throwable caught) {

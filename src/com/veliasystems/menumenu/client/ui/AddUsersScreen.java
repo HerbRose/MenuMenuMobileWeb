@@ -9,16 +9,23 @@ import java.util.Set;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -32,8 +39,15 @@ import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
+import com.sksamuel.jqm4gwt.form.JQMFieldContainer;
+import com.sksamuel.jqm4gwt.form.JQMFieldset;
+import com.sksamuel.jqm4gwt.form.elements.IsChecked;
+import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
+import com.sksamuel.jqm4gwt.form.elements.JQMFormWidget;
 import com.sksamuel.jqm4gwt.form.elements.JQMPassword;
+import com.sksamuel.jqm4gwt.html.FormLabel;
+import com.sksamuel.jqm4gwt.html.Legend;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
@@ -45,7 +59,6 @@ import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
-
 
 public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	
@@ -85,10 +98,14 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	private JQMButton saveAgentButton;
 	private JQMButton saveRestauratorButton;
 	
-	
 	private Label mailLabel;
 	private Label passwordLabe;
 	private Label repeatPasswordLabe;
+	
+	private Map<MyJQMCheckbox, Long> checkBoxes;
+	private MyJQMCheckset checkBoxesSet;
+	private FlowPanel restaurantsManagerPanel;
+	private JQMButton setVisibilityButton;
 	
 	private boolean loaded = false;
 	private UserType userType;
@@ -109,21 +126,13 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	private SingleSelectionModel<String> selectionModelRestaurant;
 	
 	private List<Long> restaurantsIdList = new ArrayList<Long>();
+	
 	public AddUsersScreen(JQMPage back) {
 		pageToBack = back;
 		userType = userController.getUserType();
-		tabBar = new TabBar();
-		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
-
-			@Override
-			public void onSelection(SelectionEvent<Integer> event) {
-				// TODO Auto-generated method stub
-				showPanel(panelList.get(event.getSelectedItem()));
-			}
-
-		});
+		
 		setHeader();
-		add(tabBar);
+		
 		setContent();
 //		setFooter();
 		
@@ -139,13 +148,26 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	
 	private void setContent(){
 			
-			switch(userType){
-			case ADMIN:
-				setAdminButtons();
-				break;
-			default:
-				setAgentButtons();
-			}		
+		
+		tabBar = new TabBar();
+		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
+
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				// TODO Auto-generated method stub
+				showPanel(panelList.get(event.getSelectedItem()));
+			}
+		});
+		
+		add(tabBar);
+		
+		switch(userType){
+		case ADMIN:
+			setAdminButtons();
+			break;
+		default:
+			setAgentButtons();
+		}		
 	}
 		
 	private void setAdminButtons(){
@@ -189,8 +211,8 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		case ADMIN:
 			tabBar.addTab(Customization.ADD_ADMIN);
 			inputEmailAdmin = new TextBox();
-			passwordAdmin = new JQMPassword();
-			passwordAdmin2 = new JQMPassword();
+			passwordAdmin = new JQMPassword("");
+			passwordAdmin2 = new JQMPassword("");
 			saveAdminButton = new JQMButton(Customization.SAVE);
 			saveAdminButton.addClickHandler(new ClickHandler() {
 				
@@ -219,8 +241,8 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		case AGENT:
 			tabBar.addTab(Customization.ADD_AGENT);
 			inputEmailAgent = new TextBox();
-			passwordAgent = new JQMPassword();
-			passwordAgent2 = new JQMPassword();
+			passwordAgent = new JQMPassword("");
+			passwordAgent2 = new JQMPassword("");
 			citySuggest = new MultiWordSuggestOracle("-");
 			citySuggestBox = new SuggestBox(citySuggest);
 			addCityToCityTextBox = new JQMButton("+");
@@ -296,9 +318,9 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			panel.add(repeatPasswordLabe);
 			panel.add(passwordAgent2);
 			
-			for (City city : cityController.getCitiesList()) {
-				citySuggest.add(city.getCity());
-			}
+//			for (City city : cityController.getCitiesList()) {
+//				citySuggest.add(city.getCity());
+//			}
 			
 			panel.add(citySuggestBox);
 			panel.add(addCityToCityTextBox);
@@ -311,8 +333,8 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		case RESTAURATOR:
 			
 			tabBar.addTab(Customization.ADD_RESTAURATOR);
-			passwordRestaurator = new JQMPassword();
-			passwordRestaurator2 = new JQMPassword();
+			passwordRestaurator = new JQMPassword("");
+			passwordRestaurator2 = new JQMPassword("");
 			inputEmailRestaurator = new TextBox();
 			restaurantSuggest = new MultiWordSuggestOracle();
 			restaurantSuggestBox = new SuggestBox(restaurantSuggest);
@@ -323,6 +345,7 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 				@Override
 				public void onClick(ClickEvent event) {
 					if(checkRestaurant(restaurantSuggestBox.getValue())){
+						
 						setRestauransId(true);
 						restaurantCellList.setRowData(addedRestauration);
 						restaurantCellList.setRowCount(addedRestauration.size());
@@ -391,9 +414,9 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			panel.add(passwordRestaurator);
 			panel.add(repeatPasswordLabe);
 			panel.add(passwordRestaurator2);
-			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
-				restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
-			}
+//			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
+//				restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
+//			}
 			
 			panel.add(restaurantSuggestBox);
 			panel.add(addRestaurantToRestaurantTextBox);
@@ -408,24 +431,50 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		
 	}
 
-	private List<CheckBox> checkBoxs;
-	private FlowPanel checkBoxsPanel;
+
 	
 	private void addRestaurantsManager(){
-		checkBoxsPanel = new FlowPanel();
-		
-		panelList.put(panelCount++, checkBoxsPanel);
-		tabBar.addTab(Customization.RESTAURATIUN_MANAGER);
-		checkBoxs = new ArrayList<CheckBox>();
-		JQMCheckset checkBoxes = new JQMCheckset("");
-		
-		for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
-			CheckBox cb = new CheckBox(restaurant.getName());		
-			checkBoxes.addCheck(restaurant.getId()+"", restaurant.getName());
+		restaurantsManagerPanel = new FlowPanel();
+		setVisibilityButton = new JQMButton(Customization.SET_VISIBILITY);
+		setVisibilityButton.addClickHandler(new ClickHandler() {
 			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				Map<Long, Boolean> restaurantMap = new HashMap<Long, Boolean>();
+				
+				Set<MyJQMCheckbox> key = checkBoxes.keySet();
+				
+				for (MyJQMCheckbox checkbox : key) {
+					
+					restaurantMap.put(checkBoxes.get(checkbox), checkbox.isSelected());
+				}
+				
+				restaurantController.setRestaurantsVisable(restaurantMap);
+			}
+		});
+		
+		panelList.put(panelCount++, restaurantsManagerPanel);
+		tabBar.addTab(Customization.RESTAURATIUN_MANAGER);
+		
+		checkBoxes = new HashMap<MyJQMCheckbox, Long>();
+		checkBoxesSet = new MyJQMCheckset();
+		
+		for (Restaurant restaurant : restaurantController.getRestaurantsList()) {	
+			MyJQMCheckbox cb = checkBoxesSet.addCheck(restaurant.getId()+"", restaurant.getName());
+			
+			checkBoxes.put(cb, restaurant.getId());
+			
+			if(restaurant.isVisibleForApp()){
+				cb.setValue(true);
+			}
 		}
-		checkBoxsPanel.add(checkBoxes);
-		add(checkBoxsPanel);
+		
+		restaurantsManagerPanel.add(checkBoxesSet);
+		restaurantsManagerPanel.add(setVisibilityButton);
+		
+		
+		add(restaurantsManagerPanel);
 	}
 
 
@@ -472,6 +521,11 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			citiesCellList.setRowData(addedCities);
 			citiesCellList.redraw();
 			citySuggestBox.setText("");
+			citySuggest.clear();
+			for (City city : cityController.getCitiesList()) {
+				citySuggest.add(city.getCity());
+			}
+			
 			
 			inputEmailRestaurator.setValue("");
 			passwordRestaurator.setValue("");
@@ -480,6 +534,22 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			restaurantCellList.setRowData(addedRestauration);
 			restaurantCellList.redraw();
 			restaurantSuggestBox.setText("");
+			restaurantSuggest.clear();
+			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
+				restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
+			}
+			
+//			checkBoxesSet.clear();
+//			checkBoxes.clear();
+//			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {	
+//				MyJQMCheckbox cb = checkBoxesSet.addCheck(restaurant.getId()+"", restaurant.getName());
+//				
+//				checkBoxes.put(cb, restaurant.getId());
+//				
+//				if(restaurant.isVisibleForApp()){
+//					cb.setValue(true);
+//				}
+//			}
 			break;
 
 		default:
@@ -561,7 +631,6 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		int indexOfCity = restaurantName.indexOf("(" + Customization.CITYONE);
 		if(indexOfCity < 1) return false;
 		String restName = restaurantName.substring(0, indexOfCity - 1);
-		
 		List<Restaurant> restaurants = restaurantController.getRestaurantsList();
 		List<String> restaurantList = new ArrayList<String>();
 		for (Restaurant	 restaurant : restaurants) {
@@ -590,25 +659,16 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 	}
 	
 	private void setRestauransId(boolean isAdded){
-		if(isAdded){	
-			String fullRestName = restaurantSuggestBox.getValue();
-			int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
-			if(indexOfCity < 1) return;
-			String restNameNoCity = fullRestName.substring(0, indexOfCity - 1);
+		if(isAdded){
+			String fullRestName = restaurantSuggestBox.getValue();//selectionModelRestaurant.getSelectedObject();		
+			String restNameNoCity = getRestaurationName(fullRestName);
+			if(restNameNoCity == null) return;
+			String city = getCityName(fullRestName);
+			if(city == null) return;
+			String adress = getAddresName(fullRestName);
+			if(adress == null) return;
 			
-			int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":", indexOfCity);
-			indexOfCity += Customization.CITY.length();
-			String city = fullRestName.substring(indexOfCity + 3, indexOfAdress - 2);
-			
-			indexOfAdress +=Customization.ADRESS.length();
-			String adress = fullRestName.substring(indexOfAdress + 2, fullRestName.length() - 1);
-	
-			List<Restaurant> restList = restaurantController.getRestaurantsList();
-			for (Restaurant restaurant : restList) {
-				System.out.println();
-				System.out.println(restNameNoCity + " " + city + " " + adress);
-				System.out.println(restaurant.getName() + " " + restaurant.getCity()  + " " + restaurant.getAddress());
-				System.out.println();
+			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
 				if(restaurant.getName().equals(restNameNoCity) && restaurant.getCity().equals(city) && restaurant.getAddress().equals(adress)){
 					addedRestauration.add(restaurantSuggestBox.getValue());
 					restaurantsIdList.add(restaurant.getId());
@@ -616,20 +676,15 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			}
 			
 		}else{		
-			String fullRestName = selectionModelRestaurant.getSelectedObject();		
-			int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
-			if(indexOfCity < 1) return;
-			String restNameNoCity = fullRestName.substring(0, indexOfCity - 1);
-	
-			int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":", indexOfCity);
-			indexOfCity += Customization.CITY.length();
-			String city = fullRestName.substring(indexOfCity + 3, indexOfAdress - 2);
+			String fullRestName = restaurantSuggestBox.getValue();//selectionModelRestaurant.getSelectedObject();		
+			String restNameNoCity = getRestaurationName(fullRestName);
+			if(restNameNoCity == null) return;
+			String city = getCityName(fullRestName);
+			if(city == null) return;
+			String adress = getAddresName(fullRestName);
+			if(adress == null) return;
 			
-			indexOfAdress +=Customization.ADRESS.length();
-			String adress = fullRestName.substring(indexOfAdress + 2, fullRestName.length() - 1);
 			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
-				System.out.println(restNameNoCity + " " + city + " " + adress);
-				System.out.println(restaurant.getName() + " " + restaurant.getCity()  + " " + restaurant.getAddress());
 				if(restaurant.getName().equals(restNameNoCity) && restaurant.getCity().equals(city) && restaurant.getAddress().equals(adress)){
 					addedRestauration.remove(selectionModelRestaurant.getSelectedObject());
 					restaurantsIdList.remove(restaurant.getId());
@@ -640,10 +695,35 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 		
 	}
 	
+	private String getRestaurationName(String fullRestName){
+		int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
+		if (indexOfCity < 1) return null;
+		return fullRestName.substring(0, indexOfCity - 1);
+	}
+	private String getCityName(String fullRestName){
+		int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
+		if (indexOfCity < 1) return null;
+		indexOfCity += Customization.CITY.length();
+		int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":", indexOfCity);
+		if(indexOfAdress < 0) return null;
+		return fullRestName.substring(indexOfCity + 3, indexOfAdress - 2);
+	}
+	private String getAddresName(String fullRestName){
+		int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
+		if (indexOfCity < 1) return null;
+		indexOfCity += Customization.CITY.length();
+		int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":", indexOfCity);
+		if(indexOfAdress < 0) return null;
+		indexOfAdress +=Customization.ADRESS.length();
+		
+		return fullRestName.substring(indexOfAdress + 2, fullRestName.length() - 1);
+	}
+	
 	@Override
 	protected void onPageShow() {
 		
 		clearScreenData();
+		
 		if(!loaded){
 			backButton = new JQMButton("",  pageToBack, Transition.SLIDE );	
 			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
@@ -653,7 +733,7 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			backButton.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");		
 			header.add(backButton);
 			loaded = true;
-		}	
+		}
 		Document.get().getElementById("load").setClassName(R.LOADED);
 		
 		if (panelList != null && !panelList.isEmpty()) {
@@ -661,4 +741,288 @@ public class AddUsersScreen extends JQMPage implements HasClickHandlers{
 			
 		}
 	}
+}
+
+
+
+/**
+ * @author Stephen K Samuel samspade79@gmail.com 12 Jul 2011 15:42:39
+ * 
+ * 
+ */
+class MyJQMCheckbox implements HasText, IsChecked, HasValue<Boolean> {
+
+        private final InputElement      input;
+
+        private final FormLabel         label;
+
+        private final String            id;
+
+        MyJQMCheckbox(InputElement input, FormLabel label, String id) {
+                this.input = input;
+                this.label = label;
+                this.id = id;
+        }
+
+        @Override
+        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
+                return null;
+        }
+
+        @Override
+        public void fireEvent(GwtEvent<?> event) {
+        }
+
+        public String getId() {
+                return id;
+        }
+
+        public InputElement getInput() {
+                return input;
+        }
+
+        @Override
+        public String getText() {
+                return label.getText();
+        }
+
+        @Override
+        public Boolean getValue() {
+                return isSelected();
+        }
+
+        @Override
+        public boolean isSelected() {
+                String style = label.getStyleName();
+                
+                if (style == null)
+                        return false;
+//                if (style.contains("ui-btn-down")) {
+//                        return !style.contains("ui-checkbox-on");
+//                } else {
+//                        return style.contains("ui-checkbox-on");
+//                }
+                return style.contains("ui-btn-active");
+
+        }
+
+        @Override
+        public void setText(String text) {
+                label.setText(text);
+        }
+
+        @Override
+        public void setValue(Boolean value) {
+                setValue(value, false);
+        }
+
+        @Override
+        public void setValue(Boolean value, boolean ignored) {
+                input.setChecked(value);
+                input.setDefaultChecked(value);
+        }
+}
+
+
+/**
+ * @author Stephen K Samuel samspade79@gmail.com 24 May 2011 08:17:31
+ * 
+ *         A widget that is composed of 1 or more checkboxes.
+ * 
+ *         The child checkboxes are grouped together and can be set to be
+ *         vertical or horizontal.
+ * 
+ * @link http://jquerymobile.com/demos/1.0b1/#/demos/1.0b1/docs/forms/forms-
+ *       checkboxes.html
+ * 
+ */
+class MyJQMCheckset extends JQMFieldContainer implements HasText, HasSelectionHandlers<String>, HasClickHandlers, JQMFormWidget{
+
+        private JQMFieldset             fieldset;
+
+        private Legend                  legend;
+
+        private List<TextBox>           inputs  = new ArrayList<TextBox>();
+        private List<FormLabel>         labels  = new ArrayList<FormLabel>();
+        private List<MyJQMCheckbox>       checks  = new ArrayList<MyJQMCheckbox>();
+
+        /**
+         * Creates a new {@link JQMCheckset} with no label text
+         */
+        public MyJQMCheckset() {
+                this(null);
+        }
+
+        /**
+         * Creates a new {@link JQMCheckset} with the label set to the given text.
+         * 
+         * @param text
+         *              the display text for the label
+         */
+        public MyJQMCheckset(String text) {
+
+                fieldset = new JQMFieldset();
+                add(fieldset);
+
+                legend = new Legend();
+                fieldset.add(legend);
+
+                setText(text);
+        }
+
+        @Override
+        public HandlerRegistration addBlurHandler(final BlurHandler handler) {
+                for (FormLabel label : labels)
+                        label.addDomHandler(new ClickHandler() {
+
+                                @Override
+                                public void onClick(ClickEvent event) {
+                                        handler.onBlur(null);
+                                }
+                        }, ClickEvent.getType());
+                return null;
+        }
+
+        /**
+         * Add a new check option to the checkset.
+         * 
+         * @param id
+         *              the name of the checkbox
+         * @param text
+         *              the text to display for the checkbox
+         * 
+         * @return the {@link JQMCheckbox} instance used to control the added
+         *         checkbox
+         */
+        public MyJQMCheckbox addCheck(String id, String text) {
+
+                TextBox input = new TextBox();
+                input.setName(id);
+                input.getElement().setId(id);
+                input.getElement().setAttribute("type", "checkbox");
+                input.setStyleName("gwt-TextBox", true);
+                inputs.add(input);
+
+                FormLabel label = new FormLabel();
+                label.setFor(id);
+                label.setText(text);
+                label.setStyleName("ui-btn ui-btn-icon-left ui-btn-down-c ui-btn-up-c", true);
+                labels.add(label);
+
+                fieldset.add(input);
+                fieldset.add(label);
+
+                InputElement e = input.getElement().cast();
+                final MyJQMCheckbox check = new MyJQMCheckbox(e, label, id);
+                checks.add(check);
+                return check;
+        }
+
+        @Override
+        public HandlerRegistration addClickHandler(ClickHandler handler) {
+                return addDomHandler(handler, ClickEvent.getType());
+        }
+
+        @Override
+        public Label addErrorLabel() {
+                return null;
+        }
+
+        @Override
+        public HandlerRegistration addSelectionHandler(SelectionHandler<String> handler) {
+                return null;
+        }
+
+        @Override
+        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+                return null;
+        }
+
+        /**
+         * Returns the value of the legend text
+         */
+        @Override
+        public String getText() {
+                return legend.getText();
+        }
+
+        /**
+         * Returns the id of any checkbox that is checked or null if no checkbox
+         * in this checkset has been selected
+         * 
+         * @return the first selected value
+         */
+        @Override
+        public String getValue() {
+                for (MyJQMCheckbox box : checks) {
+                        if (box.isSelected())
+                                return box.getId();
+                }
+                return null;
+        }
+
+        private String getValue(Element element) {
+                while (element != null) {
+                        if ("label".equalsIgnoreCase(element.getTagName())
+                                        && element.getAttribute("class") != null
+                                        && (element.getAttribute("class").contains("ui-btn-active") || element
+                                                        .getAttribute("class").contains("ui-btn-down")))
+                                return element.getAttribute("for");
+                        String value = getValue(element.getFirstChildElement());
+                        if (value != null)
+                                return value;
+                        element = element.getNextSiblingElement();
+                }
+                return null;
+        }
+
+        private native void getValueC(String id) /*-{
+                alert($wnd.$('#' + id).is(':checked'));
+        }-*/;
+
+        /**
+         * Returns true if at least one checkbox in this checkset is selected.
+         */
+        public boolean hasSelection() {
+                return getValue() != null;
+        }
+
+
+
+
+
+
+        public void removeCheck(String id, String label) {
+                // TODO traverse all elements removing anything that has a "for" for
+                // this id or actually has this id
+        }
+
+
+        /**
+         * Sets the value of the legend text.
+         */
+        @Override
+        public void setText(String text) {
+                legend.setText(text);
+        }
+
+
+
+        @Override
+        public void setValue(String id, boolean ignored) {
+                // for (TextBox check : checks) {
+                // if (id.equals(check.getValue())) {
+                // check.getElement().setAttribute("defaultChecked", "true");
+                // check.getElement().setAttribute("checked", "true");
+                // return;
+                // }
+                // }
+        }
+
+		@Override
+		public void setValue(String value) {
+			// TODO Auto-generated method stub
+			
+		}
+
 }

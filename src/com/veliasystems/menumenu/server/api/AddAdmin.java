@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
-public class GetCitiesServlet extends HttpServlet {
+public class AddAdmin extends HttpServlet {
 	
 	private static final long serialVersionUID = 2566472678914274709L;
 	
@@ -36,35 +36,10 @@ public class GetCitiesServlet extends HttpServlet {
 			return;
 		}
 		
-		List<City> cities = storeService.loadCitiesEntity();
-		resp.setCharacterEncoding("UTF-8");
-		resp.setContentType("application/json");
-		
-		String jsonp = req.getParameter("jsonp");
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		
-		if(jsonp != null) {
-			resp.getWriter().print(jsonp + "(");
-		}
-		
-		
-		List< Map<String,String> > attributes = new ArrayList< Map<String,String>>();
-		
-		
-		for (City city : cities) {
-			Map<String,String> cityPair = new HashMap<String,String>();
-			cityPair.put( "name", city.getCity());
-			cityPair.put( "id", "" + city.getId());
-			attributes.add(cityPair);
-		}
-		
-		resp.getWriter().print(gson.toJson(attributes));
-		
-		if(jsonp != null) {
-			resp.getWriter().print(")");
-		}
-		resp.flushBuffer();
-		
+		User user = new User("admin@admin.com");
+		user.setPassword("admin");
+		user.setAdmin(true);
+		storeService.addUser(user);
 	}
 	
 	

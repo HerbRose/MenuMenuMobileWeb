@@ -65,6 +65,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return cityListString;
 	}
 	
+	public City findCity(Long cityId){
+		return dao.ofy().find(City.class, cityId);
+	}
+	
 	private List<City> loadCitiesForUser(User user){
 		
 		List<Long> tmpList = user.getCitiesId();
@@ -126,6 +130,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	private void saveRestaurants(List <Restaurant> restaurants){
+		
+		for (Restaurant restaurant : restaurants) {
+			restaurant.setLogoImages(null);
+			restaurant.setMenuImages(null);
+			restaurant.setProfileImages(null);
+		}
+		
 		dao.ofy().put(restaurants);
 	}
 	
@@ -215,6 +226,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(r);
 //		System.out.println("saved succes: " + r.getName());
 	}
+
 	
 	private Long getCityId(String city){
 		
@@ -621,7 +633,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			changedRestaurnts.put(restaurant.getId(), restaurant.isVisibleForApp());
 		}
 		
-		dao.ofy().put(restaurants);
+		saveRestaurants(restaurants);
 		
 		return changedRestaurnts;
 	}

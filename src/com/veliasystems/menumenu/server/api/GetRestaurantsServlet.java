@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
@@ -23,7 +24,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 2566472678914274709L;
 	
-	private StoreService storeService = new StoreServiceImpl();
+	private StoreServiceImpl storeService = new StoreServiceImpl();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -49,10 +50,10 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 		
 		String cityIdString = req.getParameter("cityId");
-		Integer cityId = 0;
+		Long cityId;
 		
 		try {
-			cityId = Integer.parseInt(cityIdString);
+			cityId = Long.parseLong(cityIdString);
 		} catch (NumberFormatException e) {
 			resp.getWriter().println("cityId must be Integer");
 			resp.flushBuffer();
@@ -60,16 +61,25 @@ public class GetRestaurantsServlet extends HttpServlet {
 		}
 		
 		
-		List<String> cities = storeService.loadCities();
-		if (cityId>=cities.size() || cityId<0) {
+//		List<String> cities = storeService.loadCities();
+//		if ( cityId<0) { //cityId>=cities.size() || -> ???????????
+//			resp.getWriter().println("Wrong cityId");
+//			resp.flushBuffer();
+//			return;
+//		}
+//		
+//		String city = cities.get(cityId);
+//		
+		City city = storeService.findCity(cityId);
+		
+		if (city == null) {
 			resp.getWriter().println("Wrong cityId");
 			resp.flushBuffer();
 			return;
 		}
 		
-		String city = cities.get(cityId);
 		
-		List<Restaurant> rests = storeService.loadRestaurants(city);
+		List<Restaurant> rests = storeService.loadRestaurants(city.getCity());
 		
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
@@ -86,19 +96,21 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 		
 		for (Restaurant r : rests) {
-			Map<String,String> map = new HashMap<String,String>();
-			map.put( "id", ""+ r.getId());
-			map.put( "name", r.getName());
-			map.put( "city", r.getCity());
-			map.put( "district", r.getDistrict());
-			map.put( "address", r.getAddress());
-			map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
-			map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : "EMPTY");
-			map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
-			map.put( "lat", "" + r.getLat());
-			map.put( "lng", "" + r.getLng());
-			
-			attributes.add(map);
+			if(r.isVisibleForApp()){
+				Map<String,String> map = new HashMap<String,String>();
+				map.put( "id", ""+ r.getId());
+				map.put( "name", r.getName());
+				map.put( "city", r.getCity());
+				map.put( "district", r.getDistrict());
+				map.put( "address", r.getAddress());
+				map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
+				map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : "EMPTY");
+				map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
+				map.put( "lat", "" + r.getLat());
+				map.put( "lng", "" + r.getLng());
+				
+				attributes.add(map);
+			}
 		}
 		
 		resp.getWriter().print(gson.toJson(attributes));

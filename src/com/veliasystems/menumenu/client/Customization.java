@@ -53,5 +53,6 @@ public class Customization {
 	public static final String LOGOUT = "Logout";
 	public static final String RESTAURATIUN_MANAGER = "Zarządzanie restauracjami";
 	public static final String ADRESS = "Adres";
+	public static final String SET_VISIBILITY = "Ustaw widoczność restauracji";
 	
 };
