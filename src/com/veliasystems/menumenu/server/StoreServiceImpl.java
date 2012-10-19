@@ -612,7 +612,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public void setOnVisibleRestaurants(List<Restaurant> restaurants){
+	public void setVisibleRestaurants(List<Restaurant> restaurants){
 		
 		for (Restaurant restaurant : restaurants) {
 			restaurant.setVisibleForApp(true);

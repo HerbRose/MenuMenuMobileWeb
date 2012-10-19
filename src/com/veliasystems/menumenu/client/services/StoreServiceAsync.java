@@ -45,7 +45,7 @@ public interface StoreServiceAsync {
 	void setInVisibleRestaurants(List<Restaurant> restaurants,
 			AsyncCallback<Void> callback);
 
-	void setOnVisibleRestaurants(List<Restaurant> restaurants,
+	void setVisibleRestaurants(List<Restaurant> restaurants,
 			AsyncCallback<Void> callback);
 
 	
