@@ -125,6 +125,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(r);
 	}
 	
+	private void saveRestaurants(List <Restaurant> restaurants){
+		dao.ofy().put(restaurants);
+	}
 	
 	private List<Restaurant> getData() {
 		List<Restaurant> r = new ArrayList<Restaurant>();
@@ -608,6 +611,25 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return users.order("email").list();
 	}
 	
+	@Override
+	public void setOnVisibleRestaurants(List<Restaurant> restaurants){
+		
+		for (Restaurant restaurant : restaurants) {
+			restaurant.setVisibleForApp(true);
+		}
+		
+		dao.ofy().put(restaurants);
+	}
 	
+	@Override
+	public void setInVisibleRestaurants(List<Restaurant> restaurants){
+		
+		for (Restaurant restaurant : restaurants) {
+			restaurant.setVisibleForApp(false);
+		}
+		
+		dao.ofy().put(restaurants);
+	}
 	
+
 }

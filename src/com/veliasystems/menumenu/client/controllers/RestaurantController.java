@@ -1,17 +1,15 @@
 package com.veliasystems.menumenu.client.controllers;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
@@ -317,6 +315,17 @@ public class RestaurantController {
 			public void onFailure(Throwable caught) {
 			}
 		});
+		
+	}
+	
+	private void setRestaurantsVisable(List<Long> visableRestaurants){
+		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+		
+		for (Long restaurantId : visableRestaurants) {
+			restaurants.add(this.restaurants.get(restaurantId));
+		}
+		
+		storeService.setVisableRestaurants
 		
 	}
 	

@@ -42,6 +42,12 @@ public interface StoreServiceAsync {
 
 	void getUsers(AsyncCallback<List<User>> callback);
 
+	void setInVisibleRestaurants(List<Restaurant> restaurants,
+			AsyncCallback<Void> callback);
+
+	void setOnVisibleRestaurants(List<Restaurant> restaurants,
+			AsyncCallback<Void> callback);
+
 	
 
 	
