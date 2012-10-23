@@ -129,17 +129,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(r);
 	}
 	
-	private void saveRestaurants(List <Restaurant> restaurants){
-		
-		for (Restaurant restaurant : restaurants) {
-			restaurant.setLogoImages(null);
-			restaurant.setMenuImages(null);
-			restaurant.setProfileImages(null);
-		}
-		
-		dao.ofy().put(restaurants);
-	}
-	
 	private List<Restaurant> getData() {
 		List<Restaurant> r = new ArrayList<Restaurant>();
 		
@@ -208,7 +197,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return r;
 	}
 	
-	
+	@Override
+	public void saveRestaurants(List <Restaurant> restaurants){
+		
+		for (Restaurant restaurant : restaurants) {
+			restaurant.setLogoImages(null);
+			restaurant.setMenuImages(null);
+			restaurant.setProfileImages(null);
+		}
+		
+		dao.ofy().put(restaurants);
+	}
 	
 	@Override
 	public void saveRestaurant(Restaurant r) {

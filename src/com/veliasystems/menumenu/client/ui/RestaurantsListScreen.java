@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;

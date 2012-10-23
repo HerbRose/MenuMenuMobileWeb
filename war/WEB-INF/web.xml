@@ -33,6 +33,16 @@
     <servlet-name>BlobStoreServlet</servlet-name>
     <url-pattern>/menumenumobileweb/blobstore</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>EmailStoreServlet</servlet-name>
+    <servlet-class>com.veliasystems.menumenu.server.EmailServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>EmailStoreServlet</servlet-name>
+    <url-pattern>/menumenumobileweb/email</url-pattern>
+  </servlet-mapping>
 
   <servlet>
      <servlet-name>BlobUploadServlet</servlet-name>

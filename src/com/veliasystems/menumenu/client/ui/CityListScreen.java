@@ -69,7 +69,7 @@ public class CityListScreen extends JQMPage implements IObserver{
 	    addButton.setInline();
 	    footer.add(addButton);
 	    
-	    addUser = new JQMButton(Customization.ADD_USER, new AddUsersScreen(this), Transition.SLIDE);
+	    addUser = new JQMButton(Customization.ADD_USER, new RestaurantsManagerScreen(), Transition.SLIDE);
 	    addUser.setWidth("49%");
 	    addUser.setIcon(DataIcon.PLUS);
 	    addUser.setIconPos(IconPos.TOP);
@@ -94,7 +94,7 @@ public class CityListScreen extends JQMPage implements IObserver{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		
+		restaurantController.setLastOpenPage(this);
 		if( !loaded){
 			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_HOME), Transition.SLIDE);
 			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      

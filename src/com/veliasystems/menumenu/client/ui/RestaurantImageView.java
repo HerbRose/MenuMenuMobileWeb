@@ -1,19 +1,20 @@
 package com.veliasystems.menumenu.client.ui;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.CustomScrollPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.JQMPanel;
 import com.sksamuel.jqm4gwt.Transition;
@@ -80,7 +81,10 @@ public class RestaurantImageView extends JQMPage{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
+		restaurantController.setLastOpenPage(this);
+		
 		if(!loaded){
+			
 			SwipeView swipeView = new SwipeView(restaurant, ImageType.MENU , this);
 			swipeViews.add(swipeView);
 			addToContent( swipeView );
@@ -91,16 +95,34 @@ public class RestaurantImageView extends JQMPage{
 			swipeViews.add(swipeView);
 			addToContent( swipeView );
 			
+			Image addUserImage = new Image("/img/addUser.png");
+			addUserImage.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					JQMContext.changePage(new RestaurantsManagerScreen(), Transition.SLIDE);
+				}
+			});
+			addUserImage.setStyleName("addUserImage", true);
+			addToContent(addUserImage);
+			
+			Image trashImage = new Image("/img/trash.png");
+			trashImage.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					
+				}
+			});
+			trashImage.setStyleName("addTrashImage", true);
+			addToContent(trashImage);
+			
 			loaded = true;
 		}else{
-
 			header.remove(backButton);
-			
-			System.out.println("RestaurantImageView::onPageShow(). swipeViews.size(): "+ swipeViews.size());
 			for (SwipeView swipeView : swipeViews) {
 				swipeView.checkChanges();
 			}
-			
 		}
 		if(restaurantController.isFromCityView()){
 			backButton = new JQMButton(Customization.BACK, back, Transition.SLIDE);
@@ -117,24 +139,26 @@ public class RestaurantImageView extends JQMPage{
 		
 		header.add(backButton);
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
-			Cookies.removeCookie(R.LAST_PAGE);
+			Cookies.removeCookie(R.LAST_PAGE); // <<---is it necessary?
 		}
-		
-		Date data = new Date();
-		Long milisec = data.getTime();
-		milisec += (1000 * 5 * 60); 
+//		Date data = new Date(); 
+//		Long milisec = data.getTime();
+//		milisec += (1000 * 5 * 60); 
 		Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");//, new Date(milisec));
 		
-		//Document.get().getElementById("load").setClassName(R.LOADED);
+		Document.get().getElementById("load").setClassName(R.LOADED); 
 		
 	};
 
-	
+	private JQMPage getMe(){
+		return this;
+	}
 	public void addToContent(Widget widget){
-		
-		//content.add(widget);
 		scrollerDiv.add(widget);
-		
+	}
+	
+	public Restaurant getRestaurant() {
+		return restaurant;
 	}
 		
 }

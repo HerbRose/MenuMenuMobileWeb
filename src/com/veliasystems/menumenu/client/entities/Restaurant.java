@@ -28,6 +28,7 @@ public class Restaurant implements Serializable {
 	private String nameUser = "";
 	private String surnameUser = "";
 	private boolean isVisibleForApp = false;
+	private boolean clearBoard = false;
 	
 	/**Lists of url's with profile images */
 	private List<ImageBlob> profileImages;
@@ -45,11 +46,7 @@ public class Restaurant implements Serializable {
 	/** Lists of url's with main images*/
 	private List<ImageBlob> menuImages;
 	
-
-	private ImageBlob mainProfileImage;
-	private ImageBlob mainLogoImage;
-	private ImageBlob mainMenuImage;
-	
+	private String emptyMenuImageString;
 	private String mainProfileImageString;
 	private String mainLogoImageString;
 	private String mainMenuImageString;
@@ -57,9 +54,7 @@ public class Restaurant implements Serializable {
 	{
 		id = Util.getRandom(9999999);
 	}
-	
-	
-	
+
 	public Restaurant() {}
 
 	
@@ -123,18 +118,13 @@ public class Restaurant implements Serializable {
 		this.lat = lat;
 	}
 
-	
-	
-	
-	
-	
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", address="
 				+ address + ", city=" + city + ", district=" + district
 				+ ", lng=" + lng + ", lat=" + lat + ", mainProfileImage="
-				+ mainProfileImage + ", mainBoardImage=" + mainMenuImage
-				+ ", mainImage=" + mainLogoImage + "]";
+				+ mainProfileImageString + ", mainBoardImage=" + mainMenuImageString
+				+ ", mainImage=" + mainLogoImageString + "]";
 	}
 
 
@@ -165,38 +155,7 @@ public class Restaurant implements Serializable {
 
 	public void setMenuImages(List<ImageBlob> menuImages) {
 		this.menuImages = menuImages;
-	}
-
-
-	public ImageBlob getMainProfileImage() {
-		return mainProfileImage;
-	}
-
-
-	public void setMainProfileImage(ImageBlob mainProfileImage) {
-		this.mainProfileImage = mainProfileImage;
-	}
-
-
-	public ImageBlob getMainLogoImage() {
-		return mainLogoImage;
-	}
-
-
-	public void setMainLogoImage(ImageBlob mainLogoImage) {
-		this.mainLogoImage = mainLogoImage;
-	}
-
-
-	public ImageBlob getMainMenuImage() {
-		return mainMenuImage;
-	}
-
-
-	public void setMainMenuImage(ImageBlob mainMenuImage) {
-		this.mainMenuImage = mainMenuImage;
-	}
-	
+	}	
 	
 	public void setMainLogoImageString(String mainLogoImageString) {
 		this.mainLogoImageString = mainLogoImageString;
@@ -256,9 +215,20 @@ public class Restaurant implements Serializable {
 	public void setVisibleForApp(boolean isVisibleForApp) {
 		this.isVisibleForApp = isVisibleForApp;
 	}
-	
+	public void setEmptyMenuImageString(String emptyMenuImageString) {
+		this.emptyMenuImageString = emptyMenuImageString;
+	}
+	public String getEmptyMenuImageString() {
+		return emptyMenuImageString;
+	}
 	public boolean isVisibleForApp() {
 		return isVisibleForApp;
+	}
+	public boolean isClearBoard() {
+		return clearBoard;
+	}
+	public void setClearBoard(boolean clearBoard) {
+		this.clearBoard = clearBoard;
 	}
 	@Override
 	public boolean equals(Object obj) {

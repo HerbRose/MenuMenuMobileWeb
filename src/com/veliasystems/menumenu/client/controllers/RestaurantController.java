@@ -13,7 +13,9 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
+import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -41,6 +43,7 @@ public class RestaurantController {
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
 	private boolean fromCityView = true;
+	private JQMPage lastOpenPage = null;
 	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
 
@@ -53,6 +56,14 @@ public class RestaurantController {
 	}
 	public boolean isFromCityView() {
 		return fromCityView;
+	}
+	
+	public void setLastOpenPage(JQMPage lastOpenPage) {
+		this.lastOpenPage = lastOpenPage;
+	}
+	
+	public JQMPage getLastOpenPage() {
+		return lastOpenPage;
 	}
 	
 	public static RestaurantController getInstance(){
@@ -343,15 +354,36 @@ public class RestaurantController {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Connection problem. Please try again later");
+				Window.alert(Customization.CONNECTION_ERROR);	
 				
 			}
 		});
 		
 		
 	}
+
+	public void saveRestaurants(List<Restaurant> restaurantsToSave) {
+		final List<Restaurant> restaurantsSentToServer = restaurantsToSave;
+		
+		storeService.saveRestaurants(restaurantsSentToServer, new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				for (Restaurant restaurant : restaurantsSentToServer) {
+					restaurants.put(restaurant.getId(), restaurant);
+				}
+				Window.alert("Done");	
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(Customization.CONNECTION_ERROR);	
+			}
+		});
+		
+	}
+	
 	
 	private static native void historyGoBack(int howMany) /*-{
 		history.go(-howMany);
-	}-*/;	
+	}-*/;
+
 }

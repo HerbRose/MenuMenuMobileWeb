@@ -7,10 +7,12 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
+import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -53,7 +55,10 @@ public class LoadDataScreen extends JQMPage {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+				Window.alert(Customization.CONNECTION_ERROR);
+				Cookies.removeCookie(R.LOADED);
+				Cookies.removeCookie(R.LAST_PAGE);
+				JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN);
 				
 			}
 		});

@@ -54,5 +54,12 @@ public class Customization {
 	public static final String RESTAURATIUN_MANAGER = "Zarządzanie restauracjami";
 	public static final String ADRESS = "Adres";
 	public static final String SET_VISIBILITY = "Ustaw widoczność restauracji";
+	public static final String CONNECTION_ERROR = "Connection problem. Please try again later";
+	public static final String ADDRESSEE = "Adresat";
+	public static final String SENDER = "Nadawca";
+	public static final String MESSAGE_TEXT = "Text wiadomości";
+	public static final String SEND_EMAIL = "Wyślij e-mail";
+	public static final String SEND = "Wyślij";
+	public static final String SUBJECT = "Temat";
 	
 };

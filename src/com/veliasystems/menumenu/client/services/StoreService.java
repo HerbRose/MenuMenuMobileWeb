@@ -46,5 +46,7 @@ void saveRestaurant( Restaurant r );
 
 	Map<Long, Boolean> setVisibilityRestaurants(List<Restaurant> restaurants);
 
+	void saveRestaurants(List<Restaurant> restaurants);
+
 
 }

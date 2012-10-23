@@ -13,42 +13,24 @@ public class PagesController {
 
 	private static Map<Pages, JQMPage> pagesMap = new HashMap<Pages, JQMPage>();
 	
-	public static JQMPage getPage(Pages page){
-		if(pagesMap.containsKey(page)){
-			return pagesMap.get(page);
-		}else{
-			JQMPage newPage = setMyPage(page);
-			pagesMap.put(page, newPage);
-			return newPage;
-		}
-	}
-	
 	/**
 	 * set the page only if local page is null
 	 * @param enumPage
-	 * @return added page or null
+	 * @return the page or <code>new JQMPage()</code> if enumPage doesn't known
 	 */
-	private static JQMPage setMyPage(Pages enumPage) {
-		JQMPage page ;
-		
-			switch (enumPage) {
-			case PAGE_CITY_LIST:
-				page = new CityListScreen(); 
-				break;
-			case PAGE_HOME:
-				page = new HomePageScreen();
-				break;
-			case PAGE_RESTAURANT_LIST:
-				page = new RestaurantsListScreen();
-				break;
-			case PAGE_ADD_RESTAURANT:
-				page = new AddRestaurantScreen();
-				break;
-			default:
-				page = null;
-				break;
+	public static JQMPage getPage(Pages enumPage){
+		if(pagesMap.containsKey(enumPage)){
+			return pagesMap.get(enumPage);
+		}else{
+			
+			JQMPage newPage = Pages.setMyPage(enumPage);
+			if(newPage != null){
+				pagesMap.put(enumPage, newPage);
+				return newPage;
 			}
-		return page;
+			return new JQMPage();
+		}
 	}
+
 }
 

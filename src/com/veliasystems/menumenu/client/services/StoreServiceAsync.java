@@ -45,6 +45,9 @@ public interface StoreServiceAsync {
 	void setVisibilityRestaurants(List<Restaurant> restaurants,
 			AsyncCallback<Map<Long, Boolean>> callback);
 
+	void saveRestaurants(List<Restaurant> restaurants,
+			AsyncCallback<Void> callback);
+
 
 	
 

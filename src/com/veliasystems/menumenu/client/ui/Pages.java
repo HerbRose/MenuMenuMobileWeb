@@ -12,7 +12,6 @@ public class Pages {
 //	public static RestaurantsListScreen	PAGE_RESTAURANT_LIST ;//= new RestaurantsListScreen();
 
 //	public static HomePageScreen		PAGE_HOME			;//= new HomePageScreen();
-	
 	public static LoginScreen			PAGE_LOGIN			= new LoginScreen();
 	
 }
