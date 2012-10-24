@@ -788,11 +788,9 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	private boolean checkRestaurant(String restaurantName){
 		boolean is = false;
-		System.out.println(restaurantName);
 		int indexOfCity = restaurantName.indexOf("(" + Customization.CITYONE);
 		if(indexOfCity < 1) return false;
 		String restName = restaurantName.substring(0, indexOfCity - 1);
-		System.out.println(restName);
 		List<Restaurant> restaurants = restaurantController.getRestaurantsList();
 		List<String> restaurantNameList = new ArrayList<String>();
 		for (Restaurant	 restaurant : restaurants) {
