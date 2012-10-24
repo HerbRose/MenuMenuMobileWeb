@@ -19,4 +19,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Cancel")
 	String cancel();
 	
+	@DefaultStringValue("City")
+	String city();
+	
 }

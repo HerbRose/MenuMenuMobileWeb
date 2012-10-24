@@ -1,9 +1,14 @@
 package com.veliasystems.menumenu.client;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.core.client.GWT;
+import com.veliasystems.menumenu.client.translations.Messages;
 
 public class Customization {
-	public static final String CITY = "Miasta";
+	
+	private static Messages translated = GWT.create(Messages.class);
+
+	
+	public static final String CITY = translated.city();
 	public static final String RESTAURANTS = "Restauracje";  
 	public static final String APPNAME ="Restauracje";
 	public static final String MAINTITLE = "Strona główna";
