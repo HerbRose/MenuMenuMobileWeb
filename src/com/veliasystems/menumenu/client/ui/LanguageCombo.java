@@ -56,8 +56,13 @@ public class LanguageCombo extends ListBox {
 	      currLocale = "?locale=" + locale;
 	    }
 	    
-	    $wnd.location.href = currLocation[0] + currLocale;
-	    $wnd.location.replace(currLocation[0] + currLocale);
+	    //$wnd.location.href = currLocation[0] + currLocale;
+	    //$wnd.location.replace(currLocation[0] + currLocale);
+	   
+	    
+	    $wnd.location.href = currLocation[0].replace("#",currLocale + "#");
+	    $wnd.location.replace(currLocation[0].replace("#",currLocale + "#"));
+	   
      }-*/;
 
 
