@@ -1,49 +1,40 @@
 package com.veliasystems.menumenu.client.ui;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -51,15 +42,6 @@ import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.sksamuel.jqm4gwt.form.JQMFieldContainer;
-import com.sksamuel.jqm4gwt.form.JQMFieldset;
-import com.sksamuel.jqm4gwt.form.elements.IsChecked;
-import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
-import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
-import com.sksamuel.jqm4gwt.form.elements.JQMFormWidget;
-import com.sksamuel.jqm4gwt.form.elements.JQMPassword;
-import com.sksamuel.jqm4gwt.html.FormLabel;
-import com.sksamuel.jqm4gwt.html.Legend;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
@@ -83,23 +65,24 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	
 	//pola do dodawania użytkowników 
 	private TextBox inputEmailAdmin;
-	private JQMPassword passwordAdmin;
-	private JQMPassword passwordAdmin2;
+	private PasswordTextBox passwordAdmin;
+	private PasswordTextBox passwordAdmin2;
 	private TextBox inputEmailAgent;
-	private JQMPassword passwordAgent;
-	private JQMPassword passwordAgent2;
+	private PasswordTextBox passwordAgent;
+	private PasswordTextBox passwordAgent2;
 	private TextBox inputEmailRestaurator;
-	private JQMPassword passwordRestaurator;
-	private JQMPassword passwordRestaurator2;
+	private PasswordTextBox passwordRestaurator;
+	private PasswordTextBox passwordRestaurator2;
 	private MultiWordSuggestOracle citySuggest;
 	private SuggestBox citySuggestBox;
 	private MultiWordSuggestOracle restaurantSuggest;
 	private SuggestBox restaurantSuggestBox;
 	private JQMButton addCityToCityTextBox;
+	private FlowPanel addCityFlowPanel;
 	private JQMButton addRestaurantToRestaurantTextBox;
-	private CellList<String> restaurantCellList;
+	private CellList<Restaurant> restaurantCellList;
 	private CellList<String> citiesCellList;
-	private List<String> addedRestauration;
+	private List<Restaurant> addedRestauration;
 	private List<String> addedCities;
 	private JQMButton saveAdminButton;
 	private JQMButton saveAgentButton;
@@ -143,7 +126,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private FlowPanel emailPanel;
 	
 	private SingleSelectionModel<String> selectionModelCities;
-	private SingleSelectionModel<String> selectionModelRestaurant;
+	private SingleSelectionModel<Restaurant> selectionModelRestaurant;
 	
 	private Restaurant restaurant = null;
 	private Integer whichPanelShow = 0;
@@ -224,8 +207,11 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		case ADMIN:
 			tabBar.addTab(Customization.ADD_ADMIN);
 			inputEmailAdmin = new TextBox();
-			passwordAdmin = new JQMPassword();
-			passwordAdmin2 = new JQMPassword();
+			inputEmailAdmin.getElement().setAttribute("placeHolder", Customization.EMAIL_PLACEHOLDER);
+			passwordAdmin = new PasswordTextBox();
+			passwordAdmin.getElement().setAttribute("placeHolder", Customization.PASSWORD_PLACEHOLDER);
+			passwordAdmin2 = new PasswordTextBox();
+			passwordAdmin2.getElement().setAttribute("placeHolder", Customization.REPEAT_PASSWORD_PLACEHOLDER);
 			saveAdminButton = new JQMButton(Customization.SAVE);
 			saveAdminButton.addClickHandler(new ClickHandler() {
 				
@@ -236,8 +222,6 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 						admin.setPassword(passwordAdmin.getValue().trim());
 						admin.setAdmin(true);
 						addUser(admin);
-					}else{
-						Window.alert("Wrong data");
 					}
 					
 				}
@@ -254,11 +238,20 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		case AGENT:
 			tabBar.addTab(Customization.ADD_AGENT);
 			inputEmailAgent = new TextBox();
-			passwordAgent = new JQMPassword();
-			passwordAgent2 = new JQMPassword();
+			inputEmailAgent.getElement().setAttribute("placeHolder", Customization.EMAIL_PLACEHOLDER);
+			passwordAgent = new PasswordTextBox();
+			passwordAgent.getElement().setAttribute("placeHolder", Customization.PASSWORD_PLACEHOLDER);
+			passwordAgent2 = new PasswordTextBox();
+			passwordAgent2.getElement().setAttribute("placeHolder", Customization.REPEAT_PASSWORD_PLACEHOLDER);
 			citySuggest = new MultiWordSuggestOracle("-");
 			citySuggestBox = new SuggestBox(citySuggest);
-			addCityToCityTextBox = new JQMButton("+");
+			citySuggestBox.getElement().setAttribute("placeHolder", Customization.CITY_PLACEHOLDER);
+			addCityFlowPanel = new FlowPanel();
+			
+			addCityToCityTextBox = new JQMButton("");
+			addCityToCityTextBox.setIcon(DataIcon.PLUS);
+			addCityToCityTextBox.setIconPos(IconPos.NOTEXT);
+			addCityToCityTextBox.setStyleName("addButtonCity");
 			addCityToCityTextBox.addClickHandler(new ClickHandler() {
 				
 				@Override
@@ -269,6 +262,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 							citiesCellList.setRowData(addedCities);
 							citiesCellList.setRowCount(addedCities.size());
 							citiesCellList.redraw();
+							citySuggestBox.setText("");
 					}
 					
 				}
@@ -291,6 +285,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 				         citiesCellList.setRowCount(addedCities.size());
 				         citiesCellList.redraw();
 				    }
+					
 				}
 			});
 			citiesCellList.setRowData(addedCities);
@@ -316,8 +311,6 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 						}
 						agent.setCitiesId(cityId);
 						addUser(agent);
-					}else{
-						Window.alert("Wrong data");
 					}
 					
 				}
@@ -340,43 +333,49 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 				whichPanelShow = panelCount-1;
 			}
 			tabBar.addTab(Customization.ADD_RESTAURATOR);
-			passwordRestaurator = new JQMPassword();
-			passwordRestaurator2 = new JQMPassword();
+			passwordRestaurator = new PasswordTextBox();
+			passwordRestaurator.getElement().setAttribute("placeHolder", Customization.PASSWORD_PLACEHOLDER);
+			passwordRestaurator2 = new PasswordTextBox();
+			passwordRestaurator2.getElement().setAttribute("placeHolder", Customization.REPEAT_PASSWORD_PLACEHOLDER);
 			inputEmailRestaurator = new TextBox();
+			inputEmailRestaurator.getElement().setAttribute("placeHolder", Customization.EMAIL_PLACEHOLDER);
 			restaurantSuggest = new MultiWordSuggestOracle();
 			restaurantSuggestBox = new SuggestBox(restaurantSuggest);
-			
-			addRestaurantToRestaurantTextBox = new JQMButton("+");
+			restaurantSuggestBox.getElement().setAttribute("placeHolder", Customization.RESTAURANT_PLACEHOLDER);
+			addRestaurantToRestaurantTextBox = new JQMButton("");
+			addRestaurantToRestaurantTextBox.setIcon(DataIcon.PLUS);
+			addRestaurantToRestaurantTextBox.setIconPos(IconPos.NOTEXT);
+			addRestaurantToRestaurantTextBox.setStyleName("addButtonCity");
 			addRestaurantToRestaurantTextBox.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
 					if(checkRestaurant(restaurantSuggestBox.getValue())){
-						
 						setRestauransId(true);
 						restaurantCellList.setRowData(addedRestauration);
 						restaurantCellList.setRowCount(addedRestauration.size());
-						restaurantCellList.redraw();
+						restaurantCellList.redraw();					
+						restaurantSuggestBox.setText("");
+						
 					}
 					
 				}
 			});
 			
 			TextCell restaurationTextCell = new TextCell();
-			restaurantCellList = new CellList<String>(restaurationTextCell);
-			addedRestauration = new ArrayList<String>();
-			selectionModelRestaurant = new SingleSelectionModel<String>();
+			restaurantCellList = new CellList<Restaurant>(new RestaurantCellClass());
+			addedRestauration = new ArrayList<Restaurant>();
+			selectionModelRestaurant = new SingleSelectionModel<Restaurant>();
 			restaurantCellList.setSelectionModel(selectionModelRestaurant);
 			selectionModelRestaurant.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 				
 				@Override
 				public void onSelectionChange(SelectionChangeEvent event) {
 					// TODO Auto-generated method stub
-					String selected = selectionModelRestaurant.getSelectedObject();
-					 if (selected != null) {
-						 
-						 //addedRestauration.remove(selected);
-						 setRestauransId(false);
+					Restaurant selected = selectionModelRestaurant.getSelectedObject();
+					 if (selected != null) {		 
+						 restaurantsIdList.remove(selected.getId());
+						 addedRestauration.remove(selected);
 						 selectionModelRestaurant.setSelected(selectionModelRestaurant.getSelectedObject(), false);
 				         restaurantCellList.setRowData(addedRestauration);
 				         restaurantCellList.setRowCount(addedRestauration.size());
@@ -396,8 +395,6 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 						restaurator.setPassword(passwordRestaurator.getValue().trim());
 						restaurator.setRestaurantsId(restaurantsIdList);
 						addUser(restaurator);
-					}else{
-						Window.alert("Wrong data");
 					}
 					
 				}
@@ -518,8 +515,22 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				chosenEmailPanel.add(new Label(addresseeListBox.getItemText(addresseeListBox.getSelectedIndex())));
-				chosenEmailList.add(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));
+				final Label label = new Label(addresseeListBox.getItemText(addresseeListBox.getSelectedIndex()));
+				label.setTitle(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));
+				label.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {	
+						chosenEmailPanel.remove(label);
+						chosenEmailList.remove(label.getTitle());
+						if(chosenEmailList.isEmpty()){
+							chosenEmailPanel.removeStyleName("greenShadow");
+						}
+					}
+				});
+				chosenEmailPanel.add(label);
+				chosenEmailPanel.setStyleName("greenShadow");
+				chosenEmailList.add(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));			
 			}
 		});
 		
@@ -529,15 +540,17 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		senderTextBox.setEnabled(false);
 		senderTextBox.setText(userController.getLoggedUser().getEmail());
 		subjectTextBox = new TextBox();
+		subjectTextBox.getElement().setAttribute("placeHolder", Customization.SUBJECT_PLACEHOLDER);
 		messageTextArea = new TextArea();
-		
+		messageTextArea.getElement().setAttribute("placeHolder", Customization.MESSAGE_PLACEHOLDER);
 		JQMButton sendButton = new JQMButton(Customization.SEND);
 		sendButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-			
-				userController.sendMail(chosenEmailList, senderTextBox.getText(), subjectTextBox.getValue(), messageTextArea.getValue());
+				if(checkEmailValues()){
+					userController.sendMail(chosenEmailList, senderTextBox.getText(), subjectTextBox.getValue(), messageTextArea.getValue());
+				}
 			}
 		});
 		
@@ -552,6 +565,37 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		emailPanel.add(messageTextArea);
 		emailPanel.add(sendButton);
 		add(emailPanel);
+	}
+	
+	private boolean checkEmailValues(){
+		
+		boolean isValid = false;
+		
+		String alert = "";
+		
+		if(chosenEmailList.isEmpty()){
+			chosenEmailPanel.setStyleName("redShadow");
+		}		
+		else {	
+			if(subjectTextBox.getText().isEmpty() ){
+				alert += Customization.CONFIRMATION_NO_SUBJECT + "\n";
+			}
+			if(messageTextArea.getText().isEmpty()){
+				alert += Customization.CONFIRMATION_NO_MESSAGE  + "\n";
+			}
+		}
+		
+		if(!chosenEmailList.isEmpty() && !subjectTextBox.getText().isEmpty() && !messageTextArea.getText().isEmpty()){
+			isValid = true;
+		}
+		
+		if(!alert.equalsIgnoreCase("")){
+			if(Window.confirm(alert)){
+				isValid = true;
+			}
+		}
+		
+		return isValid;
 	}
 	private void fillRestaurantsCopy() {
 		restaurantsCopy = new ArrayList<Restaurant>();
@@ -591,10 +635,9 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		
 		switch (userType) {
 		case ADMIN:
-			inputEmailAdmin.setValue("");
+			inputEmailAgent.setValue("");
 			passwordAdmin.setValue("");
 			passwordAdmin2.setValue("");
-			
 			inputEmailAgent.setValue("");
 			passwordAgent.setValue("");
 			passwordAgent2.setValue("");
@@ -608,6 +651,24 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			}
 			
 			restaurantsCellTable.redraw();
+			
+			//back to standard css styles admin panel
+			passwordAdmin.removeStyleName("greenShadow");
+			passwordAdmin.removeStyleName("redShadow");
+			passwordAdmin2.removeStyleName("greenShadow");
+			passwordAdmin2.removeStyleName("redShadow");
+			inputEmailAdmin.removeStyleName("greenShadow");
+			inputEmailAdmin.removeStyleName("redShadow");
+			
+			//back to standard css styles agent panel
+			passwordAgent.removeStyleName("greenShadow");
+			passwordAgent.removeStyleName("redShadow");
+			passwordAgent2.removeStyleName("greenShadow");
+			passwordAgent2.removeStyleName("redShadow");
+			inputEmailAgent.removeStyleName("greenShadow");
+			inputEmailAgent.removeStyleName("redShadow");
+			citySuggestBox.removeStyleName("redShadow");
+			citySuggestBox.removeStyleName("greenShadow");
 			break;
 		}
 		
@@ -620,13 +681,23 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		addedRestauration.clear();
 		for (Restaurant restaurant : restaurantsCopy) {
 			if(restaurant == this.restaurant){
-				addedRestauration.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
+				addedRestauration.add(restaurant);
+				//addedRestauration.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
 			}
 			restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
 		}
 		
 		restaurantCellList.setRowData(addedRestauration);
 		restaurantCellList.redraw();
+		
+		inputEmailRestaurator.removeStyleName("greenShadow");
+		inputEmailRestaurator.removeStyleName("redShadow");
+		passwordRestaurator.removeStyleName("greenShadow");
+		passwordRestaurator.removeStyleName("redShadow");
+		passwordRestaurator2.removeStyleName("redShadow");
+		passwordRestaurator2.removeStyleName("greenShadow");
+		restaurantSuggestBox.removeStyleName("redShadow");
+		restaurantSuggestBox.removeStyleName("greenShadow");
 		
 		addresseeListBox.clear();
 		for (User user : userController.getUserList()) {
@@ -646,47 +717,66 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		switch (userType) {
 		case ADMIN:
 			if(userController.isUserInStor(inputEmailAdmin.getValue().trim()) || inputEmailAdmin.getValue().trim().equals("") || !Util.isValidEmail(inputEmailAdmin.getValue())){
-				//TODO some info to the user
+				inputEmailAdmin.setStyleName("redShadow", true);
 			}else{
+				inputEmailAdmin.setStyleName("greenShadow", true);
 				isCorrect = true;
 			}
 			if(passwordAdmin.getValue().trim().equals("") || passwordAdmin2.getValue().trim().equals("") || !passwordAdmin.getValue().equals(passwordAdmin2.getValue())){
-				//TODO some info to the user
+				passwordAdmin.setStyleName("redShadow", true);
+				passwordAdmin2.setStyleName("redShadow", true);
 				isCorrect = false;
 			}else{
-				
+				passwordAdmin.setStyleName("greenShadow", true);
+				passwordAdmin2.setStyleName("greenShadow", true);
 			}
 			
 			break;
 		case AGENT:
 			if(userController.isUserInStor(inputEmailAgent.getValue().trim()) ||inputEmailAgent.getValue().trim().equals("") || !Util.isValidEmail(inputEmailAgent.getValue())){
-				//TODO some info to the user
+				inputEmailAgent.setStyleName("redShadow", true);
 			}else{
+				inputEmailAgent.setStyleName("greenShadow", true);
 				isCorrect = true;
 			}
 			if(passwordAgent.getValue().trim().equals("") || passwordAgent2.getValue().trim().equals("") || !passwordAgent.getValue().equals(passwordAgent2.getValue())){
-				//TODO some info to the user
+				passwordAgent.setStyleName("redShadow", true);
+				passwordAgent2.setStyleName("redShadow", true);
 				isCorrect = false;
+			}else {
+				passwordAgent.setStyleName("greenShadow", true);
+				passwordAgent2.setStyleName("greenShadow", true);
 			}
 			if(addedCities.size() < 1){
-				//TODO some info to the user
+				citySuggestBox.setStyleName("redShadow", true);
 				isCorrect = false;
+			} else {
+				citySuggestBox.setStyleName("greenShadow", true);
+
 			}
 			
 			break;
 		case RESTAURATOR:
 			if(userController.isUserInStor(inputEmailRestaurator.getValue().trim()) || inputEmailRestaurator.getValue().trim().equals("") || !Util.isValidEmail(inputEmailRestaurator.getValue())){
-				//TODO some info to the user
+				inputEmailRestaurator.setStyleName("redShadow", true);
 			}else{
+				inputEmailRestaurator.setStyleName("greenShadow", true);
 				isCorrect = true;
 			}
 			if(passwordRestaurator.getValue().trim().equals("") || passwordRestaurator2.getValue().trim().equals("") || !passwordRestaurator.getValue().equals(passwordRestaurator2.getValue())){
-				//TODO some info to the user
+				passwordRestaurator.setStyleName("redShadow", true);
+				passwordRestaurator2.setStyleName("redShadow", true);
 				isCorrect = false;
 			}
+			else{
+				passwordRestaurator.setStyleName("greenShadow", true);
+				passwordRestaurator2.setStyleName("greenShadow", true);
+			}
 			if(addedRestauration.size() < 1){
-				//TODO some info to the user
+				restaurantSuggestBox.setStyleName("redShadow", true);
 				isCorrect = false;
+			} else {
+				restaurantSuggestBox.setStyleName("greenShadow", true);
 			}
 			
 			break;
@@ -697,21 +787,28 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		return isCorrect;
 	}
 	private boolean checkRestaurant(String restaurantName){
+		boolean is = false;
+		System.out.println(restaurantName);
 		int indexOfCity = restaurantName.indexOf("(" + Customization.CITYONE);
 		if(indexOfCity < 1) return false;
 		String restName = restaurantName.substring(0, indexOfCity - 1);
+		System.out.println(restName);
 		List<Restaurant> restaurants = restaurantController.getRestaurantsList();
-		List<String> restaurantList = new ArrayList<String>();
+		List<String> restaurantNameList = new ArrayList<String>();
 		for (Restaurant	 restaurant : restaurants) {
-			restaurantList.add(restaurant.getName());
+			restaurantNameList.add(restaurant.getName());
 		}
-		if(restaurantList.contains(restName)){
-			if(!addedRestauration.contains(restaurantName)) {
-				return true;
-			}
+		
+		if(restaurantNameList.contains(restName)){
+			if(addedRestauration.isEmpty()) return true;
 			
-		}
-		return false;	
+			is = true;
+			
+			for (Restaurant restaurant : addedRestauration) {
+				if(restaurant.getName().equals(restName)) is = false;
+			}
+		}		
+		return is;	
 	}
 	private boolean checkCity(String CityName){
 		List<City> cities = cityController.getCitiesList();
@@ -736,7 +833,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			
 			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
 				if(restaurant.getName().equals(restNameNoCity) && restaurant.getCity().equals(city) && restaurant.getAddress().equals(adress)){
-					addedRestauration.add(restaurantSuggestBox.getValue());
+					addedRestauration.add(restaurant);
+					//addedRestauration.add(restaurantSuggestBox.getValue());
 					restaurantsIdList.add(restaurant.getId());
 				}
 			}
@@ -818,3 +916,14 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 }
 
+
+class RestaurantCellClass extends AbstractCell<Restaurant>{
+
+	@Override
+	public void render(com.google.gwt.cell.client.Cell.Context context,
+			Restaurant restaurant, SafeHtmlBuilder sb) {
+			sb.appendEscaped(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
+		
+	}
+	
+}

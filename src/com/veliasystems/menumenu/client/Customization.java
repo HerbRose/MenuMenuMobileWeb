@@ -61,5 +61,14 @@ public class Customization {
 	public static final String SEND_EMAIL = "Wyślij e-mail";
 	public static final String SEND = "Wyślij";
 	public static final String SUBJECT = "Temat";
-	
+	public static final String CONFIRMATION_NO_SUBJECT = "Czy chcesz wysłać wiadomość bez tematu?";
+	public static final String CONFIRMATION_NO_MESSAGE = "Czy chcesz wysłać wiadomość bez treści?";
+	public static final String CONFIRMATION_NO_SUBJECT_AND_NO_MESSAGE = "Czy chesz wysłać wiadomość bez tematu i treści?";
+	public static final String CITY_PLACEHOLDER = "Wprowadź miasto";
+	public static final String EMAIL_PLACEHOLDER = "Wprowadź e-mail";
+	public static final String PASSWORD_PLACEHOLDER = "Wprowadź hasło";
+	public static final String REPEAT_PASSWORD_PLACEHOLDER = "Powtórz hasło";
+	public static final String RESTAURANT_PLACEHOLDER = "Wprowadź restaurację";
+	public static final String SUBJECT_PLACEHOLDER = "Wprowadź temat";
+	public static final String MESSAGE_PLACEHOLDER = "Wprowadź treść";
 };

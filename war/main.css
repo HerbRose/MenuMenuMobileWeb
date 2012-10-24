@@ -207,3 +207,14 @@
 	color: red;
 }
 
+.redShadow {
+	-moz-box-shadow: 0px 0px 10px 1px red !important;
+	-webkit-box-shadow: 0px 0px 10px 1px red !important;
+	box-shadow: 0px 0px 10px 1px red !important;
+	min-height: 12px;
+}
+.greenShadow {
+	-moz-box-shadow: 0px 0px 10px 1px green !important;
+	-webkit-box-shadow: 0px 0px 10px 1px green !important;
+	box-shadow: 0px 0px 10px 1px green !important;
+}
