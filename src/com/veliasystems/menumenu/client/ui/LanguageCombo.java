@@ -48,20 +48,20 @@ public class LanguageCombo extends ListBox {
 	
     private native void changeLanguage( String locale )
     /*-{
-	    var currLocation = $wnd.location.toString().split("?");
-	    
+	    var currLocation = $wnd.location.toString().split("#");
+	    currLocation = currLocation[0].split("?");
 	    var currLocale = "";
 	    if ( ! (locale == "EN" || locale == "en") )
 	    {
+	    	
 	      currLocale = "?locale=" + locale;
 	    }
 	    
 	    //$wnd.location.href = currLocation[0] + currLocale;
 	    //$wnd.location.replace(currLocation[0] + currLocale);
-	   
-	    
-	    $wnd.location.href = currLocation[0].replace("#",currLocale + "#");
-	    $wnd.location.replace(currLocation[0].replace("#",currLocale + "#"));
+	    var tmp = currLocation[0]+= currLocale ;
+	    //$wnd.location.href = currLocation[0].replace("#",currLocale + "#");
+	    $wnd.location.replace(tmp);
 	   
      }-*/;
 
