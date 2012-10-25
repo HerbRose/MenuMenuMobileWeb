@@ -213,5 +213,8 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("The name must contain '-'")
 	String wrongCityName();
+	
+	@DefaultStringValue("Empty emails list")
+	String emptyMalList();
 
 }
