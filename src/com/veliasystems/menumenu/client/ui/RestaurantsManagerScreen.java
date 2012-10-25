@@ -531,7 +531,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 						}
 					}
 				});
-				if(emptyMailList != null) chosenEmailPanel.remove(emptyMailList);
+				clearChosenEmailList();
 				chosenEmailPanel.add(label);
 				chosenEmailPanel.setStyleName("greenShadow");
 				chosenEmailList.add(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));			
@@ -570,7 +570,9 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		emailPanel.add(sendButton);
 		add(emailPanel);
 	}
-	
+	private void clearChosenEmailList(){
+		if(chosenEmailList.isEmpty()) chosenEmailPanel.clear();
+	}
 	private boolean checkEmailValues(){
 		
 		boolean isValid = false;
@@ -580,6 +582,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		if(chosenEmailList.isEmpty()){
 			chosenEmailPanel.setStyleName("redShadow");
 			emptyMailList = new Label(Customization.EMPTY_MAIL_LIST);
+			clearChosenEmailList();
 			chosenEmailPanel.add(emptyMailList);
 		}		
 		else {	
