@@ -47,7 +47,7 @@ public interface Messages extends Constants {
 	String save();
 
 	@DefaultStringValue("City")
-	String cityone();
+	String cityOne();
 
 	@DefaultStringValue("Restaurant name")
 	String restaurantName();
@@ -213,5 +213,8 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("The name must contain '-'")
 	String wrongCityName();
+
+	@DefaultStringValue("Empty emails list")
+	String emptyMalList();
 
 }

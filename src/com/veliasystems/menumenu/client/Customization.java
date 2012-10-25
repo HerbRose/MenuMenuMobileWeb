@@ -17,7 +17,7 @@ public class Customization {
 	public static final String SAVEPROFILE =  translated.saveProfile();
 	public static final String REMOVEPROFILE = translated.removeProfile();
 	public static final String SAVERESTAURANT = translated.save();
-	public static final String CITYONE = translated.cityone();
+	public static final String CITYONE = translated.cityOne();
 	public static final String RESTAURANTNAME = translated.restaurantName();
 	public static final String RESTAURANTADRESS = translated.restaurantAdress();
 	public static final String RESTAURANTSAVED = translated.restaurantSaved();
@@ -74,6 +74,9 @@ public class Customization {
 	public static final String RESTAURANT_PLACEHOLDER = translated.restaurantPlaceholder();
 	public static final String SUBJECT_PLACEHOLDER = translated.subjectPlaceholder();
 	public static final String MESSAGE_PLACEHOLDER = translated.messagePlaceholder();
+
+
+	public static final String EMPTY_MAIL_LIST = translated.emptyMalList();
 };
 
 	
