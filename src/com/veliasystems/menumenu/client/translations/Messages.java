@@ -124,7 +124,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Logout")
 	String logout();
 
-	@DefaultStringValue("Restauratiun manager")
+	@DefaultStringValue("Restauration manager")
 	String restauratiunManager();
 
 	@DefaultStringValue("Address")
@@ -133,7 +133,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Set visibility")
 	String setVisibility();
 
-	@DefaultStringValue("Addressee")
+	@DefaultStringValue("Recipient")
 	String addressee();
 
 	@DefaultStringValue("Sender")
@@ -169,16 +169,16 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Enter a password")
 	String passwordPlaceholder();
 
-	@DefaultStringValue("Repeat a passwrd")
+	@DefaultStringValue("Repeat a password")
 	String repeatPasswordPlaceholder();
 
-	@DefaultStringValue("Enetr a restaurant")
+	@DefaultStringValue("Enter a restaurant")
 	String restaurantPlaceholder();
 
-	@DefaultStringValue("Enetr a subject")
+	@DefaultStringValue("Enter a subject")
 	String subjectPlaceholder();
 
-	@DefaultStringValue("Enetr a message")
+	@DefaultStringValue("Enter a message")
 	String messagePlaceholder();
 
 	@DefaultStringValue("There was an error, we apologize")
