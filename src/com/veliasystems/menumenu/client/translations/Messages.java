@@ -217,7 +217,5 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Empty emails list")
 	String emptyMalList();
 
-	@DefaultStringValue("Empty emails list")
-	String emptyMalList();
 
 }
