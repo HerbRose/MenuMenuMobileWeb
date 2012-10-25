@@ -186,7 +186,7 @@ public class SwipeView extends FlowPanel {
 				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {		
 						@Override
 						public void onSuccess(String result) {
-							String callbackURL = Customization.HOST_URL;
+							String callbackURL = R.HOST_URL;
 							
 							onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
 							
