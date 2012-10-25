@@ -517,6 +517,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			public void onChange(ChangeEvent event) {
 				final Label label = new Label(addresseeListBox.getItemText(addresseeListBox.getSelectedIndex()));
 				label.setTitle(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));
+				
 				label.addClickHandler(new ClickHandler() {
 					
 					@Override
@@ -690,6 +691,13 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
 		}
 		
+		subjectTextBox.setText("");
+		messageTextArea.setText("");
+		chosenEmailPanel.clear();
+		chosenEmailList.clear();
+		chosenEmailPanel.removeStyleName("redShadow");
+		chosenEmailPanel.removeStyleName("greenShadow");
+		
 		restaurantCellList.setRowData(addedRestauration);
 		restaurantCellList.redraw();
 		
@@ -703,10 +711,15 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		restaurantSuggestBox.removeStyleName("greenShadow");
 		
 		addresseeListBox.clear();
+		
+		addresseeListBox.addItem(Customization.SELECT_ELEMENT);
+		addresseeListBox.getElement().getFirstChildElement().setAttribute("disabled", "disabled");
+		
 		for (User user : userController.getUserList()) {
 			addresseeListBox.addItem(user.getName()!=null?user.getEmail():"No Name" +" (" + user.getEmail()+")", user.getEmail());
 		}
 		
+		addresseeListBox.setSelectedIndex(0);
 	}
 	/**
 	 * method doesn't check if lists have correct data
