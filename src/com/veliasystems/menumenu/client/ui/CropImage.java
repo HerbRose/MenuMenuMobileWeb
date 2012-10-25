@@ -17,7 +17,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -30,6 +29,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -51,15 +51,14 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	
 	JQMHeader header;
 	JQMButton saveButton;
-//	JQMButton backButton;
 	String backgroundImage;
 	FlowPanel image;
 	
 	String height;
 	String width;
 	
-	double imgHeight;
-	double imgWidth;
+	double blobHeight;
+	double blobWidth;
 	
 	double cropRectWidth;
 	double cropRectHeight;
@@ -106,29 +105,23 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		this.imageInsert = imageInsert;
 		this.restaurantId = restaurantId;
 		newImage = new Image(imageInsert.getImageUrl());
-		imgHeight = imageInsert.getHeight();
-		imgWidth = imageInsert.getWidth();	
+		blobHeight = imageInsert.getHeight();
+		blobWidth = imageInsert.getWidth();	
 		backgroundImage = newImage.getUrl();
 		height = Integer.toString(imageInsert.getHeight());	
-		width = Integer.toString(imageInsert.getWidth());			
+		width = Integer.toString(imageInsert.getWidth());	
 		init();		
 	}
 	
 	
-	private void init(){
-		
+	private void init(){	
 		header = new JQMHeader("Crop image");
 		saveButton = new JQMButton(Customization.SAVEPROFILE);
-//		backButton = new JQMButton(Customization.BACK);
-//		backButton.setBack(true);
 		header.setRightButton(saveButton);
-//		header.setLeftButton(backButton);
-		add(header);	
-		
+		add(header);			
 		img = new Image();		
 		image = new FlowPanel();
-		bckImage = new Image(backgroundImage);
-		
+		bckImage = new Image(backgroundImage);	
 		switch (imageInsert.getImageType()) {
 		case MENU:
 			bckImage.setWidth("220px");
@@ -144,7 +137,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		}
 		image.getElement().getStyle().setMarginTop(0, Unit.PX);
 		image.getElement().getStyle().setPosition(Position.RELATIVE);
-		//add(image);
 		image.add(bckImage);
 		switch(imageInsert.getImageType()){
 		case PROFILE:				
@@ -152,40 +144,33 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				cropRectHeight = 280;		
 			break;
 		default:	
-			if(imgWidth > 220){
+			if(blobWidth > 220){
 				
-			double ratioW = imgWidth / 220;
+			double ratioW = blobWidth / 220;
 				cropRectWidth = 220 / ratioW;
 				cropRectHeight = 30;
 		}	
 			else{
-				cropRectWidth = imgWidth;
+				cropRectWidth = blobWidth;
 				cropRectHeight = 30;
 			}
-			break;
-			
+			break;			
 		}
 
 		boundaryPanel = new AbsolutePanel();
 		boundaryPanel.add(image);
 		boundaryPanel.setStyleName("boundaryPanel");
-		add(boundaryPanel);
-		
-	
+		add(boundaryPanel);	
 		rect = new HTML();
 		rect.setStyleName("rect");
 		rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 		rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
-		rect.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		
+		rect.getElement().getStyle().setPosition(Position.ABSOLUTE);		
 		topBck = bckImage.getAbsoluteTop();
-		leftBck = bckImage.getAbsoluteLeft();	
-		
+		leftBck = bckImage.getAbsoluteLeft();		
 		rect.getElement().getStyle().setTop(topBck, Unit.PX);
-		rect.getElement().getStyle().setLeft(leftBck, Unit.PX);
-		
-		image.add(rect);
-		
+		rect.getElement().getStyle().setLeft(leftBck, Unit.PX);	
+		image.add(rect);	
 		topOffset = topBck;	
 		leftOffset = leftBck;
 		
@@ -289,22 +274,14 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		cropButton = new JQMButton("");
 		cropButton.setIcon(DataIcon.CHECK);
 		cropButton.setIconPos(IconPos.NOTEXT);
-				
-		//toolPanel.add(rightButtonUp);
-		//toolPanel.add(rightButtonDown);
-		//toolPanel.add(bottomButtonLeft);
-		//toolPanel.add(bottomButtonRight);
 		toolPanel.add(zoomInButton);
 		toolPanel.add(zoomOutButton);
-		//toolPanel.add(cropButton);
 		image.add(toolPanel);
 	
 		zoomInButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				
 				switch(imageInsert.getImageType()){
 					case PROFILE:
 						if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < bckImage.getHeight() + image.getElement().getOffsetTop()  && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() + rect.getAbsoluteLeft()< bckImage.getWidth() + image.getElement().getOffsetLeft()){
@@ -331,8 +308,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			
 			@Override
 			public void onClick(ClickEvent event) {			
-				double ratioH = imgHeight / bckImage.getHeight();
-				double ratioW = imgWidth / bckImage.getWidth();
+				double ratioH = blobHeight / bckImage.getHeight();
+				double ratioW = blobWidth / bckImage.getWidth();
 				
 				switch(imageInsert.getImageType()){
 					case PROFILE:	
@@ -363,8 +340,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 					
 					@Override
 					public void onClick(ClickEvent event) {
-						// TODO Auto-generated method stub
-						
 						if(cropRectWidth < bckImage.getOffsetWidth()){
 							cropRectWidth += 5.0;
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
@@ -375,8 +350,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 					
 					@Override
 					public void onClick(ClickEvent event) {
-						// TODO Auto-generated method stub
-						double ratioW = imgWidth / bckImage.getWidth();
+						double ratioW = blobWidth / bckImage.getWidth();
 						if(cropRectWidth > 0 && cropRectWidth * ratioW > 220 ){
 							cropRectWidth -= 5.0;
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
@@ -390,8 +364,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			@Override
 			public void onClick(ClickEvent event) {
 				
-				double ratioH = bckImage.getHeight() / imgHeight;
-				double ratioW = bckImage.getWidth() / imgWidth;
+				double ratioH = bckImage.getHeight() / blobHeight;
+				double ratioW = bckImage.getWidth() / blobWidth;
 				
 				
 				int left = (int) ((int) (leftOffset - bckImage.getElement().getOffsetLeft()) / ratioW);
@@ -403,7 +377,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				img.setUrlAndVisibleRect(backgroundImage, left, top, width, height);
 				img.getElement().getStyle().setPosition(Position.ABSOLUTE);
 				img.getElement().getStyle().setTop(image.getElement().getOffsetTop(), Unit.PX);
-				img.getElement().getStyle().setLeft(imgWidth + image.getElement().getOffsetLeft() + 50, Unit.PX);		
+				img.getElement().getStyle().setLeft(blobWidth + image.getElement().getOffsetLeft() + 50, Unit.PX);		
 				add(img);
 		}
 		});	
@@ -422,34 +396,27 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			
 			@Override
 			public void onPreviewDragStart(DragStartEvent event)
-					throws VetoDragException {
-				// TODO Auto-generated method stub
-				
+					throws VetoDragException {				
 			}
 			
 			@Override
-			public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
-				// TODO Auto-generated method stub
-				
+			public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {	
 			}
 			
 			@Override
 			public void onDragStart(DragStartEvent event) {
-				// TODO Auto-generated method stub
 				startX = event.getContext().mouseX;
 				startY = event.getContext().mouseY;
 			}
 			
 			@Override
 			public void onDragEnd(DragEndEvent event) {
-				// TODO Auto-generated method stub
 				stopX = event.getContext().mouseX;
 				stopY = event.getContext().mouseY;			
 				double moveX = stopX - startX;
 				double moveY = stopY - startY;
 				topOffset = topOffset + moveY;
 				leftOffset = leftOffset + moveX;	
-
 			}
 		});
 
@@ -457,8 +424,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 
 
 	{
-		this.addClickHandler( new ClickHandler() {
-			
+		this.addClickHandler( new ClickHandler() {		
 			@Override
 			public void onClick(ClickEvent event) {			
 					meClicked(event);
@@ -466,12 +432,10 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		});
 	}
 	
-	private void meClicked(ClickEvent event){
-		
-		if(isClicked(event, saveButton)){
-			
-			double ratioH = bckImage.getHeight() / imgHeight;
-			double ratioW = bckImage.getWidth() / imgWidth;
+	private void meClicked(ClickEvent event){	
+		if(isClicked(event, saveButton)){		
+			double ratioH = bckImage.getHeight() / blobHeight;
+			double ratioW = bckImage.getWidth() / blobWidth;
 			
 			leftC = (leftOffset - bckImage.getElement().getOffsetLeft()) / ratioW;
 			topC =  (topOffset - bckImage.getElement().getOffsetTop()) /ratioH;	
@@ -494,14 +458,11 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
 				}
 
 				@Override
 				public void onSuccess(Void result) {
-					restaurantController.afterCrop(restaurantId, imageInsert.getImageType());
-					
+					restaurantController.afterCrop(restaurantId, imageInsert.getImageType());				
 				}
 				
 			});	

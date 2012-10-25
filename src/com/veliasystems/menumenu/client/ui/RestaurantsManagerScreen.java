@@ -47,6 +47,7 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
@@ -54,7 +55,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 
-public class RestaurantsManagerScreen extends JQMPage implements HasClickHandlers{
+public class RestaurantsManagerScreen extends JQMPage implements HasClickHandlers, IObserver{
 	
 	private JQMHeader header;
 	private JQMButton backButton;
@@ -136,6 +137,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private Map<Long, Restaurant> restaurantsCopyMap;
 	
 	public RestaurantsManagerScreen() {
+		userController.addObserver(this);
 		fillRestaurantsCopy();
 		userType = userController.getUserType();
 		setHeader();
@@ -927,6 +929,11 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			tabBar.selectTab(whichPanelShow);
 			showPanel(panelList.get(whichPanelShow));
 		}
+	}
+	@Override
+	public void onChange() {
+		clearScreenData();
+		
 	}
 }
 

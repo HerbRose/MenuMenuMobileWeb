@@ -17,6 +17,7 @@ import com.veliasystems.menumenu.client.services.EmailService;
 import com.veliasystems.menumenu.client.services.EmailServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
 
 public class UserController {
 	
@@ -117,13 +118,13 @@ public class UserController {
 			s+= string+ ", ";
 		}
 		
-		Window.alert(s + "\n, from: " + from + "\n, subject: " + subject+"\n, message: " + message);
+		
 		
 		emailService.sendEmail(chosenEmailList, chosenEmailList.get(0), message, subject, new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
-				Window.alert("Done");
+				notifyAllObservers();
 			}
 			
 			@Override

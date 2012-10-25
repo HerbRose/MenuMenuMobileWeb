@@ -224,8 +224,6 @@ public class RestaurantController {
 		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
 			@Override
 			public void onSuccess(List<ImageBlob> result) {
-				System.out.println("RestaurantController::cropImage result.size(): " + result.size() + ", for restaurant is: " + myRestaurantId);
-				
 				for (ImageBlob imageBlob : result) {
 					boolean isIn = false;
 					if(oldImages != null){
@@ -237,8 +235,6 @@ public class RestaurantController {
 						}
 					}
 					if (!isIn && imageBlob != null) {
-						System.out.println("RestaurantController::cropImage. imageBlob.getBlobKey()= "+ imageBlob.getBlobKey() );
-						
 						JQMContext.changePage(new CropImage(imageBlob, myRestaurantId), Transition.SLIDE);
 					}
 				}
@@ -301,7 +297,6 @@ public class RestaurantController {
 		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
 			@Override
 			public void onSuccess(List<ImageBlob> result) {
-				System.out.println("RestaurantController::afterCrop. result.size(): " + result.size()+ ", restaurantId = " + myRestaurantId);
 				for (ImageBlob imageBlob : result) {
 					boolean isIn = false;
 					if(oldImages != null){
@@ -312,13 +307,11 @@ public class RestaurantController {
 						}
 					}
 					if (!isIn) {
-						System.out.println("RestaurantController::afterCrop. newImageBlob = imageBlob. imageBlob.getBlobKey(): "+ imageBlob.getBlobKey() + " " );
 						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
 						if(imagList == null){
 							imagList = new ArrayList<ImageBlob>();
 						}
 						imagList.add(imageBlob);
-						//historyGoBack(1); //
 					}
 				}
 				JQMContext.changePage(restMapView.get(myRestaurantId));
