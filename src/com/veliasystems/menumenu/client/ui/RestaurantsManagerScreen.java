@@ -99,7 +99,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private Label mailLabel;
 	private Label passwordLabe;
 	private Label repeatPasswordLabe;
-	
+	private Label emptyMailList;
 	
 	private JQMButton saveRestaurantsButton;
 	private CellTable<Restaurant> restaurantsCellTable;
@@ -528,6 +528,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 						}
 					}
 				});
+				if(emptyMailList != null) chosenEmailPanel.remove(emptyMailList);
 				chosenEmailPanel.add(label);
 				chosenEmailPanel.setStyleName("greenShadow");
 				chosenEmailList.add(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));			
@@ -575,6 +576,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		
 		if(chosenEmailList.isEmpty()){
 			chosenEmailPanel.setStyleName("redShadow");
+			emptyMailList = new Label(Customization.EMPTY_MAIL_LIST);
+			chosenEmailPanel.add(emptyMailList);
 		}		
 		else {	
 			if(subjectTextBox.getText().isEmpty() ){
