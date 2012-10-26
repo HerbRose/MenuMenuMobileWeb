@@ -170,6 +170,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			 	BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
 			 	ImagesService imagesService = ImagesServiceFactory.getImagesService();
 			 	Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+			 	if(leftX < 0 ) leftX = 0;
+			 	if(topY < 0) topY = 0;
+			 	if(rightX > 1) rightX = 1;
+			 	if(bottomY > 1) bottomY = 1;
 			 	Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY);
 			 	Image newImage = imagesService.applyTransform(cropTransform, oldImage);
 			 	

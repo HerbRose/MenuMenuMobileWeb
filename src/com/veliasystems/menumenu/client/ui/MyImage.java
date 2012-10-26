@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
@@ -34,7 +35,8 @@ public class MyImage extends FlowPanel {
 	HTML detailsContent;
 	
 
-	private  boolean mainImage = false;
+	private boolean mainImage = false;
+	private ImageType imageType;
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private RestaurantImageView parent;
@@ -59,10 +61,10 @@ public class MyImage extends FlowPanel {
 		this.imagesController = imagesController;
 		
 	}
-	
-	public MyImage( ImagesController imagesController, ImageBlob imageBlob, RestaurantImageView parent) {
-		this.url = imageBlob.getImageUrl();
-		this.parent = parent;
+	public MyImage( ImagesController imagesController, ImageBlob imageBlob, RestaurantImageView myParent, ImageType myImageType) {
+		url = imageBlob.getImageUrl();
+		parent = myParent;
+		imageType=myImageType;
 		imgBlob = imageBlob;
 		setMyImage(url);
 		
@@ -70,22 +72,10 @@ public class MyImage extends FlowPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				
 				Document.get().getElementById("load").setClassName("show");
-				storeService.setMainImage(imgBlob, new AsyncCallback<Void>() {
-					
-					@Override
-					public void onSuccess(Void result) {
-						Document.get().getElementById("load").setClassName("hide");
-						getImagesController().selectImage(getMe());
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						
-						
-					}
-				});
+				restaurantController.setMainImage(imgBlob);
+				
+				//getImagesController().selectImage(getMe());
 			}
 		});
 
@@ -105,42 +95,30 @@ public class MyImage extends FlowPanel {
 		add(image);
 
 	}
-		
-	
 	private void setMyImage(String url){
 		image.setUrl(url);
 		image.setStyleName("image");
 	}
-		//add(flowPanelButtons);
-	
-
-	
 	private MyImage getMe(){
 		return this;
 	}
 	public ImagesController getImagesController(){
 		return imagesController;
 	}
-	
 	public void setSelected(){
 		image.addStyleName("imageSelected");
 		setMain(true);
 	}
-	
 	public void unselectImage(){
 		image.removeStyleName("imageSelected");
 		setMain(false);
 	}
-
-
-
 	public String getUrl() {
 		return url;
 	}
 	public RestaurantImageView getMyParent() {
 		return parent;
 	}
-	
 	public void setMain(Boolean isMain){
 		mainImage = isMain;
 	}

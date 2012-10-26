@@ -196,20 +196,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		
 		if(windowWight > tabWidth) return;
 		
-		tabBar.insertTab("<-", 0);
-		tabBar.addTab("->");
 		
-		Tab firstTab = tabBar.getTab(0); 
-		Tab lastTab = tabBar.getTab(tabBar.getTabCount()-1);
-		
-		firstTab.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				moveLeft(-120, tabBar.getElement().getId());
-				
-			}
-		});
 		
 		tabBar.setStyleName("scrollable", true);
 	

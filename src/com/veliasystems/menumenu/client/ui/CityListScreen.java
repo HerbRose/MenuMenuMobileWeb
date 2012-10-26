@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
@@ -21,6 +22,7 @@ import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 
 
 
@@ -79,6 +81,16 @@ public class CityListScreen extends JQMPage implements IObserver{
 	}
 	
 	private void addCities(List<City> cities){
+		
+		java.util.Collections.sort(cities, new Comparator<City>() {
+
+			@Override
+			public int compare(City o1, City o2) {
+				// TODO Auto-generated method stub
+				 return o1.getCity().compareTo(o2.getCity());
+			}
+		});
+		
 		CityInfoScreen cityInfoScreen;
 		for(City city: cities){
 			if(CityController.cityMapView.containsKey(city.getId())){

@@ -120,9 +120,7 @@ public class RestaurantImageView extends JQMPage{
 			loaded = true;
 		}else{
 			header.remove(backButton);
-			for (SwipeView swipeView : swipeViews) {
-				swipeView.checkChanges();
-			}
+			checkChanges();
 		}
 		if(restaurantController.isFromCityView()){
 			backButton = new JQMButton(Customization.BACK, back, Transition.SLIDE);
@@ -150,6 +148,13 @@ public class RestaurantImageView extends JQMPage{
 		
 	};
 
+	
+	public void checkChanges(){
+		for (SwipeView swipeView : swipeViews) {
+			swipeView.checkChanges();
+		}
+	}
+	
 	private JQMPage getMe(){
 		return this;
 	}

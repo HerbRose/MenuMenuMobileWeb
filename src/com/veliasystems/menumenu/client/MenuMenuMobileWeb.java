@@ -20,7 +20,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		if (loggedIn) {
 			JQMContext.changePage( new LoadDataScreen(logged) );
 		} else {
-			JQMContext.changePage( Pages.PAGE_LOGIN );
+			JQMContext.changePage( Pages.PAGE_LOGIN_OK );
 		}
 	
 		

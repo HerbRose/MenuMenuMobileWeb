@@ -399,4 +399,41 @@ public class RestaurantController {
 		
 	}
 
+	public void setMainImage(ImageBlob myImgBlob) {
+		
+		final ImageBlob imageBlob = myImgBlob;
+		
+		
+		storeService.setMainImage(imageBlob, new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				
+				Long restaurantId = Long.parseLong(imageBlob.getRestaurantId());
+				
+				switch(imageBlob.getImageType()){
+				case PROFILE:
+					restaurants.get(restaurantId).setMainProfileImageString(imageBlob.getImageUrl());
+					break;
+				case LOGO:
+					restaurants.get(restaurantId).setMainLogoImageString(imageBlob.getImageUrl());
+					break;
+				case MENU:
+					restaurants.get(restaurantId).setMainMenuImageString(imageBlob.getImageUrl());
+					break;
+				}
+				restMapView.get(restaurantId).checkChanges();
+				Document.get().getElementById("load").setClassName("hide");
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				
+				
+			}
+		});
+		
+	}
+
 }
