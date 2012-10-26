@@ -10,6 +10,7 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -25,7 +26,12 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
@@ -53,10 +59,15 @@ import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
 public class RestaurantsManagerScreen extends JQMPage implements HasClickHandlers, IObserver{
+	
+	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
 	private JQMHeader header;
 	private JQMButton backButton;
@@ -126,6 +137,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private FlowPanel restauratorPanel;
 	private FlowPanel restaurantsManagerPanel;
 	private FlowPanel emailPanel;
+	private FlowPanel defaultEmptyBoard;
 	
 	private SingleSelectionModel<String> selectionModelCities;
 	private SingleSelectionModel<Restaurant> selectionModelRestaurant;
@@ -136,6 +148,9 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private List<Long> restaurantsIdList = new ArrayList<Long>();
 	private List<Restaurant> restaurantsCopy ;
 	private Map<Long, Restaurant> restaurantsCopyMap;
+	
+	private FormPanel formPanel;
+	private FileUpload fileUpload = new FileUpload();
 	
 	public RestaurantsManagerScreen() {
 		userController.addObserver(this);
@@ -216,6 +231,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		setRestauratorPanel();
 		addRestaurantsManagerTab();
 		addEmailTab();
+		addDefaultEmptyProfile();
 	}
 	private void setAdminPanel(){
 		adminPanel = new FlowPanel();		
@@ -608,6 +624,53 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		emailPanel.add(sendButton);
 		add(emailPanel);
 	}
+	private void addDefaultEmptyProfile(){
+		defaultEmptyBoard = new FlowPanel();
+		panelList.put(panelCount++, defaultEmptyBoard);
+		tabBar.addTab(Customization.SET_DEFAULT_EMPTY_PROFIL);
+		
+		formPanel = new FormPanel();
+		formPanel.setVisible(true);
+		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.add(fileUpload);
+		formPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
+			
+			@Override
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				Document.get().getElementById("load").setClassName("loaded");
+				formPanel.reset();
+			}
+		});
+		fileUpload.setName("defaultEmptyImage");
+		fileUpload.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				Document.get().getElementById("load").setClassName("loading");
+				//clickOnInputFile(formPanel.getUploadButton().getElement());
+				blobService.getBlobStoreUrl( "0", ImageType.EMPTY_PROFILE, new AsyncCallback<String>() {
+					
+					@Override
+					public void onSuccess(String result) {
+						Window.alert(result);
+						formPanel.setAction(result);
+						formPanel.submit();
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						Document.get().getElementById("load").setClassName("loaded");
+						Window.alert("Problem with upload. Try again");
+						
+					}
+				});
+				
+			}
+		});
+		defaultEmptyBoard.add(formPanel);
+		add(defaultEmptyBoard);
+	}
 	private void clearChosenEmailList(){
 		if(chosenEmailList.isEmpty()) chosenEmailPanel.clear();
 	}
@@ -989,3 +1052,5 @@ class RestaurantCellClass extends AbstractCell<Restaurant>{
 	}
 	
 }
+
+

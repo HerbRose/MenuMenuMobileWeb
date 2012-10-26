@@ -78,7 +78,6 @@ public class Customization {
 
 	public static final String EMPTY_MAIL_LIST = translated.emptyMalList();
 
-
 	public static final String SELECT_ELEMENT = translated.selectElement();
 
 	public static final String LOGIN_ERROR = translated.loginError();

@@ -53,10 +53,10 @@ public class LoginScreen extends JQMPage{
 			@Override
 			public void onClick(ClickEvent event) {
 				String text = nameBox.getValue();
-				System.out.println(text);
 				if(nameBox.getValue().equals("") || passwordBox.getValue().equals("")){
-					Window.alert("Username and password are required.");
+					Window.alert(Customization.LOGIN_ERROR);
 				}else{
+					Cookies.setCookie(R.LOGIN, nameBox.getValue());
 					JQMContext.changePage(new LoadDataScreen(nameBox.getValue(), passwordBox.getValue()));
 				}
 			}
@@ -68,17 +68,24 @@ public class LoginScreen extends JQMPage{
 	    hp.setWidth("100%");
 	    
 	    add(lcombo);
-	    
+	   
 	    add(hp);
 	    
 	}
 
 	@Override
 	protected void onPageShow() {
-		nameBox.setValue("");
+		
+		String login = Cookies.getCookie(R.LOGIN);
+		if (login != null && !login.equals("null")) {
+			nameBox.setValue(Cookies.getCookie(R.LOGIN));
+		}
+		else{
+			nameBox.setValue("");
+		}
+		
 		passwordBox.setValue("");
 	
-		
 		MenuMenuMobileWeb.loggedIn = false;
 		Cookies.removeCookie(R.LOGGED_IN);
 		

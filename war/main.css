@@ -218,3 +218,27 @@
 	-webkit-box-shadow: 0px 0px 10px 1px green !important;
 	box-shadow: 0px 0px 10px 1px green !important;
 }
+.scrollLeft{
+	display: block;
+	overflow-y: scroll;
+}
+.scrollable td:nth-child(2){
+	position: absolute;
+	left: 0px;
+	background: #0f0;
+}
+.scrollable td:nth-child(2) div{
+	background: #0f0;
+}
+.scrollable td:nth-last-child(2){
+	position: absolute;
+	right: 0px;
+	background: #0f0;
+}
+#scrollerTabBar tbody:first-child {
+	display:list-item;
+	overflow: hidden;
+}
+#scrollerTabBar{
+	position: relative;
+}

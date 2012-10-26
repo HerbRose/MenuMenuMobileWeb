@@ -121,8 +121,10 @@ public class SwipeView extends FlowPanel {
 		
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
-			
 		}
+		MyImage emptyBoard = new MyImage(imagesController, new Image("/src/emptyBoard.png"), parent);
+		scrollerContainer.insert(emptyBoard, 0);
+		
 	}
 	private void addImage(ImageBlob imageBlob){
 		MyImage newImage;
@@ -341,5 +343,4 @@ class MyUploadForm extends FormPanel {
 	public FileUpload getFileUpload() {
 		return fileUpload;
 	}
-	
 }

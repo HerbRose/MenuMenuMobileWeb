@@ -644,7 +644,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
 			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 			if(query != null){
-				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_PROFILE).filter("restId", "-1").get();
+				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_PROFILE).filter("restId", "0").get();
 				restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
 			}
 		}

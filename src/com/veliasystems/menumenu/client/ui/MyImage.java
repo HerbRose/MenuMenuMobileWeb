@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -37,13 +38,33 @@ public class MyImage extends FlowPanel {
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private RestaurantImageView parent;
+	private RestaurantController restaurantController = RestaurantController.getInstance();
+	
+	public MyImage( ImagesController imagesController, Image image, RestaurantImageView myParent) {
+		this.image = image;
+		this.parent = myParent;
+		setStyleName("imagePanel");
+		
+		image.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				Document.get().getElementById("load").setClassName("show");
+				
+				restaurantController.setEmptyBoard(parent.getRestaurant());
+				
+			}
+		});
+		this.imagesController = imagesController;
+		
+	}
 	
 	public MyImage( ImagesController imagesController, ImageBlob imageBlob, RestaurantImageView parent) {
 		this.url = imageBlob.getImageUrl();
 		this.parent = parent;
 		imgBlob = imageBlob;
-		image.setUrl(url);
-		image.setStyleName("image");
+		setMyImage(url);
 		
 		image.addClickHandler(new ClickHandler() {
 			
@@ -67,6 +88,7 @@ public class MyImage extends FlowPanel {
 				});
 			}
 		});
+
 		
 		detailsPanel = new FlowPanel();
 		detailsPanel.setStyleName("details");
@@ -84,7 +106,11 @@ public class MyImage extends FlowPanel {
 
 	}
 		
-
+	
+	private void setMyImage(String url){
+		image.setUrl(url);
+		image.setStyleName("image");
+	}
 		//add(flowPanelButtons);
 	
 
