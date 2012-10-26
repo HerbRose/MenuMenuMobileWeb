@@ -52,8 +52,21 @@ public class GetRestaurantsInArea extends HttpServlet{
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
 		
-		double latDevice = Double.valueOf(req.getParameter("lat"));
-		double lonDevice = Double.valueOf(req.getParameter("lon"));
+		String latDeviceString = req.getParameter("lat");
+		if (latDeviceString==null || latDeviceString.isEmpty() ) {
+			resp.getWriter().println("Wrong latitude");
+			resp.flushBuffer();
+			return;
+		}
+		String lonDeviceString = req.getParameter("lon");
+		if (lonDeviceString==null || lonDeviceString.isEmpty() ) {
+			resp.getWriter().println("Wrong latitude");
+			resp.flushBuffer();
+			return;
+		}
+		
+		double latDevice = Double.valueOf(latDeviceString);
+		double lonDevice = Double.valueOf(lonDeviceString);
 	
 		double distance = 1;
 		
