@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
@@ -68,7 +69,15 @@ public class CityInfoScreen extends JQMPage{
 	
 	
 	private void addRestaurants(List<Restaurant> list){
+		
+		java.util.Collections.sort(list, new Comparator<Restaurant>() {
 
+			@Override
+			public int compare(Restaurant o1, Restaurant o2) {
+				// TODO Auto-generated method stub
+				 return o1.getName().compareTo(o2.getName());
+			}
+		});
 		
 		for(final Restaurant item: list){
 			RestaurantImageView restaurantView;
