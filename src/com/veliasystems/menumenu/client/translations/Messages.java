@@ -124,7 +124,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Logout")
 	String logout();
 
-	@DefaultStringValue("Restauration manager")
+	@DefaultStringValue("Restaurant manager")
 	String restauratiunManager();
 
 	@DefaultStringValue("Address")
@@ -151,37 +151,37 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Subject")
 	String subject();
 
-	@DefaultStringValue("Do you want to send a message without a subject?")
+	@DefaultStringValue("Do you want send the message without a subject?")
 	String confirmationNoSubject();
 
-	@DefaultStringValue("Do you want to send a message without content?")
+	@DefaultStringValue("Do you want send the message without content?")
 	String confirmationNoMessage();
 
-	@DefaultStringValue("Do you want to send a message without a subject and content?")
+	@DefaultStringValue("Do you want send the message without a subject and content?")
 	String confirmationNoSubjectAndNoMessage();
 
 	@DefaultStringValue("Enter a city")
 	String cityPlaceholder();
 
-	@DefaultStringValue("Enter a email")
+	@DefaultStringValue("Enter the email")
 	String emailPlaceholder();
 
-	@DefaultStringValue("Enter a password")
+	@DefaultStringValue("Enter the password")
 	String passwordPlaceholder();
 
-	@DefaultStringValue("Repeat a password")
+	@DefaultStringValue("Repeat the password")
 	String repeatPasswordPlaceholder();
 
-	@DefaultStringValue("Enter a restaurant")
+	@DefaultStringValue("Enter the restaurant")
 	String restaurantPlaceholder();
 
-	@DefaultStringValue("Enter a subject")
+	@DefaultStringValue("Enter the subject")
 	String subjectPlaceholder();
 
-	@DefaultStringValue("Enter a message")
+	@DefaultStringValue("Enter the message")
 	String messagePlaceholder();
 
-	@DefaultStringValue("There was an error, we apologize")
+	@DefaultStringValue("An error has occurred, we apologize")
 	String error();
 
 	@DefaultStringValue("Connection problem. Please try again later")
