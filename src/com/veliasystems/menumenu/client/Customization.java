@@ -78,7 +78,7 @@ public class Customization {
 	public static final String SELECT_ELEMENT = translated.selectElement();
 	public static final String LOGIN_ERROR = translated.loginError();
 	public static final String WRONG_LOGIN_DATA = translated.wrongLoginaData();
-	
+	public static final String ARE_YOU_SURE_WANT_LOGOUT = translated.doYouWantLogout();
 };
 
 	

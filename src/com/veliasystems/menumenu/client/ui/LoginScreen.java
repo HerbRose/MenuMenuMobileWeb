@@ -108,8 +108,7 @@ public class LoginScreen extends JQMPage{
 		
 		if(!isWrongData){
 			nameBox.removeStyleName("redShadow");
-	    	passwordBox.removeStyleName("redShadow");
-	    	
+	    	passwordBox.removeStyleName("redShadow");	
 		}
 		super.onPageShow();
 	}
