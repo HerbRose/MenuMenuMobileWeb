@@ -220,5 +220,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Select e-mail")
 	String selectElement();
 
+	@DefaultStringValue("Login and password are required")
+	String loginError();
+
 
 }

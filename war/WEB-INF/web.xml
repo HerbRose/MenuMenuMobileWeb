@@ -23,6 +23,16 @@
     <servlet-name>FillCityId</servlet-name>
     <url-pattern>/FillCityId</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>GetRestaurantsInArea</servlet-name>
+    <servlet-class>com.veliasystems.menumenu.server.api.GetRestaurantsInArea</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GetRestaurantsInArea</servlet-name>
+    <url-pattern>/GetRestaurantsInArea</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>BlobStoreServlet</servlet-name>
