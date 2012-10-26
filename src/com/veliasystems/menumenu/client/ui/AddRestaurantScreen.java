@@ -215,6 +215,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	@Override
 	protected void onPageShow() {
 		
+		
 		if(!loaded){
 			if(isToCity){
 				backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE );
@@ -234,6 +235,9 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		
 		nameText.setText("");
 		adressText.setText("");
+		nameText.removeStyleName("redShadow");
+		adressText.removeStyleName("redShadow");
+		warning.setText("");
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	
@@ -259,10 +263,14 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		else{
 			if(nameText.getText().isEmpty() && adressText.getText().isEmpty()){
 				warning.setText(Customization.EMPTYBOTHDATA);
+				nameText.addStyleName("redShadow");
+				adressText.addStyleName("redShadow");
 			}else if(nameText.getText().isEmpty()){
 				warning.setText(Customization.EMPTYNAME);
+				nameText.addStyleName("redShadow");
 			}else {
 				warning.setText(Customization.EMPTYADRESS);
+				adressText.addStyleName("redShadow");
 			}
 			warning.setStyleName("warning");
 			add(warning);
