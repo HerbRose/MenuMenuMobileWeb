@@ -139,20 +139,20 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		image.getElement().getStyle().setPosition(Position.RELATIVE);
 		image.add(bckImage);
 		switch(imageInsert.getImageType()){
-		case PROFILE:				
+		case PROFILE:	
+				double ratioWProfile = blobWidth / 420;
 				cropRectWidth = 420;
-				cropRectHeight = 280;		
+				cropRectHeight = blobHeight /ratioWProfile;		
 			break;
 		default:	
-			if(blobWidth > 220){
-				
 			double ratioW = blobWidth / 220;
-				cropRectWidth = 220 / ratioW;
-				cropRectHeight = 30;
+			if(blobWidth > 220){	
+				cropRectWidth = 220;
+				cropRectHeight = imageInsert.getHeight() / ratioW;
 		}	
 			else{
 				cropRectWidth = blobWidth;
-				cropRectHeight = 30;
+				cropRectHeight = imageInsert.getHeight() / ratioW;;
 			}
 			break;			
 		}

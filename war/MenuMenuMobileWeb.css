@@ -43,6 +43,7 @@ h1 {
 .rect {
 	position: absolute;
 	border: 2px solid red;
+	z-index: 5;
 }
 
 .rightButtons {
@@ -68,6 +69,7 @@ h1 {
 .toolPanel{
 	position: absolute;
 	margin-top: -35px;
+	z-index: 14;
 }
 
 .addButtonCity{
