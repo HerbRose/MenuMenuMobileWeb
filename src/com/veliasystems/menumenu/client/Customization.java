@@ -80,6 +80,10 @@ public class Customization {
 
 
 	public static final String SELECT_ELEMENT = translated.selectElement();
+
+	public static final String LOGIN_ERROR = translated.loginError();
+	
+	public static final String SET_DEFAULT_EMPTY_PROFIL = "Ustaw pustą tablicę";
 };
 
 	
