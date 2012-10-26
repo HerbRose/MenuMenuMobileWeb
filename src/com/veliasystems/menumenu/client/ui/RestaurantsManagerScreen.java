@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.user.client.ui.TabBar.Tab;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,6 +48,7 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
@@ -54,7 +56,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 
-public class RestaurantsManagerScreen extends JQMPage implements HasClickHandlers{
+public class RestaurantsManagerScreen extends JQMPage implements HasClickHandlers, IObserver{
 	
 	private JQMHeader header;
 	private JQMButton backButton;
@@ -136,6 +138,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private Map<Long, Restaurant> restaurantsCopyMap;
 	
 	public RestaurantsManagerScreen() {
+		userController.addObserver(this);
 		fillRestaurantsCopy();
 		userType = userController.getUserType();
 		setHeader();
@@ -148,8 +151,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	private void setContent(){
 			
-		
 		tabBar = new TabBar();
+		
 		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
@@ -160,15 +163,52 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		});
 		
 		add(tabBar);
-		
 		switch(userType){
 		case ADMIN:
 			setAdminPanels();
 			break;
 		default:
 			setAgentButtons();
-		}		
+		}	
+		
+		
 	}		
+	private void addArrowTabs() {
+		int windowWight = Window.getClientWidth();
+		tabBar.getElement().setId("scrollerTabBar");
+		int tabWidth = getWidth(tabBar.getElement().getId());
+		
+		
+		if(windowWight > tabWidth) return;
+		
+		tabBar.insertTab("<-", 0);
+		tabBar.addTab("->");
+		
+		Tab firstTab = tabBar.getTab(0); 
+		Tab lastTab = tabBar.getTab(tabBar.getTabCount()-1);
+		
+		firstTab.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				moveLeft(-120, tabBar.getElement().getId());
+				
+			}
+		});
+		
+		tabBar.setStyleName("scrollable", true);
+	
+	}
+	private native int getWidth(String elementId)/*-{
+		return $wnd.document.getElementById(elementId).offsetWidth;
+	}-*/;
+	
+	private native void moveLeft(int left, String elementId)/*-{
+		var table = $wnd.document.getElementById(elementId);
+		var tbody = table.getElementsByTagName("tbody");
+		tbody[0].style.marginLeft = left + "px";
+	}-*/;
+	
 	private void setAdminPanels(){
 		setAdminPanel();		
 		setAgentPanel();
@@ -529,7 +569,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 						}
 					}
 				});
-				if(emptyMailList != null) chosenEmailPanel.remove(emptyMailList);
+				clearChosenEmailList();
 				chosenEmailPanel.add(label);
 				chosenEmailPanel.setStyleName("greenShadow");
 				chosenEmailList.add(addresseeListBox.getValue(addresseeListBox.getSelectedIndex()));			
@@ -568,7 +608,9 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		emailPanel.add(sendButton);
 		add(emailPanel);
 	}
-	
+	private void clearChosenEmailList(){
+		if(chosenEmailList.isEmpty()) chosenEmailPanel.clear();
+	}
 	private boolean checkEmailValues(){
 		
 		boolean isValid = false;
@@ -578,6 +620,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		if(chosenEmailList.isEmpty()){
 			chosenEmailPanel.setStyleName("redShadow");
 			emptyMailList = new Label(Customization.EMPTY_MAIL_LIST);
+			clearChosenEmailList();
 			chosenEmailPanel.add(emptyMailList);
 		}		
 		else {	
@@ -897,7 +940,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	@Override
 	protected void onPageShow() {
-		
+		addArrowTabs();
 		pageToBack = restaurantController.getLastOpenPage();
 		restaurantController.setLastOpenPage(this);
 		if(pageToBack instanceof RestaurantImageView ){
@@ -927,6 +970,11 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			tabBar.selectTab(whichPanelShow);
 			showPanel(panelList.get(whichPanelShow));
 		}
+	}
+	@Override
+	public void onChange() {
+		clearScreenData();
+		
 	}
 }
 

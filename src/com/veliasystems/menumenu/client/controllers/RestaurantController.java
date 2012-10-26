@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -224,8 +225,6 @@ public class RestaurantController {
 		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
 			@Override
 			public void onSuccess(List<ImageBlob> result) {
-				System.out.println("RestaurantController::cropImage result.size(): " + result.size() + ", for restaurant is: " + myRestaurantId);
-				
 				for (ImageBlob imageBlob : result) {
 					boolean isIn = false;
 					if(oldImages != null){
@@ -237,8 +236,6 @@ public class RestaurantController {
 						}
 					}
 					if (!isIn && imageBlob != null) {
-						System.out.println("RestaurantController::cropImage. imageBlob.getBlobKey()= "+ imageBlob.getBlobKey() );
-						
 						JQMContext.changePage(new CropImage(imageBlob, myRestaurantId), Transition.SLIDE);
 					}
 				}
@@ -301,7 +298,6 @@ public class RestaurantController {
 		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
 			@Override
 			public void onSuccess(List<ImageBlob> result) {
-				System.out.println("RestaurantController::afterCrop. result.size(): " + result.size()+ ", restaurantId = " + myRestaurantId);
 				for (ImageBlob imageBlob : result) {
 					boolean isIn = false;
 					if(oldImages != null){
@@ -312,13 +308,11 @@ public class RestaurantController {
 						}
 					}
 					if (!isIn) {
-						System.out.println("RestaurantController::afterCrop. newImageBlob = imageBlob. imageBlob.getBlobKey(): "+ imageBlob.getBlobKey() + " " );
 						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
 						if(imagList == null){
 							imagList = new ArrayList<ImageBlob>();
 						}
 						imagList.add(imageBlob);
-						//historyGoBack(1); //
 					}
 				}
 				JQMContext.changePage(restMapView.get(myRestaurantId));
@@ -385,5 +379,24 @@ public class RestaurantController {
 	private static native void historyGoBack(int howMany) /*-{
 		history.go(-howMany);
 	}-*/;
+
+	public void setEmptyBoard(Restaurant restaurant) {
+		
+		storeService.clearBoard(restaurant, new AsyncCallback<Restaurant>() {
+			
+			@Override
+			public void onSuccess(Restaurant result) {
+				restaurants.put(result.getId(), result);
+				Document.get().getElementById("load").setClassName("hide");
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Document.get().getElementById("load").setClassName("hide");
+				Window.alert(Customization.CONNECTION_ERROR);
+			}
+		});
+		
+	}
 
 }
