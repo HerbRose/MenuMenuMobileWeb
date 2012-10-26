@@ -48,6 +48,9 @@ public interface StoreServiceAsync {
 	void saveRestaurants(List<Restaurant> restaurants,
 			AsyncCallback<Void> callback);
 
+	void clearBoard(Restaurant restaurant,
+			AsyncCallback<Restaurant> asyncCallback);
+
 
 	
 

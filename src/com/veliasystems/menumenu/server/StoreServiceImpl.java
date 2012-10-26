@@ -33,6 +33,7 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -635,6 +636,23 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		saveRestaurants(restaurants);
 		
 		return changedRestaurnts;
+	}
+
+	@Override
+	public Restaurant clearBoard(Restaurant restaurant) {
+		
+		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
+			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+			if(query != null){
+				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_PROFILE).filter("restId", "-1").get();
+				restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
+			}
+		}
+
+		restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
+		
+		dao.ofy().put(restaurant);
+		return restaurant;
 	}
 
 

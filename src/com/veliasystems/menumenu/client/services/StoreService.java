@@ -48,5 +48,7 @@ void saveRestaurant( Restaurant r );
 
 	void saveRestaurants(List<Restaurant> restaurants);
 
+	Restaurant clearBoard(Restaurant restaurant);
+
 
 }
