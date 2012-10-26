@@ -44,7 +44,7 @@ public class LoadDataScreen extends JQMPage {
 			@Override
 			public void onSuccess(Map<String, Object> result) {
 				if(result == null){
-					JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN);
+					JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN_WRONG);
 				}
 				else{
 					setData(result);
@@ -58,7 +58,7 @@ public class LoadDataScreen extends JQMPage {
 				Window.alert(Customization.CONNECTION_ERROR);
 				Cookies.removeCookie(R.LOADED);
 				Cookies.removeCookie(R.LAST_PAGE);
-				JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN);
+				JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN_WRONG);
 				
 			}
 		});
@@ -73,7 +73,8 @@ public class LoadDataScreen extends JQMPage {
 			@Override
 			public void onSuccess(Map<String, Object> result) {
 				if(result == null){
-					JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN);
+					JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN_WRONG);
+					
 				}
 				else{
 					setData(result);

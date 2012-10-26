@@ -74,15 +74,11 @@ public class Customization {
 	public static final String RESTAURANT_PLACEHOLDER = translated.restaurantPlaceholder();
 	public static final String SUBJECT_PLACEHOLDER = translated.subjectPlaceholder();
 	public static final String MESSAGE_PLACEHOLDER = translated.messagePlaceholder();
-
-
 	public static final String EMPTY_MAIL_LIST = translated.emptyMalList();
-
-
 	public static final String SELECT_ELEMENT = translated.selectElement();
-
-
 	public static final String LOGIN_ERROR = translated.loginError();
+	public static final String WRONG_LOGIN_DATA = translated.wrongLoginaData();
+	
 };
 
 	

@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
@@ -28,12 +29,17 @@ public class LoginScreen extends JQMPage{
 	JQMButton cancelButton;
 	JQMText nameBox;
 	JQMPassword passwordBox;
+	Label wrongData;
 	LanguageCombo lcombo = new LanguageCombo();
 	
 	Messages translated = GWT.create(Messages.class);
 	
-	public LoginScreen(){
+	private boolean isWrongData = false;
+
+	
+	public LoginScreen(boolean isWrongLogin){
 		
+	
 		header = new JQMHeader(translated.pleaseLogin());
 		header.setFixed(true);
 		header.setText(Customization.MAINTITLE);
@@ -71,6 +77,15 @@ public class LoginScreen extends JQMPage{
 	   
 	    add(hp);
 	    
+	    if(isWrongLogin){
+	    	nameBox.addStyleName("redShadow");
+	    	passwordBox.addStyleName("redShadow");
+	    	wrongData = new Label(Customization.WRONG_LOGIN_DATA);
+	    	add(wrongData);
+	    	wrongData.addStyleName("warning");
+	    	isWrongData = true;
+	    }
+	    
 	}
 
 	@Override
@@ -90,6 +105,12 @@ public class LoginScreen extends JQMPage{
 		Cookies.removeCookie(R.LOGGED_IN);
 		
 		Document.get().getElementById("load").setClassName(R.LOADED);
+		
+		if(!isWrongData){
+			nameBox.removeStyleName("redShadow");
+	    	passwordBox.removeStyleName("redShadow");
+	    	
+		}
 		super.onPageShow();
 	}
 	

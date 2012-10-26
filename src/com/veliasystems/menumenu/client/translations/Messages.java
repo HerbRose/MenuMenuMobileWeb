@@ -222,6 +222,9 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Login and password are required")
 	String loginError();
+	
+	@DefaultStringValue("Login or password is wrong")
+	String wrongLoginaData();
 
 
 }
