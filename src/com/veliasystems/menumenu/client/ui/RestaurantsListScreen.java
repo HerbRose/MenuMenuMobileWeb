@@ -85,7 +85,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 				 return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
 			}
 		});
-		for(final Restaurant item: list){
+		for(Restaurant item: list){
 			RestaurantImageView restaurantView;
 			if(RestaurantController.restMapView.containsKey(item.getId())){
 				restaurantView = RestaurantController.restMapView.get(item.getId());	
@@ -94,7 +94,6 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 				restaurantView = new RestaurantImageView(item, this);
 				RestaurantController.restMapView.put(item.getId(), restaurantView);				
 			}
-			
 
 			this.restaurantList.addItem(item.getName(), restaurantView);
 
@@ -111,7 +110,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE);
 		}
-		List<Restaurant> newRestaurants = restaurantController.getRestaurantsList();
+		
 		
 		if(!loaded){
 			
@@ -130,10 +129,10 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		
 		restaurantController.setFromCityView(false);
 		
-		if(restaurants.size() != newRestaurants.size() ){
-			restaurants = newRestaurants;
+//		if(restaurants.size() != newRestaurants.size() ){
+//			restaurants = newRestaurants;
+//		}
 			refreshRestaurantList();
-		}
 		
 		Cookies.removeCookie(R.LAST_PAGE);
 		
@@ -148,7 +147,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 	private void refreshRestaurantList() {
 		
 		restaurantList.clear();
-		addRestaurants(restaurants);
+		addRestaurants(restaurantController.getRestaurantsList());
 		restaurantList.refresh();
 		
 	}

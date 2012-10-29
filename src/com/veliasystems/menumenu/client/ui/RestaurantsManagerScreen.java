@@ -521,6 +521,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			@Override
 			public void update(int index, Restaurant restaurant, Boolean value) {
 				restaurant.setClearBoard(value);
+				restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
+				
 			}
 		};
 		isClearBoardColumn.setFieldUpdater(clearBoardFieldUpdater);
@@ -640,7 +642,6 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 					
 					@Override
 					public void onSuccess(String result) {
-						Window.alert(result);
 						formPanel.setAction(result);
 						formPanel.submit();
 					}
