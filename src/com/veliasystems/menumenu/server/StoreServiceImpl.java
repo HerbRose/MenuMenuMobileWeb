@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
@@ -47,6 +49,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	private DAO dao = new DAO();
 	private BlobService blobService = new BlobServiceImpl();
+	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
 	
 	@Override
 	public List<String> loadCities() {
@@ -100,7 +103,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if(restQuery == null) return null;
-		System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
+		//System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
 		List<Restaurant> restList = restQuery.filter("cityId in", restaurantsId).list();
 		return restList;
 	} 
@@ -299,7 +302,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			}
 			
 		}
-		else System.out.println("No Geocoding results for " + r.getAddress() + ", " + r.getCity());
+		else log.warning("No Geocoding results for " + r.getAddress() + ", " + r.getCity());
+		
 		
 	}
 	

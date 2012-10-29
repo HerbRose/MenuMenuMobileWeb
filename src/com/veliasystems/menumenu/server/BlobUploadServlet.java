@@ -80,7 +80,6 @@ public class BlobUploadServlet extends HttpServlet {
             for (String key : keys) {
             	List<BlobKey> blobkeys = uploads.get(key);
             	for (BlobKey bkey : blobkeys) {
-            		System.out.println(key + " - " + bkey);
             		if (blobKey==null) blobKey = bkey; // just pick the 1st one
             	}
             }
