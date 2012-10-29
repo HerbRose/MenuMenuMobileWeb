@@ -39,7 +39,6 @@ public class City implements Serializable{
 
 	@Override
 	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
 		if(!(obj instanceof City)) return false;
 		
 		City c = (City) obj;

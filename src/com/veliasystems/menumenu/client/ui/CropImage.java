@@ -433,7 +433,9 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	}
 	
 	private void meClicked(ClickEvent event){	
-		if(isClicked(event, saveButton)){		
+		if(isClicked(event, saveButton)){
+			
+			Document.get().getElementById("load").setClassName(R.LOADING);
 			double ratioH = bckImage.getHeight() / blobHeight;
 			double ratioW = bckImage.getWidth() / blobWidth;
 			

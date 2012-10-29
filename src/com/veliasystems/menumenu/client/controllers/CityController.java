@@ -97,8 +97,10 @@ public class CityController {
 		storeService.addCity(cityNameToSave, new AsyncCallback<City>() {
 			@Override
 			public void onSuccess(City result) {
-				cities.put(result.getId(), result);
-				notifyAllObservers();
+				if(result != null){
+					cities.put(result.getId(), result);
+					notifyAllObservers();
+				}	
 				History.back();
 			}
 			@Override
