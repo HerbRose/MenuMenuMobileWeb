@@ -196,7 +196,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 			restaurant.setNameUser(nameUserTextBox.getText());
 			restaurant.setSurnameUser(surnameUserTextBox.getText());
 			if (validate()) {
-
+				
 				RestaurantController.getInstance().saveRestaurant(restaurant);
 
 			}
