@@ -30,32 +30,30 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class RestaurantImageView extends JQMPage{
 	
-	JQMHeader header;
-	JQMPanel content ;
-	JQMButton backButton;
-	JQMButton editButton;
-	ScrollPanel contentScroll;
-	VerticalPanel scrollerDiv;
+	private JQMHeader header;
+	private JQMPanel content ;
+	private JQMButton backButton;
+	private JQMButton editButton;
+	private ScrollPanel contentScroll;
+	private VerticalPanel scrollerDiv;
 	
-	private String title;
 	private Restaurant restaurant;
 	private boolean loaded = false;
 	private List<SwipeView> swipeViews = new ArrayList<SwipeView>(); 
-	RestaurantController restaurantController = RestaurantController.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private JQMPage back;
 	
-	RestInfoScreen restInfoScreen;
+	private RestInfoScreen restInfoScreen;
 	
 	public RestaurantImageView(Restaurant r, JQMPage back){
 		this.back = back;
 		this.restaurant = r;
-		this.title = r.getName();
-		
+
 		editButton = new JQMButton(Customization.EDIT, new RestInfoScreen(restaurant, this), Transition.SLIDE);
 		editButton.setIcon(DataIcon.RIGHT);
 		editButton.setIconPos(IconPos.RIGHT);
 		
-		header = new JQMHeader(title);
+		header = new JQMHeader(r.getName());
 		
 		header.setFixed(true);
 		header.setRightButton(editButton);
@@ -139,6 +137,7 @@ public class RestaurantImageView extends JQMPage{
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE); // <<---is it necessary?
 		}
+		header.setText(restaurant.getName());
 //		Date data = new Date(); 
 //		Long milisec = data.getTime();
 //		milisec += (1000 * 5 * 60); 
