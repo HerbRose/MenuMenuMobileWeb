@@ -183,7 +183,7 @@ public class RestaurantController {
 				
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
 				
-				
+				Document.get().getElementById("load").setClassName(R.LOADED);
 				notifyAllObservers();
 				History.back();
 			}

@@ -120,11 +120,10 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	}
 	
 	private boolean validate(){
-		
-		if(nameCity.getText().matches("\\w+\\s*-.+")) {
+		String matcher =".*[^-]-.*[^-]";
+		if(nameCity.getText().matches(matcher)) {
 			return true;
 		}
-
 		showWarning();
 		return false;
 	}
