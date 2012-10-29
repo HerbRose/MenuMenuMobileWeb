@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.urlfetch.FetchOptions;
@@ -32,7 +31,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -533,7 +531,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	@Override
 	public City addCity(String cityName) {
-		
+		List<City> list = loadCitiesEntity();
+		for (City city : list) {
+			if(city.getCity().equalsIgnoreCase(cityName)) {
+				return null;
+			}
+		}
 		City c = new City();
 		c.setCity(cityName);
 		dao.ofy().put(c);
