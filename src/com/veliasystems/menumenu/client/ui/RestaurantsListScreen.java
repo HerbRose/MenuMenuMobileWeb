@@ -111,7 +111,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE);
 		}
-		List<Restaurant> newRestaurants = restaurantController.getRestaurantsList();
+		
 		
 		if(!loaded){
 			
@@ -130,10 +130,11 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		
 		restaurantController.setFromCityView(false);
 		
-		if(restaurants.size() != newRestaurants.size() ){
-			restaurants = newRestaurants;
+//		if(restaurants.size() != newRestaurants.size() ){
+//			restaurants = newRestaurants;
+//		}
 			refreshRestaurantList();
-		}
+		
 		
 		Cookies.removeCookie(R.LAST_PAGE);
 		
@@ -148,7 +149,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 	private void refreshRestaurantList() {
 		
 		restaurantList.clear();
-		addRestaurants(restaurants);
+		addRestaurants(restaurantController.getRestaurantsList());
 		restaurantList.refresh();
 		
 	}
