@@ -12,6 +12,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,13 +33,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabBar;
-import com.google.gwt.user.client.ui.TabBar.Tab;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -76,6 +77,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	
 	private TabBar tabBar;
 	private FlowPanel tabBarPanel;
+	private Image leftArrow;
+	private Image rightArrow;
 	
 	//pola do dodawania użytkowników 
 	private TextBox inputEmailAdmin;
@@ -168,18 +171,32 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private void setContent(){
 			
 		tabBar = new TabBar();
+		tabBar.addStyleName("tabBarMain");
 		tabBarPanel = new FlowPanel();
 		tabBarPanel.addStyleName("tabBarPanel");
 		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
-				// TODO Auto-generated method stub
 				showPanel(panelList.get(event.getSelectedItem()));
 			}
 		});
+		
+		
+		leftArrow = new Image("img/leftArrow.png");
+		leftArrow.addStyleName("leftArrow");
+		tabBarPanel.add(leftArrow);
+		leftArrow.addStyleName("hide");
+		
+		rightArrow = new Image("img/rightArrow.png");
+		rightArrow.addStyleName("rightArrow");
+		tabBarPanel.add(rightArrow);
+		rightArrow.addStyleName("hide");
 		tabBarPanel.add(tabBar);
+		
+		
 		add(tabBarPanel);
+		
 		switch(userType){
 		case ADMIN:
 			setAdminPanels();
@@ -190,11 +207,32 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		
 		
 	}		
+	private void setArrowActions() {
+		
+		leftArrow.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		rightArrow.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
 	private void addArrowTabs() {
 		int windowWight = Window.getClientWidth();
 		tabBar.getElement().setId("scrollerTabBar");
 		int tabWidth = getWidth(tabBar.getElement().getId());
-		
+		System.out.println(tabWidth);
 		
 		if(windowWight > tabWidth) return;
 		
@@ -787,6 +825,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			restaurantSuggest.add(restaurant.getName() + " (" + Customization.CITYONE + ": " + restaurant.getCity() + " ," + Customization.ADRESS +": "+ restaurant.getAddress() + ")");
 		}
 		
+		
 		subjectTextBox.setText("");
 		messageTextArea.setText("");
 		chosenEmailPanel.clear();
@@ -816,6 +855,13 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		}
 		
 		addresseeListBox.setSelectedIndex(0);
+		
+		//set width of tab bar
+		double screenWidth = Window.getClientWidth();
+		double leftArrowWidth = leftArrow.getWidth();
+		double rightArrowWidth = rightArrow.getWidth();
+		double width = screenWidth - leftArrowWidth - rightArrowWidth;
+		tabBar.getElement().getStyle().setWidth(width, Unit.PX);
 	}
 	/**
 	 * method doesn't check if lists have correct data

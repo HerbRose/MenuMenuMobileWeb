@@ -227,5 +227,27 @@
 }
 
 .tabBarPanel{
-	
+	position: relative;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.leftArrow {
+	width: 30px;
+	left: 0px;
+	position: absolute;
+}
+.rightArrow {
+	width: 30px;
+	right: -10px;
+	position: fixed;
+	display: inline;
+}
+.tabBarMain{
+	position: relative;
+	left: 30px;
+	right: 30px;
+}
+.tabBarMain tbody{
+	overflow: hidden;
+	display: inline-block;
 }
