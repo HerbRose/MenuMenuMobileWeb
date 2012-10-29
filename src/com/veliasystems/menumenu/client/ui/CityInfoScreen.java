@@ -100,7 +100,7 @@ public class CityInfoScreen extends JQMPage{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		List<Restaurant> newRestaurants = restaurantController.getRestaurantsInCity(title);
+		
 		
 		if(!loaded){
 			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
@@ -115,15 +115,13 @@ public class CityInfoScreen extends JQMPage{
 	        loaded = true;
 		}
 		
-		if(restaurants.size() != newRestaurants.size() ){
-			restaurants = newRestaurants;
-			refreshRestaurantList();
-		}
+		refreshRestaurantList();
+		
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	private void refreshRestaurantList() {
 		restaurantList.clear();
-		addRestaurants(restaurants);
+		addRestaurants(restaurantController.getRestaurantsInCity(title));
 		restaurantList.refresh();	
 	}
 

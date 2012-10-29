@@ -130,10 +130,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		
 		restaurantController.setFromCityView(false);
 		
-//		if(restaurants.size() != newRestaurants.size() ){
-//			restaurants = newRestaurants;
-//		}
-			refreshRestaurantList();
+		refreshRestaurantList();
 		
 		
 		Cookies.removeCookie(R.LAST_PAGE);
