@@ -640,7 +640,6 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 					
 					@Override
 					public void onSuccess(String result) {
-						Window.alert(result);
 						formPanel.setAction(result);
 						formPanel.submit();
 					}
