@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
@@ -47,6 +48,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	private DAO dao = new DAO();
 	private BlobService blobService = new BlobServiceImpl();
+	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
 	
 	@Override
 	public List<String> loadCities() {
@@ -100,7 +102,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if(restQuery == null) return null;
-		System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
+		//System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
 		List<Restaurant> restList = restQuery.filter("cityId in", restaurantsId).list();
 		return restList;
 	} 
@@ -299,7 +301,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			}
 			
 		}
-		else System.out.println("No Geocoding results for " + r.getAddress() + ", " + r.getCity());
+		else log.warning("No Geocoding results for " + r.getAddress() + ", " + r.getCity());
+		
 		
 	}
 	
@@ -425,31 +428,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 
 	@Override
-	public void setMainImage(ImageBlob imageBlob) {
+	public Restaurant setMainImage(ImageBlob imageBlob) {
 		// TODO Auto-generated method stub
 		
 		Long restId = Long.valueOf(imageBlob.getRestaurantId());
 		
 		Restaurant r =dao.ofy().query(Restaurant.class).filter("id =", restId).get();
-		
-//		switch(imageBlob.getImageType()){
-//			case LOGO:
-//				r.setMainLogoImage(imageBlob);
-//				break;
-//			case MENU:
-//				r.setMainMenuImage(imageBlob);
-//				break;
-//			case PROFILE:
-//				r.setMainProfileImage(imageBlob);
-//				break;
-//			
-//		}
-//		
-//		dao.ofy().put(r);
-		
-		//System.out.println(r.getName() + " " + r.getId() + " " + r.getCity());
-		
-		//System.out.println(imageBlob.getImageType());
 		
 		switch(imageBlob.getImageType()){
 			case PROFILE:
@@ -460,11 +444,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				break;
 			case MENU:
 				r.setMainMenuImageString(imageBlob.getImageUrl());
+				r.setClearBoard(false);
 				break;
 		}
 		
 		dao.ofy().put(r);
-		
+		return r;
 	}
 
 
@@ -529,7 +514,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	@Override
 	public City addCity(String cityName) {
-		
+		List<City> list = loadCitiesEntity();
+		for (City city : list) {
+			if(city.getCity().equalsIgnoreCase(cityName)) {
+				return null;
+			}
+		}
 		City c = new City();
 		c.setCity(cityName);
 		dao.ofy().put(c);
