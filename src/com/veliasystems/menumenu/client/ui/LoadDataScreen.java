@@ -134,20 +134,25 @@ public class LoadDataScreen extends JQMPage {
 			if(lastOpenRestaurant == null){
 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME));
 			}else{
+				RestaurantImageView restaurantView;
 				
-				RestaurantImageView restaurantView = new RestaurantImageView(lastOpenRestaurant,PagesController.getPage(Pages.PAGE_HOME));
-				RestaurantController.restMapView.put(lastOpenRestaurant.getId(), restaurantView);
+				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
+					restaurantView = RestaurantController.restMapView.get(lastPageId);
+				}else{
+					restaurantView = new RestaurantImageView(lastOpenRestaurant,PagesController.getPage(Pages.PAGE_HOME));
+				}
+				
+				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
+					restaurantView = RestaurantController.restMapView.get(lastPageId);
+				}
 				
 				String imageType = Cookies.getCookie(R.IMAGE_TYPE);
 				
-				//JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME));
 				if(imageType == null){
 					JQMContext.changePage(restaurantView, Transition.SLIDE);
 				}else{
 					restaurantController.cropImageApple(lastPageId, ImageType.valueOf(imageType));
 				}
-				
-				
 			}
 		}else{
 			JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME), Transition.SLIDE);

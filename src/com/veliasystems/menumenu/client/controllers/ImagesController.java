@@ -15,13 +15,11 @@ public class ImagesController {
 	}
 	
 	public void selectImage(MyImage image){
-		if(selectedImage != null){
-			selectedImage.unselectImage();
-		}
-		image.setSelected();
+		if(selectedImage != null) selectedImage.unselectImage();
+		if(image!=null) image.setSelected();
+		
 		selectedImage = image;
 	}
 	
-
 	
 }

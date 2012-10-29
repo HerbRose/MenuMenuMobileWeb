@@ -97,7 +97,7 @@ public class GetRestaurantsInArea extends HttpServlet{
 		}
 		
 		List< Map<String,String> > attributes = new ArrayList< Map<String,String>>();
-		Map<String,String> map = new HashMap<String,String>();
+		
 		
 		for (Restaurant restaurant : restaurantList) {
 			
@@ -117,7 +117,8 @@ public class GetRestaurantsInArea extends HttpServlet{
 				}
 			}		
 			if( restaurant.isVisibleForApp()){
-				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){				
+				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){	
+					Map<String,String> map = new HashMap<String,String>();
 					map.put( "id", ""+ restaurant.getId());
 					map.put( "name", restaurant.getName());
 					map.put( "city", restaurant.getCity());

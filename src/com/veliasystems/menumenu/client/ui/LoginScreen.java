@@ -85,7 +85,6 @@ public class LoginScreen extends JQMPage{
 	    	wrongData.addStyleName("warning");
 	    	isWrongData = true;
 	    }
-	    
 	}
 
 	@Override
