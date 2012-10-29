@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 
@@ -48,7 +49,7 @@ void saveRestaurant( Restaurant r );
 
 	void saveRestaurants(List<Restaurant> restaurants);
 
-	Restaurant clearBoard(Restaurant restaurant);
+	Restaurant clearBoard(Restaurant restaurant, ImageType imageType);
 
 
 }

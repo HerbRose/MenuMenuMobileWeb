@@ -81,15 +81,12 @@ public class CityInfoScreen extends JQMPage{
 		
 		for(Restaurant item: list){
 			RestaurantImageView restaurantView;
-			System.out.print("Traying " + item.getName() + " " +item.getId() + ":");
 			if(RestaurantController.restMapView.containsKey(item.getId())){
-				restaurantView = RestaurantController.restMapView.get(item.getId());	
-				System.out.println( " is in restMapView: " +item.getName() + " " + restaurantView.getId()+ ", " + item.getId());
+				restaurantView = RestaurantController.restMapView.get(item.getId());
 			}
 			else{
 				restaurantView = new RestaurantImageView(item, this);
 				RestaurantController.restMapView.put(item.getId(), restaurantView);
-				System.out.println( " is not in restMapView: " +item.getName() + " " + restaurantView.getId()+ ", " + item.getId());
 			}
 
 			restaurantList.addItem(item.getName(), restaurantView);

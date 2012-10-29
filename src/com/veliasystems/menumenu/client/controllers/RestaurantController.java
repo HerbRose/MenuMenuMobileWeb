@@ -380,13 +380,17 @@ public class RestaurantController {
 		history.go(-howMany);
 	}-*/;
 
-	public void setEmptyBoard(Restaurant restaurant) {
+	public void setEmptyBoard(Restaurant restaurant, ImageType imageType) {
 		
-		storeService.clearBoard(restaurant, new AsyncCallback<Restaurant>() {
+		storeService.clearBoard(restaurant, imageType, new AsyncCallback<Restaurant>() {
 			
 			@Override
-			public void onSuccess(Restaurant result) {
-				restaurants.put(result.getId(), result);
+			public void onSuccess(Restaurant restaurant) {
+				restaurants.get(restaurant.getId()).setMainMenuImageString(restaurant.getMainMenuImageString());
+				restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+				restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
+				
+				restMapView.get(restaurant.getId()).checkChanges();
 				Document.get().getElementById("load").setClassName("hide");
 			}
 			

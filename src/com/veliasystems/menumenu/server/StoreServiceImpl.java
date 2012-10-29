@@ -628,19 +628,30 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 
 	@Override
-	public Restaurant clearBoard(Restaurant restaurant) {
+	public Restaurant clearBoard(Restaurant restaurant, ImageType imageType) {
 		
 		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
 			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 			if(query != null){
 				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_PROFILE).filter("restId", "0").get();
-				restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
+				if(imageBlob != null) restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
 			}
 		}
 
-		restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
+		switch(imageType){
+		case PROFILE:
+			restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
+			break;
+		case LOGO:
+			restaurant.setMainLogoImageString(restaurant.getEmptyMenuImageString());
+			break;
+		case MENU:
+			restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
+			restaurant.setClearBoard(true);
+			break;
+		}
 		
-		dao.ofy().put(restaurant);
+		saveRestaurant(restaurant);
 		return restaurant;
 	}
 

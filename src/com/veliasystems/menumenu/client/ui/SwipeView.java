@@ -45,7 +45,6 @@ public class SwipeView extends FlowPanel {
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
 	private List<ImageBlob> imageBlobList;
-	private String mainImage;
 	private String title = "";
 	private String mainImageUrl = "";
 	
@@ -96,17 +95,17 @@ public class SwipeView extends FlowPanel {
 		case LOGO:
 			imageBlobList = restaurant.getLogoImages();
 			title = Customization.LOGO_PICTURE_TITLE;
-			mainImage = restaurant.getMainLogoImageString();
+			mainImageUrl = restaurant.getMainLogoImageString()!=null ? restaurant.getMainLogoImageString() : "";
 			break;
 		case MENU:
 			imageBlobList = restaurant.getMenuImages();
 			title = Customization.MAENU_PICTURE_TITLE;
-			mainImage = restaurant.getMainMenuImageString();
+			mainImageUrl = restaurant.getMainMenuImageString()!=null ? restaurant.getMainMenuImageString() : "";
 			break;
 		case PROFILE:
 			imageBlobList = restaurant.getProfileImages();
 			title = Customization.PROFILE_PICTURE_TITLE;
-			mainImage = restaurant.getMainProfileImageString();
+			mainImageUrl = restaurant.getMainProfileImageString() !=null ? restaurant.getMainProfileImageString() : "";
 			break;
 		default:
 			break;
@@ -114,9 +113,7 @@ public class SwipeView extends FlowPanel {
 		if(imageBlobList == null){
 			this.imageBlobList = new ArrayList<ImageBlob>();
 		}
-		if(mainImage != null){
-			mainImageUrl = mainImage;
-		}
+
 	}
 	
 	private void fillImages(){
@@ -124,7 +121,7 @@ public class SwipeView extends FlowPanel {
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
 		}
-		MyImage emptyBoard = new MyImage(imagesController, new Image("/img/emptyBoard.png"), parent);
+		MyImage emptyBoard = new MyImage(imagesController, new Image("/img/emptyBoard.png"), parent, imageType);
 		scrollerContainer.insert(emptyBoard, 0);
 		
 	}

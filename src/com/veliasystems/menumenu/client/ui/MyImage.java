@@ -15,6 +15,7 @@ import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
@@ -42,8 +43,10 @@ public class MyImage extends FlowPanel {
 	private RestaurantImageView parent;
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
-	public MyImage( ImagesController imagesController, Image image, RestaurantImageView myParent) {
+	public MyImage( ImagesController imagesController, Image image, RestaurantImageView myParent, ImageType myImageType) {
 		this.image = image;
+		imageType = myImageType;
+		image.setStyleName("image");
 		this.parent = myParent;
 		setStyleName("imagePanel");
 		
@@ -54,12 +57,12 @@ public class MyImage extends FlowPanel {
 				
 				Document.get().getElementById("load").setClassName("show");
 				
-				restaurantController.setEmptyBoard(parent.getRestaurant());
+				restaurantController.setEmptyBoard(parent.getRestaurant(), imageType);
 				
 			}
 		});
 		this.imagesController = imagesController;
-		
+		add(image);
 	}
 	public MyImage( ImagesController imagesController, ImageBlob imageBlob, RestaurantImageView myParent, ImageType myImageType) {
 		url = imageBlob.getImageUrl();

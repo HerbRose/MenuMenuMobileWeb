@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 
@@ -48,7 +49,7 @@ public interface StoreServiceAsync {
 	void saveRestaurants(List<Restaurant> restaurants,
 			AsyncCallback<Void> callback);
 
-	void clearBoard(Restaurant restaurant,
+	void clearBoard(Restaurant restaurant, ImageType imageType,
 			AsyncCallback<Restaurant> asyncCallback);
 
 
