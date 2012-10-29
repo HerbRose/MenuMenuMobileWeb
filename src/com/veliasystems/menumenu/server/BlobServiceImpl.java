@@ -191,7 +191,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			 		
 			 	}
 			 	
-			 	Image scaleImage = imagesService.applyTransform(scaleTransform, newImage);
+			 	Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, ImagesService.OutputEncoding.JPEG);
 			 	 	
 			 	try {
 					sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
