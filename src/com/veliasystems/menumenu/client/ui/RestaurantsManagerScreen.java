@@ -75,6 +75,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 //	private JQMFooter footer;
 	
 	private TabBar tabBar;
+	private FlowPanel tabBarPanel;
 	
 	//pola do dodawania użytkowników 
 	private TextBox inputEmailAdmin;
@@ -167,7 +168,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private void setContent(){
 			
 		tabBar = new TabBar();
-		
+		tabBarPanel = new FlowPanel();
+		tabBarPanel.addStyleName("tabBarPanel");
 		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
@@ -176,8 +178,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 				showPanel(panelList.get(event.getSelectedItem()));
 			}
 		});
-		
-		add(tabBar);
+		tabBarPanel.add(tabBar);
+		add(tabBarPanel);
 		switch(userType){
 		case ADMIN:
 			setAdminPanels();
@@ -521,6 +523,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			@Override
 			public void update(int index, Restaurant restaurant, Boolean value) {
 				restaurant.setClearBoard(value);
+				restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
+				
 			}
 		};
 		isClearBoardColumn.setFieldUpdater(clearBoardFieldUpdater);
