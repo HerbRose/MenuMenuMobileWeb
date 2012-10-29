@@ -92,17 +92,15 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		
 		if(clickedX>= buttonX && (clickedX <= buttonX + buttonWidth) && clickedY >= buttonY && (clickedY <= buttonY + buttonHeight)){
 		
-			if(checkFields()){
-			
+			if(checkFields()){	
 				restaurant = new Restaurant();
 				restaurant.setName(nameText.getText());
 				
 				restaurant.setAddress(adressText.getText());			
 				int index = cityListBox.getSelectedIndex();			
-				restaurant.setCity(cityListBox.getItemText(index));	
-				
+				restaurant.setCity(cityListBox.getItemText(index));				
 				RestaurantController.getInstance().saveRestaurant(restaurant);
-				
+				Document.get().getElementById("load").setClassName(R.LOADING);
 			}
 				
 		}
