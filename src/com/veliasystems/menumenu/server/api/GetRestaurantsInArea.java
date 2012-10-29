@@ -69,14 +69,16 @@ public class GetRestaurantsInArea extends HttpServlet{
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
 		
-		long latDevice;
-		long lonDevice;
+		double latDevice;
+		double lonDevice;
 		
 		try{
-			latDevice = Long.parseLong(latDeviceString); //Double.valueOf(latDeviceString);
-			lonDevice = Long.parseLong(lonDeviceString);//Double.valueOf(lonDeviceString);
+			latDevice = Double.parseDouble(latDeviceString); //Double.valueOf(latDeviceString);
+			lonDevice = Double.parseDouble(lonDeviceString);//Double.valueOf(lonDeviceString);
 		}catch( NumberFormatException e ){
-			resp.getWriter().println("latitude end lon... must be a number");
+			resp.getWriter().println("latitude and lon... must be a number");
+			resp.getWriter().println(e.getMessage());
+			System.out.println(e.getMessage());
 			resp.flushBuffer();
 			return;
 		}
@@ -101,14 +103,14 @@ public class GetRestaurantsInArea extends HttpServlet{
 			
 			String restLatString = restaurant.getLat();
 			String restLonString = restaurant.getLng();
-			long restLat = 0;
-			long restLon = 0;
+			double restLat = 0;
+			double restLon = 0;
 			boolean isPosition = false;
 			
-			if(restLatString!=null && restLonString!=null && restLatString.equals("") && restLonString.equals("")){
+			if(restLatString!=null && restLonString!=null && !restLatString.equals("") && !restLonString.equals("")){
 				try{
-					restLat = Long.parseLong(restLatString); //Double.valueOf(latDeviceString);
-					restLon = Long.parseLong(restLonString);//Double.valueOf(lonDeviceString);
+					restLat = Double.parseDouble(restLatString); //Double.valueOf(latDeviceString);
+					restLon = Double.parseDouble(restLonString);//Double.valueOf(lonDeviceString);
 					isPosition = true;
 				}catch( NumberFormatException e ){
 					
@@ -160,7 +162,7 @@ public class GetRestaurantsInArea extends HttpServlet{
     }
 	
 	public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
-	    double earthRadius = 6371.0072;
+	    double earthRadius = 6371;
 	    double dLat = Math.toRadians(lat2-lat1);
 	    double dLng = Math.toRadians(lng2-lng1);
 	    double sindLat = Math.sin(dLat / 2);
