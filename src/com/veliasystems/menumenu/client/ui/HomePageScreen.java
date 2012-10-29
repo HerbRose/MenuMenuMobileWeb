@@ -75,20 +75,19 @@ public class HomePageScreen extends JQMPage implements HasClickHandlers{
 	}
 	
 	private boolean isClicked(ClickEvent event, JQMButton button) {
-
+		
 		int clickedX = event.getClientX();
 		int clickedY = event.getClientY();
 
 		int ButtonX = (int) button.getElement().getAbsoluteLeft();
 		int ButtonY = (int) button.getElement().getAbsoluteTop();
 		int ButtonWidth = (int) button.getElement().getClientWidth();
-		int ButtonHeight = (int) button.getElement().getClientWidth();
+		int ButtonHeight = (int) button.getElement().getClientHeight();
 
 		int ButtonStartX = ButtonX;
 		int ButtonStopX = ButtonX + ButtonWidth;
 		int ButtonStartY = ButtonY;
 		int ButtonStopY = ButtonY + ButtonHeight;
-
 		if (clickedX >= ButtonStartX && clickedX <= ButtonStopX
 				&& clickedY >= ButtonStartY && clickedY <= ButtonStopY) {
 			return true;
