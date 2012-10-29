@@ -147,7 +147,7 @@ public class BlobUploadServlet extends HttpServlet {
         ImagesService imageService = ImagesServiceFactory.getImagesService();
         
         Transform dummy = ImagesServiceFactory.makeRotate(360);
-        Image newImage = imageService.applyTransform( dummy, image );
+        Image newImage = imageService.applyTransform( dummy, image , ImagesService.OutputEncoding.JPEG);
         
 //        int ratio = image.getWidth() / 220;
 //        
@@ -166,9 +166,9 @@ public class BlobUploadServlet extends HttpServlet {
 //        Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
      
         
-    
 		imageBlob.setWidth(newImage.getWidth());
 		imageBlob.setHeight(newImage.getHeight());
+		
 		
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		

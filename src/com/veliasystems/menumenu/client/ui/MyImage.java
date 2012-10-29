@@ -106,11 +106,11 @@ public class MyImage extends FlowPanel {
 		return imagesController;
 	}
 	public void setSelected(){
-		image.addStyleName("imageSelected");
+		image.setStyleName("imageSelected" , true);
 		setMain(true);
 	}
 	public void unselectImage(){
-		image.removeStyleName("imageSelected");
+		image.setStyleName("imageSelected" , false);
 		setMain(false);
 	}
 	public String getUrl() {

@@ -83,7 +83,7 @@ public class SwipeView extends FlowPanel {
 		setUpload();
 		scrollerContainer.addStyleName("scroller");
 		
-		fillImages(mainImageUrl);
+		fillImages();
 		wrapper.setWidget(scrollerContainer);
 		add(wrapper);
 		setMyTitle(title);
@@ -119,8 +119,8 @@ public class SwipeView extends FlowPanel {
 		}
 	}
 	
-	private void fillImages(String mainImageUrl){
-		
+	private void fillImages(){
+		imagesController.selectImage(null);
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
 		}
@@ -239,8 +239,6 @@ public class SwipeView extends FlowPanel {
 			}
 		});
 		
-		
-		
 		if( osType.toLowerCase().indexOf("ipad") >=0 || osType.toLowerCase().indexOf("ipho")>=0 ){ //ipad or iphone
 			setAppleUpload();
 		}else if(osType.toLowerCase().indexOf("armv") >= 0){ //android
@@ -248,8 +246,6 @@ public class SwipeView extends FlowPanel {
 		}else{
 			setOtherUpload();
 		}
-		
-		
 		
 		fileUpload.setVisible(true);
 		fileUpload.addChangeHandler(new ChangeHandler() {
@@ -274,12 +270,9 @@ public class SwipeView extends FlowPanel {
 						
 					}
 				});
-				
 			}
 		});
-		
-		
-		
+
 		cameraContainerDiv.addStyleName("cameraContainerDiv");
 		add(cameraContainerDiv);
 		add(formPanel);
@@ -296,8 +289,6 @@ public class SwipeView extends FlowPanel {
 		window.name = windowName;
 		
 		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=false&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="+encodeURI(callbackURL)+"&returnStatus=false&minVersionRequired=2.1";               
-		
-		
 		
 		$wnd.Picup2.convertFileInput( fileUpload,  { windowName : encodeURI('My Web App'), 'purpose' : encodeURI(url) });
 		
@@ -317,10 +308,10 @@ public class SwipeView extends FlowPanel {
 	
 	public void checkChanges(){
 		
-		scrollerContainer.clear();
-		restaurant = restaurantController.getRestaurant(restaurant.getId());
+		imagesController.selectImage(null);	
+		scrollerContainer.clear();	
 		fillData(imageType);
-		fillImages(mainImageUrl);
+		fillImages();
 	}
 	
 	
@@ -332,7 +323,7 @@ class MyUploadForm extends FormPanel {
 	FileUpload fileUpload ;
 	
 	public MyUploadForm( FileUpload fileUpload, ImageType imageType, String restId ) {
-			
+		
 		this.fileUpload = fileUpload;
 		mainPanel.add(fileUpload);
 		fileUpload.setName("image");

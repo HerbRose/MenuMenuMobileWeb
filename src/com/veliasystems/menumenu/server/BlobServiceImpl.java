@@ -192,11 +192,9 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			 	}
 			 	
 			 	Image scaleImage = imagesService.applyTransform(scaleTransform, newImage);
-			 	 	
 			 	try {
 					sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 	
 			 	

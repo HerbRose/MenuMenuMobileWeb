@@ -133,6 +133,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 //			restaurants = newRestaurants;
 //		}
 			refreshRestaurantList();
+
 		
 		Cookies.removeCookie(R.LAST_PAGE);
 		
