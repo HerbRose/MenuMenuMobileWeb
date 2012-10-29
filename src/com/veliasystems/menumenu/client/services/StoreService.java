@@ -24,7 +24,7 @@ void saveRestaurant( Restaurant r );
 	List<Restaurant> loadRestaurants(String city);
 	
 	void deleteRestaurant(Restaurant r);
-	void setMainImage(ImageBlob imageBlob);
+	Restaurant setMainImage(ImageBlob imageBlob);
 
 	void fillWithData();
 

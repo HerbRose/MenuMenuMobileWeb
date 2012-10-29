@@ -21,7 +21,7 @@ public interface StoreServiceAsync {
 
 	void deleteRestaurant(Restaurant r, AsyncCallback<Void> callback);
 
-	void setMainImage(ImageBlob imageBlob, AsyncCallback<Void> callback);
+	void setMainImage(ImageBlob imageBlob, AsyncCallback<Restaurant> callback);
 
 	void fillWithData(AsyncCallback<Void> callback);
 

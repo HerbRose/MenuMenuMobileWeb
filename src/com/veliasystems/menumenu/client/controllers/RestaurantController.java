@@ -183,7 +183,7 @@ public class RestaurantController {
 				
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
 				
-				
+				Document.get().getElementById("load").setClassName(R.LOADED);
 				notifyAllObservers();
 				History.back();
 			}
@@ -399,38 +399,38 @@ public class RestaurantController {
 		
 	}
 
-	public void setMainImage(ImageBlob myImgBlob) {
+	public void setMainImage(ImageBlob imgBlob) {
 		
-		final ImageBlob imageBlob = myImgBlob;
+		final ImageType imageType = imgBlob.getImageType();
 		
 		
-		storeService.setMainImage(imageBlob, new AsyncCallback<Void>() {
+		storeService.setMainImage(imgBlob, new AsyncCallback<Restaurant>() {
 			
 			@Override
-			public void onSuccess(Void result) {
+			public void onSuccess(Restaurant restaurant) {
 				
-				Long restaurantId = Long.parseLong(imageBlob.getRestaurantId());
-				
-				switch(imageBlob.getImageType()){
+				switch(imageType){
 				case PROFILE:
-					restaurants.get(restaurantId).setMainProfileImageString(imageBlob.getImageUrl());
+					restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
 					break;
 				case LOGO:
-					restaurants.get(restaurantId).setMainLogoImageString(imageBlob.getImageUrl());
+					restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
 					break;
 				case MENU:
-					restaurants.get(restaurantId).setMainMenuImageString(imageBlob.getImageUrl());
+					restaurants.get(restaurant.getId()).setClearBoard(restaurant.isClearBoard());
+					restaurants.get(restaurant.getId()).setMainMenuImageString(restaurant.getMainMenuImageString());
 					break;
 				}
-				restMapView.get(restaurantId).checkChanges();
+				
+				restMapView.get(restaurant.getId()).checkChanges();
 				Document.get().getElementById("load").setClassName("hide");
 				
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				
-				
+				Document.get().getElementById("load").setClassName("hide");
+				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
 		
