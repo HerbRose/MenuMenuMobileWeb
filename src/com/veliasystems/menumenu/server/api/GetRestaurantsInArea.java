@@ -47,28 +47,41 @@ public class GetRestaurantsInArea extends HttpServlet{
 			resp.flushBuffer();
 			return;
 		}
-		
-		List<Restaurant> restaurantList = storeService.loadRestaurants();
-		resp.setCharacterEncoding("UTF-8");
-		resp.setContentType("application/json");
+
 		
 		String latDeviceString = req.getParameter("lat");
+		String lonDeviceString = req.getParameter("lon");
+		
 		if (latDeviceString==null || latDeviceString.isEmpty() ) {
 			resp.getWriter().println("Wrong latitude");
 			resp.flushBuffer();
 			return;
 		}
-		String lonDeviceString = req.getParameter("lon");
+		
 		if (lonDeviceString==null || lonDeviceString.isEmpty() ) {
-			resp.getWriter().println("Wrong latitude");
+			resp.getWriter().println("Wrong lon");
 			resp.flushBuffer();
 			return;
 		}
 		
-		double latDevice = Double.valueOf(latDeviceString);
-		double lonDevice = Double.valueOf(lonDeviceString);
-	
-		double distance = 1;
+		
+		List<Restaurant> restaurantList = storeService.loadRestaurants();
+		resp.setCharacterEncoding("UTF-8");
+		resp.setContentType("application/json");
+		
+		long latDevice;
+		long lonDevice;
+		
+		try{
+			latDevice = Long.parseLong(latDeviceString); //Double.valueOf(latDeviceString);
+			lonDevice = Long.parseLong(lonDeviceString);//Double.valueOf(lonDeviceString);
+		}catch( NumberFormatException e ){
+			resp.getWriter().println("latitude end lon... must be a number");
+			resp.flushBuffer();
+			return;
+		}
+
+		long distance = 1;
 		
 
 		resp.setCharacterEncoding("UTF-8");
@@ -85,10 +98,24 @@ public class GetRestaurantsInArea extends HttpServlet{
 		Map<String,String> map = new HashMap<String,String>();
 		
 		for (Restaurant restaurant : restaurantList) {
-			double restLat = Double.valueOf(restaurant.getLat());
-			double restLon = Double.valueOf(restaurant.getLng());			
-			if(restaurant.isVisibleForApp()){
-				if(distFrom(latDevice, lonDevice, restLat, restLon) <= distance){				
+			
+			String restLatString = restaurant.getLat();
+			String restLonString = restaurant.getLng();
+			long restLat = 0;
+			long restLon = 0;
+			boolean isPosition = false;
+			
+			if(restLatString!=null && restLonString!=null && restLatString.equals("") && restLonString.equals("")){
+				try{
+					restLat = Long.parseLong(restLatString); //Double.valueOf(latDeviceString);
+					restLon = Long.parseLong(restLonString);//Double.valueOf(lonDeviceString);
+					isPosition = true;
+				}catch( NumberFormatException e ){
+					
+				}
+			}		
+			if( restaurant.isVisibleForApp()){
+				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){				
 					map.put( "id", ""+ restaurant.getId());
 					map.put( "name", restaurant.getName());
 					map.put( "city", restaurant.getCity());
@@ -144,5 +171,5 @@ public class GetRestaurantsInArea extends HttpServlet{
 	    double dist = earthRadius * c;
 
 	    return dist;
-	    }
+	}
 }

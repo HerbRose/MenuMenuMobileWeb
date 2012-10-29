@@ -86,8 +86,7 @@ public class CityListScreen extends JQMPage implements IObserver{
 
 			@Override
 			public int compare(City o1, City o2) {
-				// TODO Auto-generated method stub
-				 return o1.getCity().compareTo(o2.getCity());
+				 return o1.getCity().toLowerCase().compareTo(o2.getCity().toLowerCase());
 			}
 		});
 		
