@@ -38,19 +38,12 @@
 	overflow: scroll;
 }
 .loaded, .hide{
-	display: block;
-	transition: opacity 1.5s;
-	-moz-transition: opacity 1.5s ease-out; opacity: 0 ;
-	-webkit-transition: opacity 1.5s ease-out; opacity: 0; 
-	-o-transition: opacity 1.5s ease-out; opacity: 0 ;
+	display: none;
+	opacity: 0;
 }
 .loading, .show{
 	display: block;
 	opacity: 1;
-	transition: opacity 1.5s;
-	-moz-transition: opacity 1.5s ease-out; opacity: 1 ;
-	-webkit-transition: opacity 1.5s ease-out; opacity: 1 ;
-	-o-transition: opacity 1.5s ease-out; opacity: 1 ;
 	z-index: 99999;
 }
 
@@ -242,7 +235,10 @@
 
 #divForTabBarPanel{
 	overflow: hidden;
-
+	transition: all 1.5s;
+	-moz-transition: all 1.5s; /* Firefox 4 */
+	-webkit-transition: all 1.5s; /* Safari and Chrome */
+	-o-transition: all 1.5s; /* Opera */
 }
 
 #leftArrow, #leftArrow {
@@ -276,6 +272,7 @@
 	display: block;
 	position: absolute;
 	z-index: 0;
+
 }
 
 

@@ -227,18 +227,19 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				
 				if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) >= tabWidth){
 					marginLeft = tabBarPanelWidth-tabWidth;
 					if(Math.abs(marginLeft) < tabBarPanelWidth){
 						marginLeft = 0;
 					}else{
-						marginLeft += tabBarPanelWidth;
+						marginLeft += tabBarPanelWidth + getWidth(rightArrow.getElement().getId());
 					}
 				}else{
 					if(tabWidth - tabBarPanelWidth - Math.abs(marginLeft) < tabBarPanelWidth){
 						marginLeft = 0;
 					}else{
-						marginLeft += tabWidth - tabBarPanelWidth - Math.abs(marginLeft);
+						marginLeft += tabWidth - tabBarPanelWidth ;
 					}
 				}
 				
@@ -286,19 +287,22 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			rightArrow.setStyleName("show", true);
 			
 			if(marginLeft >=0){
-				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
+				addStyleToElement(divForTabBarPanel, "margin-left: 0px;");
 				
 				leftArrow.setStyleName("hide", true);
 				leftArrow.setStyleName("show", false);
 			}
-			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) >= tabWidth){
+			
+			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) - getWidth(rightArrow.getElement().getId()) >= tabWidth){
 				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
 				rightArrow.setStyleName("hide", true);
 				rightArrow.setStyleName("show", false);
 				
 				leftArrow.setStyleName("hide", false);
 				leftArrow.setStyleName("show", true);
+				
 			}
+			tabBarPanelWidth = getWidth(tabBarPanel.getElement().getId());//Window.getClientWidth();
 			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) < tabWidth){
 				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
 				leftArrow.setStyleName("hide", false);
@@ -843,12 +847,14 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			Widget widget = panelList.get(key);
 			widget.setStyleName("show", false);
 			widget.setStyleName("hide", true);
+			
 		}
 	}
 	private void showPanel(Widget widget) {
 		hidePanels();
 		widget.setStyleName("hide", false);
 		widget.setStyleName("show", true);	
+		
 	}
 	private void addUser(User user){
 		//user.setPassword(password.getValue());
@@ -970,9 +976,6 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		}
 		element.getElement().setAttribute("style", oldStyle);
 	}
-	
-	
-	
 	/**
 	 * method doesn't check if lists have correct data
 	 * @param userType
