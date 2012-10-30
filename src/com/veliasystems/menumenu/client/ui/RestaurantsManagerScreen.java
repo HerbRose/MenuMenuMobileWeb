@@ -302,8 +302,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 				leftArrow.setStyleName("show", true);
 				
 			}
-			tabBarPanelWidth = getWidth(tabBarPanel.getElement().getId());//Window.getClientWidth();
-			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) < tabWidth){
+			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) - getWidth(rightArrow.getElement().getId()) < tabWidth){
 				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
 				leftArrow.setStyleName("hide", false);
 				leftArrow.setStyleName("show", true);
