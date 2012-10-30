@@ -77,8 +77,13 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	
 	private TabBar tabBar;
 	private FlowPanel tabBarPanel;
+	private FlowPanel divForTabBarPanel;
 	private Image leftArrow;
 	private Image rightArrow;
+	/**	szerokość panelu na zakładki ze strzałkami */
+	private int tabBarPanelWidth;
+	private int marginLeft = 0;
+	int tabWidth = 0;
 	
 	//pola do dodawania użytkowników 
 	private TextBox inputEmailAdmin;
@@ -172,8 +177,9 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			
 		tabBar = new TabBar();
 		tabBar.addStyleName("tabBarMain");
+		tabBar.getElement().setId("scrollerTabBar");
 		tabBarPanel = new FlowPanel();
-		tabBarPanel.addStyleName("tabBarPanel");
+		tabBarPanel.getElement().setId("tabBarPanel");
 		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
@@ -184,15 +190,23 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		
 		
 		leftArrow = new Image("img/leftArrow.png");
-		leftArrow.addStyleName("leftArrow");
-		tabBarPanel.add(leftArrow);
-		leftArrow.addStyleName("hide");
+		leftArrow.getElement().setId("leftArrow");
+		leftArrow.setStyleName("hide", true);
+		leftArrow.setStyleName("show", false);
+		
 		
 		rightArrow = new Image("img/rightArrow.png");
-		rightArrow.addStyleName("rightArrow");
+		rightArrow.getElement().setId("rightArrow");
+		rightArrow.setStyleName("hide", true);
+		rightArrow.setStyleName("show", false);
+		setArrowActions();
+		divForTabBarPanel = new FlowPanel();
+		divForTabBarPanel.add(tabBar);
+		divForTabBarPanel.getElement().setId("divForTabBarPanel");
+		
+		tabBarPanel.add(leftArrow);
 		tabBarPanel.add(rightArrow);
-		rightArrow.addStyleName("hide");
-		tabBarPanel.add(tabBar);
+		tabBarPanel.add(divForTabBarPanel);
 		
 		
 		add(tabBarPanel);
@@ -213,7 +227,24 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) >= tabWidth){
+					marginLeft = tabBarPanelWidth-tabWidth;
+					if(Math.abs(marginLeft) < tabBarPanelWidth){
+						marginLeft = 0;
+					}else{
+						marginLeft += tabBarPanelWidth;
+					}
+				}else{
+					if(tabWidth - tabBarPanelWidth - Math.abs(marginLeft) < tabBarPanelWidth){
+						marginLeft = 0;
+					}else{
+						marginLeft += tabWidth - tabBarPanelWidth - Math.abs(marginLeft);
+					}
+				}
+				
+				if(marginLeft >0) marginLeft=0;
+				moveLeft(marginLeft, tabBar.getElement().getId());
+				checkArrows();
 				
 			}
 		});
@@ -222,23 +253,72 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				
+				if(marginLeft >=0){
+					marginLeft = 0;
+					if(tabWidth-tabBarPanelWidth < tabBarPanelWidth){
+						marginLeft -= tabWidth-tabBarPanelWidth;
+					}else {
+						marginLeft-=tabBarPanelWidth;
+					}
+				}else {
+					if(tabWidth-Math.abs(marginLeft)+tabBarPanelWidth < tabBarPanelWidth){
+						marginLeft-= tabWidth-Math.abs(marginLeft)+tabBarPanelWidth ;
+					}else{
+						marginLeft-=tabBarPanelWidth;
+					}
+				}
+				
+				if(Math.abs(marginLeft) + tabBarPanelWidth > tabWidth) marginLeft = tabBarPanelWidth-tabWidth - getWidth(rightArrow.getElement().getId());
+				moveLeft(marginLeft, tabBar.getElement().getId());
+				checkArrows();
 				
 			}
 		});
 		
 	}
-	private void addArrowTabs() {
-		int windowWight = Window.getClientWidth();
-		tabBar.getElement().setId("scrollerTabBar");
-		int tabWidth = getWidth(tabBar.getElement().getId());
-		System.out.println(tabWidth);
+	private void checkArrows() {
+		tabBarPanelWidth = getWidth(tabBarPanel.getElement().getId());//Window.getClientWidth();
+		tabWidth = getWidth(tabBar.getElement().getId());
+
+		if(tabBarPanelWidth < tabWidth){
+			rightArrow.setStyleName("hide", false);
+			rightArrow.setStyleName("show", true);
+			
+			if(marginLeft >=0){
+				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
+				
+				leftArrow.setStyleName("hide", true);
+				leftArrow.setStyleName("show", false);
+			}
+			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) >= tabWidth){
+				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
+				rightArrow.setStyleName("hide", true);
+				rightArrow.setStyleName("show", false);
+				
+				leftArrow.setStyleName("hide", false);
+				leftArrow.setStyleName("show", true);
+			}
+			if(marginLeft < 0 && tabBarPanelWidth + Math.abs(marginLeft) < tabWidth){
+				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
+				leftArrow.setStyleName("hide", false);
+				leftArrow.setStyleName("show", true);
+				
+				rightArrow.setStyleName("hide", false);
+				rightArrow.setStyleName("show", true);
+			}	
+		}
 		
-		if(windowWight > tabWidth) return;
 		
+		int leftArrowWidth = getWidth(leftArrow.getElement().getId());// leftArrow.getWidth();
+		int rightArrowWidth = getWidth(rightArrow.getElement().getId());// rightArrow.getWidth();
+		int width = tabBarPanelWidth - leftArrowWidth - rightArrowWidth;
 		
-		
-		tabBar.setStyleName("scrollable", true);
+		String myStyle = "max-width: "+tabBarPanelWidth+"px; min-width: "+tabBarPanelWidth+"px;";
+		addStyleToElement(tabBarPanel, myStyle);
+		myStyle = "max-width: "+width+"px; min-width: "+width+"px;";
+		addStyleToElement(divForTabBarPanel, myStyle);
+		//tabBar.setStyleName("scrollable", true);
 	
 	}
 	private native int getWidth(String elementId)/*-{
@@ -247,8 +327,8 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	
 	private native void moveLeft(int left, String elementId)/*-{
 		var table = $wnd.document.getElementById(elementId);
-		var tbody = table.getElementsByTagName("tbody");
-		tbody[0].style.marginLeft = left + "px";
+//		var tbody = table.getElementsByTagName("tbody");
+		table.style.marginLeft =left + "px";
 	}-*/;
 	
 	private void setAdminPanels(){
@@ -262,16 +342,19 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	private void setAdminPanel(){
 		adminPanel = new FlowPanel();		
+		adminPanel.setStyleName("barPanel", true);
 		addAddUserTab(adminPanel, UserType.ADMIN);
 		hidePanels();
 	}
 	private void setAgentPanel(){
 		agentPanel = new FlowPanel();
+		agentPanel.setStyleName("barPanel", true);
 		addAddUserTab(agentPanel, UserType.AGENT);
 		hidePanels();
 	}
 	private void setRestauratorPanel(){
 		restauratorPanel = new FlowPanel();
+		restauratorPanel.setStyleName("barPanel", true);
 		addAddUserTab(restauratorPanel, UserType.RESTAURATOR);
 		
 		hidePanels();
@@ -329,7 +412,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			citySuggest = new MultiWordSuggestOracle("-");
 			citySuggestBox = new SuggestBox(citySuggest);
 			citySuggestBox.getElement().setAttribute("placeHolder", Customization.CITY_PLACEHOLDER);
-			addCityFlowPanel = new FlowPanel();
+
 			
 			addCityToCityTextBox = new JQMButton("");
 			addCityToCityTextBox.setIcon(DataIcon.PLUS);
@@ -504,6 +587,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	private void addRestaurantsManagerTab(){
 		
 		restaurantsManagerPanel = new FlowPanel();
+		restaurantsManagerPanel.setStyleName("barPanel", true);
 		panelList.put(panelCount++, restaurantsManagerPanel);
 		tabBar.addTab(Customization.RESTAURATIUN_MANAGER);
 		
@@ -518,6 +602,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		});		
 		
 		restaurantsCellTable = new CellTable<Restaurant>();
+
 		//restaurant name Column
 		nameColumn = new TextColumn<Restaurant>() {
 			
@@ -587,6 +672,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	private void addEmailTab(){
 		emailPanel = new FlowPanel();
+		emailPanel.setStyleName("barPanel", true);
 		panelList.put(panelCount++, emailPanel);
 		tabBar.addTab(Customization.SEND_EMAIL);
 		
@@ -655,6 +741,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	private void addDefaultEmptyProfile(){
 		defaultEmptyBoard = new FlowPanel();
+		defaultEmptyBoard.setStyleName("barPanel", true);
 		panelList.put(panelCount++, defaultEmptyBoard);
 		tabBar.addTab(Customization.SET_DEFAULT_EMPTY_PROFIL);
 		
@@ -855,14 +942,37 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 		}
 		
 		addresseeListBox.setSelectedIndex(0);
-		
+	
 		//set width of tab bar
-		double screenWidth = Window.getClientWidth();
-		double leftArrowWidth = leftArrow.getWidth();
-		double rightArrowWidth = rightArrow.getWidth();
-		double width = screenWidth - leftArrowWidth - rightArrowWidth;
-		tabBar.getElement().getStyle().setWidth(width, Unit.PX);
+		
+		checkArrows();
+		
 	}
+	/**
+	 * the method takes current style and adds new one.
+	 * @param element
+	 * @param style
+	 */
+	private void addStyleToElement(Widget element, String style){
+		//TODO może źle działać w sytuacji gdy np dodajemy width: xx px; a w stylach jest juź np: max-width: ...
+		String oldStyle = element.getElement().getAttribute("style");
+		for (String oneStyle : style.split(";")) {
+			int indexOfClon = oneStyle.indexOf(":");
+			if( indexOfClon <= 0) continue;
+			String thisStyleName = oneStyle.substring(0, indexOfClon);
+			if(oldStyle.indexOf(thisStyleName)>=0){//jeżeli istnieje nowy styl w elemęncie
+				int indexOfOldStyleName = oldStyle.indexOf(thisStyleName);
+				int indexOfEndOldStyleName = oldStyle.indexOf(";", indexOfOldStyleName);
+				oldStyle = oldStyle.replace(oldStyle.subSequence(indexOfOldStyleName, indexOfEndOldStyleName), oneStyle.subSequence(0, oneStyle.length()));
+			}else{//jeżeli nie istnieje
+				oldStyle += (oneStyle+";");
+			}
+		}
+		element.getElement().setAttribute("style", oldStyle);
+	}
+	
+	
+	
 	/**
 	 * method doesn't check if lists have correct data
 	 * @param userType
@@ -1039,7 +1149,7 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 	}
 	@Override
 	protected void onPageShow() {
-		addArrowTabs();
+		
 		pageToBack = restaurantController.getLastOpenPage();
 		restaurantController.setLastOpenPage(this);
 		if(pageToBack instanceof RestaurantImageView ){
@@ -1051,7 +1161,23 @@ public class RestaurantsManagerScreen extends JQMPage implements HasClickHandler
 			}
 		}
 		
+		Set<Integer> panelKeys = panelList.keySet();
+		int maxSize = 0;
+		for (Integer key : panelKeys) {
+			Widget widget = panelList.get(key);
+			if(maxSize < widget.getElement().getClientHeight()){
+				maxSize = widget.getElement().getClientHeight();
+			}	
+		}
+		
 		clearScreenData();
+		
+
+		if(maxSize > getElement().getClientHeight()){
+			maxSize+=300;
+			//getElement().setAttribute("style", "min-height:" + maxSize+"px");
+			setHeight(maxSize+"px");
+		}
 		
 		if(!loaded){
 			backButton = new JQMButton("",  pageToBack, Transition.SLIDE );	

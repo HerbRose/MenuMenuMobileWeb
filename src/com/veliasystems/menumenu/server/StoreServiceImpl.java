@@ -548,11 +548,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public Map<String, Object> getAllData(String login, String password){
+		User user = authorization(login);
+		if(user == null) return null;
+		
 		Map<String, Object> allData = new HashMap<String, Object>();
-		Query<User> userQuery = dao.ofy().query(User.class);
-		if(userQuery == null) return null;
-		User user = userQuery.filter("email", login).get();
-		if(user == null || !(user.getPassword().equals(password))) return null;
 
 		if(user.isAdmin()){
 			allData.put("Restaurants", loadRestaurants());
@@ -573,14 +572,21 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return allData;
 		
 	}
-	
+	private User authorization(String login){
+		Query<User> userQuery = dao.ofy().query(User.class);
+		if(userQuery != null){
+			for (User user : userQuery) {
+				if(user.getEmail().equalsIgnoreCase(login)) return user ;
+			}
+		}	
+		return null;
+	}
 	@Override
 	public Map<String, Object> getAllData(String login){
+		User user = authorization(login);
+		if(user == null) return null;
 		Map<String, Object> allData = new HashMap<String, Object>();
-		Query<User> userQuery = dao.ofy().query(User.class);
-		if(userQuery == null) return null;
-		User user = userQuery.filter("email", login).get();
-		if(user == null) return null;;
+		
 		if(user.isAdmin()){
 			allData.put("Restaurants", loadRestaurants());
 			allData.put("Cities", loadCitiesEntity());
