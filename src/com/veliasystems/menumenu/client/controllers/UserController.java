@@ -29,7 +29,7 @@ public class UserController {
 	private final EmailServiceAsync emailService = GWT.create(EmailService.class);
 	private Map<String, User> users = new HashMap<String, User>();
 	private UserType userType;
-	private User loggedUser;
+	private String loggedUser;
 	
 	private UserController() {
 	}
@@ -103,7 +103,8 @@ public class UserController {
 				if(result == null){
 					
 				}else{
-					setLoggedUser(result);
+					String login = result.getEmail();
+					users.put(login, result);					
 					Window.alert(Customization.CHANGE_OK);
 				}
 			}
@@ -140,10 +141,12 @@ public class UserController {
 	}
 	
 	public void setUserType(String login) {
-		loggedUser = getUser(login);
+		loggedUser = login;
 		
-		if(loggedUser.isAdmin()) userType = UserType.ADMIN;
-		else if(loggedUser.getCitiesId() != null) userType = UserType.AGENT;
+		User logUser = users.get(login);
+		
+		if(logUser.isAdmin()) userType = UserType.ADMIN;
+		else if(logUser.getCitiesId() != null) userType = UserType.AGENT;
 		else userType = UserType.RESTAURATOR;
 	}
 	public UserType getUserType(){
@@ -151,11 +154,9 @@ public class UserController {
 	}
 	
 	public User getLoggedUser() {
-		return loggedUser;
+		return users.get(loggedUser);
 	}
-	public void setLoggedUser(User loggedUser) {
-		this.loggedUser = loggedUser;
-	}
+
 	public boolean isUserInStor(String email){
 		return users.containsKey(email);
 	}

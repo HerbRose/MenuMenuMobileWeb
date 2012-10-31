@@ -440,8 +440,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}
 
 	private void clearScreenData() {
+
 		for (Integer key : panelList.keySet()) {
 			panelList.get(key).clearData();
+
 		}
 		
 		checkArrows();
