@@ -989,6 +989,31 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			inputEmailAgent.removeStyleName("redShadow");
 			citySuggestBox.removeStyleName("redShadow");
 			citySuggestBox.removeStyleName("greenShadow");
+			
+			inputEmailRestaurator.removeStyleName("greenShadow");
+			inputEmailRestaurator.removeStyleName("redShadow");
+			passwordRestaurator.removeStyleName("greenShadow");
+			passwordRestaurator.removeStyleName("redShadow");
+			passwordRestaurator2.removeStyleName("redShadow");
+			passwordRestaurator2.removeStyleName("greenShadow");
+			restaurantSuggestBox.removeStyleName("redShadow");
+			restaurantSuggestBox.removeStyleName("greenShadow");
+
+			addresseeListBox.clear();
+
+			addresseeListBox.addItem(Customization.SELECT_ELEMENT);
+			addresseeListBox.getElement().getFirstChildElement()
+					.setAttribute("disabled", "disabled");
+
+			for (User user : userController.getUserList()) {
+				addresseeListBox
+						.addItem(user.getName() != null ? user.getEmail()
+								: "No Name" + " (" + user.getEmail() + ")", user
+								.getEmail());
+			}
+
+			addresseeListBox.setSelectedIndex(0);
+			
 			break;
 		}
 
@@ -1012,39 +1037,12 @@ public class RestaurantsManagerScreen extends JQMPage implements
 					+ restaurant.getAddress() + ")");
 		}
 
-		subjectTextBox.setText("");
-		messageTextArea.setText("");
-		chosenEmailPanel.clear();
-		chosenEmailList.clear();
-		chosenEmailPanel.removeStyleName("redShadow");
-		chosenEmailPanel.removeStyleName("greenShadow");
+		
 
 		restaurantCellList.setRowData(addedRestauration);
 		restaurantCellList.redraw();
 
-		inputEmailRestaurator.removeStyleName("greenShadow");
-		inputEmailRestaurator.removeStyleName("redShadow");
-		passwordRestaurator.removeStyleName("greenShadow");
-		passwordRestaurator.removeStyleName("redShadow");
-		passwordRestaurator2.removeStyleName("redShadow");
-		passwordRestaurator2.removeStyleName("greenShadow");
-		restaurantSuggestBox.removeStyleName("redShadow");
-		restaurantSuggestBox.removeStyleName("greenShadow");
-
-		addresseeListBox.clear();
-
-		addresseeListBox.addItem(Customization.SELECT_ELEMENT);
-		addresseeListBox.getElement().getFirstChildElement()
-				.setAttribute("disabled", "disabled");
-
-		for (User user : userController.getUserList()) {
-			addresseeListBox
-					.addItem(user.getName() != null ? user.getEmail()
-							: "No Name" + " (" + user.getEmail() + ")", user
-							.getEmail());
-		}
-
-		addresseeListBox.setSelectedIndex(0);
+		
 
 		// set width of tab bar
 
