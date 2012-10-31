@@ -39,11 +39,9 @@
 }
 .loaded, .hide{
 	display: none;
-	opacity: 0;
 }
 .loading, .show{
 	display: block;
-	opacity: 1;
 	z-index: 99999;
 }
 
@@ -269,7 +267,7 @@
 }
 .barPanel{
 	margin-top: 20px;
-	display: block;
+	
 	position: absolute;
 	z-index: 0;
 
