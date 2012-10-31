@@ -1107,10 +1107,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 					.setAttribute("disabled", "disabled");
 
 			for (User user : userController.getUserList()) {
-				addresseeListBox
-						.addItem(user.getName() != null ? user.getEmail()
-								: "No Name" + " (" + user.getEmail() + ")", user
-								.getEmail());
+				addresseeListBox.addItem((user.getName() != null || !user.getName().isEmpty())  ? user.getName() + "(" + user.getEmail() + ")": "No Name" + " (" + user.getEmail() + ")" , user.getEmail() );
 			}
 
 			addresseeListBox.setSelectedIndex(0);
