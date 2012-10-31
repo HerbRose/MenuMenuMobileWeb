@@ -26,9 +26,11 @@ import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -150,6 +152,22 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private FlowPanel restaurantsManagerPanel;
 	private FlowPanel emailPanel;
 	private FlowPanel defaultEmptyBoard;
+	private FlowPanel editDataPanel;
+	
+	//pola w zakladce edit data
+	private Label editNameLabel;
+	private Label editSurnameLabel;
+	private Label inputOldPasswordLabel;
+	private Label editPasswordLabel;
+	private Label repeatPasswordLabel;
+	private TextBox inputOldPasswordBox;
+	private TextBox editNameBox;
+	private TextBox editSurnameBox;
+	private TextBox editPasswordBox;
+	private TextBox repeatPasswordBox;
+	private Label phoneNumberLabel;
+	private TextBox phoneNumerBox;
+	private Button saveEditedUser;
 
 	private SingleSelectionModel<String> selectionModelCities;
 	private SingleSelectionModel<Restaurant> selectionModelRestaurant;
@@ -354,6 +372,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		setAgentPanel();
 
 		setRestauratorPanel();
+		setEditDataPanel();
 		addRestaurantsManagerTab();
 		addEmailTab();
 		addDefaultEmptyProfile();
@@ -381,8 +400,90 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		hidePanels();
 	}
 
+	private void setEditDataPanel(){
+		editDataPanel = new FlowPanel();
+		editDataPanel.setStyleName("barPanel", true);
+		panelList.put(panelCount++, editDataPanel);
+		tabBar.addTab(Customization.EDIT_DATA);
+		
+		inputOldPasswordLabel = new Label(Customization.INPUT_OLD_PASSWORD);
+		editDataPanel.add(inputOldPasswordLabel);
+		
+		inputOldPasswordBox = new PasswordTextBox();
+		inputOldPasswordBox.getElement().setAttribute("placeHolder", Customization.INPUT_OLD_PASSWORD);
+		inputOldPasswordBox.addStyleName("properWidth");
+		editDataPanel.add(inputOldPasswordBox);
+		
+		editPasswordLabel = new Label(Customization.INPUT_PASSWORD);
+		editDataPanel.add(editPasswordLabel);
+		
+		editPasswordBox = new PasswordTextBox();
+		editPasswordBox.getElement().setAttribute("placeHolder", Customization.PASSWORD_PLACEHOLDER);
+		editPasswordBox.addStyleName("properWidth");
+		editDataPanel.add(editPasswordBox);
+		
+		repeatPasswordLabel = new Label(Customization.REPEAT_PASSWORD);
+		editDataPanel.add(repeatPasswordLabel);
+		
+		repeatPasswordBox = new PasswordTextBox();
+		repeatPasswordBox.getElement().setAttribute("placeHolder", Customization.REPEAT_PASSWORD_PLACEHOLDER);
+		repeatPasswordBox.addStyleName("properWidth");
+		editDataPanel.add(repeatPasswordBox);
+		
+		editNameLabel = new Label(Customization.USER_NAME);
+		editDataPanel.add(editNameLabel);
+		
+		editNameBox = new TextBox();
+		editNameBox.getElement().setAttribute("placeHolder", Customization.USER_NAME_PLACEHOLDER);
+		editNameBox.addStyleName("properWidth");
+		editDataPanel.add(editNameBox);
+		
+		editSurnameLabel = new Label(Customization.USER_SURNAME);
+		editDataPanel.add(editSurnameLabel);
+		
+		editSurnameBox = new TextBox();
+		editSurnameBox.getElement().setAttribute("placeHolder", Customization.USER_SURNNAME_PLACEHOLDER);
+		editSurnameBox.addStyleName("properWidth");
+		editDataPanel.add(editSurnameBox);
+		
+		phoneNumberLabel = new Label(Customization.USER_PHONE);
+		editDataPanel.add(phoneNumberLabel);
+		
+		phoneNumerBox = new TextBox();
+		phoneNumerBox.getElement().setAttribute("placeHolder", Customization.USER_PHONE);
+		phoneNumerBox.addStyleName("properWidth");
+		editDataPanel.add(phoneNumerBox);
+		
+		saveEditedUser = new Button(Customization.SAVE);
+		editDataPanel.add(saveEditedUser);
+		
+		saveEditedUser.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(validChangedData()){
+					User user = new User("tmp");
+					
+					if(!editNameBox.getValue().trim().equals("")) user.setName(editNameBox.getValue());
+					if(!editSurnameBox.getValue().trim().equals("")) user.setSurname(editSurnameBox.getValue());
+					if(!repeatPasswordBox.getValue().trim().equals("")) {
+						user.setPassword(repeatPasswordBox.getValue());
+					} else{
+						user.setPassword(userController.getLoggedUser().getPassword());
+					}
+					if(!phoneNumerBox.getValue().trim().equals("")) user.setPhoneNumber(phoneNumerBox.getValue());
+					
+					userController.changeUserData(user);
+				}
+				
+			}
+		});
+		
+		add(editDataPanel);
+	}
 	private void setAgentButtons() {
 		setRestauratorPanel();
+		setEditDataPanel();
 	}
 
 	private void addAddUserTab(FlowPanel panel, UserType userType) {
@@ -989,6 +1090,31 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			inputEmailAgent.removeStyleName("redShadow");
 			citySuggestBox.removeStyleName("redShadow");
 			citySuggestBox.removeStyleName("greenShadow");
+			
+			inputEmailRestaurator.removeStyleName("greenShadow");
+			inputEmailRestaurator.removeStyleName("redShadow");
+			passwordRestaurator.removeStyleName("greenShadow");
+			passwordRestaurator.removeStyleName("redShadow");
+			passwordRestaurator2.removeStyleName("redShadow");
+			passwordRestaurator2.removeStyleName("greenShadow");
+			restaurantSuggestBox.removeStyleName("redShadow");
+			restaurantSuggestBox.removeStyleName("greenShadow");
+
+			addresseeListBox.clear();
+
+			addresseeListBox.addItem(Customization.SELECT_ELEMENT);
+			addresseeListBox.getElement().getFirstChildElement()
+					.setAttribute("disabled", "disabled");
+
+			for (User user : userController.getUserList()) {
+				addresseeListBox
+						.addItem(user.getName() != null ? user.getEmail()
+								: "No Name" + " (" + user.getEmail() + ")", user
+								.getEmail());
+			}
+
+			addresseeListBox.setSelectedIndex(0);
+			
 			break;
 		}
 
@@ -1012,40 +1138,11 @@ public class RestaurantsManagerScreen extends JQMPage implements
 					+ restaurant.getAddress() + ")");
 		}
 
-		subjectTextBox.setText("");
-		messageTextArea.setText("");
-		chosenEmailPanel.clear();
-		chosenEmailList.clear();
-		chosenEmailPanel.removeStyleName("redShadow");
-		chosenEmailPanel.removeStyleName("greenShadow");
 
 		restaurantCellList.setRowData(addedRestauration);
 		restaurantCellList.redraw();
 
-		inputEmailRestaurator.removeStyleName("greenShadow");
-		inputEmailRestaurator.removeStyleName("redShadow");
-		passwordRestaurator.removeStyleName("greenShadow");
-		passwordRestaurator.removeStyleName("redShadow");
-		passwordRestaurator2.removeStyleName("redShadow");
-		passwordRestaurator2.removeStyleName("greenShadow");
-		restaurantSuggestBox.removeStyleName("redShadow");
-		restaurantSuggestBox.removeStyleName("greenShadow");
-
-		addresseeListBox.clear();
-
-		addresseeListBox.addItem(Customization.SELECT_ELEMENT);
-		addresseeListBox.getElement().getFirstChildElement()
-				.setAttribute("disabled", "disabled");
-
-		for (User user : userController.getUserList()) {
-			addresseeListBox
-					.addItem(user.getName() != null ? user.getEmail()
-							: "No Name" + " (" + user.getEmail() + ")", user
-							.getEmail());
-		}
-
-		addresseeListBox.setSelectedIndex(0);
-
+		
 		// set width of tab bar
 
 		checkArrows();
@@ -1088,6 +1185,35 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	 * @param userType
 	 * @return
 	 */
+	private boolean validChangedData(){
+		boolean isCorrect = false;
+		
+		if(userController.isValidPassword(inputOldPasswordBox.getValue().trim())){
+				if(!editPasswordBox.getValue().trim().equals("")){
+						if(editPasswordBox.getValue().trim().equals("") || repeatPasswordBox.getValue().trim().equals("") || !editPasswordBox.getValue().equals(repeatPasswordBox.getValue())){
+							editPasswordBox.setStyleName("redShadow", true);
+							repeatPasswordBox.setStyleName("redShadow",true);
+							isCorrect = false;
+						} else{
+							editPasswordBox.setStyleName("greenShadow", true);
+							repeatPasswordBox.setStyleName("greenShadow", true);
+							isCorrect = true;
+						}
+					}
+				else{
+					isCorrect = true;
+					}
+			}
+		else{
+			inputOldPasswordBox.setStyleName("redShadow", true);
+		}
+		
+		
+		
+		
+		return isCorrect;
+	}
+	
 	private boolean validData(UserType userType) {
 
 		boolean isCorrect = false;
@@ -1353,6 +1479,13 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		if (panelList != null && !panelList.isEmpty()) {
 			tabBar.selectTab(whichPanelShow);
 			showPanel(panelList.get(whichPanelShow));
+		}
+		
+		if(editDataPanel != null){
+			User user = userController.getLoggedUser();
+			editNameBox.setValue(user.getName());
+			editSurnameBox.setValue(user.getSurname());
+			phoneNumerBox.setValue(user.getPhoneNumber());
 		}
 		
 		
