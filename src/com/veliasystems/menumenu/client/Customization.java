@@ -50,6 +50,7 @@ public class Customization {
 	public static final String ADD_ADMIN = translated.addAdmin();
 	public static final String ADD_AGENT = translated.addAgent();
 	public static final String ADD_RESTAURATOR = translated.addRestaurator();
+	public static final String EDIT_DATA = translated.editData();
 	public static final String INPUT_EMAIL= translated.inputEmail();
 	public static final String INPUT_PASSWORD = translated.inputPassword();
 	public static final String REPEAT_PASSWORD = translated.repeatPassword();
@@ -74,11 +75,15 @@ public class Customization {
 	public static final String RESTAURANT_PLACEHOLDER = translated.restaurantPlaceholder();
 	public static final String SUBJECT_PLACEHOLDER = translated.subjectPlaceholder();
 	public static final String MESSAGE_PLACEHOLDER = translated.messagePlaceholder();
+	public static final String USER_NAME_PLACEHOLDER = translated.userPlaceholder();
+	public static final String USER_SURNNAME_PLACEHOLDER = translated.surnamePlaceholder();
+	public static final String INPUT_OLD_PASSWORD = translated.inputOldPassword();
 	public static final String EMPTY_MAIL_LIST = translated.emptyMalList();
 	public static final String SELECT_ELEMENT = translated.selectElement();
 	public static final String LOGIN_ERROR = translated.loginError();
 	public static final String WRONG_LOGIN_DATA = translated.wrongLoginaData();
 	public static final String ARE_YOU_SURE_WANT_LOGOUT = translated.doYouWantLogout();
+	public static final String CHANGE_OK = translated.changeDataOk();
 	public static final String SET_DEFAULT_EMPTY_PROFIL = "Ustaw pustą tablicę";
 
 };

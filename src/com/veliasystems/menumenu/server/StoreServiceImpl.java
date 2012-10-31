@@ -661,5 +661,27 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return restaurant;
 	}
 
+	@Override
+	public User changeUserData(User user, String oldEmail) {
+			
+		List<User> userList = getUsers();
+		User userToChange = null;
+		for (User user2 : userList) {
+			if(user2.getEmail().equals(oldEmail)){
+				userToChange = user2;
+			}
+		}
+		if(userToChange == null){
+			return null;
+		}
+		userToChange.setPassword(user.getPassword());
+		userToChange.setPhoneNumber(user.getPhoneNumber());
+		userToChange.setName(user.getName());
+		userToChange.setSurname(user.getSurname());
+		
+		dao.ofy().put(userToChange);
+		return userToChange;
+	}
+
 
 }

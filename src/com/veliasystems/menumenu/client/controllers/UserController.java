@@ -8,16 +8,17 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.EmailService;
 import com.veliasystems.menumenu.client.services.EmailServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
 
 public class UserController {
 	
@@ -89,6 +90,40 @@ public class UserController {
 		});
 	}
 	
+	public void changeUserData(User user){
+		User userToChange = getLoggedUser();
+		storeService.changeUserData(user, userToChange.getEmail(), new AsyncCallback<User>() {
+
+			@Override
+			public void onFailure(Throwable caught) {	
+			}
+
+			@Override
+			public void onSuccess(User result) {
+				if(result == null){
+					
+				}else{
+					setLoggedUser(result);
+					Window.alert(Customization.CHANGE_OK);
+				}
+			}
+		});
+	}
+	
+	public boolean isValidPassword(String password){
+		boolean isCorrect = false;
+		
+		List<User> userList = getUserList();
+		String login = Cookies.getCookie(R.LOGIN);
+		for (User user : userList) {
+			if(user.getEmail().equals(login)){
+				if(user.getPassword().equals(password)) isCorrect = true;
+			}
+		}
+		
+		return isCorrect;
+	}
+	
 	public void setUsers(Map<String, User> users) {
 		this.users = users;
 	}
@@ -117,6 +152,9 @@ public class UserController {
 	
 	public User getLoggedUser() {
 		return loggedUser;
+	}
+	public void setLoggedUser(User loggedUser) {
+		this.loggedUser = loggedUser;
 	}
 	public boolean isUserInStor(String email){
 		return users.containsKey(email);

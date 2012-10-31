@@ -40,6 +40,7 @@ void saveRestaurant( Restaurant r );
 	Map<String, Object> getAllData(String login, String password);
 
 	void addUser(User user);
+	User changeUserData(User user, String oldEmail);
 
 	List<User> getUsers();
 

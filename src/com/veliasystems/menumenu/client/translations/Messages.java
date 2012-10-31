@@ -228,6 +228,21 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Are yous sure want logout?")
 	String doYouWantLogout();
+	
+	@DefaultStringValue("Edit personal data")
+	String editData();
+	
+	@DefaultStringValue("Enter the name")
+	String userPlaceholder();
+	
+	@DefaultStringValue("Enter the surnname")
+	String surnamePlaceholder();
+
+	@DefaultStringValue("Enter the old password")
+	String inputOldPassword();
+
+	@DefaultStringValue("Data has been changed")
+	String changeDataOk();
 
 
 }

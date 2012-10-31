@@ -52,6 +52,8 @@ public interface StoreServiceAsync {
 	void clearBoard(Restaurant restaurant, ImageType imageType,
 			AsyncCallback<Restaurant> asyncCallback);
 
+	void changeUserData(User user, String oldEmail, AsyncCallback<User> callback);
+
 
 	
 

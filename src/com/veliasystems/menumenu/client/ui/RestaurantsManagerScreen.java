@@ -1143,6 +1143,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		restaurantCellList.redraw();
 
 		
+
 		// set width of tab bar
 
 		checkArrows();
