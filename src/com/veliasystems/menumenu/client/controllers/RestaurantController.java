@@ -402,6 +402,23 @@ public class RestaurantController {
 		});
 		
 	}
+	
+	public void setEmptyBoard(ImageBlob imageBlob){
+		blobService.setEmptyBoard(imageBlob, new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+						
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+					
+			}
+		});
+	}
+
+
 
 	public void setMainImage(ImageBlob imgBlob) {
 		

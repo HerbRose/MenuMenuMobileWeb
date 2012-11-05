@@ -368,8 +368,8 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}
 
 	private void setAgentButtons() {
-		setRestauratorPanel();
-		setEditDataPanel();
+		add(setRestauratorPanel());
+		add(setEditDataPanel());
 	}
 
 	private void addAddUserTab(FlowPanel panel, UserType userType) {

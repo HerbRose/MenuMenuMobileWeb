@@ -37,5 +37,8 @@ public interface BlobService extends RemoteService {
 		List<ImageBlob> getImagesByType(Long restaurantId, ImageType imageType);
 
 		ImageBlob getLastUploadedImage(Long restaurantId, ImageType imageType);
+		
+		List<ImageBlob> getEmptyList();
         
+		void setEmptyBoard(ImageBlob imageBlob);
 }

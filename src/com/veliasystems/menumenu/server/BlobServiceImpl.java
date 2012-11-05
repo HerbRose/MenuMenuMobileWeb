@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
@@ -82,6 +83,31 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
         	else return null;
         }
         
+        @Override
+		public List<ImageBlob> getEmptyList() {
+        	List<ImageBlob> listBoards = new ArrayList<ImageBlob>();
+			Query<ImageBlob> queryBoards = dao.ofy().query(ImageBlob.class);
+			if(queryBoards == null) return listBoards;
+			List<String> ids = new ArrayList<String>();
+			ids.add("0");
+			ids.add("1");
+			return queryBoards.filter("restId IN", ids).list();
+		}
+        
+        @Override
+		public void setEmptyBoard(ImageBlob imageBlob) {
+			
+			Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+			if(imgQuery == null) return;
+			List<ImageBlob> imgList = imgQuery.filter("restId =", "0").list();
+			for (ImageBlob imageBlob2 : imgList) {
+				imageBlob2.setRestaurantId("1");
+				dao.ofy().put(imageBlob2);
+			}
+			imageBlob.setRestaurantId("0");
+			dao.ofy().put(imageBlob);
+		}
+        
         private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
         	List<ImageBlob> allImages = getAllImages(restaurantId);
         	List<ImageBlob> ret = new ArrayList<ImageBlob>();
@@ -142,6 +168,9 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
           return r;
         }
         
+
+		
+        
         @Override
         public boolean deleteBlob( ImageBlob imageBlob ) {
         	 if (imageBlob == null) {
@@ -199,6 +228,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 				} 	
 			 	
 		}
+		 
+	
 		
 		 @Override
 		public List<ImageBlob> getImagesByType( Long restaurantId, ImageType imageType){
@@ -271,6 +302,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			    os.write(bs);
 			    write(os, "\r\n");
 			}
+
+			
+
+
+			
 }
 
 class MyComparator implements Comparator<ImageBlob>{ 

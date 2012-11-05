@@ -46,6 +46,10 @@ public interface BlobServiceAsync {
 	void getImagesByType(Long restaurantId, ImageType imageType,
 			AsyncCallback<List<ImageBlob>> callback);
 
+	void getEmptyList(AsyncCallback<List<ImageBlob>> callback);
+
+	void setEmptyBoard(ImageBlob imageBlob, AsyncCallback<Void> callback);
+
 
 	
 }
