@@ -243,6 +243,9 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Data has been changed")
 	String changeDataOk();
+	
+	@DefaultStringValue("Set main empty board")
+	String setEmptyBoard();
 
 
 }

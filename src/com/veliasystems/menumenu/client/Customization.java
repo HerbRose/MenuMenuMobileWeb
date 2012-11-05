@@ -84,7 +84,7 @@ public class Customization {
 	public static final String WRONG_LOGIN_DATA = translated.wrongLoginaData();
 	public static final String ARE_YOU_SURE_WANT_LOGOUT = translated.doYouWantLogout();
 	public static final String CHANGE_OK = translated.changeDataOk();
-	public static final String SET_DEFAULT_EMPTY_PROFIL = "Ustaw pustą tablicę";
+	public static final String SET_DEFAULT_EMPTY_PROFIL = translated.setEmptyBoard();
 
 };
 	
