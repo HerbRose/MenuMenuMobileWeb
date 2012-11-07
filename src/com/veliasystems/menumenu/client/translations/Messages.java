@@ -249,6 +249,9 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Remove users")
 	String removeUsers();
+	
+	@DefaultStringValue("Upload speed depends on size of chosen image and your Internet connection")
+	String largeImageInfo();
 
 
 }

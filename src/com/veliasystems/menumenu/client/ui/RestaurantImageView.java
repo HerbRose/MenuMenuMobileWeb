@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,6 +37,7 @@ public class RestaurantImageView extends JQMPage{
 	private JQMButton editButton;
 	private ScrollPanel contentScroll;
 	private VerticalPanel scrollerDiv;
+	private Label infoLabel;
 	
 	private Restaurant restaurant;
 	private boolean loaded = false;
@@ -114,6 +116,9 @@ public class RestaurantImageView extends JQMPage{
 			});
 			trashImage.setStyleName("addTrashImage", true);
 			addToContent(trashImage);
+			
+			infoLabel = new Label(Customization.INFO);
+			addToContent(infoLabel);
 			
 			loaded = true;
 		}else{
