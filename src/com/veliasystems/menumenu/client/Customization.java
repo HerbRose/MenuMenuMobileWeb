@@ -85,6 +85,7 @@ public class Customization {
 	public static final String ARE_YOU_SURE_WANT_LOGOUT = translated.doYouWantLogout();
 	public static final String CHANGE_OK = translated.changeDataOk();
 	public static final String SET_DEFAULT_EMPTY_PROFIL = translated.setEmptyBoard();
+	public static final String REMOVE_USERS = translated.removeUsers();
 
 };
 	

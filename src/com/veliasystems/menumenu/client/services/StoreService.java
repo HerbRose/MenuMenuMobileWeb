@@ -52,5 +52,5 @@ void saveRestaurant( Restaurant r );
 
 	Restaurant clearBoard(Restaurant restaurant, ImageType imageType);
 
-
+	String removeUser(User user);
 }

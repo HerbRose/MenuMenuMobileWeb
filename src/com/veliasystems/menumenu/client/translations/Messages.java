@@ -247,5 +247,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Set main empty board")
 	String setEmptyBoard();
 
+	@DefaultStringValue("Remove users")
+	String removeUsers();
+
 
 }
