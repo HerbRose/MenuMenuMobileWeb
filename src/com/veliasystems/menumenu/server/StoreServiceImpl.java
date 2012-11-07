@@ -103,7 +103,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restQuery == null) return null;
 		//System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
 		List<Restaurant> restList = restQuery.filter("cityId in", restaurantsId).list();
-		return restList;
+		return getImageLists(restList);
 	} 
 	
 	@Override
@@ -366,7 +366,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restQuery == null) return null;
 		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
 		if(listRestaurant == null) return null;
-		return listRestaurant;
+		
+		return getImageLists(listRestaurant);
 		
 	}
 	
@@ -681,6 +682,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		dao.ofy().put(userToChange);
 		return userToChange;
+	}
+
+	@Override
+	public String removeUser(User user){
+		if(user == null) return null;
+		dao.ofy().delete(user);
+		return user.getEmail();
 	}
 
 
