@@ -148,7 +148,13 @@ public class UserController {
 	public void setUserType(String login) {
 		loggedUser = login;
 		
-		User logUser = users.get(login);
+		Set<String> key = users.keySet();
+		
+		User logUser = null;
+		
+		for (String userLogin : key) {
+			if(userLogin.equalsIgnoreCase(login)) logUser = users.get(userLogin);
+		}
 		
 		if(logUser.isAdmin()) userType = UserType.ADMIN;
 		else if(logUser.getCitiesId() != null) userType = UserType.AGENT;
