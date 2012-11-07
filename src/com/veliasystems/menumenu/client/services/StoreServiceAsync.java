@@ -54,6 +54,8 @@ public interface StoreServiceAsync {
 
 	void changeUserData(User user, String oldEmail, AsyncCallback<User> callback);
 
+	void removeUser(User user, AsyncCallback<String> callback);
+
 
 	
 

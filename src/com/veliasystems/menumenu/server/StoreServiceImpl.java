@@ -683,5 +683,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return userToChange;
 	}
 
+	@Override
+	public String removeUser(User user){
+		if(user == null) return null;
+		dao.ofy().delete(user);
+		return user.getEmail();
+	}
+
 
 }

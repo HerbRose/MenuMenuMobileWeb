@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -49,6 +50,10 @@ public class UserController {
 			userList.add(users.get(email));
 		}
 		return userList;
+	}
+	
+	public Map<String, User> getUsers() {
+		return users;
 	}
 	
 	public void addObserver( IObserver observer){
@@ -184,6 +189,23 @@ public class UserController {
 			}
 		});
 		
+	}
+	
+	public void removeUser(String user){
+		
+		storeService.removeUser(users.get(user), new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+					
+			}
+
+			@Override
+			public void onSuccess(String email) {
+				Document.get().getElementById("load").setClassName(R.LOADED);
+				users.remove(email);
+			}
+		});
 	}
 	
 	

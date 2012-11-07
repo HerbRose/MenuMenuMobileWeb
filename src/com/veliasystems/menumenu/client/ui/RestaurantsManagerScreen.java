@@ -50,6 +50,7 @@ import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyProfilePan
 import com.veliasystems.menumenu.client.ui.administration.EditDataPanel;
 import com.veliasystems.menumenu.client.ui.administration.EmailPanel;
 import com.veliasystems.menumenu.client.ui.administration.IManager;
+import com.veliasystems.menumenu.client.ui.administration.RemoveUsersPanel;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 
 public class RestaurantsManagerScreen extends JQMPage implements
@@ -107,6 +108,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private IManager emailPanel;
 	private IManager defaultEmptyBoard;
 	private IManager editDataPanel;
+	private IManager removeUsersPanel;
 
 	// pola w zakladce edit data
 	private Label editNameLabel;
@@ -331,6 +333,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		add(setEmailTab());
 		add(setDefaultEmptyProfile());
 		add(setEditDataPanel());
+		add(setRemoveUsersPanel());
 	}
 
 	private FlowPanel setAdminPanel() {
@@ -365,6 +368,13 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		panelList.put(panelCount++, editDataPanel);
 		tabBar.addTab(Customization.EDIT_DATA);
 		return (FlowPanel) editDataPanel;
+	}
+	
+	private FlowPanel setRemoveUsersPanel(){
+		removeUsersPanel = new RemoveUsersPanel();
+		panelList.put(panelCount++, removeUsersPanel);
+		tabBar.addTab(Customization.REMOVE_USERS);
+		return (FlowPanel) removeUsersPanel;
 	}
 
 	private void setAgentButtons() {
