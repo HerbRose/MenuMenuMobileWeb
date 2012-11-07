@@ -203,7 +203,7 @@ public class UserController {
 			@Override
 			public void onSuccess(String email) {
 				Document.get().getElementById("load").setClassName(R.LOADED);
-				users.remove(email);
+				if(!email.equalsIgnoreCase("null")) users.remove(email);
 			}
 		});
 	}
