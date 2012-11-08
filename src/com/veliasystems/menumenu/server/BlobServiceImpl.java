@@ -91,7 +91,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			List<String> ids = new ArrayList<String>();
 			ids.add("0");
 			ids.add("1");
-			return queryBoards.filter("restId IN", ids).list();
+			listBoards = queryBoards.filter("restId IN", ids).list();
+			return listBoards;
 		}
         
         @Override
@@ -107,6 +108,13 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			imageBlob.setRestaurantId("0");
 			dao.ofy().put(imageBlob);
 			return imageBlob.getId();
+		}
+        
+        
+        public List<ImageBlob> getDefaultEmptyProfil() {
+			Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+			if(imgQuery == null) return null;
+			return imgQuery.filter("restId =", "0").list();
 		}
         
         private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {

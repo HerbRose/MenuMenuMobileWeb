@@ -102,8 +102,6 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 		});
 		
 		add(formPanel);
-		
-		imagesController.getDefoultEmptyProfilFromServer();
 		setImagesFlowPanel();
 		
 	}
@@ -168,7 +166,6 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 	}
 	
 
-	
 	@Override
 	public void clearData() {
 		if(formPanel != null){

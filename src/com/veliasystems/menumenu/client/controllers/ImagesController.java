@@ -21,27 +21,27 @@ public class ImagesController {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
-	private Map<String, ImageBlob> defoultEmptyProfilImageBlobMap = null;
+	private Map<String, ImageBlob> defoultEmptyProfilImageBlobMap;
 	
 	/**
 	 * used in SwipeView to select main image
 	 */
 	private Map<RestaurantImageView, Map<ImageType, MyImage>> selectedImageControler = new HashMap<RestaurantImageView, Map<ImageType,MyImage>>();
-	private static ImagesController instance = null;
+	private static ImagesController instance;
 	private static List<IObserver> observers = new ArrayList<IObserver>();
 	
 	private MyImage selectedImage = null;
 	private MyImage selectedFlowPanel = null;
 	
 	private ImagesController() {
-		
 	}
 	
 	public static ImagesController getInstance(){
-		if(instance!=null){
-			return instance;
+		if(instance == null){
+			instance = new ImagesController();
 		}
-		return new ImagesController();
+		
+		return instance;
 	}
 	
 	public void addObserver(IObserver iObserver){
@@ -74,13 +74,16 @@ public class ImagesController {
 		});
 	}
 
+	public void setDefoultEmptyProfilImageBlobMap(Map<String, ImageBlob> defoultEmptyProfilImageBlobMap){
+		System.out.println(defoultEmptyProfilImageBlobMap);
+		this.defoultEmptyProfilImageBlobMap = defoultEmptyProfilImageBlobMap;
+	}
+	
 	private void changeDefoultEmptyProfile(String imageBlobId){
 		for (String key : defoultEmptyProfilImageBlobMap.keySet() ) {
 			defoultEmptyProfilImageBlobMap.get(key).setRestaurantId("1");
-			System.out.println(key);
 		}
-		System.out.println();
-		System.out.println(imageBlobId);
+
 		defoultEmptyProfilImageBlobMap.get(imageBlobId).setRestaurantId("0");
 	}
 	
@@ -121,37 +124,22 @@ public class ImagesController {
 			map.put(imageType, null);
 		}
 	}
-	
-	public void getDefoultEmptyProfilFromServer(){
-		PagesController.showWaitPanel();
-		blobService.getEmptyList(new AsyncCallback<List<ImageBlob>>() {
-			
-			@Override
-			public void onSuccess(List<ImageBlob> imageBlobs) {
-				defoultEmptyProfilImageBlobMap = new HashMap<String, ImageBlob>();
-				for (ImageBlob imageBlob : imageBlobs) {
-					defoultEmptyProfilImageBlobMap.put(imageBlob.getId(), imageBlob);
-				}
-				notifyAllObservers();
-				PagesController.hideWaitPanel();
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
-			}
-		});
-	}
 
 	public Map<String, ImageBlob> getEmptyProfileImages(){
 		if(defoultEmptyProfilImageBlobMap == null){
-			getDefoultEmptyProfilFromServer();
 			return null;
 		}else {
 			return defoultEmptyProfilImageBlobMap;
 		}
 	}
 	
-	
+	public ImageBlob getDefoultEmptyProfile(){
+		if(defoultEmptyProfilImageBlobMap == null){
+			Window.alert("defoultEmptyProfilImageBlobMap == null");
+		}
+		for (String key : defoultEmptyProfilImageBlobMap.keySet()) {
+			if(defoultEmptyProfilImageBlobMap.get(key).getRestaurantId().equals("0")) return defoultEmptyProfilImageBlobMap.get(key);
+		}
+		return new ImageBlob();
+	}
 }

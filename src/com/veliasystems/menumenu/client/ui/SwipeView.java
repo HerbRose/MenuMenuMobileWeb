@@ -122,8 +122,11 @@ public class SwipeView extends FlowPanel {
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
 		}
-		MyImage emptyBoard = new MyImage(imagesController, new Image("/img/emptyBoard.png"), parent, imageType);
-		scrollerContainer.insert(emptyBoard, 0);
+		if(imageType==ImageType.MENU){
+			MyImage emptyBoard = new MyImage(imagesController, new Image(imagesController.getDefoultEmptyProfile().getImageUrl()), parent, imageType);
+			scrollerContainer.insert(emptyBoard, 0);
+		}
+		
 		
 	}
 	private void addImage(ImageBlob imageBlob){

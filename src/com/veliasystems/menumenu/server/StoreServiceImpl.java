@@ -36,7 +36,6 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
-import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.StoreService;
 
 /**
@@ -46,7 +45,7 @@ import com.veliasystems.menumenu.client.services.StoreService;
 public class StoreServiceImpl extends RemoteServiceServlet implements StoreService {
 
 	private DAO dao = new DAO();
-	private BlobService blobService = new BlobServiceImpl();
+	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
 	
 	@Override
@@ -551,23 +550,28 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public Map<String, Object> getAllData(String login, String password){
 		User user = authorization(login);
 		if(user == null) return null;
+		if(!user.getPassword().equals(password)) return null;
 		
 		Map<String, Object> allData = new HashMap<String, Object>();
 
 		if(user.isAdmin()){
 			allData.put("Restaurants", loadRestaurants());
 			allData.put("Cities", loadCitiesEntity());
+			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		}
 		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
 		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
 		}
 
+		
 		
 		allData.put("Users", getUsers());
 		return allData;
@@ -591,15 +595,18 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(user.isAdmin()){
 			allData.put("Restaurants", loadRestaurants());
 			allData.put("Cities", loadCitiesEntity());
+			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		}
 		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
 		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
 		}
 		
 		

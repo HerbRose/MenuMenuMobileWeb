@@ -15,11 +15,13 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
@@ -32,6 +34,7 @@ public class LoadDataScreen extends JQMPage {
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
 	private CityController cityController = CityController.getInstance();
+	private ImagesController imagesController = ImagesController.getInstance();
 	
 	private String email;
 	
@@ -110,10 +113,17 @@ public class LoadDataScreen extends JQMPage {
 		for (User user : users) {
 			usersFromServer.put(user.getEmail(), user);
 		}
+		List<ImageBlob> defaultEmptyProfile = (List<ImageBlob>) data.get("DefaultEmptyProfile");
+		Map<String, ImageBlob> defoultEmptyProfilImageBlobMap = new HashMap<String, ImageBlob>();
+		for (ImageBlob imageBlob : defaultEmptyProfile) {
+			defoultEmptyProfilImageBlobMap.put(imageBlob.getId(), imageBlob);
+		}
+		
 		userController.setUsers(usersFromServer);
 		userController.setUserType(email);
 		restaurantController.setRestaurants(restaurantsFromServer);
 		cityController.setCities(citiesFromServer);
+		imagesController.setDefoultEmptyProfilImageBlobMap(defoultEmptyProfilImageBlobMap);
 	}
 	
 	@Override
