@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -55,6 +56,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 		if(restaurant != null) this.restaurant=restaurant;
 		
 		setStyleName("barPanel", true);
+		show(false);
 		
 		mailLabel = new Label(Customization.INPUT_EMAIL);
 		passwordLabe = new Label(Customization.INPUT_PASSWORD);
@@ -193,30 +195,50 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 				.trim())
 				|| inputEmailRestaurator.getValue().trim().equals("")
 				|| !Util.isValidEmail(inputEmailRestaurator.getValue())) {
-			inputEmailRestaurator.setStyleName("redShadow", true);
+			setValidDataStyle(false, inputEmailRestaurator);
 		} else {
-			inputEmailRestaurator.setStyleName("greenShadow", true);
+			setValidDataStyle(true, inputEmailRestaurator);
 			isCorrect = true;
 		}
 		if (passwordRestaurator.getValue().trim().equals("")
 				|| passwordRestaurator2.getValue().trim().equals("")
 				|| !passwordRestaurator.getValue().equals(
 						passwordRestaurator2.getValue())) {
-			passwordRestaurator.setStyleName("redShadow", true);
-			passwordRestaurator2.setStyleName("redShadow", true);
+			setValidDataStyle(false, passwordRestaurator);
+			setValidDataStyle(false, passwordRestaurator2);
 			isCorrect = false;
 		} else {
-			passwordRestaurator.setStyleName("greenShadow", true);
-			passwordRestaurator2.setStyleName("greenShadow", true);
+			setValidDataStyle(true, passwordRestaurator);
+			setValidDataStyle(true, passwordRestaurator2);
 		}
 		if (addedRestauration.size() < 1) {
-			restaurantSuggestBox.setStyleName("redShadow", true);
+			setValidDataStyle(false, restaurantSuggestBox);
 			isCorrect = false;
 		} else {
-			restaurantSuggestBox.setStyleName("greenShadow", true);
+			setValidDataStyle(true, restaurantSuggestBox);
 		}
 
 		return isCorrect;
+	}
+
+	/**
+	 * sets the right shadow around the widget
+	 * @param isCorrect - if <b>true</b> sets green shadow, if <b>false</b> sets red shadow, if <b>null</b> hide all shadows
+	 * @param widget - widget
+	 */
+	private void setValidDataStyle(Boolean isCorrect, Widget widget){
+		if(widget == null) return;
+		
+		String correct = "greenShadow";
+		String unCorrect = "redShadow";
+		
+		if(isCorrect == null){
+			widget.setStyleName(correct, false);
+			widget.setStyleName(unCorrect, false);
+			return;
+		}
+		widget.setStyleName(correct, isCorrect);
+		widget.setStyleName(unCorrect, !isCorrect);
 	}
 	private void setRestauransId(boolean isAdded) {
 		if (isAdded) {
@@ -302,8 +324,6 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 		return fullRestName.substring(indexOfAdress + 2,
 				fullRestName.length() - 1);
 	}
-
-	
 	
 	@Override
 	public void clearData() {
@@ -312,23 +332,25 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
         passwordRestaurator2.setValue("");
         restaurantSuggestBox.setText("");
 
+        setValidDataStyle(null, inputEmailRestaurator);
+		setValidDataStyle(null, passwordRestaurator);
+		setValidDataStyle(null, passwordRestaurator2);
+		setValidDataStyle(null, restaurantSuggestBox);
+        
         restaurantSuggest.clear();
         addedRestauration.clear();
         for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
             if (restaurant == this.restaurant) {
                 addedRestauration.add(restaurant);
-
             }
             restaurantSuggest.add(restaurant.getName() + " ("
                     + Customization.CITYONE + ": " + restaurant.getCity()
                     + " ," + Customization.ADRESS + ": "
                     + restaurant.getAddress() + ")");
         }
-
-
+        
         restaurantCellList.setRowData(addedRestauration);
         restaurantCellList.redraw();
-
 	}
 
 	@Override

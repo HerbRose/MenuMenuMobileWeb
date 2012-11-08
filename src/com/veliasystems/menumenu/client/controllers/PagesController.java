@@ -3,7 +3,9 @@ package com.veliasystems.menumenu.client.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Document;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.ui.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.ui.CityListScreen;
 import com.veliasystems.menumenu.client.ui.HomePageScreen;
@@ -30,6 +32,14 @@ public class PagesController {
 			}
 			return new JQMPage();
 		}
+	}
+	
+	public static void showWaitPanel(){
+		Document.get().getElementById("load").setClassName(R.LOADING);
+	}
+	
+	public static void hideWaitPanel(){
+		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 
 }

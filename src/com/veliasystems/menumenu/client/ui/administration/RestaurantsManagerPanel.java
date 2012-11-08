@@ -48,6 +48,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 	public RestaurantsManagerPanel() {
 		
 		setStyleName("barPanel", true);
+		show(false);
 		
 		saveRestaurantsButton = new JQMButton(Customization.SAVE);
 		saveRestaurantsButton.addClickHandler(new ClickHandler() {

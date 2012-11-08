@@ -29,6 +29,7 @@ public class AddAdminPanel extends FlowPanel implements IManager {
 	public AddAdminPanel() {
 		
 		setStyleName("barPanel", true);
+		show(false);
 		
 		mailLabel = new Label(Customization.INPUT_EMAIL);
 		passwordLabe = new Label(Customization.INPUT_PASSWORD);
@@ -83,24 +84,45 @@ public class AddAdminPanel extends FlowPanel implements IManager {
 		if (userController.isUserInStor(inputEmailAdmin.getValue().trim())
 				|| inputEmailAdmin.getValue().trim().equals("")
 				|| !Util.isValidEmail(inputEmailAdmin.getValue())) {
-			inputEmailAdmin.setStyleName("redShadow", true);
+			setValidDataStyle(false, inputEmailAdmin);
 		} else {
-			inputEmailAdmin.setStyleName("greenShadow", true);
 			isCorrect = true;
+			setValidDataStyle(true, inputEmailAdmin);
 		}
 		if (passwordAdmin.getValue().trim().equals("")
 				|| passwordAdmin2.getValue().trim().equals("")
 				|| !passwordAdmin.getValue().equals(
 						passwordAdmin2.getValue())) {
-			passwordAdmin.setStyleName("redShadow", true);
-			passwordAdmin2.setStyleName("redShadow", true);
 			isCorrect = false;
+			setValidDataStyle(false, passwordAdmin);
+			setValidDataStyle(false, passwordAdmin2);
+			
 		} else {
-			passwordAdmin.setStyleName("greenShadow", true);
-			passwordAdmin2.setStyleName("greenShadow", true);
+			setValidDataStyle(true, passwordAdmin);
+			setValidDataStyle(true, passwordAdmin2);
 		}
 
 		return isCorrect;
+	}
+	
+	/**
+	 * sets the right shadow around the widget
+	 * @param isCorrect - if <b>true</b> sets green shadow, if <b>false</b> sets red shadow, if <b>null</b> hide all shadows
+	 * @param widget - widget
+	 */
+	private void setValidDataStyle(Boolean isCorrect, Widget widget){
+		if(widget == null) return;
+		
+		String correct = "greenShadow";
+		String unCorrect = "redShadow";
+		
+		if(isCorrect == null){
+			widget.setStyleName(correct, false);
+			widget.setStyleName(unCorrect, false);
+			return;
+		}
+		widget.setStyleName(correct, isCorrect);
+		widget.setStyleName(unCorrect, !isCorrect);
 	}
 	
 	private void addUser(User user) {
@@ -110,8 +132,13 @@ public class AddAdminPanel extends FlowPanel implements IManager {
 	@Override
 	public void clearData() {
 		inputEmailAdmin.setValue("");
+		setValidDataStyle(null, inputEmailAdmin);
 		passwordAdmin.setValue("");
+		setValidDataStyle(null, passwordAdmin);
 		passwordAdmin2.setValue("");
+		setValidDataStyle(null, passwordAdmin2);
+		
+		
 	}
 
 	@Override

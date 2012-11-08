@@ -48,7 +48,7 @@ public interface BlobServiceAsync {
 
 	void getEmptyList(AsyncCallback<List<ImageBlob>> callback);
 
-	void setEmptyBoard(ImageBlob imageBlob, AsyncCallback<Void> callback);
+	void setEmptyBoard(ImageBlob imageBlob, AsyncCallback<String> callback);
 
 
 	

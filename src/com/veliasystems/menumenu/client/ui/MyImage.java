@@ -128,5 +128,7 @@ public class MyImage extends FlowPanel {
 	public boolean isMainImage() {
 		return mainImage;
 	}
-	
+	public ImageType getImageType() {
+		return imageType;
+	}
 }

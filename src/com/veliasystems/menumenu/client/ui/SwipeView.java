@@ -50,7 +50,7 @@ public class SwipeView extends FlowPanel {
 	
 	private CustomScrollPanel wrapper = new CustomScrollPanel();
 	private FlowPanel scrollerContainer = new FlowPanel();
-	private ImagesController imagesController = new ImagesController();
+	private ImagesController imagesController = ImagesController.getInstance();
 	
 	private FlowPanel titleDiv = new FlowPanel();
 	private FlowPanel cameraDiv = new FlowPanel();
@@ -117,7 +117,8 @@ public class SwipeView extends FlowPanel {
 	}
 	
 	private void fillImages(){
-		imagesController.selectImage(null);
+		imagesController.clear(parent);
+		imagesController.clear(parent);
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
 		}
@@ -305,7 +306,7 @@ public class SwipeView extends FlowPanel {
 	
 	public void checkChanges(){
 		
-		imagesController.selectImage(null);	
+		imagesController.clear(parent);	
 		scrollerContainer.clear();	
 		fillData(imageType);
 		fillImages();

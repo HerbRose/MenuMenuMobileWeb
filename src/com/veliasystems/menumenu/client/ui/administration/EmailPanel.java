@@ -34,6 +34,7 @@ public class EmailPanel extends FlowPanel implements IManager {
 	public EmailPanel() {
 		
 		setStyleName("barPanel", true);
+		show(false);
 		
 		Label toLabel = new Label(Customization.ADDRESSEE + ":");
 		Label fromLabel = new Label(Customization.SENDER + ":");

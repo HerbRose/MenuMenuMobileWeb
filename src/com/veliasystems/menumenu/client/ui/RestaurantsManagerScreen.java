@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -14,20 +13,10 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabBar;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -38,11 +27,11 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.ui.administration.AddAdminPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddAgentPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddRestauratorPanel;
@@ -71,22 +60,6 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private int marginLeft = 0;
 	int tabWidth = 0;
 
-	// pola do dodawania użytkowników
-
-	// pola w zakładce email
-
-	private Label mailLabel;
-	private Label passwordLabe;
-	private Label repeatPasswordLabe;
-	private Label emptyMailList;
-
-	private JQMButton saveRestaurantsButton;
-	private CellTable<Restaurant> restaurantsCellTable;
-	private TextColumn<Restaurant> nameColumn;
-	private Column<Restaurant, Boolean> isVisibleForAppColumn;
-	private Column<Restaurant, Boolean> isClearBoardColumn;
-	private TextColumn<Restaurant> addressColumn;
-
 	private boolean loaded = false;
 	private UserType userType;
 
@@ -100,7 +73,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private Map<Integer, IManager> panelList = new HashMap<Integer, IManager>();
 	private Integer panelCount = 0;
 
-	// panele pokazywane po kliknięciu przycisku (np. addAdmin)
+	// panele pokazywane po kliknięciu na zakładkę (np. addAdmin)
 	private IManager adminPanel;
 	private IManager agentPanel;
 	private IManager restauratorPanel;
@@ -110,33 +83,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private IManager editDataPanel;
 	private IManager removeUsersPanel;
 
-	// pola w zakladce edit data
-	private Label editNameLabel;
-	private Label editSurnameLabel;
-	private Label inputOldPasswordLabel;
-	private Label editPasswordLabel;
-	private Label repeatPasswordLabel;
-	private TextBox inputOldPasswordBox;
-	private TextBox editNameBox;
-	private TextBox editSurnameBox;
-	private TextBox editPasswordBox;
-	private TextBox repeatPasswordBox;
-	private Label phoneNumberLabel;
-	private TextBox phoneNumerBox;
-	private Button saveEditedUser;
-
-	private SingleSelectionModel<String> selectionModelCities;
-	private SingleSelectionModel<Restaurant> selectionModelRestaurant;
-
+	private IManager currentlyDisplayedPanel = null;
+	
 	private Restaurant restaurant = null;
 	private Integer whichPanelShow = 0;
-
-	private List<Long> restaurantsIdList = new ArrayList<Long>();
-	private List<Restaurant> restaurantsCopy;
-	private Map<Long, Restaurant> restaurantsCopyMap;
-
-	private FormPanel formPanel;
-	private FileUpload fileUpload = new FileUpload();
 
 	private int widthOfTabBarPanel;
 
@@ -179,6 +129,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		rightArrow.setStyleName("hide", true);
 		rightArrow.setStyleName("show", false);
 		setArrowActions();
+		
 		divForTabBarPanel = new FlowPanel();
 		divForTabBarPanel.add(tabBar);
 		divForTabBarPanel.getElement().setId("divForTabBarPanel");
@@ -320,11 +271,16 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}-*/;
 
 	private native void moveLeft(int left, String elementId)/*-{
-		var table = $wnd.document.getElementById(elementId);
+		var element = $wnd.document.getElementById(elementId);
 		//		var tbody = table.getElementsByTagName("tbody");
-		table.style.marginLeft = left + "px";
+		if(element != "undefined" && element!= null){
+			element.style.marginLeft = left + "px";
+		}
 	}-*/;
 
+	/**
+	 * adding panels for the administrator
+	 */
 	private void setAdminPanels() {
 		add(setAdminPanel());
 		add(setAgentPanel());
@@ -336,6 +292,18 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		add(setRemoveUsersPanel());
 	}
 
+	/**
+	 * adding panels for the agent
+	 */
+	private void setAgentButtons() {
+		add(setRestauratorPanel());
+		add(setEditDataPanel());
+	}
+	
+	/**
+	 * create a administrator tab
+	 * @return instance of AddAdminPanel() projected onto FlowPanel
+	 */
 	private FlowPanel setAdminPanel() {
 		adminPanel = new AddAdminPanel();
 		panelList.put(panelCount++, adminPanel);
@@ -344,6 +312,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) adminPanel;
 	}
 
+	/**
+	 * create a agent tab
+	 * @return instance of AddAgentPanel() projected onto FlowPanel
+	 */
 	private FlowPanel setAgentPanel() {
 		agentPanel = new AddAgentPanel();
 		panelList.put(panelCount++, agentPanel);
@@ -352,6 +324,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) agentPanel;
 	}
 
+	/**
+	 * create a restorer tab
+	 * @return instance of AddRestauratorPanel() projected onto FlowPanel
+	 */
 	private FlowPanel setRestauratorPanel() {
 		restauratorPanel = new AddRestauratorPanel(restaurant);
 		panelList.put(panelCount++, restauratorPanel);
@@ -363,6 +339,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) restauratorPanel;
 	}
 
+	/**
+	 * create a tab to editing data
+	 * @return instance of EditDataPanel projected onto FlowPanel
+	 */
 	private FlowPanel setEditDataPanel() {
 		editDataPanel = new EditDataPanel();
 		panelList.put(panelCount++, editDataPanel);
@@ -370,6 +350,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) editDataPanel;
 	}
 	
+	/**
+	 * create a tab to removing users
+	 * @return instance of RemoveUsersPanel projected onto FlowPanel
+	 */
 	private FlowPanel setRemoveUsersPanel(){
 		removeUsersPanel = new RemoveUsersPanel();
 		panelList.put(panelCount++, removeUsersPanel);
@@ -377,36 +361,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) removeUsersPanel;
 	}
 
-	private void setAgentButtons() {
-		add(setRestauratorPanel());
-		add(setEditDataPanel());
-	}
-
-	private void addAddUserTab(FlowPanel panel, UserType userType) {
-		// panelList.put(panelCount++, panel);
-
-		mailLabel = new Label(Customization.INPUT_EMAIL);
-		passwordLabe = new Label(Customization.INPUT_PASSWORD);
-		repeatPasswordLabe = new Label(Customization.REPEAT_PASSWORD);
-
-		switch (userType) {
-		case ADMIN:
-
-			break;
-		case AGENT:
-
-			break;
-		case RESTAURATOR:
-
-			break;
-		default:
-			break;
-		}
-
-		add(panel);
-
-	}
-
+	/**
+	 * create a tab to management restaurants
+	 * @return instance of RestaurantsManagerPanel projected onto FlowPanel
+	 */
 	private FlowPanel setRestaurantsManagerTab() {
 		restaurantsManagerPanel = new RestaurantsManagerPanel();
 		panelList.put(panelCount++, restaurantsManagerPanel);
@@ -415,6 +373,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	}
 
+	/**
+	 * create a tab to sending mail 
+	 * @return instance of EmailPanel projected onto FlowPanel
+	 */
 	private FlowPanel setEmailTab() {
 		emailPanel = new EmailPanel();
 		panelList.put(panelCount++, emailPanel);
@@ -423,6 +385,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	}
 
+	/**
+	 * create a tab to sets default empty profile image
+	 * @return instance of DefaultEmptyProfilrPanel 
+	 */
 	private FlowPanel setDefaultEmptyProfile() {
 		defaultEmptyBoard = new DefaultEmptyProfilePanel();
 		panelList.put(panelCount++, defaultEmptyBoard);
@@ -431,33 +397,36 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}
 
 	@Override
-	public HandlerRegistration addClickHandler(ClickHandler handler) {
+	public HandlerRegistration addClickHandler(ClickHandler handler) { // <--- IS IT NECESSARY ???
 		return addDomHandler(handler, ClickEvent.getType());
 	}
 
+	/**
+	 * Hide all panels (tabs) and show one
+	 * @param panel - panel to show
+	 */
 	private void showPanel(IManager panel) {
 		Set<Integer> panelKeys = panelList.keySet();
 
 		for (Integer key : panelKeys) {
 			panelList.get(key).show(false);
 		}
-		if(panel!=null) panel.show(true);
+		if(panel!=null){
+			panel.clearData();
+			panel.show(true);
+			currentlyDisplayedPanel = panel;
+		}
 	}
 
-	private void addUser(User user) {
-		// user.setPassword(password.getValue());
-		userController.addUser(user);
-	}
-
+	/**
+	 * clear all tabs data
+	 */
 	private void clearScreenData() {
 
 		for (Integer key : panelList.keySet()) {
 			panelList.get(key).clearData();
-
 		}
-		
 		checkArrows();
-
 	}
 
 	/**
@@ -490,46 +459,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		element.getElement().setAttribute("style", oldStyle);
 	}
 
-	private String getRestaurationName(String fullRestName) {
-		int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
-		if (indexOfCity < 1)
-			return null;
-		return fullRestName.substring(0, indexOfCity - 1);
-	}
-
-	private String getCityName(String fullRestName) {
-		int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
-		if (indexOfCity < 1)
-			return null;
-		indexOfCity += Customization.CITY.length();
-		int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":",
-				indexOfCity);
-		if (indexOfAdress < 0)
-			return null;
-		return fullRestName.substring(indexOfCity + 3, indexOfAdress - 2);
-	}
-
-	private String getAddresName(String fullRestName) {
-		int indexOfCity = fullRestName.indexOf("(" + Customization.CITYONE);
-		if (indexOfCity < 1)
-			return null;
-		indexOfCity += Customization.CITY.length();
-		int indexOfAdress = fullRestName.indexOf(Customization.ADRESS + ":",
-				indexOfCity);
-		if (indexOfAdress < 0)
-			return null;
-		indexOfAdress += Customization.ADRESS.length();
-
-		return fullRestName.substring(indexOfAdress + 2,
-				fullRestName.length() - 1);
-	}
-
 	@Override
 	protected void onPageShow() {
-		
 		showPanel(null);
-		
-		
+
 		pageToBack = restaurantController.getLastOpenPage();
 		restaurantController.setLastOpenPage(this);
 		if (pageToBack instanceof RestaurantImageView) {
@@ -577,25 +510,13 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			tabBar.selectTab(whichPanelShow);
 			showPanel( panelList.get(whichPanelShow));
 		}
-
 	}
 
 	@Override
 	public void onChange() {
-		clearScreenData();
-
+		//clearScreenData();
+		if(currentlyDisplayedPanel != null){
+			currentlyDisplayedPanel.clearData();
+		}
 	}
-}
-
-class RestaurantCellClass extends AbstractCell<Restaurant> {
-
-	@Override
-	public void render(com.google.gwt.cell.client.Cell.Context context,
-			Restaurant restaurant, SafeHtmlBuilder sb) {
-		sb.appendEscaped(restaurant.getName() + " (" + Customization.CITYONE
-				+ ": " + restaurant.getCity() + " ," + Customization.ADRESS
-				+ ": " + restaurant.getAddress() + ")");
-
-	}
-
 }

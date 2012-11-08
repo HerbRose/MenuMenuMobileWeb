@@ -2,6 +2,10 @@ package com.veliasystems.menumenu.client.ui.administration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -25,30 +29,35 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
-public class DefaultEmptyProfilePanel extends FlowPanel implements IManager {
+public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IObserver {
 
 	private FormPanel formPanel;
 	private FileUpload fileUpload = new FileUpload();
-	private List<ImageBlob> emptyList;
+	private List<ImageBlob> emptyProfileList;
 	private CellTable<ImageBlob> cellTable;
 	private Column<ImageBlob, String> imageColumn;
 	private Column<ImageBlob, Boolean> isMain;
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
-	private RestaurantController restaurantController = RestaurantController.getInstance();
-	private JQMButton refreshButton;
-	
+	private ImagesController imagesController = ImagesController.getInstance();
+
 	public DefaultEmptyProfilePanel() {
 		
-		cellTable= new CellTable<ImageBlob>();
+		imagesController.addObserver(this);
 		
-		emptyList = new ArrayList<ImageBlob>();
 		setStyleName("barPanel", true);
+		show(false);
+		
+		cellTable = new CellTable<ImageBlob>();
+		
+		emptyProfileList = new ArrayList<ImageBlob>();
 		
 		formPanel = new FormPanel();
 		formPanel.setVisible(true);
@@ -93,58 +102,46 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager {
 		});
 		
 		add(formPanel);
-		setList();
 		
-		refreshButton = new JQMButton("refresh");
-		add(refreshButton);
-		refreshButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				refresh();
-				
-			}
-		});
-		
+		imagesController.getDefoultEmptyProfilFromServer();
+		setImagesFlowPanel();
 		
 	}
 	
 	private void refresh(){
-		blobService.getEmptyList(new AsyncCallback<List<ImageBlob>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-					
-			}
-
-			@Override
-			public void onSuccess(List<ImageBlob> result) {
-				emptyList = result;
-				cellTable.setRowData(emptyList);
-				cellTable.redraw();
-			}
-			
-		});
+		
+		Map<String, ImageBlob> imageMap = imagesController.getEmptyProfileImages();
+		
+		if(imageMap == null)return;
+		
+		emptyProfileList.clear();
+		for (String	key : imageMap.keySet()) {
+			emptyProfileList.add(imagesController.getEmptyProfileImages().get(key));
+		}
+		
+		cellTable.setRowData(emptyProfileList);
+		cellTable.redraw();
+		
 	}
 		 
-	private void setImagesFlowPanel(int size) {
+	private void setImagesFlowPanel() {
 		
 			
 		imageColumn = new Column<ImageBlob, String>(new ImageCell()) {
 			
 			@Override
 			public String getValue(ImageBlob object) {
-				// TODO Auto-generated method stub
 				return object.getImageUrl();
 			}
 		};
+		
 		final SingleSelectionModel<ImageBlob> selectionModel = new SingleSelectionModel<ImageBlob>();
 		isMain = new Column<ImageBlob, Boolean>(new CheckboxCell()) {
 			
 			@Override
-			public Boolean getValue(ImageBlob object) {	
+			public Boolean getValue(ImageBlob imageBlob) {	
 				
-				return selectionModel.isSelected(object);
+				return (imageBlob.getRestaurantId().equals("0"))?true:false; //selectionModel.isSelected(object);
 			}
 		};
 		
@@ -152,45 +149,32 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager {
 
 			@Override
 			public void update(int index, ImageBlob object, Boolean value) {
-				restaurantController.setEmptyBoard(object);
+				imagesController.setEmptyBoard(object);
 			}
 		});
+		
 		cellTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<ImageBlob> createCheckboxManager());	
 		cellTable.addStyleName("emptyTable");	
 		cellTable.addColumn(isMain, "Set As default");
 		cellTable.setColumnWidth(isMain, "20px");
 		cellTable.addColumn(imageColumn, "Preview");	
-		cellTable.setRowData(emptyList);	
+		cellTable.setRowData(emptyProfileList);	
 		add(cellTable);
 		
-		for (ImageBlob imgBlob : emptyList) {
+		for (ImageBlob imgBlob : emptyProfileList) {
 			if(imgBlob.getRestaurantId().equals("0")) selectionModel.setSelected(imgBlob, true);
 		}
 
 	}
 	
-	private void setList(){
-		blobService.getEmptyList(new AsyncCallback<List<ImageBlob>>() {
-			@Override
-			public void onFailure(Throwable caught) {	
-			}
 
-			@Override
-			public void onSuccess(List<ImageBlob> result) {
-				if(result == null) return;
-				emptyList = result;
-				setImagesFlowPanel(emptyList.size());
-				
-			}
-		});
-		
-	}
 	
 	@Override
 	public void clearData() {
 		if(formPanel != null){
 			formPanel.reset(); 
 		}
+		refresh();
 	}
 
 	@Override
@@ -202,6 +186,11 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager {
 	public void show(boolean isVisable) {
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);
+	}
+	
+	@Override
+	public void onChange() {
+		refresh();
 	}
 
 }

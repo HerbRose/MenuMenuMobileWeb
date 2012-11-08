@@ -26,9 +26,11 @@ public class RemoveUsersPanel extends FlowPanel implements IManager{
 	private Column<String, String> removeColumn;
 	private UserController userController = UserController.getInstance();
 	private List<String> userList = new ArrayList<String>();
-	private List<User> listToDelete = new ArrayList<User>();
 	
 	public RemoveUsersPanel() {
+
+		setStyleName("barPanel", true);
+		show(false);
 		
 		userCellTable = new CellTable<String>();
 				
@@ -52,10 +54,9 @@ public class RemoveUsersPanel extends FlowPanel implements IManager{
 			
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
-					String object, NativeEvent event) {
-				Document.get().getElementById("load").setClassName(R.LOADING);
-				userController.removeUser(object);
-				super.onBrowserEvent(context, elem, object, event);
+					String userEmail, NativeEvent event) {
+				removeUser(userEmail);
+				super.onBrowserEvent(context, elem, userEmail, event);
 			}
 		};
 		
@@ -67,12 +68,18 @@ public class RemoveUsersPanel extends FlowPanel implements IManager{
 
 	}
 	
+	private void removeUser(String userEmail){
+		userController.removeUser(userEmail);
+	}
+	
 	@Override
 	public void clearData() {
 		String userName = userController.getLoggedUser().getEmail();
+		userList.clear();
 		for (String string : userController.getUsers().keySet()) {
 			if(!string.equalsIgnoreCase(userName)) userList.add(string);
 		}	
+		
 		userCellTable.setRowData(userList);
 		userCellTable.redraw();
 	}

@@ -40,5 +40,5 @@ public interface BlobService extends RemoteService {
 		
 		List<ImageBlob> getEmptyList();
         
-		void setEmptyBoard(ImageBlob imageBlob);
+		String setEmptyBoard(ImageBlob imageBlob);
 }

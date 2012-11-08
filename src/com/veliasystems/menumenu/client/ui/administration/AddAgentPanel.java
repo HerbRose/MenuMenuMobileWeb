@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.sksamuel.jqm4gwt.DataIcon;
@@ -47,6 +48,7 @@ public class AddAgentPanel extends FlowPanel implements IManager {
 	
 	public AddAgentPanel() {
 		setStyleName("barPanel", true);
+		show(false);
 		
 		mailLabel = new Label(Customization.INPUT_EMAIL);
 		passwordLabe = new Label(Customization.INPUT_PASSWORD);
@@ -175,31 +177,50 @@ public class AddAgentPanel extends FlowPanel implements IManager {
 		if (userController.isUserInStor(inputEmailAgent.getValue().trim())
 				|| inputEmailAgent.getValue().trim().equals("")
 				|| !Util.isValidEmail(inputEmailAgent.getValue())) {
-			inputEmailAgent.setStyleName("redShadow", true);
+			setValidDataStyle(false, inputEmailAgent);
 		} else {
-			inputEmailAgent.setStyleName("greenShadow", true);
+			setValidDataStyle(true, inputEmailAgent);
 			isCorrect = true;
 		}
 		if (passwordAgent.getValue().trim().equals("")
 				|| passwordAgent2.getValue().trim().equals("")
 				|| !passwordAgent.getValue().equals(
 						passwordAgent2.getValue())) {
-			passwordAgent.setStyleName("redShadow", true);
-			passwordAgent2.setStyleName("redShadow", true);
+			setValidDataStyle(false, passwordAgent);
+			setValidDataStyle(false, passwordAgent2);
 			isCorrect = false;
 		} else {
-			passwordAgent.setStyleName("greenShadow", true);
-			passwordAgent2.setStyleName("greenShadow", true);
+			setValidDataStyle(true, passwordAgent);
+			setValidDataStyle(true, passwordAgent2);
 		}
 		if (addedCities.size() < 1) {
-			citySuggestBox.setStyleName("redShadow", true);
+			setValidDataStyle(false, citySuggestBox);
 			isCorrect = false;
 		} else {
-			citySuggestBox.setStyleName("greenShadow", true);
-
+			setValidDataStyle(true, citySuggestBox);
 		}
 		
 		return isCorrect;
+	}
+	
+	/**
+	 * sets the right shadow around the widget
+	 * @param isCorrect - if <b>true</b> sets green shadow, if <b>false</b> sets red shadow, if <b>null</b> hide all shadows
+	 * @param widget - widget
+	 */
+	private void setValidDataStyle(Boolean isCorrect, Widget widget){
+		if(widget == null) return;
+		
+		String correct = "greenShadow";
+		String unCorrect = "redShadow";
+		
+		if(isCorrect == null){
+			widget.setStyleName(correct, false);
+			widget.setStyleName(unCorrect, false);
+			return;
+		}
+		widget.setStyleName(correct, isCorrect);
+		widget.setStyleName(unCorrect, !isCorrect);
 	}
 	
 	@Override
@@ -208,6 +229,11 @@ public class AddAgentPanel extends FlowPanel implements IManager {
 		inputEmailAgent.setValue("");
 		passwordAgent.setValue("");
 		passwordAgent2.setValue("");
+		
+		setValidDataStyle(null, inputEmailAgent);
+		setValidDataStyle(null, passwordAgent);
+		setValidDataStyle(null, passwordAgent2);
+		setValidDataStyle(null, citySuggestBox);
 		
 		addedCities.clear();
 		citiesCellList.setRowData(addedCities);

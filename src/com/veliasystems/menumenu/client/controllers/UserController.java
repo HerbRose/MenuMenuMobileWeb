@@ -76,21 +76,24 @@ public class UserController {
 	public void addUser(User user){
 		
 		final User userToAdd = user;
+		
+		PagesController.showWaitPanel();
+		
 		storeService.addUser(user, new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
-				// TODO Auto-generated method stub
 				users.put(userToAdd.getEmail(), userToAdd);
 				notifyAllObservers();
-				History.back();
+				PagesController.hideWaitPanel();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				log.warning(caught.getMessage());
+				log.warning(caught.getMessage()); 
+				PagesController.hideWaitPanel();
 				Window.alert("Connection error. Please try again later");
+				
 			}
 		});
 	}
@@ -199,17 +202,19 @@ public class UserController {
 	
 	public void removeUser(String user){
 		
+		PagesController.showWaitPanel();
 		storeService.removeUser(users.get(user), new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-					
+				PagesController.hideWaitPanel();
 			}
 
 			@Override
 			public void onSuccess(String email) {
-				Document.get().getElementById("load").setClassName(R.LOADED);
 				if(!email.equalsIgnoreCase("null")) users.remove(email);
+				notifyAllObservers();
+				PagesController.hideWaitPanel();
 			}
 		});
 	}

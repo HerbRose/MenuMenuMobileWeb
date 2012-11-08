@@ -95,10 +95,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 		}
         
         @Override
-		public void setEmptyBoard(ImageBlob imageBlob) {
+		public String setEmptyBoard(ImageBlob imageBlob) {
 			
 			Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
-			if(imgQuery == null) return;
+			if(imgQuery == null) return null;
 			List<ImageBlob> imgList = imgQuery.filter("restId =", "0").list();
 			for (ImageBlob imageBlob2 : imgList) {
 				imageBlob2.setRestaurantId("1");
@@ -106,6 +106,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements BlobService
 			}
 			imageBlob.setRestaurantId("0");
 			dao.ofy().put(imageBlob);
+			return imageBlob.getId();
 		}
         
         private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {

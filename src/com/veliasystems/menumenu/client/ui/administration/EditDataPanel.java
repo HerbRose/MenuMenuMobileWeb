@@ -32,6 +32,7 @@ public class EditDataPanel extends FlowPanel implements IManager {
 	public EditDataPanel() {
 
 		setStyleName("barPanel", true);
+		show(false);
 
 		inputOldPasswordLabel = new Label(Customization.INPUT_OLD_PASSWORD);
 

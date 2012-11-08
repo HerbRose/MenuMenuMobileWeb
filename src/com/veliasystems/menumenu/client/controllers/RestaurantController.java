@@ -183,7 +183,7 @@ public class RestaurantController {
 				
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
 				
-				Document.get().getElementById("load").setClassName(R.LOADED);
+				PagesController.hideWaitPanel();
 				notifyAllObservers();
 				History.back();
 			}
@@ -391,40 +391,23 @@ public class RestaurantController {
 				restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
 				
 				restMapView.get(restaurant.getId()).checkChanges();
-				Document.get().getElementById("load").setClassName("hide");
+				PagesController.hideWaitPanel();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Document.get().getElementById("load").setClassName("hide");
+				PagesController.hideWaitPanel();
 				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
 		
 	}
-	
-	public void setEmptyBoard(ImageBlob imageBlob){
-		blobService.setEmptyBoard(imageBlob, new AsyncCallback<Void>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-						
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-					
-			}
-		});
-	}
-
-
 
 	public void setMainImage(ImageBlob imgBlob) {
 		
 		final ImageType imageType = imgBlob.getImageType();
 		
-		
+		PagesController.showWaitPanel();
 		storeService.setMainImage(imgBlob, new AsyncCallback<Restaurant>() {
 			
 			@Override
@@ -444,13 +427,13 @@ public class RestaurantController {
 				}
 				
 				restMapView.get(restaurant.getId()).checkChanges();
-				Document.get().getElementById("load").setClassName("hide");
+				PagesController.hideWaitPanel();
 				
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Document.get().getElementById("load").setClassName("hide");
+				PagesController.hideWaitPanel();
 				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
