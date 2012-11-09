@@ -149,7 +149,7 @@ public class UserController {
 	}
 	
 	public void setUserType(String login) {
-		loggedUser = login;
+		
 		
 		Set<String> key = users.keySet();
 		
@@ -158,7 +158,7 @@ public class UserController {
 		for (String userLogin : key) {
 			if(userLogin.equalsIgnoreCase(login)) logUser = users.get(userLogin);
 		}
-		
+		loggedUser = logUser.getEmail();
 		if(logUser.isAdmin()) userType = UserType.ADMIN;
 		else if(logUser.getCitiesId() != null) userType = UserType.AGENT;
 		else userType = UserType.RESTAURATOR;
