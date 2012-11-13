@@ -18,6 +18,7 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.entities.City;
 
 public class AddCity extends JQMPage implements HasClickHandlers{
 
@@ -28,6 +29,8 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	JQMButton saveButton;
 	TextBox nameCity;
 	Label warningLabel = new Label();
+	
+	private CityController cityController = CityController.getInstance();
 	
 	private boolean loaded = false;
 	
@@ -122,14 +125,38 @@ public class AddCity extends JQMPage implements HasClickHandlers{
 	private boolean validate(){
 		String matcher =".*[^-]-.*[^-]";
 		if(nameCity.getText().matches(matcher)) {
-			return true;
+			if(!cityExist(nameCity.getText())){
+				return true;
+			}else{
+				showWarning(Customization.CITY_EXIST_ERROR);
+				return false;
+			}
 		}
-		showWarning();
+		showWarning(Customization.WRONG_CITY_NAME);
 		return false;
 	}
 	
-	private void showWarning(){
-		warningLabel.setText(Customization.WRONG_CITY_NAME);
+	private boolean cityExist(String cityName){
+		
+		String[] newCityName = cityName.split("-");
+		
+		for (City city : cityController.getCitiesList()) {
+			if (cityName.equalsIgnoreCase(city.getCity())) {
+				return true;
+			}
+			String[] cityNameFromServer = city.getCity().split("-");
+			
+			if( (cityNameFromServer[0].replace(" ", "")).equalsIgnoreCase(newCityName[0].replace(" ", "")) &&  (cityNameFromServer[1].replace(" ", "")).equalsIgnoreCase(newCityName[1].replace(" ", "")) ){
+				return true;
+			}
+			
+		}
+		return false;
+	}
+	
+	private void showWarning( String worning){
+		remove(warningLabel);
+		warningLabel.setText(worning);
 		warningLabel.setStyleName("warning");
 		add(warningLabel);
 	}

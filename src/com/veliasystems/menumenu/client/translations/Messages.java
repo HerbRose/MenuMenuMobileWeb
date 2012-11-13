@@ -253,5 +253,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Upload speed depends on size of chosen image and your Internet connection")
 	String largeImageInfo();
 
+	@DefaultStringValue("The city with the same name already exists")
+	String cityExistError();
 
 }
