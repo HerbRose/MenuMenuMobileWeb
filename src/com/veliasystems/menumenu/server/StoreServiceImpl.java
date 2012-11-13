@@ -66,6 +66,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return cityListString;
 	}
 	
+	public City loadCitie( Long cityId) {
+		
+		Query<City> cityQuery = dao.ofy().query(City.class);
+		
+		if(cityQuery == null) return null;
+		
+		City city = cityQuery.filter("id", cityId).get();
+		
+		return city;
+	}
+	
 	public City findCity(Long cityId){
 		return dao.ofy().find(City.class, cityId);
 	}
@@ -341,6 +352,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if (restQuery==null) return new ArrayList<Restaurant>();
 		//System.out.println(restQuery.filter("city =", city).order("name").count());
 		return getImageLists( restQuery.filter("city =", city).order("name").list() );
+	}
+	
+	public List<Restaurant> loadRestaurants( Long cityId ) {
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if (restQuery==null) return new ArrayList<Restaurant>();
+		//System.out.println(restQuery.filter("city =", city).order("name").count());
+		return getImageLists( restQuery.filter("cityId =", cityId).list() );
 	}
 	
 	@Override

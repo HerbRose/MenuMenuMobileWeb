@@ -73,12 +73,10 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 		setRestaurant(r);
 		
 		init();
-
 	}
 	
 	public void setRestaurant(Restaurant r) {
-		this.restaurant = r;
-		
+		this.restaurant = r;	
 	}
 	
 	private void init() {

@@ -108,4 +108,8 @@ public class CityController {
 			}
 		});
 	}
+
+	public City getCity(Long cityId) {
+		return cities.get(cityId);
+	}
 }

@@ -118,6 +118,15 @@
      <url-pattern>/addAdmin</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+     <servlet-name>CopyDataServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.CopyDataServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>CopyDataServlet</servlet-name>
+     <url-pattern>/copyDataServlet</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>

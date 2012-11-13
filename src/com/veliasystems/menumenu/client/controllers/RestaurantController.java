@@ -177,9 +177,9 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(Void result) {
 				
-				restaurantToSave.setLogoImages(new ArrayList<ImageBlob>());
-				restaurantToSave.setProfileImages(new ArrayList<ImageBlob>());
-				restaurantToSave.setMenuImages(new ArrayList<ImageBlob>());
+//				restaurantToSave.setLogoImages(new ArrayList<ImageBlob>());
+//				restaurantToSave.setProfileImages(new ArrayList<ImageBlob>());
+//				restaurantToSave.setMenuImages(new ArrayList<ImageBlob>());
 				
 				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
 				
@@ -189,6 +189,7 @@ public class RestaurantController {
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
+				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
 	}
@@ -359,16 +360,21 @@ public class RestaurantController {
 	public void saveRestaurants(List<Restaurant> restaurantsToSave) {
 		final List<Restaurant> restaurantsSentToServer = restaurantsToSave;
 		
+		if(restaurantsSentToServer == null || restaurantsSentToServer.isEmpty()) return;
+		
+		PagesController.showWaitPanel();
 		storeService.saveRestaurants(restaurantsSentToServer, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				for (Restaurant restaurant : restaurantsSentToServer) {
 					restaurants.put(restaurant.getId(), restaurant);
 				}
+				PagesController.hideWaitPanel();
 				Window.alert("Done");	
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
 				Window.alert(Customization.CONNECTION_ERROR);	
 			}
 		});

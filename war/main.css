@@ -193,14 +193,16 @@
 	text-align: center;
 }
 .details{
-	width: 50px;
+	
 	height: 20px;
 	margin-top: -25px;
 	margin-bottom: 5px;
+	margin-right: 10px;
 	font-size: 10px;
 }
 
 .detailsContent{
+	text-align: center;
 	font-size: 10px;
 	color: red;
 }
@@ -286,6 +288,53 @@ width: 100px;
 	width: 15px !important;
 }
 
-
-
-
+.restaurantListDiv{
+	position: relative;
+}
+.restaurantTableDiv{
+	position: relative;
+	overflow: hidden;
+	
+	border:1px solid #000;
+    border-radius:3px;
+    height: 0px;
+    
+	-webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+    -o-transition: height 1s ease;
+    transition: height 1s ease;
+}
+.blackArrowImage{
+	width: 20px;
+	height: 20px;
+	
+	transition: all 1s;
+	-moz-transition: all 1s; /* Firefox 4 */
+	-webkit-transition: all 1s; /* Safari and Chrome */
+	-o-transition: all 1s; /* Opera */
+}
+.cityNameLabel{
+	display: inline;
+	margin: 0px 0px 0px 10px;
+}
+.arrowToggleButton{
+	display: inline;
+	width: 20px;
+	height: 20px;
+	background-color: rgba(0,0,0,0) !important;
+	background-image: none !important;
+	border: 0px !important;
+	border-color: rgba(0,0,0,0) !important;
+}
+.arrowToggleButton img:ACTIVE, .arrowToggleButton img:FOCUS, .arrowToggleButton:FOCUS {
+	background-color: rgba(0,0,0,0) !important;
+	background-image: none !important;
+	border: 0px !important;
+	outline: none !important;
+}
+.arrowToggleButtonShow img{
+	-webkit-transform:rotate(90deg);
+}
+.arrowToggleButtonHide img{
+	-webkit-transform:rotate(0deg);
+}

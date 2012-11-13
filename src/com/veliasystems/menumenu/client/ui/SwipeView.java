@@ -119,8 +119,15 @@ public class SwipeView extends FlowPanel {
 	private void fillImages(){
 		imagesController.clear(parent);
 		imagesController.clear(parent);
+		int imageCounter = 30;
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
+			imageCounter--;
+		}
+		for( ;imageCounter>=1; ){		
+			MyImage emptyImage = new MyImage(imageCounter);
+			scrollerContainer.insert(emptyImage, 0);
+			imageCounter--;
 		}
 		if(imageType==ImageType.MENU){
 			MyImage emptyBoard = new MyImage(imagesController, new Image(imagesController.getDefoultEmptyProfile().getImageUrl()), parent, imageType);
@@ -156,6 +163,10 @@ public class SwipeView extends FlowPanel {
 			return;
 		}
 		scrollerContainer.add(newImage);
+	}
+	
+	private void addEmptyCliche( int clicheNumber){
+		
 	}
 	
 	private void setMyTitle( String title ) {

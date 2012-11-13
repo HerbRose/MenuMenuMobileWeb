@@ -75,7 +75,6 @@ public class ImagesController {
 	}
 
 	public void setDefoultEmptyProfilImageBlobMap(Map<String, ImageBlob> defoultEmptyProfilImageBlobMap){
-		System.out.println(defoultEmptyProfilImageBlobMap);
 		this.defoultEmptyProfilImageBlobMap = defoultEmptyProfilImageBlobMap;
 	}
 	
