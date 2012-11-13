@@ -290,6 +290,12 @@ public class RestaurantController {
 		return oldImages;
 	}
 	
+	/**
+	 * 
+	 * @param restaurantId
+	 * @param imageType
+	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
+	 */
 	public void afterCrop(Long restaurantId, ImageType imageType) {
 		
 		final long myRestaurantId = restaurantId;
@@ -299,29 +305,45 @@ public class RestaurantController {
 		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
 			@Override
 			public void onSuccess(List<ImageBlob> result) {
+				
+				if(result == null || result.isEmpty()){
+					Window.alert("Please refresh page");
+					return;
+				}
+				
+				Long restaurantId = Long.parseLong(result.get(0).getRestaurantId());
+				
+				List<ImageBlob> imagesBlobs = getImagesList(result.get(0).getImageType(), restaurantId);
+				imagesBlobs.clear();
 				for (ImageBlob imageBlob : result) {
-					boolean isIn = false;
-					if(oldImages != null){
-						for (ImageBlob oldImageBlob : oldImages) {
-							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
-								isIn = true;
-							}
-						}
-					}
-					if (!isIn) {
-						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
-						if(imagList == null){
-							imagList = new ArrayList<ImageBlob>();
-						}
-						imagList.add(imageBlob);
-					}
+					imagesBlobs.add(imageBlob);
+//					boolean isIn = false;
+//					if(oldImages != null){
+//						for (ImageBlob oldImageBlob : oldImages) {
+//							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
+//								isIn = true;
+//							}
+//						}
+//					}
+//					if (!isIn) {
+//						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
+//						if(imagList == null){
+//							imagList = new ArrayList<ImageBlob>();
+//						}
+//						imagList.add(imageBlob);
+//					}
+					
+					
 				}
 				JQMContext.changePage(restMapView.get(myRestaurantId));
+				PagesController.hideWaitPanel();
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 			}
 		});
+		
+		
 		
 	}
 	

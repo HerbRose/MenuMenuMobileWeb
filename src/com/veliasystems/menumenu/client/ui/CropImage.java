@@ -30,6 +30,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -455,16 +456,18 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			if(bottomYPercentage > 1){
 				bottomYPercentage = 1;
 			}
-				
+			
+			PagesController.showWaitPanel();
 			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
+					PagesController.hideWaitPanel();
 				}
 
 				@Override
 				public void onSuccess(Void result) {
-					restaurantController.afterCrop(restaurantId, imageInsert.getImageType());				
+					restaurantController.afterCrop(restaurantId, imageInsert.getImageType() );				
 				}
 				
 			});	
