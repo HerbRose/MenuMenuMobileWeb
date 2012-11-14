@@ -256,4 +256,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("The city with the same name already exists")
 	String cityExistError();
 
+	@DefaultStringValue("The restaurant with the same name and address already exists")
+	String restaurantExistError();
+	
+	
 }

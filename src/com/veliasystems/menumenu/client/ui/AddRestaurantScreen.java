@@ -10,6 +10,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -19,6 +20,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -45,7 +47,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	Label nameUser;
 	Label surnameUser;
 	
-	TextBox cityText = new TextBox();
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
 	TextBox mailRestaurantTextBox = new TextBox();
@@ -64,6 +65,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	private boolean loaded = false;
 	
 	private CityController cityController = CityController.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 
 	{
 		this.addClickHandler( new ClickHandler() {
@@ -92,7 +94,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		
 		if(clickedX>= buttonX && (clickedX <= buttonX + buttonWidth) && clickedY >= buttonY && (clickedY <= buttonY + buttonHeight)){
 		
-			if(checkFields()){	
+			if(validate()){	
 				restaurant = new Restaurant();
 				restaurant.setName(nameText.getText());
 				
@@ -213,7 +215,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	@Override
 	protected void onPageShow() {
 		
-		
+		clearData();
 		if(!loaded){
 			if(isToCity){
 				backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE );
@@ -231,14 +233,33 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 			loaded = true;
 		}
 		
-		nameText.setText("");
-		adressText.setText("");
-		nameText.removeStyleName("redShadow");
-		adressText.removeStyleName("redShadow");
-		warning.setText("");
+		
+		
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	
+	private void clearData() {
+		nameText.setText("");
+		adressText.setText("");
+		mailRestaurantTextBox.setText("");
+		mailUserTextBox.setText("");
+		nameUserTextBox.setText("");
+		phoneRestaurantTextBox.setText("");
+		phoneUserTextBox.setText("");
+		surnameUserTextBox.setText("");
+		warning.setText("");
+		
+		setValidDataStyle(null, nameText);
+		setValidDataStyle(null, adressText);
+		setValidDataStyle(null, mailRestaurantTextBox);
+		setValidDataStyle(null, mailUserTextBox);
+		setValidDataStyle(null, mailUserTextBox);
+		setValidDataStyle(null, phoneRestaurantTextBox);
+		setValidDataStyle(null, phoneUserTextBox);
+		setValidDataStyle(null, surnameUserTextBox);
+	}
+
+
 	private void setContentHeader(){
 		header = new JQMHeader(Customization.RESTAURANTS);
 		header.setFixed(true);
@@ -254,29 +275,126 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		saveButton.setId("saveButton");
 	}
 	
-	private boolean checkFields(){
+	private boolean validate(){
+		warning.setStyleName("warning");
+		warning.setText("");
+		add(warning);
 		if(!nameText.getText().isEmpty() && !adressText.getText().isEmpty()){
-			return true;
+			if(restaurantExist()){
+				setValidDataStyle(false, nameText);
+				setValidDataStyle(false, adressText);
+				warning.setText(Customization.RESTAURANT_EXIST_ERROR);
+				return false;
+			}else{
+				setValidDataStyle(true, nameText);
+				setValidDataStyle(true, adressText);
+			}
+		}
+		
+		boolean isCorrect = true;
+		
+		if(nameText.getText().isEmpty() && adressText.getText().isEmpty()){
+			warning.setText(Customization.EMPTYBOTHDATA);
+			setValidDataStyle(false, nameText);
+			setValidDataStyle(false, adressText);
+			isCorrect = false;
+		}else{
+			if(nameText.getText().isEmpty()){
+				warning.setText(Customization.EMPTYNAME);
+				setValidDataStyle(false, nameText);
+				isCorrect = false;
+			}else{
+				setValidDataStyle(true, nameText);
+			}
+			if(adressText.getText().isEmpty()){
+				warning.setText(warning.getText()+ " \n"+ Customization.EMPTYADRESS);
+				setValidDataStyle(false, adressText);
+				isCorrect = false;
+			}else{
+				setValidDataStyle(true, adressText);
+			}
+		}
+		if(!mailRestaurantTextBox.getText().isEmpty() ){
+			if(!Util.isValidEmail(mailRestaurantTextBox.getText())){
+				setValidDataStyle(false, mailRestaurantTextBox);
+				isCorrect = false;
+			}else{
+				setValidDataStyle(true, mailRestaurantTextBox);
+			}
+		}else{
+			setValidDataStyle(null, mailRestaurantTextBox);
+		}
+		if(!phoneRestaurantTextBox.getText().isEmpty() ){
+			if(!Util.isValidPhoneNumber(phoneRestaurantTextBox.getText())){
+				setValidDataStyle(false, phoneRestaurantTextBox);
+				isCorrect = false;
+			}else{
+				setValidDataStyle(true, phoneRestaurantTextBox);
+			}
 		}
 		else{
-			if(nameText.getText().isEmpty() && adressText.getText().isEmpty()){
-				warning.setText(Customization.EMPTYBOTHDATA);
-				nameText.addStyleName("redShadow");
-				adressText.addStyleName("redShadow");
-			}else if(nameText.getText().isEmpty()){
-				warning.setText(Customization.EMPTYNAME);
-				nameText.addStyleName("redShadow");
-			}else {
-				warning.setText(Customization.EMPTYADRESS);
-				adressText.addStyleName("redShadow");
-			}
-			warning.setStyleName("warning");
-			add(warning);
-			
+			setValidDataStyle(null, phoneRestaurantTextBox);
 		}
-		return false;
+		if(!mailUserTextBox.getText().isEmpty()){
+			if(!Util.isValidEmail(mailUserTextBox.getText())){
+				setValidDataStyle(false, mailUserTextBox);
+				isCorrect = false;
+			}else{
+				setValidDataStyle(true, mailUserTextBox);
+			}
+		}else{
+			setValidDataStyle(null, mailUserTextBox);
+		}
+		if(!phoneUserTextBox.getText().isEmpty()){
+			if(!Util.isValidPhoneNumber(phoneUserTextBox.getText())){
+				setValidDataStyle(false, phoneUserTextBox);
+				isCorrect = false;
+			}else{
+				setValidDataStyle(true, phoneUserTextBox);
+			}
+		}else{
+			setValidDataStyle(null, phoneUserTextBox);
+		}
+		return isCorrect;
 	}
 
+	/**
+	 * sets the right shadow around the widget
+	 * @param isCorrect - if <b>true</b> sets green shadow, if <b>false</b> sets red shadow, if <b>null</b> hide all shadows
+	 * @param widget - widget
+	 */
+	private void setValidDataStyle(Boolean isCorrect, Widget widget){
+		if(widget == null) return;
+		
+		String correct = "greenShadow";
+		String unCorrect = "redShadow";
+		
+		if(isCorrect == null){
+			widget.setStyleName(correct, false);
+			widget.setStyleName(unCorrect, false);
+			return;
+		}
+		widget.setStyleName(correct, isCorrect);
+		widget.setStyleName(unCorrect, !isCorrect);
+	}
+	
+	/**
+	 * 
+	 * @return true if restaurant exist
+	 */
+	private boolean restaurantExist(){
+		String cityName = cityListBox.getItemText(cityListBox.getSelectedIndex());
+		List<Restaurant> restaurants = restaurantController.getRestaurantsInCity(cityName);
+		
+		for (Restaurant restaurant : restaurants) {
+			if( (restaurant.getName().replaceAll(" ", "").equals(nameText.getText().replaceAll(" ", "")))  &&
+			    (restaurant.getAddress().replaceAll(" ", "").equals(adressText.getText().replaceAll(" ", ""))) ){
+				return true;
+			}
+		}
+		
+		return false;
+	}
 		
 	@Override
 	public void onChange() {

@@ -137,8 +137,6 @@ public class AddAdminPanel extends FlowPanel implements IManager {
 		setValidDataStyle(null, passwordAdmin);
 		passwordAdmin2.setValue("");
 		setValidDataStyle(null, passwordAdmin2);
-		
-		
 	}
 
 	@Override

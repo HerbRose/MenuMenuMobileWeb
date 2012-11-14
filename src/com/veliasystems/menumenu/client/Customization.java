@@ -88,6 +88,7 @@ public class Customization {
 	public static final String REMOVE_USERS = translated.removeUsers();
 	public static String INFO = translated.largeImageInfo();
 	public static final String CITY_EXIST_ERROR = translated.cityExistError();
+	public static final String RESTAURANT_EXIST_ERROR = translated.restaurantExistError();
 };
 	
 	

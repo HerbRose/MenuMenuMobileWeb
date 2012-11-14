@@ -19,13 +19,36 @@ public class Util
 		   return (long) (Math.random() * range);
 		}
 	
-    public static boolean isValidEmail(String email)
-    {
+    public static boolean isValidEmail(String email){
         if (email == null || email.isEmpty()) return false;
         if (email.matches("[^\\s@]+@[^\\s@]+\\.[a-zA-Z]+"))
                 return true;
         else
                 return false;
+    }
+
+    /**
+     * valid numbers example:
+     * <ul>
+     * 	<li>6365088</li>
+     *  <li>636 50 88 </li>
+     *  <li>636:50:88 </li>
+     *  <li>636-50-88 </li>
+     *  <li>+486365088</li>
+     *  <li>+48 636 50 88 </li>
+     *  <li>+48:636:50:88 </li>
+     *  <li>+48-636-50-88 </li>
+     *  <li>different combinations</li>
+     * </ul>
+     * @param phoneNumber 
+     * @return true if correct
+     */
+    public static boolean isValidPhoneNumber(String phoneNumber){
+    	if (phoneNumber == null || phoneNumber.isEmpty()) return false;
+    	if(phoneNumber.matches("\\+?(\\s|[0-9])+((\\s|[0-9])+(:|-)?)+[0-9]"))
+    		return true;
+        else
+            return false;
     }
 
     private static Boolean ie6 = null;
