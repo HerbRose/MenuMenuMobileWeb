@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -242,28 +243,35 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		case PROFILE:
 			zoomInButton = new JQMButton("");
 			zoomInButton.setIcon(DataIcon.PLUS);
-			zoomInButton.setIconPos(IconPos.NOTEXT);
+			zoomInButton.setIconPos(IconPos.TOP);
+			//zoomInButton.setSize("40px", "40px");
+			//zoomInButton.setStyleName("cropButton");
 			
 			zoomOutButton = new JQMButton("");
 			zoomOutButton.setIcon(DataIcon.MINUS);
-			zoomOutButton.setIconPos(IconPos.NOTEXT);
+			zoomOutButton.setIconPos(IconPos.TOP);
+			//zoomOutButton.setStyleName("cropButton");
 			break;
 		default:
 			zoomInButton = new JQMButton("");
 			zoomInButton.setIcon(DataIcon.PLUS);
-			zoomInButton.setIconPos(IconPos.NOTEXT);
+			zoomInButton.setIconPos(IconPos.TOP);
+			//zoomInButton.setStyleName("cropButton");
 			
 			zoomOutButton = new JQMButton("");
 			zoomOutButton.setIcon(DataIcon.MINUS);
-			zoomOutButton.setIconPos(IconPos.NOTEXT);
+			zoomOutButton.setIconPos(IconPos.TOP);
+			//zoomOutButton.setStyleName("cropButton");
 			
 			moveLeftButton = new JQMButton("");
 			moveLeftButton.setIcon(DataIcon.RIGHT);
-			moveLeftButton.setIconPos(IconPos.NOTEXT);
+			moveLeftButton.setIconPos(IconPos.TOP);
+			//moveLeftButton.setStyleName("cropButton");
 			
 			moveRightButton = new JQMButton("");
 			moveRightButton.setIcon(DataIcon.LEFT);
-			moveRightButton.setIconPos(IconPos.NOTEXT);
+			moveRightButton.setIconPos(IconPos.TOP);
+			//moveRightButton.setStyleName("cropButton");	
 			toolPanel.add(moveRightButton);
 			toolPanel.add(moveLeftButton);
 			
@@ -275,9 +283,23 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		cropButton = new JQMButton("");
 		cropButton.setIcon(DataIcon.CHECK);
 		cropButton.setIconPos(IconPos.NOTEXT);
+		System.out.println("width :" + widthOfBackImage);
+		
+		switch(imageInsert.getImageType()){
+		case PROFILE:
+			toolPanel.getElement().getStyle().setMarginTop(-420, Unit.PX);
+			toolPanel.getElement().getStyle().setTop(100, Unit.PX);
+			break;
+			default:
+				toolPanel.getElement().getStyle().setMarginTop(-widthOfBackImage, Unit.PX);
+				toolPanel.getElement().getStyle().setTop(50, Unit.PX);
+				toolPanel.getElement().getStyle().setHeight(350, Unit.PX);
+		}
+		
 		toolPanel.add(zoomInButton);
 		toolPanel.add(zoomOutButton);
-		image.add(toolPanel);
+		
+		add(toolPanel);
 	
 		zoomInButton.addClickHandler(new ClickHandler() {
 			
@@ -487,7 +509,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		int ButtonX = (int) button.getElement().getAbsoluteLeft();
 		int ButtonY = (int) button.getElement().getAbsoluteTop();
 		int ButtonWidth = (int) button.getElement().getClientWidth();
-		int ButtonHeight = (int) button.getElement().getClientWidth();
+		int ButtonHeight = (int) button.getElement().getClientHeight();
 
 		int ButtonStartX = ButtonX;
 		int ButtonStopX = ButtonX + ButtonWidth;

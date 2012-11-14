@@ -174,8 +174,13 @@
 }
 
 .toolPanel{
-	width: 500px;
-	top: 30px;
+	position: relative;
+	float: right;
+	z-index: 14;
+}
+.cropButton{
+	width: 25px !important;
+	height: 25px !important;
 }
 
 .jsonArea{

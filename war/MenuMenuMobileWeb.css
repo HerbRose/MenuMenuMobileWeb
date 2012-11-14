@@ -66,12 +66,6 @@ h1 {
 	height: 100%;
 }
 
-.toolPanel{
-	position: absolute;
-	margin-top: -35px;
-	z-index: 14;
-}
-
 .addButtonCity{
 	top: 10px;
 }
