@@ -41,82 +41,87 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
 public class SwipeView extends FlowPanel {
-	
+
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
-	
+
 	private List<ImageBlob> imageBlobList;
 	private String title = "";
 	private String mainImageUrl = "";
-	
+
 	private CustomScrollPanel wrapper = new CustomScrollPanel();
 	private FlowPanel scrollerContainer = new FlowPanel();
 	private ImagesController imagesController = ImagesController.getInstance();
-	
+
 	private FlowPanel titleDiv = new FlowPanel();
 	private FlowPanel cameraDiv = new FlowPanel();
 	private FlowPanel cameraContainerDiv = new FlowPanel();
-	
+
 	private FileUpload fileUpload = new FileUpload();
 	private MyUploadForm formPanel;
 	private RestaurantImageView parent;
-	
+
 	private Restaurant restaurant;
 	private ImageType imageType;
 	private Image cameraImg = new Image("img/camera.png");
-	
+
 	private LoadedPageController loadedPageController;
-	
-	private String osType =Navigator.getPlatform();
-	private RestaurantController restaurantController = RestaurantController.getInstance();
-	
-	public SwipeView(Restaurant restaurant, ImageType imageType, RestaurantImageView parent) {
-		
-		loadedPageController=LoadedPageController.getInstance();
+
+	private String osType = Navigator.getPlatform();
+	private RestaurantController restaurantController = RestaurantController
+			.getInstance();
+
+	public SwipeView(Restaurant restaurant, ImageType imageType,
+			RestaurantImageView parent) {
+
+		loadedPageController = LoadedPageController.getInstance();
 		this.parent = parent;
 		this.restaurant = restaurant;
 		this.imageType = imageType;
 		fillData(imageType);
 
 		wrapper.addStyleName("wrapper");
-		
+
 		setUpload();
 		scrollerContainer.addStyleName("scroller");
-		
+
 		fillImages();
 		wrapper.setWidget(scrollerContainer);
 		add(wrapper);
 		setMyTitle(title);
-		
+
 		addStyleName("swipeView");
 	}
-	
-	private void fillData(ImageType imageType){
+
+	private void fillData(ImageType imageType) {
 		switch (imageType) {
 		case LOGO:
 			imageBlobList = restaurant.getLogoImages();
 			title = Customization.LOGO_PICTURE_TITLE;
-			mainImageUrl = restaurant.getMainLogoImageString()!=null ? restaurant.getMainLogoImageString() : "";
+			mainImageUrl = restaurant.getMainLogoImageString() != null ? restaurant
+					.getMainLogoImageString() : "";
 			break;
 		case MENU:
 			imageBlobList = restaurant.getMenuImages();
 			title = Customization.MAENU_PICTURE_TITLE;
-			mainImageUrl = restaurant.getMainMenuImageString()!=null ? restaurant.getMainMenuImageString() : "";
+			mainImageUrl = restaurant.getMainMenuImageString() != null ? restaurant
+					.getMainMenuImageString() : "";
 			break;
 		case PROFILE:
 			imageBlobList = restaurant.getProfileImages();
 			title = Customization.PROFILE_PICTURE_TITLE;
-			mainImageUrl = restaurant.getMainProfileImageString() !=null ? restaurant.getMainProfileImageString() : "";
+			mainImageUrl = restaurant.getMainProfileImageString() != null ? restaurant
+					.getMainProfileImageString() : "";
 			break;
 		default:
 			break;
 		}
-		if(imageBlobList == null){
+		if (imageBlobList == null) {
 			this.imageBlobList = new ArrayList<ImageBlob>();
 		}
 
 	}
-	
-	private void fillImages(){
+
+	private void fillImages() {
 		imagesController.clear(parent);
 		imagesController.clear(parent);
 		int imageCounter = 30;
@@ -124,225 +129,249 @@ public class SwipeView extends FlowPanel {
 			addImage(imageBlob);
 			imageCounter--;
 		}
-		for( ;imageCounter>=1; ){		
+		for (; imageCounter >= 1;) {
 			MyImage emptyImage = new MyImage(imageCounter);
 			scrollerContainer.insert(emptyImage, 0);
 			imageCounter--;
 		}
-		if(imageType==ImageType.MENU){
-			MyImage emptyBoard = new MyImage(imagesController, new Image(imagesController.getDefoultEmptyProfile().getImageUrl()), parent, imageType);
+		if (imageType == ImageType.MENU) {
+			MyImage emptyBoard = new MyImage(imagesController, new Image(
+					imagesController.getDefoultEmptyProfile().getImageUrl()),
+					parent, imageType);
 			scrollerContainer.insert(emptyBoard, 0);
 		}
-		
-		
+
 	}
-	private void addImage(ImageBlob imageBlob){
+
+	private void addImage(ImageBlob imageBlob) {
 		MyImage newImage;
 		loadedPageController.addImage(getRestId());
 		newImage = new MyImage(imagesController, imageBlob, parent, imageType);
-		
+
 		newImage.image.addLoadHandler(new LoadHandler() {
-			
+
 			@Override
 			public void onLoad(LoadEvent event) {
 				loadedPageController.removeImage(getRestId());
 			}
 		});
 		newImage.image.addErrorHandler(new ErrorHandler() {
-			
+
 			@Override
 			public void onError(ErrorEvent event) {
 				// TODO Auto-generated method stub
 				loadedPageController.removeImage(getRestId());
 			}
 		});
-		
-		if(mainImageUrl.equals(imageBlob.getImageUrl())){
+
+		if (mainImageUrl.equals(imageBlob.getImageUrl())) {
 			imagesController.selectImage(newImage);
 			scrollerContainer.insert(newImage, 0);
 			return;
 		}
 		scrollerContainer.add(newImage);
 	}
-	
-	private void addEmptyCliche( int clicheNumber){
-		
+
+	private void addEmptyCliche(int clicheNumber) {
+
 	}
-	
-	private void setMyTitle( String title ) {
+
+	private void setMyTitle(String title) {
 		titleDiv.addStyleName("titleDiv");
 		Element span = DOM.createSpan();
 		span.setInnerText(title);
-		
+
 		titleDiv.getElement().insertFirst(span);
 		add(titleDiv);
 	}
-	
-	private void setAndroidUpload(){
+
+	private void setAndroidUpload() {
 		formPanel.setVisible(true);
 		formPanel.addStyleName("androidForm");
 		cameraContainerDiv.add(formPanel);
-		
+
 	}
-	
-	private void setCameraImg(){
-		cameraDiv.add( cameraImg );
+
+	private void setCameraImg() {
+		cameraDiv.add(cameraImg);
 		cameraDiv.addStyleName("cameraDiv");
-		
+
 		cameraContainerDiv.add(cameraDiv);
 	}
-	
-	private void setAppleUpload(){
-		
+
+	private void setAppleUpload() {
+
 		setCameraImg();
 		cameraImg.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
-				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {		
-						@Override
-						public void onSuccess(String result) {
-							String callbackURL = R.HOST_URL;
-							
-							onUploadFormLoaded(restaurant.getName() + "_" + imageType, fileUpload.getElement(), result, callbackURL);
-							
-							Cookies.setCookie(R.IMAGE_TYPE, imageType.toString());
-							
-							clickOnInputFile(fileUpload.getElement());
-							
-						}
-						@Override
-						public void onFailure(Throwable caught) {
-							
-						}
-				});
+				blobService.getBlobStoreUrl(getRestId(), getImageType(),
+						new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								String callbackURL = R.HOST_URL;
+
+								onUploadFormLoaded(restaurant.getName() + "_"
+										+ imageType, fileUpload.getElement(),
+										result, callbackURL);
+
+								Cookies.setCookie(R.IMAGE_TYPE,
+										imageType.toString());
+
+								clickOnInputFile(fileUpload.getElement());
+
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+
+							}
+						});
 			}
-			
+
 		});
 	}
-	private void setOtherUpload(){
+
+	private void setOtherUpload() {
 		setCameraImg();
-		
+
 		cameraImg.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				clickOnInputFile(fileUpload.getElement());
 			}
-			
+
 		});
 	}
-	private void setUpload(){
-		
-		formPanel = new MyUploadForm(fileUpload, imageType, restaurant.getId()+"");
+
+	private void setUpload() {
+
+		formPanel = new MyUploadForm(fileUpload, imageType, restaurant.getId()
+				+ "");
 		formPanel.setVisible(false);
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		formPanel.setMethod(FormPanel.METHOD_POST);
 		formPanel.getMainPanel().add(fileUpload);
-		formPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
-			
+		formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				
-				//Window.Location.reload();
+
+				// Window.Location.reload();
 				Document.get().getElementById("load").setClassName("loaded");
 				restaurantController.cropImage(restaurant.getId(), imageType);
 				formPanel.reset();
 			}
 		});
 		
-		if( osType.toLowerCase().indexOf("ipad") >=0 || osType.toLowerCase().indexOf("ipho")>=0 ){ //ipad or iphone
+		if (osType.toLowerCase().indexOf("ipad") >= 0
+		 || osType.toLowerCase().indexOf("ipho") >= 0) { // ipad or
+																// iphone
 			setAppleUpload();
-		}else if(osType.toLowerCase().indexOf("armv") >= 0){ //android
+		} else if (osType.toLowerCase().indexOf("armv") >= 0 
+				|| osType.toLowerCase().indexOf("android")>=0) { // android
 			setAndroidUpload();
-		}else{
+		} else {
 			setOtherUpload();
 		}
+
 		
 		fileUpload.setVisible(true);
 		fileUpload.addChangeHandler(new ChangeHandler() {
-			
+
 			@Override
 			public void onChange(ChangeEvent event) {
 				Document.get().getElementById("load").setClassName("loading");
-				//clickOnInputFile(formPanel.getUploadButton().getElement());
-				blobService.getBlobStoreUrl( getRestId(), getImageType(), new AsyncCallback<String>() {
-					
-					@Override
-					public void onSuccess(String result) {
-						
-						formPanel.setAction(result);
-						formPanel.submit();
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						Document.get().getElementById("load").setClassName("loaded");
-						Window.alert("Problem with upload. Try again");
-						
-					}
-				});
+				// clickOnInputFile(formPanel.getUploadButton().getElement());
+				blobService.getBlobStoreUrl(getRestId(), getImageType(),
+						new AsyncCallback<String>() {
+
+							@Override
+							public void onSuccess(String result) {
+
+								formPanel.setAction(result);
+								formPanel.submit();
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Document.get().getElementById("load")
+										.setClassName("loaded");
+								Window.alert("Problem with upload. Try again");
+
+							}
+						});
 			}
 		});
 
 		cameraContainerDiv.addStyleName("cameraContainerDiv");
 		add(cameraContainerDiv);
 		add(formPanel);
-		
+
 	}
+
 	private static native void clickOnInputFile(Element elem) /*-{
 		elem.click();
-		
+
 	}-*/;
-	
 
-
-	private static native void onUploadFormLoaded(String windowName, Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
+	private static native void onUploadFormLoaded(String windowName,
+			Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
 		window.name = windowName;
-		
-		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="+encodeURI(blobStoreUrl)+"&callbackURL="+encodeURI(callbackURL)+"&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="+encodeURI(callbackURL)+"&returnStatus=false&minVersionRequired=2.1";               
-		
-		$wnd.Picup2.convertFileInput( fileUpload,  { windowName : encodeURI('My Web App'), 'purpose' : encodeURI(url) });
-		
-		window.open('', '_self', ''); 
-		window.close();  
-		
+
+		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
+				+ encodeURI(blobStoreUrl)
+				+ "&callbackURL="
+				+ encodeURI(callbackURL)
+				+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
+				+ encodeURI(callbackURL)
+				+ "&returnStatus=false&minVersionRequired=2.1";
+
+		$wnd.Picup2.convertFileInput(fileUpload, {
+			windowName : encodeURI('My Web App'),
+			'purpose' : encodeURI(url)
+		});
+
+		window.open('', '_self', '');
+		window.close();
+
 	}-*/;
 
-	
 	public String getRestId() {
-		return restaurant.getId()+"";
+		return restaurant.getId() + "";
 	}
-	
+
 	public ImageType getImageType() {
 		return imageType;
 	}
-	
-	public void checkChanges(){
-		
-		imagesController.clear(parent);	
-		scrollerContainer.clear();	
+
+	public void checkChanges() {
+
+		imagesController.clear(parent);
+		scrollerContainer.clear();
 		fillData(imageType);
 		fillImages();
 	}
-	
-	
+
 }
 
 class MyUploadForm extends FormPanel {
 	private VerticalPanel mainPanel = new VerticalPanel();
-	
-	FileUpload fileUpload ;
-	
-	public MyUploadForm( FileUpload fileUpload, ImageType imageType, String restId ) {
-		
+
+	FileUpload fileUpload;
+
+	public MyUploadForm(FileUpload fileUpload, ImageType imageType,
+			String restId) {
+
 		this.fileUpload = fileUpload;
 		mainPanel.add(fileUpload);
 		fileUpload.setName("image");
 		setWidget(mainPanel);
-		
+
 	}
-	
+
 	public VerticalPanel getMainPanel() {
 		return mainPanel;
 	}
