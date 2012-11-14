@@ -1,6 +1,9 @@
 package com.veliasystems.menumenu.client.ui.administration;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,16 +15,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class RestaurantsManagerPanel extends FlowPanel implements IManager {
@@ -188,12 +194,12 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 			}
 		};
 		isClearBoardColumn.setFieldUpdater(clearBoardFieldUpdater);
-
+		nameColumn.setSortable(true);
 		restaurantsCellTable.addColumn(nameColumn, "Restaurant name");
 		restaurantsCellTable.addColumn(addressColumn, "Address");
 		restaurantsCellTable.addColumn(isVisibleForAppColumn, "Visibility");
 		restaurantsCellTable.addColumn(isClearBoardColumn, "Clear Board");
-
+		
 		return restaurantsCellTable;
 	}
 
@@ -212,8 +218,33 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 			if (city == null)
 				continue;
 
-			restaurantsTables.get(cityId).setRowData(
-					restaurantController.getRestaurantsInCity(cityId));
+//			restaurantsTables.get(cityId).setRowData(
+//					restaurantController.getRestaurantsInCity(cityId));
+			
+			
+//			ListHandler<Restaurant> columnSortHandler = new ListHandler<Restaurant>(restaurantController.getRestaurantsInCity(cityId)){
+//			};
+//	
+//			columnSortHandler.setComparator(nameColumn, new Comparator<Restaurant>() {
+//				
+//				@Override
+//				public int compare(Restaurant o1, Restaurant o2) {
+//					if(o1 == o2) return 0;
+//					
+//						if(o1 != null){			
+//							return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+//						}
+//					return -1;
+//				}
+//			});
+			
+			List<Restaurant> nameSorted = restaurantController.getRestaurantsInCity(cityId);
+			if(nameSorted.size() != 0){
+				Collections.sort(nameSorted, new MyComparator());
+			}
+			restaurantsTables.get(cityId).setRowData(nameSorted);
+			
+			
 			restaurantsTables.get(cityId).redraw();
 		}
 
@@ -251,5 +282,12 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 	private native int getHeight(String elementId)/*-{
 	return $wnd.document.getElementById(elementId).offsetHeight;
 }-*/;
+}
+
+class MyComparator implements Comparator<Restaurant> {
+	public int compare(Restaurant o1, Restaurant o2) {	
+		return o1.getName().compareToIgnoreCase(o2.getName());
+	}
+
 }
 
