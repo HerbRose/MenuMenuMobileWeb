@@ -89,6 +89,10 @@ public class Customization {
 	public static String INFO = translated.largeImageInfo();
 	public static final String CITY_EXIST_ERROR = translated.cityExistError();
 	public static final String RESTAURANT_EXIST_ERROR = translated.restaurantExistError();
+
+
+	public static final String WRONG_DATA_ERROR = translated.wrongDataError();
+	public static final String COPY_RESTAURANTS_IN_PROGRESS = translated.copyRestaurantsInProgress();
 };
 	
 	

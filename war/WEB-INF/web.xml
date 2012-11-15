@@ -119,13 +119,13 @@
   </servlet-mapping>
 
   <servlet>
-     <servlet-name>CopyDataServlet</servlet-name>
-     <servlet-class>com.veliasystems.menumenu.server.api.CopyDataServlet</servlet-class>
+     <servlet-name>CopyDataTask</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.tasks.CopyDataTask</servlet-class>
   </servlet>
 
   <servlet-mapping>
-     <servlet-name>CopyDataServlet</servlet-name>
-     <url-pattern>/copyDataServlet</url-pattern>
+     <servlet-name>CopyDataTask</servlet-name>
+     <url-pattern>/copyDataTask</url-pattern>
   </servlet-mapping>
   
   <servlet>

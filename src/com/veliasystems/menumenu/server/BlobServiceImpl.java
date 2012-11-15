@@ -1,25 +1,43 @@
 package com.veliasystems.menumenu.server;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.files.AppEngineFile;
+import com.google.appengine.api.files.FileReadChannel;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
+import com.google.appengine.api.files.FileWriteChannel;
+import com.google.appengine.api.files.FinalizationException;
+import com.google.appengine.api.files.LockException;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
@@ -30,8 +48,12 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+import com.google.apphosting.api.ApiProxy.RequestTooLargeException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -48,9 +70,9 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	private DAO dao = new DAO();
 
-	 private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+	private BlobstoreService blobstoreService = BlobstoreServiceFactory
+			.getBlobstoreService();
 
-	
 	private static final Logger log = Logger.getLogger(BlobServiceImpl.class
 			.getName());
 
@@ -347,60 +369,170 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		write(os, "\r\n");
 	}
 
+	
 	public void copyBlob(ImageBlob imageBlob, String newRestaurantId) {
 
-		
-		BlobKey blobKey = new BlobKey(
-				imageBlob.getBlobKey());
-		ImagesService imagesService = ImagesServiceFactory.getImagesService();
-		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
-		
-		Transform cropTransform = ImagesServiceFactory.makeCrop(0, 0, 1, 1);
-		oldImage = imagesService.applyTransform(cropTransform, oldImage);
-		
-		byte[] newImageData = oldImage.getImageData();
-		
-		if(newImageData == null){
-			return;
-		}
+		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+		BlobKey newBlobKey = null;
 
-		String url = BlobstoreServiceFactory.getBlobstoreService()
-				.createUploadUrl(
-						"/blobUpload?restId=" + newRestaurantId
-								+ "&imageType="
-								+ imageBlob.getImageType().name());
-		URLFetchService urlFetch = URLFetchServiceFactory.getURLFetchService();
+		BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
+		BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+		// Transform cropTransform = ImagesServiceFactory.makeRotate(0);
+		// Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+
+		// Image newImage = imagesService.applyTransform(cropTransform,
+		// oldImage);
+
+		// byte[] newImageData = getImageBytes(newBlobKey, blobInfo.getSize());
+		log.info("Start copy imageBlob: " + imageBlob.getBlobKey() + " blobSize: " + blobInfo.getSize());
 		try {
-			String id = imageBlob.getId();
-			HTTPRequest request = new HTTPRequest(new URL(url),
-					HTTPMethod.POST, FetchOptions.Builder.withDeadline(20.0));
-			String boundary = makeBoundary();
-
-			request.setHeader(new HTTPHeader("Content-Type",
-					"multipart/form-data; boundary=" + boundary));
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			try {
-				write(baos, "--" + boundary + "\r\n");
-				writeParameter(baos, "id", id);
-				write(baos, "--" + boundary + "\r\n");
-				writeImage(baos, "save", newImageData);
-				write(baos, "--" + boundary + "--\r\n");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			request.setPayload(baos.toByteArray());
-			try {
-				urlFetch.fetch(request);
-			} catch (IOException e) {
-				// Need a better way of handling Timeout exceptions here - 20
-				// second deadline
-			}
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			newBlobKey = writeToBlobstore("image/jpeg", "imageCopy.jpg",
+					getImageBytes(blobKey, blobInfo.getSize()));
+			ImageBlob newImageBlob = new ImageBlob(newRestaurantId,
+					newBlobKey.getKeyString(), new Date(),
+					imageBlob.getImageType());
+			dao.ofy().put(newImageBlob);
+		} catch (IOException e) {
+			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
+					+ e.getStackTrace());
+			// e.printStackTrace();
 		}
+
+		// BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+		// ImagesService imagesService =
+		// ImagesServiceFactory.getImagesService();
+		// Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+		//
+		// // Transform cropTransform = ImagesServiceFactory.makeRotate(0);
+		// // Image newImage = imagesService.applyTransform(cropTransform,
+		// // oldImage);
+		//
+		// byte[] newImageData = oldImage.getImageData();
+		//
+		// if (newImageData == null) {
+		// return;
+		// }
+		//
+		// String url = BlobstoreServiceFactory.getBlobstoreService()
+		// .createUploadUrl(
+		// "/blobUpload?restId=" + newRestaurantId + "&imageType="
+		// + imageBlob.getImageType().name());
+		// URLFetchService urlFetch =
+		// URLFetchServiceFactory.getURLFetchService();
+		// try {
+		// String id = imageBlob.getId();
+		// HTTPRequest request = new HTTPRequest(new URL(url),
+		// HTTPMethod.POST, FetchOptions.Builder.withDeadline(20.0));
+		// String boundary = makeBoundary();
+		//
+		// request.setHeader(new HTTPHeader("Content-Type",
+		// "multipart/form-data; boundary=" + boundary));
+		// ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		//
+		// try {
+		// write(baos, "--" + boundary + "\r\n");
+		// writeParameter(baos, "id", id);
+		// write(baos, "--" + boundary + "\r\n");
+		// writeImage(baos, "save", newImageData);
+		// write(baos, "--" + boundary + "--\r\n");
+		// } catch (IOException e1) {
+		// e1.printStackTrace();
+		// }
+		// request.setPayload(baos.toByteArray());
+		// try {
+		// urlFetch.fetch(request);
+		// } catch (RequestTooLargeException e) {
+		// log.log(Level.SEVERE,
+		// "RequestTooLargeException- ImageBlobKey: "
+		// + imageBlob.getBlobKey()
+		// + " newImageData length: "
+		// + newImageData.length + "\n" + e);
+		// } catch (IOException e) {
+		// // Need a better way of handling Timeout exceptions here - 20
+		// // second deadline
+		// }
+		//
+		// } catch (MalformedURLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+	}
+
+	private byte[] getImageBytes(BlobKey blobKey, long filesize) {
+
+		if (blobKey == null) {
+			return null;
+		}
+
+		long chunkSize = BlobstoreService.MAX_BLOB_FETCH_SIZE -1; // 1024;
+		long startIndex = 0;
+		long endIndex = chunkSize;
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		if (filesize > BlobstoreService.MAX_BLOB_FETCH_SIZE) {
+
+			boolean theend = false;
+			while (theend == false) {
+				if (endIndex == filesize) {
+					theend = true;
+				}
+
+				// System.out.println("startIndex=" + startIndex + " endIndex="
+				// + endIndex);
+
+				byte[] b = blobstoreService.fetchData(blobKey, startIndex,
+						endIndex);
+				try {
+					out.write(b);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				startIndex = endIndex + 1;
+				endIndex = startIndex + chunkSize;
+				if (endIndex > filesize) {
+					endIndex = filesize;
+				}
+			}
+
+		} else {
+			byte[] b = blobstoreService.fetchData(blobKey, 0, filesize);
+			try {
+				out.write(b);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		byte[] filebytes = out.toByteArray();
+
+		// System.out.println("getImageBytes(): filebytes size: " +
+		// filebytes.length + " blobData.size=" + blobData.getSize());
+
+		return filebytes;
+	}
+
+	private BlobKey writeToBlobstore(String contentType, String fileName,
+			byte[] filebytes) throws IOException {
+		// Get a file service
+		FileService fileService = FileServiceFactory.getFileService();
+		AppEngineFile file = fileService.createNewBlobFile(contentType,
+				fileName);
+		// Open a channel to write to it
+		boolean lock = true;
+		FileWriteChannel writeChannel = null;
+		writeChannel = fileService.openWriteChannel(file, lock);
+		
+		// lets buffer the bitch
+		BufferedInputStream in = new BufferedInputStream(
+				new ByteArrayInputStream(filebytes));
+		byte[] buffer = new byte[524288]; // 0.5 MB buffers
+		while (in.read(buffer) > 0) { // -1 means EndOfStream
+			ByteBuffer bb = ByteBuffer.wrap(buffer);
+			writeChannel.write(bb);
+		}
+		writeChannel.closeFinally();
+		return fileService.getBlobKey(file);
 	}
 
 }

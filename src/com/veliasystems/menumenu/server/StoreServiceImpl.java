@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
@@ -715,6 +718,47 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().delete(user);
 		return user.getEmail();
 	}
+
+	@Override
+	public Map<String, String> copyCityData(String cityIdFrom, String cityIdTo, String email){
+		Long cityIdFromLong;
+		Long cityIdToLong;
+		
+		try {
+			cityIdFromLong = Long.parseLong(cityIdFrom);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		
+		try {
+			cityIdToLong = Long.parseLong(cityIdTo);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		
+
+		City city = loadCitie(cityIdToLong);
+		
+		if(city == null){
+			return null;
+		}
+		
+		List<Restaurant> restaurants = loadRestaurants(cityIdFromLong);
+		
+		if(restaurants == null){
+			return null;
+		}
+		
+		Queue queue = QueueFactory.getDefaultQueue();
+	    queue.add(withUrl("/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityIdTo).param("emailAddress", email));
+		
+	    Map<String, String> response = new HashMap<String, String>();
+	     
+	    response.put("cityIdFrom", cityIdFrom);
+	    response.put("cityIdTo", cityIdTo);
+	    return response;
+	}
+	
 
 
 }

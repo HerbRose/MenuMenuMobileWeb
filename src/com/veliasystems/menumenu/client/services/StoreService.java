@@ -53,4 +53,6 @@ void saveRestaurant( Restaurant r );
 	Restaurant clearBoard(Restaurant restaurant, ImageType imageType);
 
 	String removeUser(User user);
+
+	Map<String, String> copyCityData(String cityIdFrom, String cityIdTo, String email);
 }

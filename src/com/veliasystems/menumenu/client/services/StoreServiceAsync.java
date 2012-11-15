@@ -56,6 +56,9 @@ public interface StoreServiceAsync {
 
 	void removeUser(User user, AsyncCallback<String> callback);
 
+	void copyCityData(String cityIdFrom, String cityIdTo, String email,
+			AsyncCallback<Map<String, String>> callback);
+
 
 	
 

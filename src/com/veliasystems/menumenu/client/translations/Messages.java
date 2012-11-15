@@ -258,6 +258,12 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("The restaurant with the same name and address already exists")
 	String restaurantExistError();
+
+	@DefaultStringValue("Check data and try again")
+	String wrongDataError();
+
+	@DefaultStringValue("The request was sent. This may take more then 10 minutes. You will get a message on your email when finished")
+	String copyRestaurantsInProgress();
 	
 	
 }

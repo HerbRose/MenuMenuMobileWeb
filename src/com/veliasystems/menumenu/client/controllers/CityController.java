@@ -9,7 +9,9 @@ import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -28,7 +30,7 @@ public class CityController {
 	private static CityController instance = null ; //instance of controller
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
-	
+	private UserController userController = UserController.getInstance();
 	private Map<Long, City> cities = new HashMap<Long, City>(); //key is a cityId
 
 	
@@ -112,4 +114,29 @@ public class CityController {
 	public City getCity(Long cityId) {
 		return cities.get(cityId);
 	}
+	
+	public void copyAllDataFromCity(String cityIdFrom, String cityIdTo){
+		PagesController.showWaitPanel();
+		storeService.copyCityData(cityIdFrom, cityIdTo, userController.getLoggedUser().getEmail() , new AsyncCallback<Map<String, String>>() {
+			
+			@Override
+			public void onSuccess(Map<String, String> result) {
+				
+				if(result == null){
+					Window.alert(Customization.WRONG_DATA_ERROR);
+				}else{
+					Window.alert(Customization.COPY_RESTAURANTS_IN_PROGRESS);
+				}
+				PagesController.hideWaitPanel();
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+			}
+		});
+	}
+	
 }

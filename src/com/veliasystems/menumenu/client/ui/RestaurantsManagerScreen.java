@@ -35,6 +35,7 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.ui.administration.AddAdminPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddAgentPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddRestauratorPanel;
+import com.veliasystems.menumenu.client.ui.administration.CityManagerPanel;
 import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyProfilePanel;
 import com.veliasystems.menumenu.client.ui.administration.EditDataPanel;
 import com.veliasystems.menumenu.client.ui.administration.EmailPanel;
@@ -82,6 +83,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private IManager defaultEmptyBoard;
 	private IManager editDataPanel;
 	private IManager removeUsersPanel;
+	private IManager cityManagerPanel;
 
 	private IManager currentlyDisplayedPanel = null;
 	
@@ -290,6 +292,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		add(setDefaultEmptyProfile());
 		add(setEditDataPanel());
 		add(setRemoveUsersPanel());
+		add(setCityManager());
 	}
 
 	/**
@@ -392,10 +395,18 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private FlowPanel setDefaultEmptyProfile() {
 		defaultEmptyBoard = new DefaultEmptyProfilePanel();
 		panelList.put(panelCount++, defaultEmptyBoard);
-		tabBar.addTab(Customization.SET_DEFAULT_EMPTY_PROFIL);
+		tabBar.addTab(defaultEmptyBoard.getName());
 		return (FlowPanel) defaultEmptyBoard;
 	}
 
+	private FlowPanel setCityManager() {
+		cityManagerPanel = new CityManagerPanel();
+		panelList.put(panelCount++, cityManagerPanel);
+		tabBar.addTab(cityManagerPanel.getName());
+		return (FlowPanel) cityManagerPanel;
+	}
+
+	
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) { // <--- IS IT NECESSARY ???
 		return addDomHandler(handler, ClickEvent.getType());
