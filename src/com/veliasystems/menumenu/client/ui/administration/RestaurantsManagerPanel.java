@@ -1,36 +1,38 @@
 package com.veliasystems.menumenu.client.ui.administration;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
-import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class RestaurantsManagerPanel extends FlowPanel implements IManager {
+public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObserver {
 
 	// controllers
 	private RestaurantController restaurantController = RestaurantController
@@ -47,6 +49,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 	private Column<Restaurant, Boolean> isVisibleForAppColumn;
 	private Column<Restaurant, Boolean> isClearBoardColumn;
 	private TextColumn<Restaurant> addressColumn;
+	private Column<Restaurant, String> removeColumn;
 	 //inne
 	// END - pola tablicy
 	
@@ -55,7 +58,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 	private String cityString = "city";
 
 	public RestaurantsManagerPanel() {
-
+		restaurantController.addObserver(this);
 		setStyleName("barPanel", true);
 		show(false);
 
@@ -183,6 +186,26 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 				return false;
 			}
 		};
+		
+		removeColumn = new Column<Restaurant, String>(new ButtonCell()) {
+			
+			@Override
+			public String getValue(Restaurant object) {
+				return Customization.DELETE_IMAGE;
+			}
+			 
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					Restaurant object, NativeEvent event) {
+				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE + "\n" + object.getName() + " " + object.getCity())){
+					restaurantController.deleteRestaurant(object, RestaurantsManagerPanel.class.getName());
+				}
+				super.onBrowserEvent(context, elem, object, event);
+			}
+			
+		};
+		
+		
 		FieldUpdater<Restaurant, Boolean> clearBoardFieldUpdater = new FieldUpdater<Restaurant, Boolean>() {
 
 			@Override
@@ -199,6 +222,8 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 		restaurantsCellTable.addColumn(addressColumn, "Address");
 		restaurantsCellTable.addColumn(isVisibleForAppColumn, "Visibility");
 		restaurantsCellTable.addColumn(isClearBoardColumn, "Clear Board");
+		restaurantsCellTable.addColumn(removeColumn, "Delete restaurant");
+		
 		
 		return restaurantsCellTable;
 	}
@@ -282,6 +307,11 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager {
 	private native int getHeight(String elementId)/*-{
 	return $wnd.document.getElementById(elementId).offsetHeight;
 }-*/;
+
+	@Override
+	public void onChange() {
+		clearData();
+	}
 }
 
 class MyComparator implements Comparator<Restaurant> {

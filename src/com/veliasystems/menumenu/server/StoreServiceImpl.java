@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
@@ -49,6 +52,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	private DAO dao = new DAO();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
+	private BlobstoreService blobstoreService = BlobstoreServiceFactory
+			.getBlobstoreService();
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
 	
 	@Override
@@ -438,8 +443,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public void deleteRestaurant(Restaurant r) {
+		String id = String.valueOf(r.getId());
+			
 		dao.ofy().delete(r);
-		
+		Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
+		if(imageBlobQuery == null) return;
+		List<ImageBlob> imageBlobList = new ArrayList<ImageBlob>();
+		imageBlobList = imageBlobQuery.filter("restId =",id).list();
+		for (ImageBlob imageBlob : imageBlobList) {
+			BlobstoreServiceFactory.getBlobstoreService().delete(
+					new BlobKey(imageBlob.getBlobKey()));
+		}
 	}
 	
 	@Override

@@ -271,5 +271,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Do you want to send copy to you?")
 	String isCopyMailToMe();
 	
+	@DefaultStringValue("Are you sure want to delete this item? Operation can not be undone")
+	String areYouSureWantToDelete();
+	
 	
 }

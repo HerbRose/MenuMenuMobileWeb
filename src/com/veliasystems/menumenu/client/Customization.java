@@ -99,6 +99,9 @@ public class Customization {
 
 
 	public static final String IS_TO_ME_COPY = translated.isCopyMailToMe();
+
+
+	public static final String ARE_YOU_SURE_WANT_DELETE = translated.areYouSureWantToDelete();
 };
 	
 	

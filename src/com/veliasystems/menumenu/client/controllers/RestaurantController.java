@@ -26,7 +26,9 @@ import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.ui.CropImage;
+import com.veliasystems.menumenu.client.ui.RestInfoScreen;
 import com.veliasystems.menumenu.client.ui.RestaurantImageView;
+import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 
 
 
@@ -194,20 +196,24 @@ public class RestaurantController {
 		});
 	}
 	
-	public void deleteRestaurant(Restaurant restaurant){
+	public void deleteRestaurant(Restaurant restaurant, String page){
 		
 		final Restaurant restaurantToDelete = restaurant;
-		
+		final String lastPage = page;
 		storeService.deleteRestaurant(restaurantToDelete, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				restaurants.remove(restaurantToDelete.getId());	 //removing restaurant from our list
-				historyGoBack(2);
+				if(lastPage.equalsIgnoreCase(RestaurantsManagerPanel.class.getName())){
+					
+				}
+				if(lastPage.equalsIgnoreCase(RestInfoScreen.class.getName())){
+					historyGoBack(2);
+				}
 				notifyAllObservers();
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
 				
 			}
 		});

@@ -180,7 +180,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers, IObserv
 
 		if (isClicked(event, removeButton)) {
 
-			RestaurantController.getInstance().deleteRestaurant(restaurant);
+			RestaurantController.getInstance().deleteRestaurant(restaurant, RestInfoScreen.class.getName());
 		}
 		if (isClicked(event, saveButton)) {
 
