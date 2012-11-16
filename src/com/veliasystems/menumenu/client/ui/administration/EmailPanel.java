@@ -6,7 +6,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -14,10 +17,12 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.User;
 
-public class EmailPanel extends FlowPanel implements IManager {
+public class EmailPanel extends FlowPanel implements IManager, IObserver {
 
 	
 	
@@ -28,11 +33,13 @@ public class EmailPanel extends FlowPanel implements IManager {
 	private TextArea messageTextArea;
 	private ListBox addresseeListBox;
 	private Label emptyMailList;
+	private CheckBox toMeMail;
+	private Label isToMeMail;
 
 	private UserController userController = UserController.getInstance();
-
+ 
 	public EmailPanel() {
-		
+		userController.addObserver(this);
 		setStyleName("barPanel", true);
 		show(false);
 		
@@ -40,6 +47,7 @@ public class EmailPanel extends FlowPanel implements IManager {
 		Label fromLabel = new Label(Customization.SENDER + ":");
 		Label messageLabel = new Label(Customization.MESSAGE_TEXT + ":");
 		Label subjectLabel = new Label(Customization.SUBJECT);
+		isToMeMail = new Label(Customization.IS_TO_ME_COPY);
 
 		addresseeListBox = new ListBox();
 		addresseeListBox.addStyleName("properWidth");
@@ -58,6 +66,12 @@ public class EmailPanel extends FlowPanel implements IManager {
 					public void onClick(ClickEvent event) {
 						chosenEmailPanel.remove(label);
 						chosenEmailList.remove(label.getTitle());
+						
+						if(label.getTitle().equalsIgnoreCase(addresseeListBox.getValue(addresseeListBox
+						.getSelectedIndex()))){
+							addresseeListBox.setSelectedIndex(0);
+						}
+						
 						if (chosenEmailList.isEmpty()) {
 							chosenEmailPanel.removeStyleName("greenShadow");
 						}
@@ -91,13 +105,39 @@ public class EmailPanel extends FlowPanel implements IManager {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (checkEmailValues()) {
+					PagesController.showWaitPanel();
 					userController.sendMail(chosenEmailList,
 							senderTextBox.getText(), subjectTextBox.getValue(),
 							messageTextArea.getValue());
 				}
 			}
 		});
-
+		
+		
+//		toMeMail = new CheckBox();
+//		toMeMail.addClickHandler(new  ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				if(toMeMail.getValue() == true){
+//					Window.alert(senderTextBox.getText());
+//					chosenEmailList.add(senderTextBox.getText());
+//				} else{
+//					chosenEmailList.remove(senderTextBox.getText());
+//				}
+//				
+//			}
+//		});
+		
+//		toMeMail.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+//			
+//			@Override
+//			public void onValueChange(ValueChangeEvent<Boolean> event) {
+//				Window.alert(event.getValue() + "");
+//				
+//			}
+//		});
+		
 		add(toLabel);
 		add(addresseeListBox);
 		add(chosenEmailPanel);
@@ -107,7 +147,10 @@ public class EmailPanel extends FlowPanel implements IManager {
 		add(subjectTextBox);
 		add(messageLabel);
 		add(messageTextArea);
+//		add(isToMeMail);
+//		add(toMeMail);
 		add(sendButton);
+		
 	}
 	
 	private boolean checkEmailValues() {
@@ -163,6 +206,12 @@ public class EmailPanel extends FlowPanel implements IManager {
 
 		addresseeListBox.setSelectedIndex(0);
 
+		chosenEmailList.clear();
+		clearChosenEmailList();
+		chosenEmailPanel.removeStyleName("redShadow");
+		chosenEmailPanel.removeStyleName("greenShadow");
+		messageTextArea.setText("");
+		subjectTextBox.setText("");
 	}
 
 	@Override
@@ -174,6 +223,15 @@ public class EmailPanel extends FlowPanel implements IManager {
 	public void show(boolean isVisable) {
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);
+		
 	}
+
+	@Override
+	public void onChange() {
+		clearData();	
+		Window.alert("to byl notify");
+	}
+	
+	
 
 }

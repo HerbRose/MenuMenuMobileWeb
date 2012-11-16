@@ -265,5 +265,11 @@ public interface Messages extends Constants {
 	@DefaultStringValue("The request was sent. This may take more then 10 minutes. You will get a message on your email when finished")
 	String copyRestaurantsInProgress();
 	
+	@DefaultStringValue("Email has been sent")
+	String emailSend();
+	
+	@DefaultStringValue("Do you want to send copy to you?")
+	String isCopyMailToMe();
+	
 	
 }

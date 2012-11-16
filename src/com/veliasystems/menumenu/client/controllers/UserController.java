@@ -182,12 +182,10 @@ public class UserController {
 			s+= string+ ", ";
 		}
 		
-		
-		
 		emailService.sendEmail(chosenEmailList, chosenEmailList.get(0), message, subject, new AsyncCallback<Void>() {
-			
 			@Override
 			public void onSuccess(Void result) {
+				Window.alert(Customization.EMAIL_SEND);
 				notifyAllObservers();
 			}
 			
@@ -197,6 +195,8 @@ public class UserController {
 				
 			}
 		});
+		
+		PagesController.hideWaitPanel();
 		
 	}
 	
