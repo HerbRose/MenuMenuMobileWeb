@@ -59,6 +59,8 @@ public interface StoreServiceAsync {
 	void copyCityData(String cityIdFrom, String cityIdTo, String email,
 			AsyncCallback<Map<String, String>> callback);
 
+	void deleteRestaurants(long cityId, AsyncCallback<Long> callback);
+
 
 	
 

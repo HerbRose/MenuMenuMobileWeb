@@ -458,6 +458,28 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
+	public Long deleteRestaurants(long cityId){
+		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
+		List<ImageBlob> imageBlobList;
+		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
+		if(restaurantQuery == null) return null;
+		restaurantsList= restaurantQuery.filter("cityId=", cityId).list();
+		for (Restaurant restaurant : restaurantsList) {
+			Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
+			if(imageBlobQuery!=null){
+					 imageBlobList = imageBlobQuery.filter("restId=", restaurant.getId()).list();
+					 for (ImageBlob imageBlob : imageBlobQuery) {
+							BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
+					 }
+			}
+		}
+		
+		dao.ofy().delete(restaurantsList);
+		dao.ofy().delete(City.class, cityId);
+		return cityId;
+	}
+	
+	@Override
 	public void clearStore() {
 		dao.ofy().delete( loadRestaurants() );
 	}

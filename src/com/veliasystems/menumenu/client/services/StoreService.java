@@ -55,4 +55,6 @@ public interface StoreService extends RemoteService {
 	String removeUser(User user);
 
 	Map<String, String> copyCityData(String cityIdFrom, String cityIdTo, String email);
+
+	Long deleteRestaurants(long cityId);
 }
