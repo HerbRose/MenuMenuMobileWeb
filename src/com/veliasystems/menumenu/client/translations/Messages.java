@@ -274,5 +274,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Are you sure want to delete this item? Operation can not be undone")
 	String areYouSureWantToDelete();
 	
+	@DefaultStringValue("Go to")
+	String goToRestaurant();
+	
 	
 }

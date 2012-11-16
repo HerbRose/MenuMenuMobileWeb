@@ -102,6 +102,9 @@ public class Customization {
 
 
 	public static final String ARE_YOU_SURE_WANT_DELETE = translated.areYouSureWantToDelete();
+
+
+	public static final String GO_TO_RESTAURANT = translated.goToRestaurant();
 };
 	
 	

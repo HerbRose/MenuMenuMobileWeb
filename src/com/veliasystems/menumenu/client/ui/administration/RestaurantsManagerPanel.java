@@ -24,13 +24,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.LoadedPageController;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObserver{
 
@@ -50,6 +55,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 	private Column<Restaurant, Boolean> isClearBoardColumn;
 	private TextColumn<Restaurant> addressColumn;
 	private Column<Restaurant, String> removeColumn;
+	private Column<Restaurant, String> goToRestaruantColumn;
 	 //inne
 	// END - pola tablicy
 	
@@ -209,6 +215,20 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			
 		};
 		
+		goToRestaruantColumn = new Column<Restaurant, String>(new ButtonCell()) {
+			
+			@Override
+			public String getValue(Restaurant object) {
+				return Customization.GO_TO_RESTAURANT;
+			}
+			
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					Restaurant object, NativeEvent event) {
+				JQMContext.changePage(new RestaurantImageView(object, PagesController.getPage(Pages.PAGE_HOME)));
+				super.onBrowserEvent(context, elem, object, event);
+			}
+		};
 		
 		FieldUpdater<Restaurant, Boolean> clearBoardFieldUpdater = new FieldUpdater<Restaurant, Boolean>() {
 
@@ -227,7 +247,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 		restaurantsCellTable.addColumn(isVisibleForAppColumn, "Visibility");
 		restaurantsCellTable.addColumn(isClearBoardColumn, "Clear Board");
 		restaurantsCellTable.addColumn(removeColumn, "Delete restaurant");
-		
+		restaurantsCellTable.addColumn(goToRestaruantColumn, "See details");
 		
 		return restaurantsCellTable;
 	}

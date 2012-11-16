@@ -522,6 +522,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			showPanel( panelList.get(whichPanelShow));
 		}
 	}
+	
 
 	@Override
 	public void onChange() {
