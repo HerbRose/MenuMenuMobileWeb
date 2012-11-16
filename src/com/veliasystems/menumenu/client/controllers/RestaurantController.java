@@ -45,7 +45,7 @@ public class RestaurantController {
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
-	private boolean fromCityView = true;
+	//private boolean fromCityView = true;
 	private JQMPage lastOpenPage = null;
 	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
@@ -53,13 +53,13 @@ public class RestaurantController {
 	private RestaurantController() {
 		
 	}
-	
-	public void setFromCityView(boolean from) {
-		this.fromCityView = from;
-	}
-	public boolean isFromCityView() {
-		return fromCityView;
-	}
+//	
+//	public void setFromCityView(boolean from) {
+//		this.fromCityView = from;
+//	}
+//	public boolean isFromCityView() {
+//		return fromCityView;
+//	}
 	
 	public void setLastOpenPage(JQMPage lastOpenPage) {
 		this.lastOpenPage = lastOpenPage;

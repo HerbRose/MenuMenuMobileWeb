@@ -71,7 +71,7 @@ public class CityListScreen extends JQMPage implements IObserver{
 	    addButton.setInline();
 	    footer.add(addButton);
 	    
-	    addUser = new JQMButton(Customization.ADD_USER, new RestaurantsManagerScreen(), Transition.SLIDE);
+	    addUser = new JQMButton(Customization.ADD_USER, PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);
 	    addUser.setWidth("49%");
 	    addUser.setIcon(DataIcon.PLUS);
 	    addUser.setIconPos(IconPos.TOP);
@@ -119,8 +119,8 @@ public class CityListScreen extends JQMPage implements IObserver{
 			loaded = true;
 		}
 		
-		restaurantController.setFromCityView(true);
-		
+		//restaurantController.setFromCityView(true);
+		restaurantController.setLastOpenPage(this);
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE);
 		}

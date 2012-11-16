@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabBar;
@@ -27,6 +28,7 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
@@ -217,7 +219,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}
 
 	private void checkArrows() {
-		tabBarPanelWidth = getWidth(tabBarPanel.getElement().getId());// Window.getClientWidth();
+		tabBarPanelWidth = getWidth(tabBarPanel.getElement().getId());// Window.getClientWidth();		
 		tabWidth = getWidth(tabBar.getElement().getId());
 		if (tabBarPanelWidth < tabWidth) {
 			rightArrow.setStyleName("hide", false);
@@ -264,6 +266,9 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		myStyle = "max-width: " + widthOfTabBarPanel + "px; min-width: "
 				+ widthOfTabBarPanel + "px;";
 		addStyleToElement(divForTabBarPanel, myStyle);
+		
+		
+		
 		// tabBar.setStyleName("scrollable", true);
 
 	}
@@ -503,7 +508,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		}
 
 		if (!loaded) {
-			backButton = new JQMButton("", pageToBack, Transition.SLIDE);
+			backButton = new JQMButton("", PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
 			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"
 					+ Customization.BACK
 					+ "</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";
@@ -521,10 +526,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			tabBar.selectTab(whichPanelShow);
 			showPanel( panelList.get(whichPanelShow));
 		}
-		
-		String myStyle = "max-width: " + widthOfTabBarPanel + "px; min-width: "
-				+ widthOfTabBarPanel + "px;";
-		addStyleToElement(divForTabBarPanel, myStyle);
+		restaurantController.setLastOpenPage(this);
 	}
 	
 

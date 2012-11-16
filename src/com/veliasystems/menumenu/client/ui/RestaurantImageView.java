@@ -81,7 +81,7 @@ public class RestaurantImageView extends JQMPage{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		restaurantController.setLastOpenPage(this);
+		
 		
 		if(!loaded){
 			
@@ -100,7 +100,7 @@ public class RestaurantImageView extends JQMPage{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					JQMContext.changePage(new RestaurantsManagerScreen(), Transition.SLIDE);
+					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);
 				}
 			});
 			addUserImage.setStyleName("addUserImage", true);
@@ -125,8 +125,15 @@ public class RestaurantImageView extends JQMPage{
 			header.remove(backButton);
 			checkChanges();
 		}
-		if(restaurantController.isFromCityView()){
-			backButton = new JQMButton(Customization.BACK, back, Transition.SLIDE);
+//		if(restaurantController.isFromCityView()){
+//			backButton = new JQMButton(Customization.BACK, back, Transition.SLIDE);
+//		}else{
+//			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
+//		}
+//		
+		JQMPage page = restaurantController.getLastOpenPage();
+		if(page != null) {
+			backButton = new JQMButton(Customization.BACK, restaurantController.getLastOpenPage(), Transition.SLIDE);
 		}else{
 			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
 		}
@@ -149,7 +156,7 @@ public class RestaurantImageView extends JQMPage{
 		Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");//, new Date(milisec));
 		
 		Document.get().getElementById("load").setClassName(R.LOADED); 
-		
+		restaurantController.setLastOpenPage(this);
 	};
 
 	

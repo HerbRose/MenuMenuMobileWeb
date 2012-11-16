@@ -127,7 +127,7 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 			loaded = true;
 		}
 		
-		restaurantController.setFromCityView(false);
+		restaurantController.setLastOpenPage(this);
 	
 		refreshRestaurantList();
 
