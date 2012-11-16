@@ -225,7 +225,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
 					Restaurant object, NativeEvent event) {
-				JQMContext.changePage(new RestaurantImageView(object, PagesController.getPage(Pages.PAGE_HOME)));
+				JQMContext.changePage(restaurantController.restMapView.get(object.getId()));
 				super.onBrowserEvent(context, elem, object, event);
 			}
 		};

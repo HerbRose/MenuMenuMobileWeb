@@ -521,6 +521,10 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			tabBar.selectTab(whichPanelShow);
 			showPanel( panelList.get(whichPanelShow));
 		}
+		
+		String myStyle = "max-width: " + widthOfTabBarPanel + "px; min-width: "
+				+ widthOfTabBarPanel + "px;";
+		addStyleToElement(divForTabBarPanel, myStyle);
 	}
 	
 
