@@ -199,7 +199,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	
 
 	public AddRestaurantScreen(String city){
-		
+		cityController.addObserver(this);
 		this.city = city;
 		init(true);
 	}

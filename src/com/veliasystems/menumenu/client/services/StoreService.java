@@ -17,7 +17,7 @@ import com.veliasystems.menumenu.client.entities.User;
 @RemoteServiceRelativePath("store")
 public interface StoreService extends RemoteService {
 	
-void saveRestaurant( Restaurant r );
+	Restaurant saveRestaurant( Restaurant r );
 	
 	List<String> loadCities();
 	

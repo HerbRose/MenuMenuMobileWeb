@@ -13,7 +13,7 @@ import com.veliasystems.menumenu.client.entities.User;
 
 public interface StoreServiceAsync {
 	
-	void saveRestaurant(Restaurant r, AsyncCallback<Void> callback);
+	void saveRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
 
 	void loadRestaurants(AsyncCallback<List<Restaurant>> callback);
 	void loadRestaurants(String city, AsyncCallback<List<Restaurant>> callback);

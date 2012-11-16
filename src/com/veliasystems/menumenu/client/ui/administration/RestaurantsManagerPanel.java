@@ -32,7 +32,7 @@ import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObserver {
+public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObserver{
 
 	// controllers
 	private RestaurantController restaurantController = RestaurantController
@@ -56,6 +56,9 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 	private ArrayList<Restaurant> restaurantsCopy;
 	//private HashMap<Long, Restaurant> restaurantsCopyMap;
 	private String cityString = "city";
+	
+	
+	private long justDeletedItemCity = 0;
 
 	public RestaurantsManagerPanel() {
 		restaurantController.addObserver(this);
@@ -198,6 +201,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			public void onBrowserEvent(Context context, Element elem,
 					Restaurant object, NativeEvent event) {
 				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE + "\n" + object.getName() + " " + object.getCity())){
+					justDeletedItemCity = object.getCityId();
 					restaurantController.deleteRestaurant(object, RestaurantsManagerPanel.class.getName());
 				}
 				super.onBrowserEvent(context, elem, object, event);
@@ -242,28 +246,11 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			City city = cityController.getCity(cityId);
 			if (city == null)
 				continue;
+			
+			List<Restaurant> nameSorted = new ArrayList<Restaurant>();
+			nameSorted.addAll(restaurantController.getRestaurantsInCity(cityId));
+			
 
-//			restaurantsTables.get(cityId).setRowData(
-//					restaurantController.getRestaurantsInCity(cityId));
-			
-			
-//			ListHandler<Restaurant> columnSortHandler = new ListHandler<Restaurant>(restaurantController.getRestaurantsInCity(cityId)){
-//			};
-//	
-//			columnSortHandler.setComparator(nameColumn, new Comparator<Restaurant>() {
-//				
-//				@Override
-//				public int compare(Restaurant o1, Restaurant o2) {
-//					if(o1 == o2) return 0;
-//					
-//						if(o1 != null){			
-//							return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
-//						}
-//					return -1;
-//				}
-//			});
-			
-			List<Restaurant> nameSorted = restaurantController.getRestaurantsInCity(cityId);
 			if(nameSorted.size() != 0){
 				Collections.sort(nameSorted, new MyComparator());
 			}
@@ -290,8 +277,8 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 	public void showRestaurantTable( Widget table, ToggleButton arrowToggleButton, boolean isVisable) {
 		
 		if(isVisable){
-			int width = getHeight(table.getElement().getId())+45; //+45 na przycisk zapisz
-			table.getParent().setHeight(width+"px");
+			int height = getHeight(table.getElement().getId())+45; //+45 na przycisk zapisz
+			table.getParent().setHeight(height+"px");
 		}else{
 			table.getParent().setHeight("0px");
 		}
@@ -304,6 +291,11 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 		
 	}
 	
+	public void setProperHeight(Widget table){
+		int height = getHeight(table.getElement().getId()) + 15;
+		table.getParent().setHeight(height + "px");
+	}
+	
 	private native int getHeight(String elementId)/*-{
 	return $wnd.document.getElementById(elementId).offsetHeight;
 }-*/;
@@ -311,7 +303,12 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 	@Override
 	public void onChange() {
 		clearData();
+		if(justDeletedItemCity != 0){
+			setProperHeight(restaurantsTables.get(justDeletedItemCity));
+		}
+		
 	}
+
 }
 
 class MyComparator implements Comparator<Restaurant> {

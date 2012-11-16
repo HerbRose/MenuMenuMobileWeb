@@ -180,7 +180,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.add( new Restaurant("L’Ami Georges", "5 rue du 4 Septembre", "Paris - Beaubourg"));
 		r.add( new Restaurant("Osteria Ruggera", "35, rue Tiquetonne", "Paris - Beaubourg"));
 		
-		r.add( new Restaurant("Zazie Bistro", "ul. Józefa 34", "Krakow-Kazimierz"));
+		r.add( new Restaurant("Zazie Bistro", "ul. Józefa 34", "Krakow-KazimsaveRestaurantierz"));
 		r.add( new Restaurant("Les Scandales","Plac Nowy 9","Krakow-Kazimierz"));
 		r.add( new Restaurant("Piwnica pod kominkiem","ul. Gołębia 6","Krakow-Kazimierz"));
 		r.add( new Restaurant("Restauracja Korsykańska", "ul. Poselska 24","Krakow-Kazimierz"));
@@ -230,7 +230,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public void saveRestaurant(Restaurant r) {
+	public Restaurant saveRestaurant(Restaurant r) {
 		try {
 			getGeocoding(r,false);
 //			System.out.println( "AFTER GEOCODING: " +  r.toString() );
@@ -243,6 +243,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setProfileImages(null);
 		r.setCityId(getCityId(r.getCity()));
 		dao.ofy().put(r);
+		return r;
 //		System.out.println("saved succes: " + r.getName());
 	}
 

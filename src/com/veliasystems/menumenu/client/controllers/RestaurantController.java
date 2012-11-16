@@ -142,11 +142,11 @@ public class RestaurantController {
 		
 		for (Long restaurantid : getRestaurantsKey()) {
 			Restaurant restaurant = this.restaurants.get(restaurantid);
+			
 			if(restaurant.getCityId() == cityId){
 				restaurants.add(restaurant);
 			}
 		}
-		
 		return restaurants;
 	}
 	/**
@@ -174,17 +174,16 @@ public class RestaurantController {
 	
 	public void saveRestaurant(Restaurant restaurant){
 		final Restaurant restaurantToSave = restaurant;
-		
-		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Void>() {
+	
+		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Restaurant>() {
 			@Override
-			public void onSuccess(Void result) {
+			public void onSuccess(Restaurant result) {
 				
 //				restaurantToSave.setLogoImages(new ArrayList<ImageBlob>());
 //				restaurantToSave.setProfileImages(new ArrayList<ImageBlob>());
 //				restaurantToSave.setMenuImages(new ArrayList<ImageBlob>());
 				
-				restaurants.put(restaurantToSave.getId(), restaurantToSave); //add/change restaurant in our list
-				
+				restaurants.put(result.getId(), result); //add/change restaurant in our list
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
 				History.back();
