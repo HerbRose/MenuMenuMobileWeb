@@ -101,6 +101,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private Long restaurantId;
 	
+	private double ratioProfile = 450.0/280.0;
+	
 	public CropImage(ImageBlob imageInsert, Long restaurantId) {
 		this.imageInsert = imageInsert;
 		this.restaurantId = restaurantId;
@@ -132,16 +134,16 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			widthOfBackImage = 220;
 			break;
 		case PROFILE:
-			bckImage.setWidth("420px");
-			widthOfBackImage = 420;
+			bckImage.setWidth("450px");
+			widthOfBackImage = 450;
 		}
 		image.getElement().getStyle().setMarginTop(0, Unit.PX);
 		image.getElement().getStyle().setPosition(Position.RELATIVE);
 		image.add(bckImage);
 		switch(imageInsert.getImageType()){
 		case PROFILE:	
-				double ratioWProfile = blobWidth / 420;
-				cropRectWidth = 420;  //-4px na ramke
+				double ratioWProfile = blobWidth / 450;
+				cropRectWidth = 450;  
 				cropRectHeight = 280;		
 			break;
 		default:	
@@ -283,7 +285,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		cropButton.setIconPos(IconPos.NOTEXT);
 		switch(imageInsert.getImageType()){
 		case PROFILE:
-			toolPanel.getElement().getStyle().setMarginTop(-420, Unit.PX);
+			toolPanel.getElement().getStyle().setMarginTop(-300, Unit.PX);
 			toolPanel.getElement().getStyle().setTop(100, Unit.PX);
 			break;
 			default:
@@ -305,7 +307,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 					case PROFILE:
 						if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < bckImage.getHeight() + image.getElement().getOffsetTop()  && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() + rect.getAbsoluteLeft()< bckImage.getWidth() + image.getElement().getOffsetLeft()){
 							cropRectHeight += 5.0;
-							cropRectWidth = cropRectHeight *1.5;
+							cropRectWidth = cropRectHeight *(ratioProfile);
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
 							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 						}
@@ -331,9 +333,9 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				
 				switch(imageInsert.getImageType()){
 					case PROFILE:	
-						if(cropRectWidth > 0 && cropRectWidth * ratioW > 420 && cropRectHeight * ratioH > 280){
+						if(cropRectWidth > 0 && cropRectWidth * ratioW > 450 && cropRectHeight * ratioH > 280){
 							cropRectHeight -= 5.0;
-							cropRectWidth = cropRectHeight *1.5;
+							cropRectWidth = cropRectHeight *(ratioProfile);
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
 							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 						}
@@ -473,7 +475,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				bottomYPercentage = 1;
 			}
 			
-			Window.alert(leftXPercentage + " " + rightXPercentage + " " + topYPercentage + " " +bottomYPercentage);
 			
 			PagesController.showWaitPanel();
 			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
