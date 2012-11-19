@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.server.tasks;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -108,7 +109,8 @@ public class CopyDataTask extends HttpServlet{
 			return;
 		}
 		
-		List<Restaurant> restaurantsInSourceCity = storeService.loadRestaurants(cityIdFromLong);
+		List<Restaurant> restaurantsInSourceCity = new ArrayList<Restaurant>();
+		restaurantsInSourceCity.addAll(storeService.loadRestaurants(cityIdFromLong));
 		
 		if(restaurantsInSourceCity == null || restaurantsInSourceCity.size()<=0){
 			log.warning("Cannot found restaurants in source city");
@@ -117,8 +119,10 @@ public class CopyDataTask extends HttpServlet{
 			sendMail(emailAddress);
 			return;
 		}
+		
 		int numberOfFoundrestauration = restaurantsInSourceCity.size(); 
-		List<Restaurant> restaurantsInDestinationCity = storeService.loadRestaurants(cityIdToLong);
+		List<Restaurant> restaurantsInDestinationCity = new CopyOnWriteArrayList<Restaurant>();
+		restaurantsInDestinationCity.addAll(storeService.loadRestaurants(cityIdToLong));
 		
 		//sprawdza czy istnieja te same restauracje
 		for (Restaurant restaurant : restaurantsInDestinationCity) {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 
+import com.google.gwt.user.client.ui.Image;
+
 public class City implements Serializable{
 
 	/**
@@ -13,6 +15,8 @@ public class City implements Serializable{
 
 	@Id private Long id;
 	private String city;
+
+	private boolean isVisable = false;
 	
 
 	 {
@@ -49,4 +53,10 @@ public class City implements Serializable{
 		return false;
 	}
 	
+	public void setVisable(boolean isVisable) {
+		this.isVisable = isVisable;
+	}
+	public boolean isVisable() {
+		return isVisable;
+	}
 }

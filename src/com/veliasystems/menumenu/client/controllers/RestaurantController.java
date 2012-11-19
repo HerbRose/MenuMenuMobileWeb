@@ -218,7 +218,17 @@ public class RestaurantController {
 		});
 		
 	}
-	
+	public void removeRestaurantLocally(Long restaurantId){
+		
+		restaurants.remove(restaurantId);
+		
+	}
+	public void removeRestaurantLocally(List<Restaurant> restaurantIds){
+		
+		for (Restaurant restaurant : restaurantIds) {
+			removeRestaurantLocally(restaurant.getId());
+		}
+	}
 	public void cropImage(long restaurantId, ImageType imageType){
 		
 		

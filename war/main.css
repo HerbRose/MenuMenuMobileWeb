@@ -293,10 +293,10 @@ width: 100px;
 	width: 15px !important;
 }
 
-.restaurantListDiv{
+.restaurantListDiv, .cityListDiv{
 	position: relative;
 }
-.restaurantTableDiv{
+.restaurantTableDiv, .cityTableDiv{
 	position: relative;
 	overflow: hidden;
 	
@@ -343,3 +343,35 @@ width: 100px;
 .arrowToggleButtonHide img{
 	-webkit-transform:rotate(0deg);
 }
+
+.greenText{
+	font-weight: bold;
+	color: #070;
+}
+.redText{
+	font-weight: bold;
+	color: #f00;
+}
+.cityTableDiv{
+	background-color: #fff;
+	
+}
+.namePanel, .visabilityPanel, .buttonsPanel{
+	padding: 10px;
+	border-bottom: 1px solid;
+	text-align: justify;
+}
+.namePanel *, .visabilityPanel *, .buttonsPanel *{
+	display: inline;
+	border: none !important;
+	padding-right: 100px !important;
+	background: #fff !important;
+	text-align: center !important;
+	
+}
+.buttonsPanel *{
+	margin-right: 100px !important;
+	width: 100px;
+	padding: 0px !important;
+}
+

@@ -52,8 +52,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	private DAO dao = new DAO();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
-	private BlobstoreService blobstoreService = BlobstoreServiceFactory
-			.getBlobstoreService();
+//	private BlobstoreService blobstoreService = BlobstoreServiceFactory
+//			.getBlobstoreService();
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
 	
 	@Override
@@ -582,6 +582,15 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(c);
 		return c;
 	}
+	
+	@Override
+	public City saveCity( City city){
+		
+		dao.ofy().put(city);
+		
+		return city;
+	}
+	
 	/**
 	 * filling field cityId in Restaurant.java. Comparing restaurant.getCity() with city.getCity(), if equals cityId in restaurant is filling by cityId 
 	 * 
@@ -787,6 +796,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		Queue queue = QueueFactory.getDefaultQueue();
+		
 	    queue.add(withUrl("/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityIdTo).param("emailAddress", email));
 		
 	    Map<String, String> response = new HashMap<String, String>();
@@ -796,6 +806,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	    return response;
 	}
 	
-
+	
 
 }

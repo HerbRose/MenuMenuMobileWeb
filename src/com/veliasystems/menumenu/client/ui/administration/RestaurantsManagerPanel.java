@@ -19,23 +19,19 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
-import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
-import com.veliasystems.menumenu.client.controllers.LoadedPageController;
-import com.veliasystems.menumenu.client.controllers.Pages;
-import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObserver{
 
@@ -44,9 +40,10 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			.getInstance();
 	private CityController cityController = CityController.getInstance();
 	// END - controllers
-	private JQMButton saveRestaurantsButton;
+	private Button saveRestaurantsButton;
 
 	// pola do obslugi tablicy
+	private FlowPanel cointainer = new FlowPanel();
 	private Map<Long, CellTable<Restaurant>> restaurantsTables = new HashMap<Long, CellTable<Restaurant>>();
 	//private Map<Long, CellTable<Restaurant>> restaurantsTablesDiv = new HashMap<Long, CellTable<Restaurant>>();
 	 //pola kolumn tablicy
@@ -70,78 +67,12 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 		restaurantController.addObserver(this);
 		setStyleName("barPanel", true);
 		show(false);
-
+		add(cointainer);
 		
-
-		//tworzy 'listy rozwijane' z restauracjami w danej dzielnicy
-		List<City> cities = cityController.getCitiesList();
-		for (final City city : cities) {
-			CellTable<Restaurant> restaurantsCellTable = createRestaurantTable(city.getId()); //tablica z restauracjami dla danego miasta
-			
-			saveRestaurantsButton = new JQMButton(Customization.SAVE);
-			saveRestaurantsButton.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					List<Restaurant> restaurantsToSave = new ArrayList<Restaurant>();
-					
-					for (Restaurant restaurant : restaurantsCopy) {
-						if(city.getId() == restaurant.getCityId()){
-							restaurantsToSave.add(restaurant);
-						}
-					}
-					
-					restaurantController.saveRestaurants(restaurantsToSave);
-
-				}
-			});
-			
-			FlowPanel restaurantTableDiv = new FlowPanel(); //div na strzalke i nazwe dzielnicy
-			restaurantTableDiv.setStyleName("restaurantTableDiv", true);
-			
-			FlowPanel restaurantListDiv = new FlowPanel(); //div ze strzalka nazwa dzielnicy i tablica
-			restaurantListDiv.setStyleName("restaurantListDiv", true);
-			
-			FlowPanel restaurantHeaderDiv = new FlowPanel(); //div na strzalke i nazwe dzielnicy
-			restaurantHeaderDiv.setStyleName("restaurantHeaderDiv", true);
-			
-			Image blackArrowImage = new Image("img/blackArrow.png"); //strzalka
-			blackArrowImage.setStyleName("blackArrowImage", true);
-			
-			final ToggleButton arrowToggleButton = new ToggleButton(blackArrowImage);
-			arrowToggleButton.setStyleName("arrowToggleButton", true);
-			
-			arrowToggleButton.addClickHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					if(arrowToggleButton.isDown()){
-						showRestaurantTable(restaurantsTables.get(city.getId()), arrowToggleButton, true);
-					}else {
-						showRestaurantTable(restaurantsTables.get(city.getId()), arrowToggleButton, false);
-					}
-				}
-			});
-
-			
-			Label cityNameLabel = new Label(city.getCity()); //nazwa dzielnicy
-			cityNameLabel.setStyleName("cityNameLabel", true);
-			
-			restaurantHeaderDiv.add(arrowToggleButton);
-			restaurantHeaderDiv.add(cityNameLabel);
-			restaurantListDiv.add(restaurantHeaderDiv);
-			restaurantTableDiv.add(restaurantsCellTable);
-			restaurantTableDiv.add(saveRestaurantsButton);
-			restaurantListDiv.add(restaurantTableDiv);
-			
-			restaurantsTables.put(city.getId(), restaurantsCellTable);
-			showRestaurantTable(restaurantsTables.get(city.getId()), arrowToggleButton, false);
-			add(restaurantListDiv);
-			
-		}
-		// END - tworzy 'liste rozwijana' z restauracjami w danej dzielnicy
+		
 	}
 
+	
 	private CellTable<Restaurant> createRestaurantTable(Long cityId) {
 		CellTable<Restaurant> restaurantsCellTable = new CellTable<Restaurant>();
 		restaurantsCellTable.getElement().setId(cityString+cityId);
@@ -262,27 +193,103 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 	public void clearData() {
 		fillRestaurantsCopy();
 
+		refreshCitiesLists();
+		
 		for (Long cityId : restaurantsTables.keySet()) {
 			City city = cityController.getCity(cityId);
-			if (city == null)
+			if (city == null){
+				CellTable<Restaurant> toDelete =  restaurantsTables.get(cityId);
+				remove(toDelete.getParent().getParent());
+				restaurantsTables.remove(cityId);
 				continue;
+			}
 			
 			List<Restaurant> nameSorted = new ArrayList<Restaurant>();
 			nameSorted.addAll(restaurantController.getRestaurantsInCity(cityId));
 			
-
 			if(nameSorted.size() != 0){
 				Collections.sort(nameSorted, new MyComparator());
 			}
 			restaurantsTables.get(cityId).setRowData(nameSorted);
-			
-			
 			restaurantsTables.get(cityId).redraw();
 		}
 
 		// TODO
 	}
 
+	private void refreshCitiesLists(){//destroy all lists and makes new
+		cointainer.clear();
+		//tworzy 'listy rozwijane' z restauracjami w danej dzielnicy
+				List<City> cities = cityController.getCitiesList();
+				restaurantsTables.clear();
+				for (final City city : cities) {
+					
+					CellTable<Restaurant> restaurantsCellTable = createRestaurantTable(city.getId()); //tablica z restauracjami dla danego miasta
+					
+					saveRestaurantsButton = new Button(Customization.SAVE);
+					saveRestaurantsButton.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+							List<Restaurant> restaurantsToSave = new ArrayList<Restaurant>();
+							
+							for (Restaurant restaurant : restaurantsCopy) {
+								if(city.getId() == restaurant.getCityId()){
+									restaurantsToSave.add(restaurant);
+								}
+							}
+							
+							restaurantController.saveRestaurants(restaurantsToSave);
+
+						}
+					});
+					
+					FlowPanel restaurantTableDiv = new FlowPanel(); //div na strzalke i nazwe dzielnicy
+					restaurantTableDiv.setStyleName("restaurantTableDiv", true);
+					
+					FlowPanel restaurantListDiv = new FlowPanel(); //div ze strzalka nazwa dzielnicy i tablica
+					restaurantListDiv.setStyleName("restaurantListDiv", true);
+					
+					FlowPanel restaurantHeaderDiv = new FlowPanel(); //div na strzalke i nazwe dzielnicy
+					restaurantHeaderDiv.setStyleName("restaurantHeaderDiv", true);
+					
+					Image blackArrowImage = new Image("img/blackArrow.png"); //strzalka
+					blackArrowImage.setStyleName("blackArrowImage", true);
+					
+					final ToggleButton arrowToggleButton = new ToggleButton(blackArrowImage);
+					arrowToggleButton.setStyleName("arrowToggleButton", true);
+					
+					arrowToggleButton.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							if(arrowToggleButton.isDown()){
+								showRestaurantTable(restaurantsTables.get(city.getId()), arrowToggleButton, true);
+							}else {
+								showRestaurantTable(restaurantsTables.get(city.getId()), arrowToggleButton, false);
+							}
+						}
+					});
+
+					
+					Label cityNameLabel = new Label(city.getCity()); //nazwa dzielnicy
+					cityNameLabel.setStyleName("cityNameLabel", true);
+					
+					restaurantHeaderDiv.add(arrowToggleButton);
+					restaurantHeaderDiv.add(cityNameLabel);
+					restaurantListDiv.add(restaurantHeaderDiv);
+					restaurantTableDiv.add(restaurantsCellTable);
+					restaurantTableDiv.add(saveRestaurantsButton);
+					restaurantListDiv.add(restaurantTableDiv);
+					
+					restaurantsTables.put(city.getId(), restaurantsCellTable);
+					showRestaurantTable(restaurantsTables.get(city.getId()), arrowToggleButton, false);
+					cointainer.add(restaurantListDiv);
+					
+				}
+				// END - tworzy 'liste rozwijana' z restauracjami w danej dzielnicy
+	}
+	
 	@Override
 	public String getName() {
 		return Customization.RESTAURATIUN_MANAGER;
@@ -303,7 +310,6 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			table.getParent().setHeight("0px");
 		}
 		
-		
 		if(arrowToggleButton != null){
 			arrowToggleButton.setStyleName("arrowToggleButtonShow", isVisable);
 			arrowToggleButton.setStyleName("arrowToggleButtonHide", !isVisable);
@@ -316,19 +322,18 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 		table.getParent().setHeight(height + "px");
 	}
 	
-	private native int getHeight(String elementId)/*-{
-	return $wnd.document.getElementById(elementId).offsetHeight;
-}-*/;
-
 	@Override
 	public void onChange() {
 		clearData();
 		if(justDeletedItemCity != 0){
-			setProperHeight(restaurantsTables.get(justDeletedItemCity));
+			//setProperHeight(restaurantsTables.get(justDeletedItemCity));
 		}
 		
 	}
-
+	
+	private native int getHeight(String elementId)/*-{
+	return $wnd.document.getElementById(elementId).offsetHeight;
+}-*/;
 }
 
 class MyComparator implements Comparator<Restaurant> {

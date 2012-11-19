@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.ui.CityInfoScreen;
@@ -31,6 +32,7 @@ public class CityController {
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	
 	private UserController userController = UserController.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private Map<Long, City> cities = new HashMap<Long, City>(); //key is a cityId
 
 	
@@ -137,6 +139,56 @@ public class CityController {
 				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
+	}
+
+	public void deleteCity(Long id) {
+		PagesController.showWaitPanel();
+		storeService.deleteRestaurants(id, new AsyncCallback<Long>() {
+			
+			@Override
+			public void onSuccess(Long cityId) {
+				List<Restaurant> restaurantsToDelete = restaurantController.getRestaurantsInCity(cityId);
+				cities.remove(cityId);
+				restaurantController.removeRestaurantLocally(restaurantsToDelete);
+				PagesController.hideWaitPanel();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.hideWaitPanel();
+			}
+		});
+		
+		
+	}
+	
+	/**
+	 * save edited city
+	 * @param city - city to save
+	 */
+	public void saveCity(City city) {
+		if(city == null) return;
+		
+		PagesController.showWaitPanel();
+		storeService.saveCity(city, new AsyncCallback<City>() {
+			
+			@Override
+			public void onSuccess(City editedCity) {
+				cities.get(editedCity.getId()).setCity(editedCity.getCity());
+				cities.get(editedCity.getId()).setVisable(editedCity.isVisable());
+				
+				PagesController.hideWaitPanel();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+			}
+		});
+		
 	}
 	
 }

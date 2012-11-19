@@ -61,6 +61,8 @@ public interface StoreServiceAsync {
 
 	void deleteRestaurants(long cityId, AsyncCallback<Long> callback);
 
+	void saveCity(City city, AsyncCallback<City> callback);
+
 
 	
 
