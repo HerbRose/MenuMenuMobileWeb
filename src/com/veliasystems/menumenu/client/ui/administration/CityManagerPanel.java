@@ -59,7 +59,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				String pass = Window.prompt("Password", "");
+				String pass = Window.prompt(Customization.PASSWORD_PLACEHOLDER, "");
 				if(pass.equals("wdo67pla")){
 					cityController.copyAllDataFromCity(cityIdFrom.getText(), cityIdTo.getText());
 				}
@@ -134,12 +134,12 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		FlowPanel buttonsPanel = new FlowPanel();
 		buttonsPanel.setStyleName("buttonsPanel", true);
 		
-		Label nameLabel = new Label("Name");
+		Label nameLabel = new Label(Customization.CITY_NAME);
 		TextBox nameTextBox = new TextBox();
 		nameTextBox.getElement().setId("nameTextBox"+city.getId());
 		nameTextBox.setText(city.getCity());
 		
-		Label visabilityLabel = new Label("Visability");
+		Label visabilityLabel = new Label(Customization.VISIBILITY);
 		final Button isVisable = new Button("");
 		setVisabilityText(city.isVisable(), isVisable, city.getId());
 		//isVisable.setValue(city.isVisable());
@@ -154,13 +154,15 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 			}
 		});
 		
-		Button deleteButton = new Button("usun");
+		Button deleteButton = new Button(Customization.DELETE);
 		deleteButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				//TODO dodać info
-				cityController.deleteCity(city.getId());
+				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE)){
+					cityController.deleteCity(city.getId());
+				}
+				
 			}
 		});
 		
@@ -190,10 +192,10 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		if(button == null) return;
 		
 		if(isVisable){
-			button.setText("Visable");
+			button.setText(Customization.VISIBLE);
 			
 		}else{
-			button.setText("Hidden");
+			button.setText(Customization.HIDDEN);
 		}
 	
 		button.setStyleName("greenText", isVisable);
@@ -269,7 +271,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 
 	@Override
 	public String getName() {
-		return "City manager";
+		return Customization.CITY_MANAGER;
 	}
 
 	@Override

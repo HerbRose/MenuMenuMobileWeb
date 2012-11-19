@@ -131,7 +131,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 			
 			@Override
 			public String getValue(Restaurant object) {
-				return Customization.DELETE_IMAGE;
+				return Customization.DELETE;
 			}
 			 
 			@Override

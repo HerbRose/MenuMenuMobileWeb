@@ -32,7 +32,7 @@ public class Customization {
 	public static final String MAENU_PICTURE_TITLE = translated.maenuPictureTitle();
 	public static final String CROP = translated.crop();
 	public static final String SET_AS_MAIN = translated.main();
-	public static final String DELETE_IMAGE = translated.delete();
+	public static final String DELETE = translated.delete();
 	public static final String UPLOAD = translated.upload();
 	public static final String EMPTY_JSON = translated.emptyJson();
 	public static final String CITY_ERROR = translated.cityError();
@@ -105,6 +105,21 @@ public class Customization {
 
 
 	public static final String GO_TO_RESTAURANT = translated.goToRestaurant();
+
+
+	public static final String CITY_MANAGER = translated.cityManager();
+
+
+	public static final String CITY_NAME = translated.cityName();
+
+
+	public static final String VISIBILITY = translated.visibility();
+
+
+	public static final String VISIBLE = translated.visible();
+
+
+	public static final String HIDDEN = translated.hidden();
 };
 	
 	

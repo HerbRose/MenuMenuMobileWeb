@@ -49,7 +49,7 @@ public class RemoveUsersPanel extends FlowPanel implements IManager{
 			@Override
 			public String getValue(String object) {
 				
-				return Customization.DELETE_IMAGE;
+				return Customization.DELETE;
 			}
 			
 			@Override

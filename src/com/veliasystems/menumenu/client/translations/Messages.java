@@ -277,5 +277,20 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Go to")
 	String goToRestaurant();
 	
+	@DefaultStringValue("Name")
+	String cityName();
+	
+	@DefaultStringValue("Visibility")
+	String visibility();
+	
+	@DefaultStringValue("Hidden")
+	String hidden();
+	
+	@DefaultStringValue("Visible")
+	String visible();
+	
+	@DefaultStringValue("City manager")
+	String cityManager();
+	
 	
 }
