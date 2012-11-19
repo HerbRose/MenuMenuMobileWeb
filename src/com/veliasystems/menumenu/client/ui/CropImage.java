@@ -17,12 +17,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -30,7 +30,6 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -40,7 +39,6 @@ import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 /**
  * 
  * @author jakub
- *	Tak wiem, balagan w kodzie ;)
  *	Czy opieramy sie tylko na d&d (drag and drop) czy tez mam zostawic te wszystkie przyciski do przesuwania?
  *
  */
@@ -143,8 +141,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		switch(imageInsert.getImageType()){
 		case PROFILE:	
 				double ratioWProfile = blobWidth / 420;
-				cropRectWidth = 420;
-				cropRectHeight = blobHeight /ratioWProfile;		
+				cropRectWidth = 420;  //-4px na ramke
+				cropRectHeight = 280;		
 			break;
 		default:	
 			double ratioW = blobWidth / 220;
@@ -283,8 +281,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		cropButton = new JQMButton("");
 		cropButton.setIcon(DataIcon.CHECK);
 		cropButton.setIconPos(IconPos.NOTEXT);
-		System.out.println("width :" + widthOfBackImage);
-		
 		switch(imageInsert.getImageType()){
 		case PROFILE:
 			toolPanel.getElement().getStyle().setMarginTop(-420, Unit.PX);
@@ -308,7 +304,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				switch(imageInsert.getImageType()){
 					case PROFILE:
 						if(rect.getOffsetHeight() + rect.getElement().getOffsetTop() < bckImage.getHeight() + image.getElement().getOffsetTop()  && rect.getOffsetWidth() + rect.getElement().getOffsetLeft() + rect.getAbsoluteLeft()< bckImage.getWidth() + image.getElement().getOffsetLeft()){
-							
 							cropRectHeight += 5.0;
 							cropRectWidth = cropRectHeight *1.5;
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
@@ -337,7 +332,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				switch(imageInsert.getImageType()){
 					case PROFILE:	
 						if(cropRectWidth > 0 && cropRectWidth * ratioW > 420 && cropRectHeight * ratioH > 280){
-							
 							cropRectHeight -= 5.0;
 							cropRectWidth = cropRectHeight *1.5;
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
@@ -478,6 +472,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			if(bottomYPercentage > 1){
 				bottomYPercentage = 1;
 			}
+			
+			Window.alert(leftXPercentage + " " + rightXPercentage + " " + topYPercentage + " " +bottomYPercentage);
 			
 			PagesController.showWaitPanel();
 			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {

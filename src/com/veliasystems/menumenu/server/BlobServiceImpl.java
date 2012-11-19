@@ -243,21 +243,20 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
 		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
-		if (leftX < 0)
-			leftX = 0;
-		if (topY < 0)
-			topY = 0;
-		if (rightX > 1)
-			rightX = 1;
-		if (bottomY > 1)
-			bottomY = 1;
+		if(leftX < 0) leftX = 0;
+		if(rightX > 1) rightX = 1;
+		if(bottomY > 1) bottomY = 1;
+		if(topY < 0) topY = 0;
+
 		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY,
 				rightX, bottomY);
 		Image newImage = imagesService.applyTransform(cropTransform, oldImage);
 
+		
 		Transform scaleTransform = null;
 		switch (imageBlob.getImageType()) {
 		case PROFILE:
+			System.out.println("profilowe");
 			scaleTransform = ImagesServiceFactory.makeResize(420, 280);
 			break;
 		case LOGO:
@@ -273,6 +272,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		Image scaleImage = imagesService.applyTransform(scaleTransform,
 				newImage);
+		
+		System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
 		try {
 			sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
 		} catch (IOException e) {
