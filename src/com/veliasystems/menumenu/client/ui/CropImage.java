@@ -102,6 +102,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	private Long restaurantId;
 	
 	private double ratioProfile = 450.0/280.0;
+	private double minHeightLogo = 55;
+	private double maxHeightLogo = 75;
 	
 	public CropImage(ImageBlob imageInsert, Long restaurantId) {
 		this.imageInsert = imageInsert;
@@ -142,9 +144,14 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		image.add(bckImage);
 		switch(imageInsert.getImageType()){
 		case PROFILE:	
-				double ratioWProfile = blobWidth / 450;
+				//double ratioWProfile = blobWidth / 450;
 				cropRectWidth = 450;  
 				cropRectHeight = 280;		
+			break;
+		case LOGO:
+			double ratioWidth = blobWidth /220;
+			cropRectWidth = 216;
+			cropRectHeight = 55;
 			break;
 		default:	
 			double ratioW = blobWidth / 220;
@@ -289,7 +296,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			toolPanel.getElement().getStyle().setTop(100, Unit.PX);
 			break;
 			default:
-				toolPanel.getElement().getStyle().setMarginTop(-widthOfBackImage, Unit.PX);
+				toolPanel.getElement().getStyle().setMarginTop(-widthOfBackImage/2, Unit.PX);
 				toolPanel.getElement().getStyle().setTop(50, Unit.PX);
 				toolPanel.getElement().getStyle().setHeight(350, Unit.PX);
 		}
@@ -312,6 +319,13 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 						}
 						
+						break;
+				
+					case LOGO:
+						if(rect.getOffsetHeight() + rect.getAbsoluteTop() < bckImage.getHeight() + bckImage.getAbsoluteTop() & rect.getOffsetHeight() < maxHeightLogo){			
+							cropRectHeight +=5.0;
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
 						break;
 						
 					default: 
@@ -340,6 +354,13 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
 						}
 					break;
+					
+					case LOGO:
+						if(cropRectHeight > minHeightLogo){
+							cropRectHeight -= 5.0;
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);						
+						}
+					break;
 					default:
 						if(cropRectHeight > 10){
 							cropRectHeight -= 5.0;
@@ -354,7 +375,48 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 		switch(imageInsert.getImageType()){
 		case PROFILE:
 			break;
-			default:	
+		
+		case LOGO:
+			
+			moveLeftButton.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					if(cropRectWidth < bckImage.getOffsetWidth()  ){
+						double ratioW = blobWidth / bckImage.getWidth();
+						if(cropRectHeight > maxHeightLogo){
+							cropRectHeight += cropRectHeight/ratioW;
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
+						cropRectWidth += 5.0;
+						
+						rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
+						
+					}	
+				}
+			});			
+			moveRightButton.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					double ratioW = blobWidth / bckImage.getWidth();
+					if(cropRectWidth > 0 && cropRectWidth * ratioW > 220 && (cropRectHeight/cropRectWidth) > (minHeightLogo / 220) && (cropRectHeight/cropRectWidth) <  (maxHeightLogo / 220)){
+						
+						if(cropRectHeight > minHeightLogo){
+							cropRectHeight -= cropRectHeight/ratioW;
+							rect.getElement().getStyle().setHeight(cropRectHeight, Unit.PX);
+						}
+						cropRectWidth -= 5.0;
+						rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
+						
+					}		
+					
+				}
+			});	
+			
+			break;
+			
+		case MENU:	
 				moveLeftButton.addClickHandler(new ClickHandler() {
 					
 					@Override
@@ -375,7 +437,9 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 							rect.getElement().getStyle().setWidth(cropRectWidth, Unit.PX);
 						}						
 					}
-				});			
+				});	
+				
+				break;
 		}
 	
 		cropButton.addClickHandler(new ClickHandler() {
