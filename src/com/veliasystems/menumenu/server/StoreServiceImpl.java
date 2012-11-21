@@ -74,16 +74,16 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return cityListString;
 	}
 	
-	public City loadCitie( Long cityId) {
-		
-		Query<City> cityQuery = dao.ofy().query(City.class);
-		
-		if(cityQuery == null) return null;
-		
-		City city = cityQuery.filter("id", cityId).get();
-		
-		return city;
-	}
+//	public City loadCitie(Long cityId) {
+//		
+////		Query<City> cityQuery = dao.ofy().query(City.class);
+////		
+////		if(cityQuery == null) return null;
+//		
+//		City city = dao.ofy().find(City.class, cityId); //cityQuery.filter("id", cityId).get();
+//		
+//		return city;
+//	}
 	
 	public City findCity(Long cityId){
 		return dao.ofy().find(City.class, cityId);
@@ -251,7 +251,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private Long getCityId(String city){
 		
 		City newCity = dao.ofy().query(City.class).filter("city", city).get();
-		
 		return newCity.getId();
 	}
 	
@@ -686,6 +685,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public void addUser(User user){
 		dao.ofy().put(user);
 	}
+	
 	@Override
 	public List<User> getUsers(){
 		Query<User> users = dao.ofy().query(User.class);
@@ -783,7 +783,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 
-		City city = loadCitie(cityIdToLong);
+		City city = findCity(cityIdToLong);
 		
 		if(city == null){
 			return null;
@@ -796,7 +796,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		Queue queue = QueueFactory.getDefaultQueue();
-		
 	    queue.add(withUrl("/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityIdTo).param("emailAddress", email));
 		
 	    Map<String, String> response = new HashMap<String, String>();
@@ -806,6 +805,4 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	    return response;
 	}
 	
-	
-
 }

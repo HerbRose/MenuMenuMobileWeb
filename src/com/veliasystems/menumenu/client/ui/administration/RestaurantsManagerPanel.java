@@ -33,7 +33,7 @@ import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObserver{
+public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 
 	// controllers
 	private RestaurantController restaurantController = RestaurantController
@@ -64,7 +64,6 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 	private long justDeletedItemCity = 0;
 
 	public RestaurantsManagerPanel() {
-		restaurantController.addObserver(this);
 		setStyleName("barPanel", true);
 		show(false);
 		add(cointainer);
@@ -191,6 +190,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 
 	@Override
 	public void clearData() {
+	
 		fillRestaurantsCopy();
 
 		refreshCitiesLists();
@@ -321,15 +321,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager, IObs
 		int height = getHeight(table.getElement().getId()) + 15;
 		table.getParent().setHeight(height + "px");
 	}
-	
-	@Override
-	public void onChange() {
-		clearData();
-		if(justDeletedItemCity != 0){
-			//setProperHeight(restaurantsTables.get(justDeletedItemCity));
-		}
-		
-	}
+
 	
 	private native int getHeight(String elementId)/*-{
 	return $wnd.document.getElementById(elementId).offsetHeight;

@@ -96,7 +96,9 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	public RestaurantsManagerScreen() {
 		userController.addObserver(this);
-
+		restaurantController.addObserver(this);
+		cityController.addObserver(this);
+		
 		userType = userController.getUserType();
 		setHeader();
 		setContent();
@@ -533,6 +535,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	@Override
 	public void onChange() {
 		//clearScreenData();
+		
 		if(currentlyDisplayedPanel != null){
 			currentlyDisplayedPanel.clearData();
 		}

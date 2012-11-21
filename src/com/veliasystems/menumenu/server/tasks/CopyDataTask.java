@@ -36,7 +36,7 @@ public class CopyDataTask extends HttpServlet{
 		String emailAddress = req.getParameter("emailAddress");
 		
 		if (emailAddress==null || emailAddress.isEmpty() ) {
-			log.warning("Wrong token");
+			log.warning("MenuMenuMobileWeb. Task: CopyDataTask.java, emailAddressError: no email foun in HttpServletRequest");
 			emailAddress = "mateusz@velia-systems.com";
 			emailMessageBody = "MenuMenuMobileWeb. Task: CopyDataTask.java, emailAddressError: no email foun in HttpServletRequest" ;
 			sendMail(emailAddress);
@@ -100,7 +100,7 @@ public class CopyDataTask extends HttpServlet{
 			return;
 		}
 		
-		City city = storeService.loadCitie(cityIdToLong);
+		City city = storeService.findCity(cityIdToLong);
 		
 		if(city == null){
 			log.warning("Cannot found city:" +cityIdTo);
@@ -109,7 +109,7 @@ public class CopyDataTask extends HttpServlet{
 			return;
 		}
 		
-		List<Restaurant> restaurantsInSourceCity = new ArrayList<Restaurant>();
+		List<Restaurant> restaurantsInSourceCity = new CopyOnWriteArrayList<Restaurant>();
 		restaurantsInSourceCity.addAll(storeService.loadRestaurants(cityIdFromLong));
 		
 		if(restaurantsInSourceCity == null || restaurantsInSourceCity.size()<=0){

@@ -1,46 +1,37 @@
 package com.veliasystems.menumenu.server;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.datastore.Blob;
-import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.files.AppEngineFile;
-import com.google.appengine.api.files.FileReadChannel;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
-import com.google.appengine.api.files.FinalizationException;
-import com.google.appengine.api.files.LockException;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesService.OutputEncoding;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.InputSettings;
+import com.google.appengine.api.images.InputSettings.OrientationCorrection;
+import com.google.appengine.api.images.OutputSettings;
 import com.google.appengine.api.images.Transform;
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPHeader;
@@ -48,12 +39,8 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.google.apphosting.api.ApiProxy.RequestTooLargeException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
-import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -242,6 +229,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
+		
 		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
 		if(leftX < 0) leftX = 0;
 		if(rightX > 1) rightX = 1;
@@ -250,7 +238,16 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY,
 				rightX, bottomY);
-		Image newImage = imagesService.applyTransform(cropTransform, oldImage);
+		
+		InputSettings inputSettings = new InputSettings();
+		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
+		
+		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
+		outputSettings.setQuality(100);
+		
+		
+//		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
+		Image newImage = imagesService.applyTransform(cropTransform, oldImage,  outputSettings);
 
 		
 		Transform scaleTransform = null;
@@ -271,7 +268,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 
 		Image scaleImage = imagesService.applyTransform(scaleTransform,
-				newImage);
+				newImage, inputSettings, outputSettings);
 		
 		System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
 		try {
@@ -513,7 +510,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return filebytes;
 	}
 
-	private BlobKey writeToBlobstore(String contentType, String fileName,
+	public BlobKey writeToBlobstore(String contentType, String fileName,
 			byte[] filebytes) throws IOException {
 		// Get a file service
 		FileService fileService = FileServiceFactory.getFileService();

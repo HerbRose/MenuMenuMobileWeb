@@ -23,7 +23,11 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.InputSettings;
+import com.google.appengine.api.images.OutputSettings;
 import com.google.appengine.api.images.Transform;
+import com.google.appengine.api.images.ImagesService.OutputEncoding;
+import com.google.appengine.api.images.InputSettings.OrientationCorrection;
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPHeader;
 import com.google.appengine.api.urlfetch.HTTPMethod;
@@ -80,7 +84,7 @@ public class BlobUploadServlet extends HttpServlet {
             for (String key : keys) {
             	List<BlobKey> blobkeys = uploads.get(key);
             	for (BlobKey bkey : blobkeys) {
-            		if (blobKey==null) blobKey = bkey; // just pick the 1st one
+            		if (bkey!=null) blobKey = bkey; // just pick the 1st one
             	}
             }
 
@@ -121,7 +125,7 @@ public class BlobUploadServlet extends HttpServlet {
 //            		
 //            		Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
             		
-            		storeImageBlob( restId, imageType, blobKey );
+            		blobKey = storeImageBlob( restId, imageType, blobKey );
                     res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
             }
             
@@ -137,17 +141,24 @@ public class BlobUploadServlet extends HttpServlet {
     }
     
     
-    void storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
+   private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
 		
  //   	System.out.println("BlobUploadServlet::storeImageBlob");
     	
-		ImageBlob imageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
+		
 			
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
         ImagesService imageService = ImagesServiceFactory.getImagesService();
         
-        Transform dummy = ImagesServiceFactory.makeRotate(360);
-        Image newImage = imageService.applyTransform( dummy, image , ImagesService.OutputEncoding.JPEG);
+        Transform dummy = ImagesServiceFactory.makeRotate(0);
+        
+        InputSettings inputSettings = new InputSettings();
+		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
+		
+		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
+		//outputSettings.setQuality(100);
+		
+        Image newImage = imageService.applyTransform( dummy, image ,inputSettings, outputSettings);
         
 //        int ratio = image.getWidth() / 220;
 //        
@@ -165,7 +176,19 @@ public class BlobUploadServlet extends HttpServlet {
 //    
 //        Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
      
-        
+        BlobServiceImpl blobService = new BlobServiceImpl();
+       
+        BlobKey newblobKey = null;
+        try {
+        	
+			newblobKey = blobService.writeToBlobstore("image/jpeg", "image.jpg", newImage.getImageData());
+			blobstoreService.delete(blobKey);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        ImageBlob imageBlob = new ImageBlob(restId, newblobKey==null?blobKey.getKeyString():newblobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
 		imageBlob.setWidth(newImage.getWidth());
 		imageBlob.setHeight(newImage.getHeight());
 		
@@ -173,7 +196,7 @@ public class BlobUploadServlet extends HttpServlet {
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		
 //		System.out.println("Blob saved: " + key.getKind() + ", " + key.getName() + ", blobKey: " + blobKey.getKeyString());
-		
+		return newblobKey==null?blobKey:newblobKey;
 		
 	}
     
