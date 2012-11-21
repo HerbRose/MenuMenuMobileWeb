@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.veliasystems.menumenu.client.translations.Messages;
 
 public class Customization {
@@ -120,6 +121,18 @@ public class Customization {
 
 
 	public static final String HIDDEN = translated.hidden();
+
+
+	public static final String LOGIN = translated.login();
+
+
+	public static final String OK = translated.ok();
+
+
+	public static final String CANCEL = translated.cancel();
+
+
+	public static final String PASSWORD = translated.password();
 };
 	
 	

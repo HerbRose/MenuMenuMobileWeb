@@ -1,0 +1,100 @@
+body{ 
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+.myPage{ /* cała strona */
+	background: url("/img/layout/background.png") repeat #eee !important;
+	width: 960px  !important;;
+	max-width: 960px  !important;
+	
+	margin: 0px !important;
+	padding: 0px !important;
+	
+	position: relative  !important;
+	left: 0px  !important;
+	right: 0px  !important;
+	margin-left: auto  !important;
+	margin-right: auto  !important;
+}
+.myPageContent{ /* jqm'owy content */
+
+	margin: 0px !important;
+	padding: 0px !important;
+	
+	width: 960px  !important;;
+	max-width: 960px  !important;
+}
+.malinaPanel{  /* gorny pasek */
+	height: 30px;
+	background: url("/img/layout/headerBackgroundRed.png") repeat #BF2135;
+}
+.headerPanel{  /* nagłówek dla buttonów i nazwy strony */
+	height: 75px;
+	background: url("/img/layout/headerBackgroun.png") repeat-x #818181;
+}
+/* ogolny styl dla label i texBox */
+.myLabel, .myTextBox{
+	background: #fff !important;
+	float: left;
+	
+	-moz-border-top-left-radius: .6em;
+	-webkit-border-top-left-radius: .6em;
+	border-top-left-radius: .6em;
+	
+	-moz-border-bottom-left-radius: .6em;
+	-webkit-border-bottom-left-radius: .6em;
+	border-bottom-left-radius: .6em;
+}
+.myTextBox{
+	display: inline-block;
+}
+/* KONIEC - ogolny styl dla label i texBox */
+ /* Login screen */
+.namePanel, .passwordPanel{  /* panele na label i pole do wprowadzenia tekstu */
+	height: 60px;
+	width: 80%;
+
+	margin: 20px 0px 0px 0px;
+
+	background: #fff !important;
+	position:relative;
+	left: 0px;
+	right: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	
+	-moz-border-radius: .6em;
+	-webkit-border-radius: .6em;
+	border-radius: .6em;
+}
+.nameLabel, .passwordLabel{
+	height: inherit !important;
+	line-height: 60px;
+	
+	text-align: right;
+	color: #8a8b8e;
+	font-weight: bold;
+	font-size: 18px;
+	
+	margin-right: 10px;
+	border-right: solid;
+	border-right-width: 1px;
+	
+	min-width: 35%;	
+}
+.nameBox, .passwordBox, .nameBox:FOCUS, .passwordBox:FOCUS{
+	height: inherit !important;
+	max-width: 60% !important;	
+	margin: 0px !important;
+	padding: 0px !important;
+	border: none !important;
+	background: #fff !important;
+	background-image: none !important;
+	
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+ /* KONIEC - Login screen */

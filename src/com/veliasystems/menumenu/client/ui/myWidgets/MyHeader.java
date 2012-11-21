@@ -5,8 +5,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 public class MyHeader extends FlowPanel {
 
+	private FlowPanel malinaPanel = new FlowPanel();
+	private FlowPanel headerPanel = new FlowPanel();
+	
 	private String title = "";
-	private Button leftButton ;
+	private Button leftButton;
 	private Button rightButton;
 	private int headerHeight = 0;
 	
@@ -20,6 +23,12 @@ public class MyHeader extends FlowPanel {
 	private void setStyle(String title){
 		this.title = title;
 		setStyleName("myHeader", true);
+		
+		malinaPanel.setStyleName("malinaPanel", true);
+		headerPanel.setStyleName("headerPanel", true);
+		add(malinaPanel);
+		add(headerPanel);
+		
 	}
 	
 	public void setTitle(String title) {

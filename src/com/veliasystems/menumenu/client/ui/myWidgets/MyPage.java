@@ -23,7 +23,10 @@ public class MyPage extends JQMPage {
 	}
 	
 	private void setContent(){
-		contentPanel.setStyleName("contentPanel", true);
+		setStyleName("myPage", true);
+		getContent().setStyleName("myPageContent", true);
+		contentPanel.setStyleName("contentPanel", true);	
+		add(header);
 		add(contentPanel);
 	}
 	
