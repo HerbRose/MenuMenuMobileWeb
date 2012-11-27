@@ -134,7 +134,8 @@ public class ImagesController {
 	
 	public ImageBlob getDefoultEmptyProfile(){
 		if(defoultEmptyProfilImageBlobMap == null){
-			Window.alert("defoultEmptyProfilImageBlobMap == null");
+			//Window.alert("defoultEmptyProfilImageBlobMap == null");
+			return new ImageBlob();
 		}
 		for (String key : defoultEmptyProfilImageBlobMap.keySet()) {
 			if(defoultEmptyProfilImageBlobMap.get(key).getRestaurantId().equals("0")) return defoultEmptyProfilImageBlobMap.get(key);
