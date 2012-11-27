@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,16 +15,19 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 public class LoadDataScreen extends JQMPage {
 	
@@ -32,6 +35,7 @@ public class LoadDataScreen extends JQMPage {
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
 	private CityController cityController = CityController.getInstance();
+	private ImagesController imagesController = ImagesController.getInstance();
 	
 	private String email;
 	
@@ -44,7 +48,7 @@ public class LoadDataScreen extends JQMPage {
 			@Override
 			public void onSuccess(Map<String, Object> result) {
 				if(result == null){
-					JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN_WRONG);
+					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
 				}
 				else{
 					setData(result);
@@ -58,7 +62,7 @@ public class LoadDataScreen extends JQMPage {
 				Window.alert(Customization.CONNECTION_ERROR);
 				Cookies.removeCookie(R.LOADED);
 				Cookies.removeCookie(R.LAST_PAGE);
-				JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN_WRONG);
+				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
 				
 			}
 		});
@@ -73,7 +77,7 @@ public class LoadDataScreen extends JQMPage {
 			@Override
 			public void onSuccess(Map<String, Object> result) {
 				if(result == null){
-					JQMContext.changePage(com.veliasystems.menumenu.client.ui.Pages.PAGE_LOGIN_WRONG);
+					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
 					
 				}
 				else{
@@ -110,10 +114,17 @@ public class LoadDataScreen extends JQMPage {
 		for (User user : users) {
 			usersFromServer.put(user.getEmail(), user);
 		}
+		List<ImageBlob> defaultEmptyProfile = (List<ImageBlob>) data.get("DefaultEmptyProfile");
+		Map<String, ImageBlob> defoultEmptyProfilImageBlobMap = new HashMap<String, ImageBlob>();
+		for (ImageBlob imageBlob : defaultEmptyProfile) {
+			defoultEmptyProfilImageBlobMap.put(imageBlob.getId(), imageBlob);
+		}
+		
 		userController.setUsers(usersFromServer);
 		userController.setUserType(email);
 		restaurantController.setRestaurants(restaurantsFromServer);
 		cityController.setCities(citiesFromServer);
+		imagesController.setDefoultEmptyProfilImageBlobMap(defoultEmptyProfilImageBlobMap);
 	}
 	
 	@Override

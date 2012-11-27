@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.myWidgets;
+package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
