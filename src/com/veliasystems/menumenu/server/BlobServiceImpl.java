@@ -243,11 +243,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-		outputSettings.setQuality(100);
+		outputSettings.setQuality(40);
 		
 		
 //		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
-		Image newImage = imagesService.applyTransform(cropTransform, oldImage,  outputSettings);
+		Image newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
 
 		
 		Transform scaleTransform = null;
@@ -271,11 +271,32 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 				newImage, inputSettings, outputSettings);
 		
 		System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
+		
+		BlobKey newBlobKey = null;
 		try {
-			sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
+			newBlobKey = writeToBlobstore("image/jpeg", "image.jpg",
+					scaleImage.getImageData());
+			ImageBlob newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
+					newBlobKey.getKeyString(), new Date(),
+					imageBlob.getImageType());
+			dao.ofy().put(newImageBlob);
+			
+			//remove old image and image's data
+			BlobstoreServiceFactory.getBlobstoreService().delete(
+					new BlobKey(imageBlob.getBlobKey()));
+			dao.ofy().delete(imageBlob);
+			//END - remove old image and image's data
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
+					+ e.getStackTrace());
+			// e.printStackTrace();
 		}
+
+//		try {
+//			sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 	}
 
@@ -524,7 +545,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		// lets buffer the bitch
 		BufferedInputStream in = new BufferedInputStream(
 				new ByteArrayInputStream(filebytes));
-		byte[] buffer = new byte[524288]; // 0.5 MB buffers
+		
+		byte[] buffer;
+		if(filebytes.length > 524288){
+			buffer = new byte[524288]; // 0.5 MB buffers
+		}else{
+			buffer = new byte[filebytes.length]; // filebytes.length MB buffers
+		}
+
 		while (in.read(buffer) > 0) { // -1 means EndOfStream
 			ByteBuffer bb = ByteBuffer.wrap(buffer);
 			writeChannel.write(bb);

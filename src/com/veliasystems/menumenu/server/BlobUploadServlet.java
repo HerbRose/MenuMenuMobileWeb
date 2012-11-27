@@ -150,13 +150,13 @@ public class BlobUploadServlet extends HttpServlet {
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
         ImagesService imageService = ImagesServiceFactory.getImagesService();
         
-        Transform dummy = ImagesServiceFactory.makeRotate(0);
+        Transform dummy = ImagesServiceFactory.makeResize(800, 600);
         
         InputSettings inputSettings = new InputSettings();
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-		//outputSettings.setQuality(100);
+		outputSettings.setQuality(40);
 		
         Image newImage = imageService.applyTransform( dummy, image ,inputSettings, outputSettings);
         
