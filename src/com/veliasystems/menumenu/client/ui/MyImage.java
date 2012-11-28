@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -125,6 +126,15 @@ public class MyImage extends FlowPanel {
 		
 		url="img/empty.png";
 		setMyImage(url);
+		
+//		image.addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				JQMContext.changePage(new Test());
+//				
+//			}
+//		});
 		
 		add(setDetailsPanel(emptyImageNumber+""));
 		add(image);
