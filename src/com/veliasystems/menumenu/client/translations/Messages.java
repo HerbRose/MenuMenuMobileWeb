@@ -7,10 +7,10 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Please login")
 	String pleaseLogin();
 
-	@DefaultStringValue("Login:")
+	@DefaultStringValue("Login")
 	String login();
 
-	@DefaultStringValue("Password:")
+	@DefaultStringValue("Password")
 	String password();
 
 	@DefaultStringValue("OK")

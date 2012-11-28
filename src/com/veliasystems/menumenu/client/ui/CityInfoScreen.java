@@ -114,7 +114,7 @@ public class CityInfoScreen extends JQMPage{
 		}
 		
 		refreshRestaurantList();
-		
+		restaurantController.setLastOpenPage(this);
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	private void refreshRestaurantList() {

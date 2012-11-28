@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
@@ -97,6 +98,32 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 		for (Restaurant r : rests) {
 			if(r.isVisibleForApp()){
+				
+				List<String> blobkeys = new ArrayList<String>();
+				
+				String logoImageString = (r.getMainLogoImageString()!=null) ? r.getMainLogoImageString() : null;			
+				if(logoImageString != null){
+					String[] logoImageStringArray = logoImageString.split("=") ;
+					if(logoImageStringArray.length > 1) logoImageString = logoImageStringArray[1];
+					blobkeys.add(logoImageString);
+				}
+				
+				String menuImageString = (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : null;				
+				if(menuImageString != null){
+					String[] menuImageStringArray = menuImageString.split("=") ;
+					if(menuImageStringArray.length > 1) menuImageString = menuImageStringArray[1];
+					blobkeys.add(menuImageString);
+				}
+				
+				String profileImageString = (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : null;				
+				if(profileImageString != null){
+					String[] profileImageStringArray = profileImageString.split("=") ;
+					if(profileImageStringArray.length > 1) profileImageString = profileImageStringArray[1];
+					blobkeys.add(profileImageString);
+				}
+				
+				List<ImageBlob> imageBlobs = storeService.getImageBlobs(blobkeys);
+				
 				Map<String,String> map = new HashMap<String,String>();
 				map.put( "id", ""+ r.getId());
 				map.put( "name", r.getName());
@@ -108,6 +135,11 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
 				map.put( "lat", "" + r.getLat());
 				map.put( "lng", "" + r.getLng());
+				
+
+				for (ImageBlob imageBlob : imageBlobs) {
+					if(imageBlob != null) map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+				}
 				
 				attributes.add(map);
 			}

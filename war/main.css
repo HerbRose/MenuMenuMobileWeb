@@ -375,3 +375,107 @@ width: 100px;
 	padding: 0px !important;
 }
 
+/* testing only */
+
+.mainPanel{
+	width: 239px;
+	position: relative;
+}
+.topPanel{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 20%;
+	width: 100%;
+	background-color: #000;
+	opacity: 0.5;
+	
+	z-index: 5;
+	
+}
+.topHand{
+	position: absolute;
+	top:20%;
+	left: 50%;
+	
+	width: 0; 
+	height: 0; 
+	border-right: 15px solid transparent;
+	border-left: 15px solid transparent;
+	border-bottom: 15px solid rgba(255, 255, 255, 0.5);
+	
+	z-index: 10;
+}
+.rightPanel{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	height: 100%;
+	width: 20%;
+	background-color: #000;
+	opacity: 0.5;
+	
+	z-index: 5;
+}
+.rightHand{
+	position: absolute;
+	top:50%;
+	right: 20%;
+	
+	width: 0; 
+	height: 0; 
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
+	border-left: 15px solid rgba(255, 255, 255, 0.5);
+	
+	z-index: 10;
+}
+.leftPanel{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 20%;
+	background-color: #000;
+	opacity: 0.5;
+	
+	z-index: 5;
+}
+.leftHand{
+	position: absolute;
+	top:50%;
+	left: 20%;
+	
+	width: 0; 
+	height: 0; 
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
+	border-right: 15px solid rgba(255, 255, 255, 0.5);
+	
+	z-index: 10;
+}
+.bottomPanel{
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	height: 20%;
+	width: 100%;
+	background-color: #000;
+	opacity: 0.5;
+	
+	z-index: 5;
+}
+.bottomHand{
+	position: absolute;
+	bottom:20%;
+	left: 50%;
+
+	width: 0; 
+	height: 0; 
+	border-right: 15px solid transparent;
+	border-left: 15px solid transparent;
+	border-top: 15px solid rgba(255, 255, 255, 0.5);
+	
+	z-index: 10;
+}
+/* KONIEC testing only */

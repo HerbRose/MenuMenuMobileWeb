@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
@@ -26,7 +27,7 @@ public class GetRestaurantsInArea extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 
-	private StoreService storeService = new StoreServiceImpl();
+	private StoreServiceImpl storeService = new StoreServiceImpl();
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -119,6 +120,33 @@ public class GetRestaurantsInArea extends HttpServlet{
 			if( restaurant.isVisibleForApp()){
 				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){	
 					Map<String,String> map = new HashMap<String,String>();
+					
+					List<String> blobkeys = new ArrayList<String>();
+					
+					String logoImageString = (restaurant.getMainLogoImageString()!=null) ? restaurant.getMainLogoImageString() : null;			
+					if(logoImageString != null){
+						String[] logoImageStringArray = logoImageString.split("=") ;
+						if(logoImageStringArray.length > 1) logoImageString = logoImageStringArray[1];
+						blobkeys.add(logoImageString);
+					}
+					
+					String menuImageString = (restaurant.getMainMenuImageString()!=null) ? addHostToUrl(restaurant.getMainMenuImageString()) : null;				
+					if(menuImageString != null){
+						String[] menuImageStringArray = menuImageString.split("=") ;
+						if(menuImageStringArray.length > 1) menuImageString = menuImageStringArray[1];
+						blobkeys.add(menuImageString);
+					}
+					
+					String profileImageString = (restaurant.getMainProfileImageString()!=null) ? addHostToUrl(restaurant.getMainProfileImageString()) : null;				
+					if(profileImageString != null){
+						String[] profileImageStringArray = profileImageString.split("=") ;
+						if(profileImageStringArray.length > 1) profileImageString = profileImageStringArray[1];
+						blobkeys.add(profileImageString);
+					}
+					
+					List<ImageBlob> imageBlobs = storeService.getImageBlobs(blobkeys);
+					
+					
 					map.put( "id", ""+ restaurant.getId());
 					map.put( "name", restaurant.getName());
 					map.put( "city", restaurant.getCity());
@@ -129,6 +157,10 @@ public class GetRestaurantsInArea extends HttpServlet{
 					map.put( "profileImage", (restaurant.getMainProfileImageString()!=null) ? addHostToUrl(restaurant.getMainProfileImageString()) : "EMPTY");
 					map.put( "lat", "" + restaurant.getLat());
 					map.put( "lng", "" + restaurant.getLng());
+					
+					for (ImageBlob imageBlob : imageBlobs) {
+						map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+					}
 					attributes.add(map);	
 				}
 				

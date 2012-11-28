@@ -805,4 +805,15 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	    return response;
 	}
 	
+	public List<ImageBlob> getImageBlobs(List<String> blobkey){
+		List<ImageBlob> imageBlobs = new ArrayList<ImageBlob>();
+		
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if(query == null) return new ArrayList<ImageBlob>();
+	
+		imageBlobs.addAll(query.filter("blobKey IN", blobkey).list());
+
+		return imageBlobs;
+	}
 }
