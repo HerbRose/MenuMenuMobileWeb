@@ -4,6 +4,7 @@ public class R {
 
 	public final static String TOKEN = "a1b2c3";
 	public final static String GEOCODING_URL = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=";
+	public final static String DIRECTIONS_MAPS_URL = "http://maps.googleapis.com/maps/api/directions/json?sensor=false";
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
 	
 	public final static String UTF8 = "UTF-8";
