@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -21,17 +22,17 @@ import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 
 public class MyImage extends FlowPanel {
 
-	ImagesController imagesController;
+	private ImagesController imagesController;
 
 	Image image = new Image();
 
-	ImageBlob imgBlob;
-	Label txtLabel;
-	Label mainLAbel;
-	String url;
+	private ImageBlob imgBlob;
+	private Label txtLabel;
+	private Label mainLAbel;
+	private String url;
 
-	FlowPanel detailsPanel;
-	HTML detailsContent;
+	private FlowPanel detailsPanel;
+	private HTML detailsContent;
 
 	private boolean mainImage = false;
 	private ImageType imageType;
@@ -103,43 +104,41 @@ public class MyImage extends FlowPanel {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Document.get().getElementById("load").setClassName("show");
+				PagesController.showWaitPanel();
 				restaurantController.setMainImage(imgBlob);
-
+//				JQMContext.changePage(new Test(imgBlob));
 				// getImagesController().selectImage(getMe());
 			}
 		});
 
 		String dateTimeFormat = DateTimeFormat.getFormat(
-				DateTimeFormat.PredefinedFormat.DATE_SHORT).format(
-				imageBlob.getDateCreated());
+						DateTimeFormat.PredefinedFormat.MONTH_NUM_DAY).format(
+						imageBlob.getDateCreated());
 
-		add(setDetailsPanel(dateTimeFormat.substring(5)));
+		add(setDetailsPanel(dateTimeFormat));
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
 		add(image);
 
 	}
 
-	public MyImage(int emptyImageNumber){
+	public MyImage(int emptyImageNumber) {
 		setStyleName("imagePanel");
-		
-		url="img/empty.png";
+
+		url = "img/empty.png";
 		setMyImage(url);
-		
-//		image.addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				JQMContext.changePage(new Test());
-//				
-//			}
-//		});
-		
-		add(setDetailsPanel(emptyImageNumber+""));
+
+		image.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+			}
+		});
+
+		add(setDetailsPanel(emptyImageNumber + ""));
 		add(image);
 	}
-	
+
 	private FlowPanel setDetailsPanel(String details) {
 		detailsPanel = new FlowPanel();
 		detailsPanel.setStyleName("details");

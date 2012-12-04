@@ -41,7 +41,7 @@ public class LoadDataScreen extends JQMPage {
 	
 	public LoadDataScreen(String login){
 		email = login;
-		Document.get().getElementById("load").setClassName(R.LOADING);
+		PagesController.showWaitPanel();
 		
 		storeService.getAllData(login, new AsyncCallback<Map<String,Object>>() {
 			
@@ -119,6 +119,8 @@ public class LoadDataScreen extends JQMPage {
 		for (ImageBlob imageBlob : defaultEmptyProfile) {
 			defoultEmptyProfilImageBlobMap.put(imageBlob.getId(), imageBlob);
 		}
+		
+		
 		
 		userController.setUsers(usersFromServer);
 		userController.setUserType(email);

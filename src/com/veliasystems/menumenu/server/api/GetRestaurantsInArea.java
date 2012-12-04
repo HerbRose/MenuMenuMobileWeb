@@ -251,7 +251,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 	private double distFromByStreets(double lat1, double lng1, double lat2,
 			double lng2) {
 		
-		String urlString = R.DIRECTIONS_MAPS_URL + "&origin=" + lat1 + ","
+		String urlString = R.DIRECTIONS_MAPS_URL + "&mode=walking&origin=" + lat1 + ","
 				+ lng1 + "&destination=" + lat2 + "," + lng2;
 
 		String json = getJsonFromGoogleMaps(urlString);

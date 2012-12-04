@@ -13,7 +13,7 @@
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="MenuMenuMobileWeb.css">
-    <link type="text/css" rel="stylesheet" href="main.css">
+<!--     <link type="text/css" rel="stylesheet" href="main.css"> --> 
 <!--     <link type="text/css" rel="stylesheet" href="style.css"> -->
 
     <!--                                           -->
@@ -34,8 +34,39 @@
 
 	
     <script type="text/javascript" language="javascript">
-    window.location.hash = ' ';
-
+    	window.location.hash = ' ';
+		
+    	var isMobile = {
+    		    Android: function() {
+    		        return navigator.userAgent.match(/Android/i);
+    		    },
+    		    BlackBerry: function() {
+    		        return navigator.userAgent.match(/BlackBerry/i);
+    		    },
+    		    iOS: function() {
+    		        return navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPod") > 0;
+    		    },
+    		    Opera: function() {
+    		        return navigator.userAgent.match(/Opera Mini/i);
+    		    },
+    		    Windows: function() {
+    		        return navigator.userAgent.match(/IEMobile/i);
+    		    },
+    		    any: function() {
+    		        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    		    }
+    	};
+    	
+    	var fileref=document.createElement("link");
+		fileref.setAttribute("rel", "stylesheet");
+		fileref.setAttribute("type", "text/css");
+		  
+    	if(isMobile.any()){
+    		fileref.setAttribute("href", "mobile.css");  
+    	}else{
+    		fileref.setAttribute("href", "stationary.css");  
+    	}
+    	document.getElementsByTagName("head")[0].appendChild(fileref);
     </script>
 
     <script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>

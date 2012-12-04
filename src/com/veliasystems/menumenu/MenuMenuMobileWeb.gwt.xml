@@ -19,7 +19,7 @@
   <inherits name='com.github.gwtbootstrap.datepicker.Datepicker' />
   -->
   <inherits name="com.googlecode.objectify.Objectify" />
-  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>	
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.veliasystems.menumenu.client.MenuMenuMobileWeb'/>
 

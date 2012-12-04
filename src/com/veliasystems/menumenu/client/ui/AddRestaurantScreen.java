@@ -45,7 +45,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	Label mailUser;
 	Label phoneUser;
 	Label nameUser;
-	Label surnameUser;
 	
 	TextBox nameText = new TextBox();
 	TextBox adressText = new TextBox();
@@ -54,7 +53,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 	TextBox mailUserTextBox = new TextBox();
 	TextBox phoneUserTextBox = new TextBox();
 	TextBox nameUserTextBox = new TextBox();
-	TextBox surnameUserTextBox = new TextBox();
+
 	ListBox cityListBox = new ListBox();
 	Label warning = new Label();
 	
@@ -100,7 +99,13 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 				
 				restaurant.setAddress(adressText.getText());			
 				int index = cityListBox.getSelectedIndex();			
-				restaurant.setCity(cityListBox.getItemText(index));				
+				restaurant.setCity(cityListBox.getItemText(index));	
+				restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
+				restaurant.setPhoneRestaurant(phoneRestaurantTextBox.getText());
+				restaurant.setNameUser(nameUserTextBox.getText());
+				restaurant.setPhoneUser(phoneUserTextBox.getText());
+				restaurant.setMailUser(mailUserTextBox.getText());
+				
 				RestaurantController.getInstance().saveRestaurant(restaurant);
 				Document.get().getElementById("load").setClassName(R.LOADING);
 			}
@@ -167,13 +172,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		
 		phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
 		content.add(phoneRestaurantTextBox);
-		
-		surnameUser = new Label();
-		surnameUser.setText(Customization.USER_SURNAME +":");
-		content.add(surnameUser);
-		
-		surnameUserTextBox.setTitle(Customization.USER_NAME);
-		content.add(surnameUserTextBox);
+
 		
 		nameUser = new Label();
 		nameUser.setText(Customization.USER_NAME + ":");
@@ -246,7 +245,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		nameUserTextBox.setText("");
 		phoneRestaurantTextBox.setText("");
 		phoneUserTextBox.setText("");
-		surnameUserTextBox.setText("");
 		warning.setText("");
 		
 		setValidDataStyle(null, nameText);
@@ -256,7 +254,6 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 		setValidDataStyle(null, mailUserTextBox);
 		setValidDataStyle(null, phoneRestaurantTextBox);
 		setValidDataStyle(null, phoneUserTextBox);
-		setValidDataStyle(null, surnameUserTextBox);
 	}
 
 

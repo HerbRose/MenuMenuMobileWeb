@@ -1,12 +1,17 @@
 package com.veliasystems.menumenu.client.userInterface;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -14,15 +19,14 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.ui.LanguageCombo;
-import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.*;
 
 
 public class LoginScreen extends MyPage{
 
 //	JQMHeader header;
-	private Button okButton;
-	private Button cancelButton;
+	private MyButton cancelButton;
+	private MyButton okButton;
 	
 	private TextBox nameBox;
 	private PasswordTextBox passwordBox;
@@ -30,30 +34,27 @@ public class LoginScreen extends MyPage{
 	private Label nameLabel = new Label(Customization.LOGIN);
 	private Label passwordLabel = new Label(Customization.PASSWORD);
 	private Label wrongData;
-	private LanguageCombo languageCombo = new LanguageCombo();
+	private MyListCombo languageCombo = new MyListCombo();
 	
 	private FlowPanel namePanel = new FlowPanel();
 	private FlowPanel passwordPanel = new FlowPanel();
 	private FlowPanel buttonPanel = new FlowPanel();
+	private FlowPanel logoPanel = new FlowPanel();
+	
+	
 	
 	private boolean isWrongData = false;
 
 	
 	public LoginScreen(boolean isWrongLogin){
 		super();
-	//	header = new JQMHeader(translated.pleaseLogin());
-	//	header.setFixed(true);
-	//	header.setText(Customization.MAINTITLE);
-	//	add(header);
-	    
+		
 		nameBox = new TextBox();
 
 		passwordBox = new PasswordTextBox();
-		
-		
-		
-	    okButton = new Button(Customization.OK);
-	    
+
+	    okButton = new MyButton(Customization.OK);
+	    okButton.setBackGrountImage("img/layout/okButton.png", true, false, "#919191");
 	    okButton.addClickHandler( new ClickHandler() {
 			
 			@Override
@@ -67,7 +68,9 @@ public class LoginScreen extends MyPage{
 				}
 			}
 		});
-	    cancelButton = new Button(Customization.CANCEL);
+	    cancelButton = new MyButton(Customization.CANCEL);
+	    cancelButton.getElement().getStyle().setProperty("margin","39px");
+	    cancelButton.setBackGrountImage("img/layout/anulujButton.png", true, false, "#919191");
 	    
 	    
 	    if(isWrongLogin){
@@ -78,6 +81,10 @@ public class LoginScreen extends MyPage{
 	    	wrongData.addStyleName("warning");
 	    	isWrongData = true;
 	    }
+	    
+	    buttonPanel.getElement().setAttribute("style", "text-align:center");
+	    
+	    buttonPanel.setStyleName("loginButtonPanel", true);
 	    
 	    namePanel.setStyleName("namePanel", true);
 	    passwordPanel.setStyleName("passwordPanel", true);
@@ -94,14 +101,62 @@ public class LoginScreen extends MyPage{
 	    passwordPanel.add(passwordLabel);
 	    passwordPanel.add(passwordBox);
 	    
-	    buttonPanel.add(okButton);
 	    buttonPanel.add(cancelButton);
+	    buttonPanel.add(okButton);
 	    buttonPanel.setWidth("100%");
+	    
+	    logoPanel.add(new Image("img/layout/menuMenuLogo.png"));
+	    logoPanel.setStyleName("logoPanel", true);
+	    
+	    languageCombo.setStyleName("languageCombo", true);
+	    MyListItem listItem = languageCombo.getNewItem(R.ENGLISH_NAME);
+	    listItem.setValue(R.ENGLISH_CODE);
+	    listItem.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Cookies.setCookie(R.LANGUAGE, R.ENGLISH_CODE);
+	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
+			}
+		});
+	    languageCombo.addListItem(listItem, 0);
+	    
+	    listItem = languageCombo.getNewItem(R.FRENCH_NAME);
+	    listItem.setValue(R.FRENCH_CODE);
+	    listItem.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Cookies.setCookie(R.LANGUAGE, R.FRENCH_CODE);
+	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
+			}
+		});
+	    languageCombo.addListItem(listItem, 1);
+	    
+	    listItem = languageCombo.getNewItem(R.POLISH_NAME);
+	    listItem.setValue(R.POLISH_CODE);
+	    listItem.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Cookies.setCookie(R.LANGUAGE, R.POLISH_CODE);
+	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
+			}
+		});
+	    languageCombo.addListItem(listItem, 2);
+	    
+	    String language = getCurrentLocale();
+	    
+	    if(language.equals(R.FRENCH_CODE)) languageCombo.selectItem(1);
+	    else if(language.equals(R.POLISH_CODE)) languageCombo.selectItem(2);
+	    else languageCombo.selectItem(0);
+	    
 	    
 	    getContentPanel().add(namePanel);
 	    getContentPanel().add(passwordPanel);
 	    getContentPanel().add(languageCombo);
 	    getContentPanel().add(buttonPanel);
+	    getHeader().add(logoPanel);
 	    
 	}
 
@@ -129,5 +184,27 @@ public class LoginScreen extends MyPage{
 		}
 		super.onPageShow();
 	}
+	
+
+	public String getCurrentLocale(){	
+	    String ret = Window.Location.getParameter("locale");
+	    if (ret==null || ret.isEmpty()) ret = R.ENGLISH_CODE; // default
+	    return ret;
+	}
+	
+    private native void changeLanguage( String locale )
+    /*-{
+	    var currLocation = $wnd.location.toString().split("#");
+	    currLocation = currLocation[0].split("?");
+	    var currLocale = "";
+	    if ( ! (locale == "EN" || locale == "en") )
+	    {	    	
+	      currLocale = "?locale=" + locale;
+	     
+	    }
+	    var tmp = currLocation[0]+= currLocale ;
+	    $wnd.location.replace(tmp);
+	    console.log(locale);
+     }-*/;
 	
 }

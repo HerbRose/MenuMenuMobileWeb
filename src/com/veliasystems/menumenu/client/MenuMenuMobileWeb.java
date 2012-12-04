@@ -5,6 +5,8 @@ import com.google.gwt.user.client.Cookies;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.ui.LoadDataScreen;
 import com.veliasystems.menumenu.client.ui.Pages;
+//import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
+//import com.veliasystems.menumenu.client.userInterface.Pages;
 
 public class MenuMenuMobileWeb implements EntryPoint {
 
@@ -18,13 +20,38 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		if (logged != null && !logged.equals("null")) loggedIn = true; //it's weird, but it seems to be working
 		
 		if (loggedIn) {
-			JQMContext.changePage( new LoadDataScreen(logged) );
+			if(isMobile()) JQMContext.changePage( new LoadDataScreen(logged) );
+			else JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoadDataScreen(logged) );
 		} else {
-			JQMContext.changePage( Pages.PAGE_LOGIN_OK );
+			if(isMobile()) JQMContext.changePage( Pages.PAGE_LOGIN_OK );
+			else JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoginScreen(true) );
 		}
 	
 		
 	}
 	
-	
+	private native boolean isMobile()/*-{
+		var isMobile = {
+    		    Android: function() {
+    		        return navigator.userAgent.indexOf("Android") >0 ;
+    		    },
+    		    BlackBerry: function() {
+    		        return navigator.userAgent.indexOf("BlackBerry") >0 ;
+    		    },
+    		    iOS: function() {
+    		        return navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPod") > 0;  
+    		    },
+    		    Opera: function() {
+    		        return navigator.userAgent.indexOf("Opera Mini") >0;
+    		    },
+    		    Windows: function() {
+    		        return navigator.userAgent.indexOf("IEMobile") >0;
+    		    },
+    		    any: function() {
+    		        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    		    }
+    	};
+
+    	return isMobile.any();
+	}-*/;
 }

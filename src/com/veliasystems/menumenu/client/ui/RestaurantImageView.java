@@ -43,12 +43,12 @@ public class RestaurantImageView extends JQMPage{
 	private boolean loaded = false;
 	private List<SwipeView> swipeViews = new ArrayList<SwipeView>(); 
 	private RestaurantController restaurantController = RestaurantController.getInstance();
-	private JQMPage back;
-	
+
+	private JQMPage previousLastOpoenPage;
 	private RestInfoScreen restInfoScreen;
 	
 	public RestaurantImageView(Restaurant r, JQMPage back){
-		this.back = back;
+
 		this.restaurant = r;
 
 		editButton = new JQMButton(Customization.EDIT, new RestInfoScreen(restaurant, this), Transition.SLIDE);
@@ -115,7 +115,7 @@ public class RestaurantImageView extends JQMPage{
 				}
 			});
 			trashImage.setStyleName("addTrashImage", true);
-			addToContent(trashImage);
+			//addToContent(trashImage);
 			
 			infoLabel = new Label(Customization.INFO);
 			addToContent(infoLabel);
@@ -123,7 +123,6 @@ public class RestaurantImageView extends JQMPage{
 			loaded = true;
 		}else{
 			header.remove(backButton);
-			checkChanges();
 		}
 //		if(restaurantController.isFromCityView()){
 //			backButton = new JQMButton(Customization.BACK, back, Transition.SLIDE);
@@ -132,11 +131,15 @@ public class RestaurantImageView extends JQMPage{
 //		}
 //		
 		JQMPage page = restaurantController.getLastOpenPage();
+		
+		restaurantController.setLastOpenPage(this);
 		if(page != null) {
-			backButton = new JQMButton(Customization.BACK, restaurantController.getLastOpenPage(), Transition.SLIDE);
+			if(page == this) page = previousLastOpoenPage;
+			backButton = new JQMButton(Customization.BACK, page, Transition.SLIDE);
 		}else{
 			backButton = new JQMButton(Customization.BACK, PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
 		}
+		previousLastOpoenPage = page;
 		
 		String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"+Customization.BACK+"</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";      
 		backButton.setIcon(DataIcon.LEFT);
@@ -149,14 +152,17 @@ public class RestaurantImageView extends JQMPage{
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE); // <<---is it necessary?
 		}
-		header.setText(restaurant.getName());
 //		Date data = new Date(); 
 //		Long milisec = data.getTime();
 //		milisec += (1000 * 5 * 60); 
+		
 		Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");//, new Date(milisec));
+		header.setText(restaurant.getName());
+		if(loaded) checkChanges();
 		
 		Document.get().getElementById("load").setClassName(R.LOADED); 
-		restaurantController.setLastOpenPage(this);
+	
+		
 	};
 
 	
@@ -177,4 +183,5 @@ public class RestaurantImageView extends JQMPage{
 		return restaurant;
 	}
 		
+
 }

@@ -117,6 +117,16 @@
      <servlet-name>AddAdminServlet</servlet-name>
      <url-pattern>/addAdmin</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>GetUploadUrl</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetUploadUrl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetUploadUrl</servlet-name>
+     <url-pattern>/getUploadUrlt</url-pattern>
+  </servlet-mapping>
 
   <servlet>
      <servlet-name>CopyDataTask</servlet-name>
