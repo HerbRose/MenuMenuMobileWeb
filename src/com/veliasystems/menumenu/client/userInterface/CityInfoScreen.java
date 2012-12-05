@@ -6,16 +6,8 @@ import java.util.List;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.sksamuel.jqm4gwt.DataIcon;
-import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMContext;
-import com.sksamuel.jqm4gwt.JQMPage;
-import com.sksamuel.jqm4gwt.JQMPanel;
 import com.sksamuel.jqm4gwt.Transition;
-import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.sksamuel.jqm4gwt.list.JQMList;
-import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
-import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -38,7 +30,6 @@ public class CityInfoScreen extends MyPage{
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private List<Restaurant> restaurants;
 	
-	private boolean loaded = false;
 	private String cityName;
 
     public CityInfoScreen(String city){
