@@ -62,7 +62,7 @@ body{
 	display: inline-block;
 }
 .borderButton{
-	line-height: 54px ;
+	line-height: 44px ;
 	text-align: center ;
 	
 	-moz-border-radius: 14px;
@@ -99,6 +99,8 @@ body{
 
 .saveButton{
 	background: url("img/layout/save.png") !important;
+	top: 13px !important;
+	height: 44px !important;
 }
 .itemList{
 	width: 100%;
@@ -150,6 +152,7 @@ body{
 	position: absolute;
 	right: 0px;
 	top: 5px;
+	
 }
 
 /* ogolny styl dla label i texBox */
