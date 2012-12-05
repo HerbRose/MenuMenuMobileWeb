@@ -7,7 +7,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
@@ -19,7 +18,7 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.ui.AddCity;
-import com.veliasystems.menumenu.client.ui.CityInfoScreen;
+import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
@@ -51,7 +50,7 @@ public class CityListScreen extends MyPage implements IObserver{
 			}
 		});
 		
-		addButton = new  MyButton(Customization.ADDRESTAURANT);
+		addButton = new  MyButton(Customization.ADD_CITY);
 		addButton.setStyleName("rightButton", true);
 		addButton.addClickHandler(new ClickHandler() {
 			
