@@ -2,8 +2,8 @@ package com.veliasystems.menumenu.client.controllers;
 
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.ui.AddRestaurantScreen;
-import com.veliasystems.menumenu.client.ui.CityListScreen;
 import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
+import com.veliasystems.menumenu.client.userInterface.CityListScreen;
 import com.veliasystems.menumenu.client.userInterface.HomePageScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsListScreen;
 
