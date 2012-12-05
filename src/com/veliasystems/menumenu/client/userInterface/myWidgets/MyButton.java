@@ -14,7 +14,7 @@ public class MyButton extends FocusPanel {
 	
 	public MyButton(String text) {
 		setText(text);
-		setStyleName("myButton borderButton" , true);
+		setStyleName("myButton borderButton noFocus" , true);
 		add(textLabel);
 	}
 	
