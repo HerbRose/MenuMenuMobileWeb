@@ -1,30 +1,44 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
-
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 
-public class MyButton extends FocusPanel {
-
+public class BackButton extends FocusPanel{
+	
 	private String text = "";
 	private Label textLabel = new Label();
 	private boolean isRepeatX = false;
 	private boolean isRepeatY = false;
 	
 	
-	public MyButton(String text) {
+	private FlowPanel mainPanel = new  FlowPanel();
+	private FlowPanel arrowPanel = new FlowPanel();
+	private FlowPanel labelPanel = new FlowPanel();
+	
+	public BackButton(String text) {
 		setText(text);
-		setStyleName("myButton borderButton" , true);
-		add(textLabel);
+		//setStyleName("myButton borderButton" , true);
+		//add(textLabel);
+		
+		setStyleName("noFocus", true);
+		mainPanel.setStyleName("mainPanelBackButton noFocus", true);
+		arrowPanel.setStyleName("arrowButtonPart noFocus", true);
+		labelPanel.setStyleName("labelBackButton noFocus", true);
+		
+		labelPanel.add(textLabel);
+		
+		mainPanel.add(arrowPanel);
+		mainPanel.add(labelPanel);
+		
+		add(mainPanel);
 	}
 	
-	/**
-	 * 
-	 * @param image - image to display
-	 * @param repeatX - The background image will be repeated horizontally 
-	 * @param repeatY - The background image will be repeated vertically
-	 * @param backgroundColor - The background color
-	 */
+	public void setText(String text) {
+		textLabel.setText(text);
+		textLabel.setStyleName("myTextLabel", true);
+	}
+	
 	public void setBackGroundImage(String imageUrl, boolean isRepeatX, boolean isRepeatY, String backgroundColor){
 		this.isRepeatX = isRepeatX;
 		this.isRepeatY = isRepeatY;
@@ -51,10 +65,5 @@ public class MyButton extends FocusPanel {
 		//getElement().setAttribute("style", "background: "+ backgroundStyleProperty);
 		getElement().getStyle().setProperty("background",backgroundStyleProperty);
 	}
-
-	public void setText(String text) {
-		textLabel.setText(text);
-		textLabel.setStyleName("myTextLabel", true);
-	}
-
+	
 }

@@ -3,9 +3,9 @@ package com.veliasystems.menumenu.client.controllers;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.ui.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.ui.CityListScreen;
-import com.veliasystems.menumenu.client.ui.HomePageScreen;
-import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
 import com.veliasystems.menumenu.client.ui.RestaurantsListScreen;
+import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
+import com.veliasystems.menumenu.client.userInterface.HomePageScreen;
 
 
 public enum Pages {

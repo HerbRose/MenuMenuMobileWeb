@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Label;
 
 public class MyListItem extends FocusPanel {
 
@@ -8,8 +9,10 @@ public class MyListItem extends FocusPanel {
 	private String text = "";
 	private int order = -1;
 	
+	private Label textLabel = new Label();
+	
 	public MyListItem() {
-		// TODO Auto-generated constructor stub
+		add(textLabel);
 	}
 	
 	public String getValue() {
@@ -29,5 +32,9 @@ public class MyListItem extends FocusPanel {
 	}
 	public void setText(String text) {
 		this.text = text;
+		textLabel.setText(this.text);
+	}
+	public Label getTextLabel() {
+		return textLabel;
 	}
 }

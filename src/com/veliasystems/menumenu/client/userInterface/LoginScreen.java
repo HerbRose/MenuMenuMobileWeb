@@ -1,15 +1,10 @@
 package com.veliasystems.menumenu.client.userInterface;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -19,7 +14,10 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.userInterface.myWidgets.*;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
 
 public class LoginScreen extends MyPage{
@@ -54,7 +52,7 @@ public class LoginScreen extends MyPage{
 		passwordBox = new PasswordTextBox();
 
 	    okButton = new MyButton(Customization.OK);
-	    okButton.setBackGrountImage("img/layout/okButton.png", true, false, "#919191");
+	    okButton.setBackGroundImage("img/layout/okButton.png", true, false, "#919191");
 	    okButton.addClickHandler( new ClickHandler() {
 			
 			@Override
@@ -70,7 +68,7 @@ public class LoginScreen extends MyPage{
 		});
 	    cancelButton = new MyButton(Customization.CANCEL);
 	    cancelButton.getElement().getStyle().setProperty("margin","39px");
-	    cancelButton.setBackGrountImage("img/layout/anulujButton.png", true, false, "#919191");
+	    cancelButton.setBackGroundImage("img/layout/anulujButton.png", true, false, "#919191");
 	    
 	    
 	    if(isWrongLogin){
