@@ -48,8 +48,9 @@ public class CityListScreen extends MyPage implements IObserver{
 			}
 		});
 		
-		addButton = new  MyButton(Customization.ADD_CITY);
-		addButton.setStyleName("rightButton", true);
+		addButton = new  MyButton("");
+		addButton.removeStyleName("borderButton");
+		addButton.setStyleName("rightButton addButton", true);
 		addButton.addClickHandler(new ClickHandler() {
 			
 			@Override

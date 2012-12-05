@@ -46,8 +46,9 @@ public class RestaurantsListScreen extends MyPage implements IObserver {
 			}
 		});
 		
-		addButton = new  MyButton(Customization.ADDRESTAURANT);
-		addButton.setStyleName("rightButton", true);
+		addButton = new  MyButton("");
+		addButton.removeStyleName("borderButton");
+		addButton.setStyleName("rightButton addButton", true);
 		addButton.addClickHandler(new ClickHandler() {
 			
 			@Override

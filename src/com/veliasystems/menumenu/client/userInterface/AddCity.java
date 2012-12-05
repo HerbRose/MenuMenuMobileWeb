@@ -48,7 +48,7 @@ public class AddCity extends MyPage{
 		});
 		
 		saveButton = new MyButton(Customization.SAVE);
-		saveButton.setStyleName("rightButton", true);
+		saveButton.setStyleName("rightButton saveButton", true);
 		saveButton.addClickHandler(new ClickHandler() {
 			
 			@Override

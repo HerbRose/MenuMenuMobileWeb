@@ -44,8 +44,9 @@ public class CityInfoScreen extends MyPage{
 			}
 		});
     	
-    	addButton = new MyButton(Customization.ADDRESTAURANT);
-    	addButton.setStyleName("rightButton", true);
+    	addButton = new MyButton("");
+    	addButton.removeStyleName("borderButton");
+		addButton.setStyleName("rightButton addButton", true);
     	addButton.addClickHandler(new ClickHandler() {	
 			@Override
 			public void onClick(ClickEvent event) {
