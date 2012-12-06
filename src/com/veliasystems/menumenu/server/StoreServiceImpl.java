@@ -499,6 +499,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		Restaurant r =dao.ofy().query(Restaurant.class).filter("id =", restId).get();
 		
+		if(r == null){
+			return r; //null
+		}
+		
 		switch(imageBlob.getImageType()){
 			case PROFILE:
 				r.setMainProfileImageString(imageBlob.getImageUrl());

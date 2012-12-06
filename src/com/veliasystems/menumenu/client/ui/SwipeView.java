@@ -199,38 +199,42 @@ public class SwipeView extends FlowPanel {
 		cameraContainerDiv.add(cameraDiv);
 	}
 
-	private void setAppleUpload() {
+	private void setAppleUpload( boolean isOS6) {
 
-		setCameraImg();
-		cameraImg.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				blobService.getBlobStoreUrl(getRestId(), getImageType(),
-						new AsyncCallback<String>() {
-							@Override
-							public void onSuccess(String result) {
-								String callbackURL = R.HOST_URL;
-
-								onUploadFormLoaded(restaurant.getName() + "_"
-										+ imageType, fileUpload.getElement(),
-										result, callbackURL);
-
-								Cookies.setCookie(R.IMAGE_TYPE,
-										imageType.toString());
-
-								clickOnInputFile(fileUpload.getElement());
-
-							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-
-							}
-						});
-			}
-
-		});
+		if(isOS6){
+			setCameraImg();
+			cameraImg.addClickHandler(new ClickHandler() {
+	
+				@Override
+				public void onClick(ClickEvent event) {
+					blobService.getBlobStoreUrl(getRestId(), getImageType(),
+							new AsyncCallback<String>() {
+								@Override
+								public void onSuccess(String result) {
+									String callbackURL = R.HOST_URL;
+	
+									onUploadFormLoaded(restaurant.getName() + "_"
+											+ imageType, fileUpload.getElement(),
+											result, callbackURL);
+	
+									Cookies.setCookie(R.IMAGE_TYPE,
+											imageType.toString());
+	
+									clickOnInputFile(fileUpload.getElement());
+	
+								}
+	
+								@Override
+								public void onFailure(Throwable caught) {
+	
+								}
+							});
+				}
+	
+			});
+		}else{
+			setOtherUpload();
+		}
 	}
 
 	private void setOtherUpload() {
@@ -267,9 +271,9 @@ public class SwipeView extends FlowPanel {
 		});
 		
 		if (osType.toLowerCase().indexOf("ipad") >= 0
-		 || osType.toLowerCase().indexOf("ipho") >= 0) { // ipad or
-																// iphone
-			setAppleUpload();
+		 || osType.toLowerCase().indexOf("ipho") >= 0) { // ipad or iphone
+			if(osType.indexOf("OS 6")>=0) setAppleUpload(true);
+				else setAppleUpload(false);
 		} else if (osType.toLowerCase().indexOf("armv") >= 0 
 				|| osType.toLowerCase().indexOf("android")>=0) { // android
 			setAndroidUpload();

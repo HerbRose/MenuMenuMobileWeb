@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.server.tasks;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -56,23 +57,36 @@ public class FixedImagesTask extends HttpServlet{
 				List<ImageBlob> list = new ArrayList<ImageBlob>();
 				list = blobService.getAllImages(key.getId()+"");
 				copyImages(list);
-				copyCount+=list.size();
+				copyCount+=1;
 			}
 			
-			emailMessageBody = "FixedImagesTask::doGet - finish (copied "+ copyCount +").";
+			emailMessageBody = "FixedImagesTask::doGet - finish (copied images in "+ copyCount +" restaurants).";
 			sendMail(emailAddress);
 		}catch( DeadlineExceededException e){//10 minutes deadline (if used as task)
 			Queue queue = QueueFactory.getQueue(R.FIX_IMAGE_QUEUE_NAME);
 			queue.purge();
 			e.printStackTrace();
-			emailMessageBody = "FixedImagesTask::doGet - DeadlineExceededException (copied "+ copyCount +").";
+			emailMessageBody = "FixedImagesTask::doGet - DeadlineExceededException (copied images in "+ copyCount +" restaurants).";
 			sendMail(emailAddress);
 			
+		}catch (NullPointerException e) { //another
+			Queue queue = QueueFactory.getQueue(R.FIX_IMAGE_QUEUE_NAME);
+			queue.purge();
+			
+			emailMessageBody = "FixedImagesTask::doGet - NullPointerException\n .getCause().getMessage():\n"
+					+e==null || e.getCause()==null?"-- null.getMessage() --":e.getCause().getMessage()
+					+"\ngetLocalizedMessage()\n"
+					+e.getLocalizedMessage()	
+					+"\n\n(copied images in "+ copyCount +" restaurants)..";
+			sendMail(emailAddress);
 		}catch (Exception e) { //another
 			Queue queue = QueueFactory.getQueue(R.FIX_IMAGE_QUEUE_NAME);
 			queue.purge();
-			e.printStackTrace();
-			emailMessageBody = "FixedImagesTask::doGet - Exception (copied "+ copyCount +").";
+			log.log(Level.SEVERE, "", e);
+			emailMessageBody = "FixedImagesTask::doGet - Exception\n "
+					+"\ngetLocalizedMessage()\n"
+					+e.getLocalizedMessage()	
+					+"\n\n(copied images in "+ copyCount +" restaurants)..";
 			sendMail(emailAddress);
 		}
 
@@ -80,12 +94,12 @@ public class FixedImagesTask extends HttpServlet{
 
 	private void copyImages(List<ImageBlob> logoImages) {		
 		for (ImageBlob imageBlob : logoImages) {
-			blobService.copyAndDeleteBlob(imageBlob, imageBlob.getRestaurantId());
+			blobService.copyAndDeleteBlob(imageBlob);
 		}
 	}
 	
 	private void sendMail( String emailAddress ){
-		String subject = "Message from MenuMenuWeb site" ;
+		String subject = "Message from MenuMenuWeb site (menumenu-cms)" ;
 		List<String> emailAddressList = new ArrayList<String>();
 		emailAddressList.add(emailAddress);
 		

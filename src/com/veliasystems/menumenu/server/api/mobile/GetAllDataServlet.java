@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.server.api;
+package com.veliasystems.menumenu.server.api.mobile;
 
 import java.io.IOException;
 import java.util.Map;

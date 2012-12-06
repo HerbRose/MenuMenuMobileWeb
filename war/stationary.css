@@ -46,7 +46,6 @@ body{
 	background: url("/img/layout/headerBackgroun.png") repeat-x #818181  !important;
 }
 .headerTitle{
-	
 	margin: auto;
 	
 	line-height: 64px;
@@ -131,6 +130,9 @@ body{
 .itemList:HOVER{
 	background-color: #ddd;
 }
+.itemList:FOCUS{
+	background-color: #eed;
+}
 .arrowButtonPart{
 	position: absolute;
 	top: 0px;
@@ -168,7 +170,12 @@ body{
 	top: 15px;
 	width: 150px;
 }
-
+.mainPanelBackButton:ACTIVE .myTextLabel{
+	color: #eed;
+}
+.mainPanelBackButton:HOVER .myTextLabel{
+	color: #ddd;
+}
 .rightButton{
 	position: absolute;
 	right: 0px;

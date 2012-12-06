@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.blobstore.BlobInfo;
@@ -29,6 +30,7 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesService.OutputEncoding;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ImagesServiceFailureException;
 import com.google.appengine.api.images.InputSettings;
 import com.google.appengine.api.images.InputSettings.OrientationCorrection;
 import com.google.appengine.api.images.OutputSettings;
@@ -225,7 +227,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	
 	private void cropImage(ImageBlob imageBlob, double leftX, double topY,
-			double rightX, double bottomY, String name) {
+			double rightX, double bottomY, String newName) {
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
@@ -253,9 +255,15 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		
 //		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
-		Image newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
-
-		
+		Image newImage;
+		try{
+			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
+		}catch(ImagesServiceFailureException e){
+			log.log(Level.SEVERE, "\noldImage: "
+					+oldImage 
+					+"\n", e);
+			return;
+		}
 		Transform scaleTransform = null;
 		switch (imageBlob.getImageType()) {
 		case PROFILE:
@@ -279,7 +287,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		BlobKey newBlobKey = null;
 		try {
-			newBlobKey = writeToBlobstore("image/jpeg", name,
+			newBlobKey = writeToBlobstore("image/jpeg", newName,
 					scaleImage.getImageData());
 			ImageBlob newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
 					newBlobKey.getKeyString(), imageBlob.getDateCreated(),
@@ -401,32 +409,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		write(os, "\r\n");
 	}
 
-	public void copyAndDeleteBlob(ImageBlob imageBlob, String newRestaurantId) {
-		
+	public void copyAndDeleteBlob(ImageBlob imageBlob) {
 		cropImage(imageBlob, 0, 0, 1, 1, "imageResized.jpg");
-		
-//		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
-//		BlobKey newBlobKey = null;
-//
-//		BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
-//		BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
-//	
-//		log.info("Start copy imageBlob: " + imageBlob.getBlobKey() + " blobSize: " + blobInfo.getSize());
-//		try {
-//			newBlobKey = writeToBlobstore("image/jpeg", "imageFixed.jpg",
-//					getImageBytes(blobKey, blobInfo.getSize()));
-//			
-//			BlobstoreServiceFactory.getBlobstoreService().delete(
-//					new BlobKey(imageBlob.getBlobKey()));
-//			
-//			imageBlob.setBlobKey(newBlobKey.getKeyString());
-//			dao.ofy().put(imageBlob);
-//			
-//		} catch (IOException e) {
-//			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
-//					+ e.getStackTrace());
-//			// e.printStackTrace();
-//		}
 	}
 	public void copyBlob(ImageBlob imageBlob, String newRestaurantId) {
 

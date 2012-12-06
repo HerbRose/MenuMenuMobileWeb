@@ -62,7 +62,7 @@ public class BlobUploadServlet extends HttpServlet {
 //			res.getWriter().flush();
 			return;
 		}
-		
+		log.info("Upload blob");
 //		System.out.println("BlobUploadServlet::doPost: restId is: " + restId);
     	
             // this has to be used in an rpc call to get the url to be used with this request
@@ -200,5 +200,10 @@ public class BlobUploadServlet extends HttpServlet {
 		
 	}
     
-  
+   @Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	   log.info("doGet !!!!");
+	}
 }

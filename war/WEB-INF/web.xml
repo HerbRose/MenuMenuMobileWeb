@@ -130,12 +130,32 @@
   
   <servlet>
      <servlet-name>GetAllDataServlet</servlet-name>
-     <servlet-class>com.veliasystems.menumenu.server.api.GetAllDataServlet</servlet-class>
+     <servlet-class>com.veliasystems.menumenu.server.api.mobile.GetAllDataServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
      <servlet-name>GetAllDataServlet</servlet-name>
      <url-pattern>/getAllDataServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>SetAsMainImage</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.mobile.SetAsMainImage</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>SetAsMainImage</servlet-name>
+     <url-pattern>/setAsMainImage</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>FileUploadServer</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.FileUploadServer</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>FileUploadServer</servlet-name>
+     <url-pattern>/fileUploadServer</url-pattern>
   </servlet-mapping>
   
   <servlet>

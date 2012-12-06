@@ -21,10 +21,16 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		
 		if (loggedIn) {
 			if(isMobile()) JQMContext.changePage( new LoadDataScreen(logged) );
-			else JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoadDataScreen(logged) );
+			else {
+				R.isMobile = false;
+				JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoadDataScreen(logged) );
+			}
 		} else {
 			if(isMobile()) JQMContext.changePage( Pages.PAGE_LOGIN_OK );
-			else JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoginScreen(true) );
+			else {
+				R.isMobile = false;
+				JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoginScreen(true) );
+			}
 		}
 	
 		
