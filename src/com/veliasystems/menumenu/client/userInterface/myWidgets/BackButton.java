@@ -21,7 +21,7 @@ public class BackButton extends FocusPanel{
 		//setStyleName("myButton borderButton" , true);
 		//add(textLabel);
 		
-		setStyleName("noFocus", true);
+		setStyleName("noFocus pointer", true);
 		mainPanel.setStyleName("mainPanelBackButton noFocus", true);
 		arrowPanel.setStyleName("arrowButtonPart noFocus", true);
 		labelPanel.setStyleName("labelBackButton noFocus", true);

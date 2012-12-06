@@ -54,6 +54,7 @@ public class MyHeader extends FlowPanel {
 	public void setLeftButton(FocusPanel leftButton) {
 		headerPanel.remove(this.leftButton);
 		this.leftButton = leftButton;
+		this.leftButton.setStyleName("headerLeftButton", true);
 		headerPanel.add(leftButton);
 	}
 	public FocusPanel getRightButton() {

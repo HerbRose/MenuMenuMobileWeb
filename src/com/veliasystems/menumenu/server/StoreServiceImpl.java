@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
@@ -354,6 +355,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return getImageLists( restQuery.order("name").list() );  
 	}
 	
+	public List<Key<Restaurant>> loadRestaurantsId() {
+		
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if(restQuery == null) return null;
+		return restQuery.listKeys();
+	}
+	
 	@Override
 	public List<Restaurant> loadRestaurants( String city ) {
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
@@ -639,7 +647,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 		
 		
-		allData.put("Users", getUsers());
+		List<User> usersList = getUsers();
+		for (User user1 : usersList) {
+			user1.setPassword("");
+		}
+		allData.put("Users", usersList);
 		return allData;
 		
 	}
@@ -674,9 +686,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
 			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
 		}
-		
-		
-		allData.put("Users", getUsers());
+		List<User> usersList = getUsers();
+		for (User user1 : usersList) {
+			user1.setPassword("");
+		}
+		allData.put("Users", usersList);
 		return allData;
 		
 	}
@@ -690,6 +704,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public List<User> getUsers(){
 		Query<User> users = dao.ofy().query(User.class);
 		if(users == null) return new ArrayList<User>();
+		
 		return users.order("email").list();
 	}
 	

@@ -127,6 +127,26 @@
      <servlet-name>GetUploadUrl</servlet-name>
      <url-pattern>/getUploadUrlt</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>GetAllDataServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetAllDataServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetAllDataServlet</servlet-name>
+     <url-pattern>/getAllDataServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>RunFixedImageTask</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.RunFixedImageTask</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>RunFixedImageTask</servlet-name>
+     <url-pattern>/runFixedImageTask</url-pattern>
+  </servlet-mapping>
 
   <servlet>
      <servlet-name>CopyDataTask</servlet-name>
@@ -136,6 +156,16 @@
   <servlet-mapping>
      <servlet-name>CopyDataTask</servlet-name>
      <url-pattern>/copyDataTask</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>FixedImagesTask</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.tasks.FixedImagesTask</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>FixedImagesTask</servlet-name>
+     <url-pattern>/fixedImagesTask</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -151,7 +181,5 @@
     <servlet-name>SystemServiceServlet</servlet-name>
     <url-pattern>/_ah/spi/*</url-pattern>
   </servlet-mapping>
-
-  
 
 </web-app>

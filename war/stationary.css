@@ -6,26 +6,32 @@ body{
 }
 
 .myPage{ /* cala strona */
-	background: url("/img/layout/background.png") repeat #eee !important;
-	width: 960px  !important;;
-	max-width: 960px  !important;
-	
-	margin: 0px !important;
-	padding: 0px !important;
-	
 	position: relative  !important;
 	left: 0px  !important;
 	right: 0px  !important;
-	margin-left: auto  !important;
-	margin-right: auto  !important;
-}
-.myPageContent{ /* jqm'owy content */
-
-	margin: 0px !important;
-	padding: 0px !important;
 	
 	width: 960px  !important;;
 	max-width: 960px  !important;
+	
+	margin: 0px !important;
+	margin-left: auto  !important;
+	margin-right: auto  !important;
+	padding: 0px !important;
+	
+	background: url("/img/layout/background.png") repeat #eee !important;
+	
+	-webkit-box-shadow: 3px 5px 38px -3px #000 !important;
+          	box-shadow: 3px 5px 38px -3px #000 !important;
+
+}
+.myPageContent{ /* jqm'owy content */
+
+	width: 960px  !important;;
+	max-width: 960px  !important;
+	
+	margin: 0px !important;
+	padding: 0px !important;
+
 }
 .myHeader{
 	position: relative;
@@ -35,18 +41,26 @@ body{
 	background: url("/img/layout/headerBackgroundRed.png") repeat #BF2135  !important;
 }
 .headerPanel{  /* nagłwek dla buttonów i nazwy strony */
+	position: relative;
 	height: 70px;
 	background: url("/img/layout/headerBackgroun.png") repeat-x #818181  !important;
-	position: relative;
 }
 .headerTitle{
-	line-height: 54px;
-	text-align: center;
+	
 	margin: auto;
+	
+	line-height: 64px;
+	text-align: center;
+	
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: normal;
-	color: white;
 	font-size: 35px;
+	color: white;
+}
+.headerLeftButton{
+	position: absolute;
+	top: 0px;
+	left: 7px;
 }
 .logoPanel{
 	position: absolute  !important;
@@ -57,28 +71,28 @@ body{
 	margin-right: auto !important;
 }
 .myButton{
+	display: inline-block;
 	min-width: 120px;
 	height: 58px;
-	display: inline-block;
+	line-height: 54px ;
+	text-align: center ;
 }
 .borderButton{
-	line-height: 44px ;
-	text-align: center ;
-	
-	-moz-border-radius: 14px;
-	-webkit-border-radius: 14px;
-	border-radius: 14px;
 	border: #656263 solid;
 	border-width: 2px 1px 1px 1px;
+	border-radius: 14px;
+		-moz-border-radius: 14px;
+		-webkit-border-radius: 14px;
 }
 .borderLabel{
 	line-height: 54px ;
 	text-align: center ;
 	
-	-moz-border-radius: 14px !important
-	-webkit-border-radius: 14px !important;
-	border-radius: 14px !important;
 	border: #c1c1c1 2px solid !important ;
+	
+	border-radius: 14px !important;
+		-moz-border-radius: 14px !important;
+		-webkit-border-radius: 14px !important;
 }
 .myTextLabel{
 	color: #fff;
@@ -90,83 +104,103 @@ body{
 }
 
 .addButton{
-	background: url("img/layout/plus.png") no-repeat;
-/* 	background-position-x: 70px; */
-/* 	background-position-y: 6px; */
-	min-width: 55px !important;
 	top: 12px !important;
+	min-width: 55px !important;
+	background: url("img/layout/plus.png") no-repeat;
 }
-
 .saveButton{
-	background: url("img/layout/save.png") !important;
 	top: 13px !important;
 	height: 44px !important;
+	background: url("img/layout/save.png") !important;
 }
 .itemList{
 	width: 100%;
 	height: 62px;
-	background-color: #FeFeFe;
+	padding-left: 14px;
+	
 	border-bottom: 2px solid #b6b6b6;
+	background-color: #FeFeFe;
+	
 	line-height: 62px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
 	text-align: left;
-	padding-left: 14px;
+	
 }
-
+.itemList:HOVER{
+	background-color: #ddd;
+}
 .arrowButtonPart{
 	position: absolute;
-	background: url("img/layout/arrowForBackButton.png");
-	width: 21px;
-	height: 44px;
 	top: 0px;
 	left: 1px;
+	width: 21px;
+	height: 44px;
+	
+	background: url("img/layout/arrowForBackButton.png");
 }
 
 .labelBackButton{
-	min-width: 70px;
-	display: inline-block;
 	position: absolute;
 	left: 22px;
+	display: inline-block;
+	min-width: 52px;
+	height: 40px;
+	
 	line-height: 40px;
 	padding-left: 10px;
 	padding-right: 10px;
+	
+	
 	border: #656263 solid;
 	border-width: 2px 2px 2px 0px;
-	height: 40px;
-	border-bottom-right-radius: 14px;
-	border-top-right-radius: 14px;
+	border-bottom-right-radius: 8px;
+	border-top-right-radius: 8px;
 	background: url("img/layout/backButtonBackground.png");
+	
+	-webkit-box-shadow: -1px 3px 3px -3px #fff !important;
+         	box-shadow: -1px 3px 3px -3px #fff !important;
 }
 
 .mainPanelBackButton{
+	position: absolute;
 	top: 15px;
 	width: 150px;
-	position: absolute;
-
 }
 
 .rightButton{
-	min-width: 120px;
 	position: absolute;
 	right: 0px;
 	top: 5px;
-	
+	min-width: 120px;
 }
 
-/* ogolny styl dla label i texBox */
-.myLabel, .myTextBox{
-	background: #fff !important;
+.noFocus, .noFocus:FOCUS{
+	outline: none !important;
+}
+.hidden{
+	display: none;
+}
+.pointer{
+	cursor: pointer;
+}
+/*********************************
+ * ogolny styl dla label i texBox*
+ *********************************/
+.myLabel, .myTextBox{	
 	float: left !important;
 	
-	-moz-border-top-left-radius: 14px !important;
-	-webkit-border-top-left-radius: 14px !important;
-	border-top-left-radius: 14px !important;
+	background: #fff !important;
 	
-	-moz-border-bottom-left-radius: 14px !important;
-	-webkit-border-bottom-left-radius: 14px !important;
+	border-top-left-radius: 14px !important;
+		-moz-border-top-left-radius: 14px !important;
+		-webkit-border-top-left-radius: 14px !important;
+	
 	border-bottom-left-radius: 14px !important;
+		-moz-border-bottom-left-radius: 14px !important;
+		-webkit-border-bottom-left-radius: 14px !important;
+	
 }
 .myTextBox{
 	display: inline-block !important;
@@ -174,12 +208,15 @@ body{
 
 /* KONIEC - ogolny styl dla label i texBox */
 
-/* ogolny styl dla listy rozwijanej - MyListCombo.java*/
+/* 
+ * ogolny styl dla listy rozwijanej - MyListCombo.java
+ */
 .listCombo{
 	position: relative;
-	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
 	width: 400px;
 	height: 59px;
+	
+	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
 	text-align: right;
 }
 .panelForArrow{
@@ -189,12 +226,9 @@ body{
 	height: 57px;
 		
 	background: url("/img/layout/panelForArrowInComboListBackground.png") repeat-X #999;
-	width: 62px;
-	height: 57px;
 }
 .whiteArrow, .blackArrow{
 	position: absolute !important;
-
 	left: 20px;
 	
 	width: 0px;
@@ -213,10 +247,11 @@ body{
 }
 .listComboScrollPanel{
 	position: absolute !important;
+	top: 15px;
+	z-index: 1;	
 	width: 331px;
 	height: 95px;
-	top: 15px;
-	z-index: 1;
+
 	background: url("/img/layout/comboListExpandedBackground.png") repeat-X #f5f5f5;
 	
   	-webkit-box-shadow: -6px 5px 12px -3px #000 !important;
@@ -229,47 +264,41 @@ body{
 	width: 330px;
 	height: 28px;
 }
-
 .comboListItemLabel{
 	line-height: 30px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
 }
+.comboListItemLabel:HOVER{
+	background-color: #ddd;
+}
 .comboListLabel{
 	position: absolute;
-	right: 70px;
 	top: 15px;
+	right: 70px;
 }
 .selected{
 	background-color: #e2abb2;
 }
 /* KONIEC - ogulny styl dla listy rozwijanej */
 
-.noFocus, .noFocus:FOCUS{
-	outline: none !important;
-}
-.hidden{
-	display: none;
-}
  /* Login screen */
 .namePanel, .passwordPanel{  /* panele na label i pole do wprowadzenia tekstu */
+	position: absolute !important;
+	right: 94px !important;
+	
 	height: 60px !important;
 	width: 80% !important;
-
+	
 	margin: 20px 0px 0px 0px !important;
-
-	background: #fff !important;
-	position: absolute !important;
-	
-	right: 94px !important;
-
 	padding: 0px;
-	
-	-moz-border-radius: 14px !important
-	-webkit-border-radius: 14px !important;
-	border-radius: 14px !important;
+	background: #fff !important;
+
 	border: #c1c1c1 2px solid !important ;
+	border-radius: 14px !important;
+		-moz-border-radius: 14px !important;
+		-webkit-border-radius: 14px !important;	
 }
 .namePanel{
 	top: 115px;
@@ -279,25 +308,26 @@ body{
 }
 .loginButtonPanel{
 	position: absolute;
-	right: 94px;
 	top: 360px;
+	right: 94px;
 }
 .nameLabel, .passwordLabel{
+	min-width: 35% !important;	
 	height: inherit !important;
-	line-height: 60px !important;
-	
-	text-align: right !important;
-	color: #8a8b8e !important;
-	font-weight: bold !important;
-	font-size: 18px !important;
-	
+
 	margin-right: 10px !important;
 	padding-right: 10px !important;
+	
 	border-right: solid !important;
 	border-right-width: 2px !important;
 	border-right-color: #c1c1c1 !important;
 	
-	min-width: 35% !important;	
+	line-height: 60px !important;
+	text-align: right !important;
+	color: #8a8b8e !important;
+	font-weight: bold !important;
+	font-size: 18px !important;
+
 }
 .nameBox, .passwordBox, .nameBox:FOCUS, .passwordBox:FOCUS{
 	height: inherit !important;
@@ -321,10 +351,13 @@ body{
 
  /* KONIEC - Login screen */
  
- /*ADD CITY SCREEN*/
+ /*
+ * Add City Screen
+ */
 .addCityWrapper{
 	position: absolute;
-	text-align: center;
 	width: 100%;
 	margin-top: 10px;
+	text-align: center;
 }
+/* KONIEC - Add City Screen */

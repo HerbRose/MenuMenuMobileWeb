@@ -34,7 +34,7 @@ public class MyListCombo extends FlowPanel {
 	public MyListCombo() {
 		setStyleName("listCombo borderLabel noFocus", true);
 
-		panelForArrow.setStyleName("panelForArrow borderLabel noFocus", true);
+		panelForArrow.setStyleName("panelForArrow borderLabel noFocus pointer", true);
 		
 		panelForArrow.addClickHandler(new ClickHandler() {
 			

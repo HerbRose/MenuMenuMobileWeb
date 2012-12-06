@@ -223,14 +223,20 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	//
 	// }
 
-	@Override
-	public void cropImage(ImageBlob imageBlob, double leftX, double topY,
-			double rightX, double bottomY) {
+	
+	private void cropImage(ImageBlob imageBlob, double leftX, double topY,
+			double rightX, double bottomY, String name) {
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
 		
 		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+		
+		if(oldImage == null){
+			log.severe("Picture not found in database:\n blobKey: " + imageBlob.getBlobKey());
+			return;
+		}
+		
 		if(leftX < 0) leftX = 0;
 		if(rightX > 1) rightX = 1;
 		if(bottomY > 1) bottomY = 1;
@@ -253,7 +259,6 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		Transform scaleTransform = null;
 		switch (imageBlob.getImageType()) {
 		case PROFILE:
-			System.out.println("profilowe");
 			scaleTransform = ImagesServiceFactory.makeResize(450, 280);
 			break;
 		case LOGO:
@@ -270,15 +275,17 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		Image scaleImage = imagesService.applyTransform(scaleTransform,
 				newImage, inputSettings, outputSettings);
 		
-		System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
+		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
 		
 		BlobKey newBlobKey = null;
 		try {
-			newBlobKey = writeToBlobstore("image/jpeg", "image.jpg",
+			newBlobKey = writeToBlobstore("image/jpeg", name,
 					scaleImage.getImageData());
 			ImageBlob newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
-					newBlobKey.getKeyString(), new Date(),
+					newBlobKey.getKeyString(), imageBlob.getDateCreated(),
 					imageBlob.getImageType());
+			newImageBlob.setWidth(scaleImage.getWidth());
+			newImageBlob.setHeight(scaleImage.getHeight());
 			dao.ofy().put(newImageBlob);
 			
 			//remove old image and image's data
@@ -300,6 +307,12 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	}
 
+	@Override
+	public void cropImage(ImageBlob imageBlob, double leftX, double topY,
+			double rightX, double bottomY){
+		cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg");
+	}
+	
 	@Override
 	public List<ImageBlob> getImagesByType(Long restaurantId,
 			ImageType imageType) {
@@ -388,7 +401,33 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		write(os, "\r\n");
 	}
 
-	
+	public void copyAndDeleteBlob(ImageBlob imageBlob, String newRestaurantId) {
+		
+		cropImage(imageBlob, 0, 0, 1, 1, "imageResized.jpg");
+		
+//		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+//		BlobKey newBlobKey = null;
+//
+//		BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
+//		BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+//	
+//		log.info("Start copy imageBlob: " + imageBlob.getBlobKey() + " blobSize: " + blobInfo.getSize());
+//		try {
+//			newBlobKey = writeToBlobstore("image/jpeg", "imageFixed.jpg",
+//					getImageBytes(blobKey, blobInfo.getSize()));
+//			
+//			BlobstoreServiceFactory.getBlobstoreService().delete(
+//					new BlobKey(imageBlob.getBlobKey()));
+//			
+//			imageBlob.setBlobKey(newBlobKey.getKeyString());
+//			dao.ofy().put(imageBlob);
+//			
+//		} catch (IOException e) {
+//			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
+//					+ e.getStackTrace());
+//			// e.printStackTrace();
+//		}
+	}
 	public void copyBlob(ImageBlob imageBlob, String newRestaurantId) {
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
@@ -410,6 +449,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			ImageBlob newImageBlob = new ImageBlob(newRestaurantId,
 					newBlobKey.getKeyString(), new Date(),
 					imageBlob.getImageType());
+			newImageBlob.setWidth(imageBlob.getWidth());
+			newImageBlob.setHeight(imageBlob.getHeight());
 			dao.ofy().put(newImageBlob);
 		} catch (IOException e) {
 			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
@@ -561,7 +602,12 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return fileService.getBlobKey(file);
 	}
 
+	public void  checkImageSize(){
+		
+	}
 }
+
+
 
 class MyComparator implements Comparator<ImageBlob> {
 	public int compare(ImageBlob o1, ImageBlob o2) {

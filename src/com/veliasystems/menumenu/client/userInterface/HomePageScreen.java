@@ -25,7 +25,6 @@ public class HomePageScreen extends MyPage{
 			
 		super(Customization.MAINTITLE);
 		
-		
 		logoutButton = new BackButton(Customization.LOGOUT);
 		logoutButton.addClickHandler(new ClickHandler() {
 			

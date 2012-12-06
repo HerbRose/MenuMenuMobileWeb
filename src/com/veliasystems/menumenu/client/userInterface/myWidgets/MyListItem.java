@@ -13,6 +13,7 @@ public class MyListItem extends FocusPanel {
 	
 	public MyListItem() {
 		add(textLabel);
+		setStyleName("pointer", true);
 	}
 	
 	public String getValue() {

@@ -32,9 +32,6 @@ public class RestaurantsListScreen extends MyPage implements IObserver {
 	
 	public RestaurantsListScreen() {
 		super(Customization.RESTAURANTS);
-		
-		
-
 
 		backButton = new BackButton(Customization.BACK);
 		backButton.addClickHandler(new ClickHandler() {
