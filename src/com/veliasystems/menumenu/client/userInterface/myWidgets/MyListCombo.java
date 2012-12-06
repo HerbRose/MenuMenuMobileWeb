@@ -114,9 +114,7 @@ public class MyListCombo extends FlowPanel {
 	
 	public MyListItem getNewItem(String text){
 		MyListItem panel = new MyListItem();
-		Label label = new Label(text);
-		label.setStyleName("comboListItemLabel");
-		panel.add(label);
+		panel.getTextLabel().setStyleName("comboListItemLabel");
 		panel.setText(text);
 		return panel;
 	}

@@ -16,4 +16,5 @@ public class Pages {
 //	public static HomePageScreen		PAGE_HOME			;//= new HomePageScreen();
 	public static LoginScreen			PAGE_LOGIN_WRONG			= new LoginScreen(true);
 	public static LoginScreen			PAGE_LOGIN_OK 		= new LoginScreen(false);
+
 }

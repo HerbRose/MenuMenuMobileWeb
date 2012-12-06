@@ -16,7 +16,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.CityInfoScreen;
+import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 
 /**
  * Singleton.

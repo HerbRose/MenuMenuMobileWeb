@@ -37,6 +37,16 @@ body{
 .headerPanel{  /* nagłwek dla buttonów i nazwy strony */
 	height: 70px;
 	background: url("/img/layout/headerBackgroun.png") repeat-x #818181  !important;
+	position: relative;
+}
+.headerTitle{
+	line-height: 54px;
+	text-align: center;
+	margin: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	color: white;
+	font-size: 35px;
 }
 .logoPanel{
 	position: absolute  !important;
@@ -47,12 +57,12 @@ body{
 	margin-right: auto !important;
 }
 .myButton{
-	width: 120px;
+	min-width: 120px;
 	height: 58px;
 	display: inline-block;
 }
 .borderButton{
-	line-height: 54px ;
+	line-height: 44px ;
 	text-align: center ;
 	
 	-moz-border-radius: 14px;
@@ -78,6 +88,73 @@ body{
 	text-shadow: 0px -2px #000;
 	
 }
+
+.addButton{
+	background: url("img/layout/plus.png") no-repeat;
+/* 	background-position-x: 70px; */
+/* 	background-position-y: 6px; */
+	min-width: 55px !important;
+	top: 12px !important;
+}
+
+.saveButton{
+	background: url("img/layout/save.png") !important;
+	top: 13px !important;
+	height: 44px !important;
+}
+.itemList{
+	width: 100%;
+	height: 62px;
+	background-color: #FeFeFe;
+	border-bottom: 2px solid #b6b6b6;
+	line-height: 62px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #797979;
+	text-align: left;
+	padding-left: 14px;
+}
+
+.arrowButtonPart{
+	position: absolute;
+	background: url("img/layout/arrowForBackButton.png");
+	width: 21px;
+	height: 44px;
+	top: 0px;
+	left: 1px;
+}
+
+.labelBackButton{
+	min-width: 70px;
+	display: inline-block;
+	position: absolute;
+	left: 22px;
+	line-height: 40px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border: #656263 solid;
+	border-width: 2px 2px 2px 0px;
+	height: 40px;
+	border-bottom-right-radius: 14px;
+	border-top-right-radius: 14px;
+	background: url("img/layout/backButtonBackground.png");
+}
+
+.mainPanelBackButton{
+	top: 15px;
+	width: 150px;
+	position: absolute;
+
+}
+
+.rightButton{
+	min-width: 120px;
+	position: absolute;
+	right: 0px;
+	top: 5px;
+	
+}
+
 /* ogolny styl dla label i texBox */
 .myLabel, .myTextBox{
 	background: #fff !important;
@@ -97,7 +174,7 @@ body{
 
 /* KONIEC - ogolny styl dla label i texBox */
 
-/* ogulny styl dla listy rozwijanej - MyListCombo.java*/
+/* ogolny styl dla listy rozwijanej - MyListCombo.java*/
 .listCombo{
 	position: relative;
 	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
@@ -243,3 +320,11 @@ body{
 }
 
  /* KONIEC - Login screen */
+ 
+ /*ADD CITY SCREEN*/
+.addCityWrapper{
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	margin-top: 10px;
+}

@@ -38,6 +38,7 @@ public class Util
      *  <li>+48 636 50 88 </li>
      *  <li>+48:636:50:88 </li>
      *  <li>+48-636-50-88 </li>
+     *  <li>+48.662.156.675</li>
      *  <li>different combinations</li>
      * </ul>
      * @param phoneNumber 
@@ -45,7 +46,9 @@ public class Util
      */
     public static boolean isValidPhoneNumber(String phoneNumber){
     	if (phoneNumber == null || phoneNumber.isEmpty()) return false;
-    	if(phoneNumber.matches("\\+?(\\s|[0-9])+((\\s|[0-9])+(:|-)?)+[0-9]"))
+    	
+    	
+    	if(phoneNumber.matches("\\+?(\\s|[0-9])+((\\s|[0-9])+(:|-|\\.)?)+[0-9]"))
     		return true;
         else
             return false;
@@ -107,7 +110,8 @@ public class Util
      * This method solves problem with focusing widgets in getext windows (i hope)
      * @param w
      */
-    public static void focusWidgetWorkaround(final Focusable w){
+    @SuppressWarnings("deprecation")
+	public static void focusWidgetWorkaround(final Focusable w){
         DeferredCommand.addCommand(new Command() {
             public void execute() {
                 Timer t = new Timer(){

@@ -22,7 +22,6 @@ import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
-import com.veliasystems.menumenu.client.entities.Restaurant;
 
 
 
@@ -93,12 +92,12 @@ public class CityListScreen extends JQMPage implements IObserver{
 		CityInfoScreen cityInfoScreen;
 		for(City city: cities){
 			if(CityController.cityMapView.containsKey(city.getId())){
-				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
+				//cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
 			}else{
-				cityInfoScreen = new CityInfoScreen(city.getCity());
-				CityController.cityMapView.put(city.getId(), cityInfoScreen);
+				//cityInfoScreen = new CityInfoScreen(city.getCity());
+				//CityController.cityMapView.put(city.getId(), cityInfoScreen);
 			}
-			list.addItem(city.getCity(), cityInfoScreen);
+			//list.addItem(city.getCity(), cityInfoScreen);
 		}
 	}
 	
