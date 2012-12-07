@@ -3,15 +3,16 @@ package com.veliasystems.menumenu.client.userInterface;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
-import com.sun.tools.javac.comp.Flow;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
@@ -20,6 +21,7 @@ import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
@@ -64,9 +66,17 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
-
+	private UserController userController = UserController.getInstance();
+	
 	private FlowPanel container;
-
+	
+	
+	private FocusPanel adminLabel;
+	private FlowPanel adminPanelWrapper;
+	private MyButton adminPanel;
+	
+	private FlowPanel addBoard;
+	private Label addBoardText;
 	
 	private void init(boolean isToCity){
 		
@@ -132,8 +142,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		
 		nameUserTextBox.setTitle(Customization.USER_NAME);
-		
-		
+			
 		phoneUser = new Label();
 		phoneUser.setText(Customization.USER_PHONE +":");
 		
@@ -242,8 +251,62 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		container.add(wwwWrapper);
 		container.add(bossWrapper);
 		
-		getContentPanel().add(container);
+		
+		
+		  if(userController.getLoggedUser().isAdmin()){
+		    	
+		    	adminPanel = new MyButton("");
+		    	adminPanel.removeStyleName("borderButton");
+		    	adminPanel.addStyleName("addButton adminButton");
+		    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
+		 	    adminPanel.addClickHandler(new ClickHandler() {
+		 			
+		 			@Override
+		 			public void onClick(ClickEvent event) {
+		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+		 			}
+		 		});
+		    	adminLabel = new FocusPanel();
+		    	adminLabel.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+					}
+				});
+		    	adminLabel.addStyleName("adminLabel noFocus");
+		    	
+		    	adminLabel.add(new Label(Customization.ADD_USER));
+		 	    
+		 	    
+		    	adminPanelWrapper = new FlowPanel();
+		    	adminPanelWrapper.addStyleName("adminWrapper");
 
+		    	FlowPanel adminButtonDiv = new FlowPanel();
+		    	adminButtonDiv.addStyleName("adminButtonDiv");
+		    	adminButtonDiv.add(adminPanel);
+		    	
+		    	
+		    	FlowPanel adminLabelDiv = new FlowPanel();
+		    	adminLabelDiv.addStyleName("adminLabelDiv");
+		    	adminLabelDiv.add(adminLabel);
+		    	
+		    	adminPanelWrapper.add(adminButtonDiv);
+		    	adminButtonDiv.add(adminLabelDiv);
+		    
+		    }
+
+		addBoard = new FlowPanel();
+		addBoard.addStyleName("addBoardWrapper");
+		
+		addBoardText = new Label(Customization.ADD_BOARD);
+		addBoardText.addStyleName("addBoardLabel");
+		
+		addBoard.add(addBoardText);
+		
+		getContentPanel().add(container);
+		getContentPanel().add(addBoard);
+		getContentPanel().add(adminPanelWrapper);
 	}
 	
 
@@ -320,17 +383,19 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					int index = cityListBox.getSelectedIndex();			
 //					restaurant.setCity(cityListBox.getItemText(index));	
 					restaurant.setCity(city);
-					restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
+//					restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox.getText());
-					restaurant.setNameUser(nameUserTextBox.getText());
-					restaurant.setPhoneUser(phoneUserTextBox.getText());
-					restaurant.setMailUser(mailUserTextBox.getText());
+//					restaurant.setNameUser(nameUserTextBox.getText());
+//					restaurant.setPhoneUser(phoneUserTextBox.getText());
+//					restaurant.setMailUser(mailUserTextBox.getText());
 					
 					Document.get().getElementById("load").setClassName(R.LOADING);
 					restaurantController.saveRestaurant(restaurant);
 				}	
 			}
 		});
+		
+		
 
 		getHeader().setLeftButton(backButton);
 		getHeader().setRightButton(saveButton);

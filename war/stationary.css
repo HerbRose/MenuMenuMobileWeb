@@ -447,6 +447,33 @@ body{
 }
 
 
+.addBoardWrapper{
+	width: 60%;
+	height: 60px;
+	background: url("img/layout/nowy_profil.png");
+	float: right;
+	margin-right: 5%;
+	display: inline-block;
+	border: #c1c1c1 2px solid !important ;
+	border-top: none;
+	margin-top: 10px;
+}
+
+.addBoardLabel{
+	font-size: 14px;
+	line-height: 60px;
+	text-align: left;
+	padding-left: 10px;
+}
+
+.adminButtonDiv{
+	
+}
+
+.adminLabelDiv{
+	
+}
+
 /* KONIEC - Add Restaurant Screen */
 
 
@@ -456,6 +483,9 @@ body{
 .adminWrapper{
 	position: relative;
 	margin-bottom: 10px;
+	width: 100%;
+	margin-top: 15px;
+	
 }
 
 
@@ -470,11 +500,16 @@ body{
 	line-height: 60px;
 	padding-left: 10px;
 	padding-right: 10px;
+	text-align: center;
+	width: 60%;
+	float: right;
+	margin-right: 5%;
 	
 }
 
 .adminButton{
 	display: inline-block;
+	margin-left: 20px;
 }
 
 

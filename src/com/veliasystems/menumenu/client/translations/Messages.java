@@ -301,5 +301,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Boss name")
 	String bossName();
 	
+	@DefaultStringValue("Add board")
+	String addBoard();
+	
 	
 }

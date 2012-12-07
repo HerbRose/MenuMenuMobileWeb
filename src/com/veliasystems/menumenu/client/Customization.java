@@ -96,6 +96,9 @@ public class Customization {
 	public static String WEBSITE_LABEL = translated.websiteLabel();
 
 
+	public static String ADD_BOARD = translated.addBoard();;
+
+
 	public static final String EMAIL_SEND = translated.emailSend();
 	public static final String CITY_EXIST_ERROR = translated.cityExistError();
 	public static final String RESTAURANT_EXIST_ERROR = translated.restaurantExistError();
