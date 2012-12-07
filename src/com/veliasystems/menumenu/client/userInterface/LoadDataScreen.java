@@ -168,7 +168,7 @@ public class LoadDataScreen extends JQMPage {
 				}
 			}
 		}else{
-			JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME), Transition.SLIDE);
+			JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
 		}
 	}
 	

@@ -3,13 +3,13 @@ package com.veliasystems.menumenu.client.userInterface.myWidgets;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MyHeader extends FlowPanel {
 
 	private FlowPanel malinaPanel = new FlowPanel();
 	private FlowPanel headerPanel = new FlowPanel();
 	private Label titleLabel = new Label();
-	
 	private String title = "";
 	private FocusPanel leftButton = new MyButton("");
 	private FocusPanel rightButton = new MyButton("");
@@ -67,6 +67,10 @@ public class MyHeader extends FlowPanel {
 	}
 	public int getHeaderHeight() {
 		return headerHeight;
+	}
+	
+	public void addImageHeader(Widget w){
+		headerPanel.add(w);
 	}
 	
 	

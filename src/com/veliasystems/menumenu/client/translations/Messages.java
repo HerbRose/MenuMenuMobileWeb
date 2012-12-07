@@ -292,5 +292,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("City manager")
 	String cityManager();
 	
+	@DefaultStringValue("Administration Panel")
+	String adminPanel();
+	
 	
 }

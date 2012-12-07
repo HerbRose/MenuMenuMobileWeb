@@ -5,21 +5,13 @@ import java.util.List;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.sksamuel.jqm4gwt.DataIcon;
-import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMContext;
-import com.sksamuel.jqm4gwt.JQMPage;
-import com.sksamuel.jqm4gwt.JQMPanel;
 import com.sksamuel.jqm4gwt.Transition;
-import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
@@ -69,7 +61,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 
-
+	private FlowPanel container;
 
 	
 	private void init(boolean isToCity){
@@ -97,54 +89,61 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	private void setLabels(){
 		
+		container = new FlowPanel();
+		container.addStyleName("containerPanelAddRestaurant");
+		
+		
 		nameLabel = new Label();
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
-		getContentPanel().add(nameLabel);	
+		container.add(nameLabel);	
 		
 		nameText.setTitle(Customization.RESTAURANTNAME);
-		getContentPanel().add(nameText);		
+		container.add(nameText);		
 		
 		adressLabel = new Label();
 		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-		getContentPanel().add(adressLabel);
+		container.add(adressLabel);
 		
 		adressText.setTitle(Customization.RESTAURANTADRESS);
-		getContentPanel().add(adressText);	
+		container.add(adressText);	
 		
 		mailRestaurant = new Label();
 		mailRestaurant.setText(Customization.RESTAURANT_MAIL + ":");
-		getContentPanel().add(mailRestaurant);
+		container.add(mailRestaurant);
 		
 		mailRestaurantTextBox.setTitle(Customization.RESTAURANT_MAIL);
-		getContentPanel().add(mailRestaurantTextBox);
+		container.add(mailRestaurantTextBox);
 		
 		phoneRestaurant = new Label();
 		phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
-		getContentPanel().add(phoneRestaurant);
+		container.add(phoneRestaurant);
 		
 		phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
-		getContentPanel().add(phoneRestaurantTextBox);
+		container.add(phoneRestaurantTextBox);
 
 		
 		nameUser = new Label();
 		nameUser.setText(Customization.USER_NAME + ":");
-		getContentPanel().add(nameUser);
+		container.add(nameUser);
 		
 		nameUserTextBox.setTitle(Customization.USER_NAME);
-		getContentPanel().add(nameUserTextBox);
+		container.add(nameUserTextBox);
 		
 		phoneUser = new Label();
 		phoneUser.setText(Customization.USER_PHONE +":");
-		getContentPanel().add(phoneUser);
+		container.add(phoneUser);
 		
 		phoneUserTextBox.setTitle(Customization.USER_PHONE);
-		getContentPanel().add(phoneUserTextBox);
+		container.add(phoneUserTextBox);
 		
 		mailUser = new Label(Customization.USER_MAIL+":");
-		getContentPanel().add(mailUser);
+		container.add(mailUser);
 		
 		mailUserTextBox.setTitle(Customization.USER_MAIL);
-		getContentPanel().add(mailUserTextBox);
+		container.add(mailUserTextBox);
+		
+		
+		getContentPanel().add(container);
 
 	}
 	
@@ -209,7 +208,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		});
 		
 		saveButton = new MyButton(Customization.SAVE);
-		saveButton.setStyleName("rightButton", true);
+		saveButton.setStyleName("rightButton saveButton", true);
 		saveButton.addClickHandler(new ClickHandler() {
 			
 			@Override

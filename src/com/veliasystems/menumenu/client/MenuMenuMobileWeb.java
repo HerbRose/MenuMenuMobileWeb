@@ -54,7 +54,8 @@ public class MenuMenuMobileWeb implements EntryPoint {
     		        return navigator.userAgent.indexOf("IEMobile") >0;
     		    },
     		    any: function() {
-    		        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    		    	return (isMobile.BlackBerry()|| isMobile.Opera() || isMobile.Windows())
+    		        //return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
     		    }
     	};
 

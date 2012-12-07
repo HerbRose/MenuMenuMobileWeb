@@ -3,6 +3,7 @@
 body{ 
 	margin: 0px !important;
 	padding: 0px !important;
+	overflow: hidden;
 }
 
 .myPage{ /* cala strona */
@@ -10,9 +11,10 @@ body{
 	left: 0px  !important;
 	right: 0px  !important;
 	
-	width: 960px  !important;;
-	max-width: 960px  !important;
+	width: 100%  !important;;
+	max-width: 100%  !important;
 	
+	text-align: center;
 	margin: 0px !important;
 	margin-left: auto  !important;
 	margin-right: auto  !important;
@@ -26,12 +28,12 @@ body{
 }
 .myPageContent{ /* jqm'owy content */
 
-	width: 960px  !important;;
-	max-width: 960px  !important;
+	width: 100%  !important;;
+	max-width: 100%  !important;
 	
 	margin: 0px !important;
 	padding: 0px !important;
-
+	overflow: hidden;
 }
 .myHeader{
 	position: relative;
@@ -44,6 +46,7 @@ body{
 	position: relative;
 	height: 70px;
 	background: url("/img/layout/headerBackgroun.png") repeat-x #818181  !important;
+	text-align: center;
 }
 .headerTitle{
 	margin: auto;
@@ -53,7 +56,7 @@ body{
 	
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: normal;
-	font-size: 35px;
+	font-size: 110%;
 	color: white;
 }
 .headerLeftButton{
@@ -62,19 +65,24 @@ body{
 	left: 7px;
 }
 .logoPanel{
-	position: absolute  !important;
+/* 	position: absolute  !important; */
 
-	left: 391px !important;
-	top: 47px !important;
-	margin-left: auto !important;
-	margin-right: auto !important;
+/* 	left: 40% !important; */
+/* 	top: 47px !important; */
+/* 	margin-left: auto !important; */
+/* 	margin-right: auto !important; */
+}
+.logoPanel img{
+	margin-top: 15px;
 }
 .myButton{
 	display: inline-block;
-	min-width: 120px;
-	height: 58px;
-	line-height: 54px ;
-	text-align: center ;
+	min-width: 80px;
+/* 	height: 58px; */
+	line-height: 54px;
+	text-align: center;
+	margin: 10px;
+	
 }
 .borderButton{
 	border: #656263 solid;
@@ -94,12 +102,13 @@ body{
 		-webkit-border-radius: 14px !important;
 }
 .myTextLabel{
+	margin-left: 10px;
+	margin-right: 10px;
+	
 	color: #fff;
-	font-size: 16pt;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	text-shadow: 0px -2px #000;
-	
 }
 
 .addButton{
@@ -108,9 +117,10 @@ body{
 	background: url("img/layout/plus.png") no-repeat;
 }
 .saveButton{
-	top: 13px !important;
-	height: 44px !important;
+	top: 15px !important;
+	height: 40px !important;
 	background: url("img/layout/save.png") !important;
+	line-height: 40px;
 }
 .itemList{
 	width: 100%;
@@ -147,14 +157,10 @@ body{
 	position: absolute;
 	left: 22px;
 	display: inline-block;
-	min-width: 52px;
+/* 	min-width: 52px; */
 	height: 40px;
 	
-	line-height: 40px;
-	padding-left: 10px;
-	padding-right: 10px;
-	
-	
+	line-height: 40px;	
 	border: #656263 solid;
 	border-width: 2px 2px 2px 0px;
 	border-bottom-right-radius: 8px;
@@ -179,8 +185,10 @@ body{
 .rightButton{
 	position: absolute;
 	right: 0px;
-	top: 5px;
-	min-width: 120px;
+/* 	top: 5px; */
+/* 	min-width: 120px; */
+	margin-top: 0px;
+	height: 70px;
 }
 
 .noFocus, .noFocus:FOCUS{
@@ -220,23 +228,27 @@ body{
  */
 .listCombo{
 	position: relative;
-	width: 400px;
+/* 	width: 400px; */
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 20px;
 	height: 59px;
 	
 	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
 	text-align: right;
 }
 .panelForArrow{
-	position: absolute;
+	position: relative;
+	float: right;
 	right: 0px;
-	width: 62px;
+	width: 15%;
 	height: 57px;
 		
 	background: url("/img/layout/panelForArrowInComboListBackground.png") repeat-X #999;
 }
 .whiteArrow, .blackArrow{
 	position: absolute !important;
-	left: 20px;
+	left: 30%;
 	
 	width: 0px;
 	height:0px;
@@ -256,7 +268,7 @@ body{
 	position: absolute !important;
 	top: 15px;
 	z-index: 1;	
-	width: 331px;
+	width: 83%;
 	height: 95px;
 
 	background: url("/img/layout/comboListExpandedBackground.png") repeat-X #f5f5f5;
@@ -268,11 +280,12 @@ body{
 	
 }
 .myListComboItem{
-	width: 330px;
+	width: 100%;
 	height: 28px;
 }
 .comboListItemLabel{
 	line-height: 30px;
+	margin-right: 10px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
@@ -283,7 +296,7 @@ body{
 .comboListLabel{
 	position: absolute;
 	top: 15px;
-	right: 70px;
+	right: 20%;
 }
 .selected{
 	background-color: #e2abb2;
@@ -292,13 +305,13 @@ body{
 
  /* Login screen */
 .namePanel, .passwordPanel{  /* panele na label i pole do wprowadzenia tekstu */
-	position: absolute !important;
-	right: 94px !important;
+/* 	position: absolute !important; */
 	
+/* 	right: 94px !important; */
 	height: 60px !important;
-	width: 80% !important;
+/* 	width: 80% !important; */
 	
-	margin: 20px 0px 0px 0px !important;
+	margin: 20px 10px 0px 10px !important;
 	padding: 0px;
 	background: #fff !important;
 
@@ -314,12 +327,13 @@ body{
 	top: 192px;
 }
 .loginButtonPanel{
-	position: absolute;
-	top: 360px;
-	right: 94px;
+/* 	position: absolute; */
+/* 	top: 360px; */
+/* 	right: 94px; */
+	display: inline;
 }
 .nameLabel, .passwordLabel{
-	min-width: 35% !important;	
+	min-width: 30% !important;	
 	height: inherit !important;
 
 	margin-right: 10px !important;
@@ -351,9 +365,9 @@ body{
 	outline: none !important;
 }
 .languageCombo{
-	position: absolute;
-	right: 94px;
-	top: 300px;
+/* 	position: absolute; */
+/* 	right: 94px; */
+/* 	top: 300px; */
 }
 
  /* KONIEC - Login screen */
@@ -362,9 +376,43 @@ body{
  * Add City Screen
  */
 .addCityWrapper{
-	position: absolute;
-	width: 100%;
+	position: relative;
+	width: 90%;
 	margin-top: 10px;
 	text-align: center;
+	margin-left: 5%;
 }
 /* KONIEC - Add City Screen */
+
+
+/* Add Restaurant Screen */
+.containerPanelAddRestaurant{
+	margin: 10px;
+}
+/* KONIEC - Add Restaurant Screen */
+
+
+
+.adminWrapper{
+	position: relative;
+	margin-bottom: 10px;
+}
+
+
+.adminLabel{
+	display: inline-table;
+	height: 60px;
+	background: white !important;
+	border: #C1C1C1 2px solid !important;
+	border-radius: 14px !important;
+	-moz-border-radius: 14px !important;
+	-webkit-border-radius: 14px !important;
+	line-height: 60px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+}
+
+.adminButton{
+	display: inline-block;
+}

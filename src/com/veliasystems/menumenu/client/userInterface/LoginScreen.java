@@ -67,7 +67,7 @@ public class LoginScreen extends MyPage{
 			}
 		});
 	    cancelButton = new MyButton(Customization.CANCEL);
-	    cancelButton.getElement().getStyle().setProperty("margin","39px");
+//	    cancelButton.getElement().getStyle().setProperty("margin","39px");
 	    cancelButton.setBackGroundImage("img/layout/anulujButton.png", true, false, "#919191");
 	    
 	    
@@ -154,7 +154,7 @@ public class LoginScreen extends MyPage{
 	    getContentPanel().add(passwordPanel);
 	    getContentPanel().add(languageCombo);
 	    getContentPanel().add(buttonPanel);
-	    getHeader().add(logoPanel);
+	    getHeader().addImageHeader(logoPanel);
 	    
 	}
 

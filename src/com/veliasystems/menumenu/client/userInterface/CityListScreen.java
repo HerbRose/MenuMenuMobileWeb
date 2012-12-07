@@ -4,9 +4,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
@@ -16,7 +21,9 @@ import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.ui.LogoutScreen;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
@@ -28,23 +35,30 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 public class CityListScreen extends MyPage implements IObserver{
 	
 	
-	private BackButton backButton;
 	private MyButton addButton;
+	private MyButton adminPanel;
+	private BackButton logoutButton;
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private UserController userController = UserController.getInstance();
 	private List<City> cityList;
 
+	private FlowPanel adminPanelWrapper;
+	private FocusPanel adminLabel;
+	
 	public CityListScreen() {
 		super(Customization.CITY);
 		
 		cityController.addObserver(this);
 		
-		backButton = new BackButton(Customization.BACK);
-		backButton.addClickHandler(new ClickHandler() {
+		logoutButton = new BackButton(Customization.LOGOUT);
+		logoutButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME), Transition.SLIDE);
+				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_LOGOUT)){
+					JQMContext.changePage(new LogoutScreen(), Transition.SLIDE);
+				}
 			}
 		});
 		
@@ -60,20 +74,48 @@ public class CityListScreen extends MyPage implements IObserver{
 			}
 		});
 
+		
 	    cityList = CityController.getInstance().getCitiesList();
 	    addCities(cityList);
-	    
-	    getHeader().setLeftButton(backButton);
+	    	       
+	    getHeader().setLeftButton(logoutButton);
 	    getHeader().setRightButton(addButton);
-	   
-	  	    
-//	    addUser = new JQMButton(Customization.ADD_USER, PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);
-//	    addUser.setWidth("49%");
-//	    addUser.setIcon(DataIcon.PLUS);
-//	    addUser.setIconPos(IconPos.TOP);
-//	    addUser.setInline();
-	  
-	
+	    
+		    if(userController.getLoggedUser().isAdmin()){
+		    	
+		    	adminPanel = new MyButton("");
+		    	adminPanel.removeStyleName("borderButton");
+		    	adminPanel.addStyleName("addButton adminButton");
+		    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
+		 	    adminPanel.addClickHandler(new ClickHandler() {
+		 			
+		 			@Override
+		 			public void onClick(ClickEvent event) {
+		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+		 			}
+		 		});
+		    	adminLabel = new FocusPanel();
+		    	adminLabel.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+					}
+				});
+		    	adminLabel.addStyleName("adminLabel noFocus");
+		    	
+		    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
+		 	    
+		 	    
+		    	adminPanelWrapper = new FlowPanel();
+		    	adminPanelWrapper.addStyleName("adminWrapper");
+
+		    	adminPanelWrapper.add(adminPanel);
+		    	adminPanelWrapper.add(adminLabel);
+		    	getContentPanel().add(adminPanelWrapper);
+		    }
+
+	 
 	}
 	
 	private void addCities(List<City> cities){
@@ -113,7 +155,6 @@ public class CityListScreen extends MyPage implements IObserver{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		restaurantController.setLastOpenPage(this);
 		restaurantController.setLastOpenPage(this);
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE);

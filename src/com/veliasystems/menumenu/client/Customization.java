@@ -90,6 +90,9 @@ public class Customization {
 	public static String INFO = translated.largeImageInfo();
 
 
+	public static String ADMIN_PANEL = translated.adminPanel();;
+
+
 	public static final String EMAIL_SEND = translated.emailSend();
 	public static final String CITY_EXIST_ERROR = translated.cityExistError();
 	public static final String RESTAURANT_EXIST_ERROR = translated.restaurantExistError();
