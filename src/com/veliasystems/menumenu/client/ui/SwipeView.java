@@ -295,7 +295,9 @@ public class SwipeView extends FlowPanel {
 							@Override
 							public void onSuccess(String result) {
 
+								//result = "http://mymenumenu.appspot.com/fileUploadServer?token=a1b2c3";
 								formPanel.setAction(result);
+								
 								formPanel.submit();
 							}
 

@@ -90,15 +90,15 @@ public class CityListScreen extends JQMPage implements IObserver{
 		});
 		
 		CityInfoScreen cityInfoScreen;
-		for(City city: cities){
-			if(CityController.cityMapView.containsKey(city.getId())){
-				//cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
-			}else{
-				//cityInfoScreen = new CityInfoScreen(city.getCity());
-				//CityController.cityMapView.put(city.getId(), cityInfoScreen);
-			}
-			//list.addItem(city.getCity(), cityInfoScreen);
-		}
+//		for(City city: cities){
+//			if(CityController.cityMapViewMobile.containsKey(city.getId())){
+//				cityInfoScreen = CityController.cityMapViewMobile.get(city.getId()) ;
+//			}else{
+//				cityInfoScreen = new CityInfoScreen(city.getCity());
+//				CityController.cityMapViewMobile.put(city.getId(), cityInfoScreen);
+//			}
+//			list.addItem(city.getCity(), cityInfoScreen);
+//		}
 	}
 	
 	@Override

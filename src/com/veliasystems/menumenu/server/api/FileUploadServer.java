@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.server.api;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -11,9 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.datastore.Blob;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.server.BlobServiceImpl;
+import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class FileUploadServer extends HttpServlet {
 
@@ -21,6 +28,7 @@ public class FileUploadServer extends HttpServlet {
 			.getName());
 
 	private BlobServiceImpl blobService = new BlobServiceImpl();
+	private StoreServiceImpl storService = new StoreServiceImpl();
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException {
@@ -31,18 +39,18 @@ public class FileUploadServer extends HttpServlet {
 		}
 
 		String restId = req.getParameter("restaurantId");
-    	String imageType = req.getParameter("imageType");
-    	String imageLenghtString = req.getParameter("imageLenght");
-		if (restId==null || restId.isEmpty() || imageType==null || imageType.isEmpty() || imageLenghtString==null || imageLenghtString.isEmpty() ){
+    	String imageTypeString = req.getParameter("imageType");
+		if (restId==null || restId.isEmpty() || imageTypeString==null || imageTypeString.isEmpty() ){
 			log.warning("FileUploadServer::doPost: restId or imageType is NULL||empty");
 			return;
 		}
-		int imageLenght = -1;
+
+		ImageType imageType= null;
+		
 		try{
-			imageLenght = Integer.parseInt(imageLenghtString);
-		}catch(NumberFormatException e){
-			log.warning("FileUploadServer::doPost: NumberFormatException - imageLenght is not a Long" );
-			return;
+			imageType = ImageType.valueOf(imageTypeString);
+		}catch( IllegalArgumentException e){
+			log.warning("FileUploadServer::doPost: IllegalArgumentException - imageTypeString is not a ImageType. imageTypeString: " +imageTypeString );
 		}
 		
 		try {
@@ -53,38 +61,14 @@ public class FileUploadServer extends HttpServlet {
 			while (iterator.hasNext()) {
 				FileItemStream item = iterator.next();
 				InputStream stream = item.openStream();
-
-				if (item.isFormField()) {
-					//log.warning("Got a form field: " + item.getFieldName());
-				} else {
-					//log.warning("Got an uploaded file: " + item.getFieldName()
-					//		+ ", name = " + item.getName());
-
-					// You now have the filename (item.getName() and the
-					// contents (which you can read from stream). Here we just
-					// print them back out to the servlet output stream, but you
-					// will probably want to do something more interesting (for
-					// example, wrap them in a Blob and commit them to the
-					// datastore).
 				
-					byte[] fileBytes = new byte[imageLenght];
-					if(imageLenght < 0){
-						log.warning("FileUploadServer::doPost: imageLenght < 0 ????!!!!" );
-						return;
-					}else{
-						fileBytes = new byte[imageLenght]; // filebytes.length MB buffers
-					}
+				if (!item.isFormField()) {
+				
+					Blob imageBlob = new Blob(IOUtils.toByteArray(stream));
+					BlobKey blobKey = blobService.writeToBlobstore("image/jpeg", "fromIos.jpg", imageBlob.getBytes());
 					
-					stream.read(fileBytes);
-					
-					blobService.writeToBlobstore("image/jpeg", "fromIos.jpg", fileBytes);
-					
-//					while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-//						//res.getOutputStream().write(buffer, 0, len);
-//						
-//					}
-					
-					
+					ImageBlob newImageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), imageType);
+					storService.saveImageBlob(newImageBlob);
 				}
 			}
 		} catch (Exception ex) {

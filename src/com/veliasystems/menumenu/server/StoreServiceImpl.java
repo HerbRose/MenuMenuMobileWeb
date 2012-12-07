@@ -833,4 +833,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 		return query.filter("blobKey IN", blobkey).list();
 	}
+	
+	public void saveImageBlob( ImageBlob imageBlob) {
+		if(imageBlob != null) dao.ofy().put(imageBlob);
+	}
 }
