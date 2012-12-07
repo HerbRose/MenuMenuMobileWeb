@@ -7,11 +7,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
+import com.sun.tools.javac.comp.Flow;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
@@ -40,6 +40,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private Label mailUser;
 	private Label phoneUser;
 	private Label nameUser;
+	private Label websiteLabel;
+	private Label bossLabel;
 	
 	private TextBox nameText = new TextBox();
 	private TextBox adressText = new TextBox();
@@ -48,8 +50,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private TextBox mailUserTextBox = new TextBox();
 	private TextBox phoneUserTextBox = new TextBox();
 	private TextBox nameUserTextBox = new TextBox();
-
-	private ListBox cityListBox = new ListBox();
+	private TextBox websiteTextBox = new  TextBox();
+	private TextBox bossTextBox = new TextBox();
+	
+//	private ListBox cityListBox = new ListBox();
 	private Label warning = new Label();
 	
 	private String city;
@@ -79,10 +83,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			addCities(cityController.getCitiesList());
 			
 		}else{
-			cityListBox.addItem(city);
+//			cityListBox.addItem(city);
 			
 		}
-		getContentPanel().add(cityListBox);
+//		getContentPanel().add(cityListBox);
 		setLabels();
 		
 	}	
@@ -94,54 +98,149 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		
 		nameLabel = new Label();
+		nameLabel.addStyleName("addRestaurantLabel");
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
-		container.add(nameLabel);	
+		
 		
 		nameText.setTitle(Customization.RESTAURANTNAME);
-		container.add(nameText);		
+		nameText.addStyleName("addRestaurantInput");	
 		
 		adressLabel = new Label();
 		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-		container.add(adressLabel);
+		adressLabel.addStyleName("addRestaurantLabel");
 		
 		adressText.setTitle(Customization.RESTAURANTADRESS);
-		container.add(adressText);	
+		adressText.addStyleName("addRestaurantInput");
 		
 		mailRestaurant = new Label();
 		mailRestaurant.setText(Customization.RESTAURANT_MAIL + ":");
-		container.add(mailRestaurant);
+		mailRestaurant.addStyleName("addRestaurantLabel");
 		
 		mailRestaurantTextBox.setTitle(Customization.RESTAURANT_MAIL);
-		container.add(mailRestaurantTextBox);
+		
 		
 		phoneRestaurant = new Label();
 		phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
-		container.add(phoneRestaurant);
+		phoneRestaurant.addStyleName("addRestaurantLabel");
 		
 		phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
-		container.add(phoneRestaurantTextBox);
+		phoneRestaurantTextBox.addStyleName("addRestaurantInput");
 
 		
 		nameUser = new Label();
 		nameUser.setText(Customization.USER_NAME + ":");
-		container.add(nameUser);
+		
 		
 		nameUserTextBox.setTitle(Customization.USER_NAME);
-		container.add(nameUserTextBox);
+		
 		
 		phoneUser = new Label();
 		phoneUser.setText(Customization.USER_PHONE +":");
-		container.add(phoneUser);
+		
 		
 		phoneUserTextBox.setTitle(Customization.USER_PHONE);
-		container.add(phoneUserTextBox);
 		
-		mailUser = new Label(Customization.USER_MAIL+":");
-		container.add(mailUser);
 		
+		mailUser = new Label(Customization.USER_MAIL+":");	
 		mailUserTextBox.setTitle(Customization.USER_MAIL);
-		container.add(mailUserTextBox);
 		
+		
+		websiteLabel = new Label(Customization.WEBSITE_LABEL);
+		websiteLabel.addStyleName("addRestaurantLabel");
+		
+		websiteTextBox.addStyleName("addRestaurantInput");
+		
+		bossLabel = new Label(Customization.BOSS_LABEL);
+		bossLabel.addStyleName("addRestaurantLabel");
+		
+		bossTextBox.addStyleName("addRestaurantInput");
+		
+			
+		FlowPanel nameWrapper = new FlowPanel();
+		nameWrapper.addStyleName("addWrapper");
+		
+		FlowPanel addressWrapper = new FlowPanel();
+		addressWrapper.addStyleName("addWrapper");
+		
+		FlowPanel phoneWrapper = new FlowPanel();
+		phoneWrapper.addStyleName("addWrapper");
+		
+		FlowPanel wwwWrapper = new FlowPanel();
+		wwwWrapper.addStyleName("addWrapper");
+		
+		FlowPanel bossWrapper = new FlowPanel();
+		bossWrapper.addStyleName("addWrapper");
+		
+		
+		FlowPanel nameDiv = new FlowPanel();
+		nameDiv.addStyleName("addRestaurantLabelWrapper");
+		
+		
+		FlowPanel nameInput = new FlowPanel();
+		nameInput.addStyleName("addRestaurantInputWrapper");
+		
+		
+		FlowPanel addressDiv = new FlowPanel();
+		addressDiv.addStyleName("addRestaurantLabelWrapper");
+		
+		FlowPanel addressInput = new FlowPanel();
+		addressInput.addStyleName("addRestaurantInputWrapper");
+		
+		FlowPanel phoneDiv = new FlowPanel();
+		phoneDiv.addStyleName("addRestaurantLabelWrapper");
+		
+		FlowPanel phoneInput = new FlowPanel();
+		phoneInput.addStyleName("addRestaurantInputWrapper");
+		
+		
+		FlowPanel wwwDiv = new FlowPanel();
+		wwwDiv.addStyleName("addRestaurantLabelWrapper");
+		
+		FlowPanel wwwInput = new FlowPanel();
+		wwwInput.addStyleName("addRestaurantInputWrapper");
+		
+		FlowPanel bossDiv = new FlowPanel();
+		bossDiv.addStyleName("addRestaurantLabelWrapper");
+		
+		FlowPanel bossInput = new FlowPanel();
+		bossInput.addStyleName("addRestaurantInputWrapper");
+		
+		nameDiv.add(nameLabel);
+		nameInput.add(nameText);
+		nameWrapper.add(nameDiv);
+		nameWrapper.add(nameInput);
+		
+		
+		
+		addressDiv.add(adressLabel);
+		addressInput.add(adressText);
+		addressWrapper.add(addressDiv);
+		addressWrapper.add(addressInput);
+		
+		
+		phoneDiv.add(phoneRestaurant);
+		phoneInput.add(phoneRestaurantTextBox);
+		phoneWrapper.add(phoneDiv);
+		phoneWrapper.add(phoneInput);
+		
+		
+		wwwDiv.add(websiteLabel);
+		wwwInput.add(websiteTextBox);
+		wwwWrapper.add(wwwDiv);
+		wwwWrapper.add(wwwInput);
+		
+		
+		bossDiv.add(bossLabel);
+		bossInput.add(bossTextBox);
+		bossWrapper.add(bossDiv);
+		bossWrapper.add(bossInput);
+		
+
+		container.add(nameWrapper);
+		container.add(addressWrapper);
+		container.add(phoneWrapper);
+		container.add(wwwWrapper);
+		container.add(bossWrapper);
 		
 		getContentPanel().add(container);
 
@@ -218,8 +317,9 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					restaurant.setName(nameText.getText());
 					
 					restaurant.setAddress(adressText.getText());			
-					int index = cityListBox.getSelectedIndex();			
-					restaurant.setCity(cityListBox.getItemText(index));	
+//					int index = cityListBox.getSelectedIndex();			
+//					restaurant.setCity(cityListBox.getItemText(index));	
+					restaurant.setCity(city);
 					restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox.getText());
 					restaurant.setNameUser(nameUserTextBox.getText());
@@ -345,8 +445,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	 * @return true if restaurant exist
 	 */
 	private boolean restaurantExist(){
-		String cityName = cityListBox.getItemText(cityListBox.getSelectedIndex());
-		List<Restaurant> restaurants = restaurantController.getRestaurantsInCity(cityName);
+//		String cityName = cityListBox.getItemText(cityListBox.getSelectedIndex());
+		List<Restaurant> restaurants = restaurantController.getRestaurantsInCity(city);
 		
 		for (Restaurant restaurant : restaurants) {
 			if( (restaurant.getName().replaceAll(" ", "").equals(nameText.getText().replaceAll(" ", "")))  &&
@@ -363,13 +463,13 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		refreshCityList();
 	}
 	private void refreshCityList(){
-		cityListBox.clear();
+//		cityListBox.clear();
 		addCities(cityController.getCitiesList());
 	}
 	
 	private void addCities(List<City> cities){
 		for(City city: CityController.getInstance().getCitiesList()){
-			cityListBox.addItem(city.getCity());
+//			cityListBox.addItem(city.getCity());
 		}
 	}
 	

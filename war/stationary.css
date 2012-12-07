@@ -3,7 +3,7 @@
 body{ 
 	margin: 0px !important;
 	padding: 0px !important;
-	overflow: hidden;
+	overflow: auto;
 }
 
 .myPage{ /* cala strona */
@@ -21,7 +21,7 @@ body{
 	padding: 0px !important;
 	
 	background: url("/img/layout/background.png") repeat #eee !important;
-	
+	co
 	-webkit-box-shadow: 3px 5px 38px -3px #000 !important;
           	box-shadow: 3px 5px 38px -3px #000 !important;
 
@@ -387,12 +387,72 @@ body{
 
 /* Add Restaurant Screen */
 .containerPanelAddRestaurant{
-	margin: 10px;
+	background: white;
+	width: 90%;
+	margin-left: 5%;
+	border-radius: 20px;
+	margin-top: 10px;
+	border: #c1c1c1 2px solid !important;
 }
+.addRestaurantLabel{
+/* 	display: inline-block; */
+/* 	min-width: 25%; */
+/* 	max-width: 25%; */
+/* 	text-align: right; */
+	float: right;
+	padding-right: 10px;
+	padding-top: 10px;
+}
+
+.addRestaurantInput {
+	max-width: 60%;
+	margin-right: 20px;
+	float: right;
+	background: none !important;
+	border: none !important;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+.addRestaurantInputWrapper{
+	display: inline;
+}
+
+.addRestaurantLabelWrapper{
+	display: inline-block;
+	min-width: 25%;
+	max-width: 25%;
+	border-right: #c1c1c1 2px solid !important;
+	height: 100%;
+}
+
+.addWrapper{
+	text-align: left;
+	padding-left: 10px;
+	height: 50px;
+	border-bottom: #c1c1c1 2px solid !important ;
+}
+
+.addWrapper:last-child {
+	border-bottom-left-radius: 14px !important;
+	-moz-border-bottom-left-radius: 14px !important;
+	-webkit-border-bottom-left-radius: 14px !important;
+	
+	border-bottom-right-radius: 14px !important;	
+	-moz-border-bottom-right-radius: 14px !important;
+	-webkit-border-bottom-right-radius: 14px !important;
+	border-bottom: none !important;
+}
+
+
 /* KONIEC - Add Restaurant Screen */
 
 
 
+
+/* City list screen*/
 .adminWrapper{
 	position: relative;
 	margin-bottom: 10px;
@@ -416,3 +476,7 @@ body{
 .adminButton{
 	display: inline-block;
 }
+
+
+/* KONIEC - City list screen*/
+

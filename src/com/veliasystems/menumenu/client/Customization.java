@@ -90,7 +90,10 @@ public class Customization {
 	public static String INFO = translated.largeImageInfo();
 
 
-	public static String ADMIN_PANEL = translated.adminPanel();;
+	public static String ADMIN_PANEL = translated.adminPanel();
+
+
+	public static String WEBSITE_LABEL = translated.websiteLabel();
 
 
 	public static final String EMAIL_SEND = translated.emailSend();
@@ -136,6 +139,9 @@ public class Customization {
 
 
 	public static final String PASSWORD = translated.password();
+
+
+	public static final String BOSS_LABEL = translated.bossName();
 };
 	
 	

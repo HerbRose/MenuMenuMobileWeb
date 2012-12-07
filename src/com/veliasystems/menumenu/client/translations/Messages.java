@@ -295,5 +295,11 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Administration Panel")
 	String adminPanel();
 	
+	@DefaultStringValue("www")
+	String websiteLabel();
+	
+	@DefaultStringValue("Boss name")
+	String bossName();
+	
 	
 }
