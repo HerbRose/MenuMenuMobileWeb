@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.server.api;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -16,6 +17,8 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.Blob;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -30,8 +33,8 @@ public class FileUploadServer extends HttpServlet {
 	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private StoreServiceImpl storService = new StoreServiceImpl();
 	
-	public void doPost(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException {
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		
 		String token = req.getParameter("token");
 		if (token==null || token.isEmpty() || !token.equalsIgnoreCase(R.TOKEN)) {
@@ -45,6 +48,17 @@ public class FileUploadServer extends HttpServlet {
 			return;
 		}
 
+		
+		resp.setCharacterEncoding("UTF-8");
+		resp.setContentType("application/json");
+
+		String jsonp = req.getParameter("jsonp");
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+		if (jsonp != null) {
+			resp.getWriter().print(jsonp + "(");
+		}
+		
 		ImageType imageType= null;
 		
 		try{
@@ -52,10 +66,10 @@ public class FileUploadServer extends HttpServlet {
 		}catch( IllegalArgumentException e){
 			log.warning("FileUploadServer::doPost: IllegalArgumentException - imageTypeString is not a ImageType. imageTypeString: " +imageTypeString );
 		}
-		
+		ImageBlob newImageBlob = null;
 		try {
 			ServletFileUpload upload = new ServletFileUpload();
-			res.setContentType("text/plain");
+			//res.setContentType("text/plain");
 
 			FileItemIterator iterator = upload.getItemIterator(req);
 			while (iterator.hasNext()) {
@@ -67,12 +81,21 @@ public class FileUploadServer extends HttpServlet {
 					Blob imageBlob = new Blob(IOUtils.toByteArray(stream));
 					BlobKey blobKey = blobService.writeToBlobstore("image/jpeg", "fromIos.jpg", imageBlob.getBytes());
 					
-					ImageBlob newImageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), imageType);
+					newImageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), imageType);
 					storService.saveImageBlob(newImageBlob);
+					
+					
 				}
 			}
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
+		
+		resp.getWriter().print(gson.toJson(newImageBlob.getBlobKey()));
+		if (jsonp != null) {
+			resp.getWriter().print(")");
+		}
+		resp.flushBuffer();
+		
 	}
 }
