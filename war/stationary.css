@@ -450,7 +450,7 @@ body{
 .addBoardWrapper{
 	width: 60%;
 	height: 60px;
-	background: url("img/layout/dodajWizytowke.png");
+	background: url("img/layout/boardBackground.png");
 	float: right;
 	margin-right: 5%;
 	display: inline-block;
@@ -464,10 +464,12 @@ body{
 	line-height: 60px;
 	text-align: left;
 	padding-left: 10px;
+	color: #8a8b8e;
+	font-weight: bold;
 }
 
 .adminButtonDiv{
-	
+	clear: both;
 }
 
 .adminLabelDiv{
