@@ -64,7 +64,7 @@
 #wrapper, .wrapper {
 /* 	z-index:10; */
 	width: 100%;
-	height: 160px;
+	height: 187px;
 	overflow:scroll;
  	white-space: nowrap; 
  	text-align: right;
@@ -83,6 +83,7 @@
 	height: 160px;
 	padding:0;
 	display: inline-block;
+	padding-left: 100px;
 }
 #scroller td, .scroller td{
 	vertical-align: middle !important;

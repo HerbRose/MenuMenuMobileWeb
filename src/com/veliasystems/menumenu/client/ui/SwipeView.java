@@ -191,17 +191,17 @@ public class SwipeView extends FlowPanel {
 
 	}
 
-//	private void setCameraImg() {
-//		cameraDiv.add(cameraImg);
-//		cameraDiv.addStyleName("cameraDiv");
-//
-//		cameraContainerDiv.add(cameraDiv);
-//	}
+	private void setCameraImg() {
+		cameraDiv.add(cameraImg);
+		cameraDiv.addStyleName("cameraDiv");
+
+		cameraContainerDiv.add(cameraDiv);
+	}
 
 	private void setAppleUpload( boolean isOS6) {
 
 		if(isOS6){
-			//setCameraImg();
+			setCameraImg();
 			cameraImg.addClickHandler(new ClickHandler() {
 	
 				@Override
@@ -237,7 +237,7 @@ public class SwipeView extends FlowPanel {
 	}
 
 	private void setOtherUpload() {
-		//setCameraImg();
+		setCameraImg();
 
 		cameraImg.addClickHandler(new ClickHandler() {
 
@@ -311,8 +311,8 @@ public class SwipeView extends FlowPanel {
 			}
 		});
 
-//		cameraContainerDiv.addStyleName("cameraContainerDiv");
-//		add(cameraContainerDiv);
+		cameraContainerDiv.addStyleName("cameraContainerDiv");
+		add(cameraContainerDiv);
 		add(formPanel);
 
 	}
