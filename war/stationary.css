@@ -464,10 +464,12 @@ body{
 	line-height: 60px;
 	text-align: left;
 	padding-left: 10px;
+	color: #8a8b8e;
+	font-weight: bold;
 }
 
 .adminButtonDiv{
-	
+	clear: both;
 }
 
 .adminLabelDiv{
