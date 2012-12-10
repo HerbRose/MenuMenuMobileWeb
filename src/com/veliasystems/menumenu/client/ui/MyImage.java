@@ -106,7 +106,7 @@ public class MyImage extends FlowPanel {
 				PagesController.showWaitPanel();
 				restaurantController.setMainImage(imgBlob);
 //				JQMContext.changePage(new Test(imgBlob));
-				// getImagesController().selectImage(getMe());
+				getImagesController().selectImage(getMe());
 			}
 		});
 
