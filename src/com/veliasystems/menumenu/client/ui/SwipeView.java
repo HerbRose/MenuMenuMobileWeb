@@ -1,9 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -39,7 +37,7 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 public class SwipeView extends FlowPanel {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
@@ -130,7 +128,7 @@ public class SwipeView extends FlowPanel {
 			imageCounter--;
 		}
 		for (; imageCounter >= 1;) {
-			MyImage emptyImage = new MyImage(imageCounter);
+			MyImage emptyImage = new MyImage(imageCounter, imageType);
 			scrollerContainer.insert(emptyImage, 0);
 			imageCounter--;
 		}
@@ -146,6 +144,7 @@ public class SwipeView extends FlowPanel {
 	private void addImage(ImageBlob imageBlob) {
 		MyImage newImage;
 		loadedPageController.addImage(getRestId());
+		
 		newImage = new MyImage(imagesController, imageBlob, parent, imageType);
 
 		newImage.image.addLoadHandler(new LoadHandler() {
@@ -177,12 +176,12 @@ public class SwipeView extends FlowPanel {
 	}
 
 	private void setMyTitle(String title) {
-		titleDiv.addStyleName("titleDiv");
-		Element span = DOM.createSpan();
-		span.setInnerText(title);
-
-		titleDiv.getElement().insertFirst(span);
-		add(titleDiv);
+//		titleDiv.addStyleName("titleDiv");
+//		Element span = DOM.createSpan();
+//		span.setInnerText(title);
+//
+//		titleDiv.getElement().insertFirst(span);
+//		add(titleDiv);
 	}
 
 	private void setAndroidUpload() {
@@ -192,17 +191,17 @@ public class SwipeView extends FlowPanel {
 
 	}
 
-	private void setCameraImg() {
-		cameraDiv.add(cameraImg);
-		cameraDiv.addStyleName("cameraDiv");
-
-		cameraContainerDiv.add(cameraDiv);
-	}
+//	private void setCameraImg() {
+//		cameraDiv.add(cameraImg);
+//		cameraDiv.addStyleName("cameraDiv");
+//
+//		cameraContainerDiv.add(cameraDiv);
+//	}
 
 	private void setAppleUpload( boolean isOS6) {
 
 		if(isOS6){
-			setCameraImg();
+			//setCameraImg();
 			cameraImg.addClickHandler(new ClickHandler() {
 	
 				@Override
@@ -238,7 +237,7 @@ public class SwipeView extends FlowPanel {
 	}
 
 	private void setOtherUpload() {
-		setCameraImg();
+		//setCameraImg();
 
 		cameraImg.addClickHandler(new ClickHandler() {
 
@@ -312,8 +311,8 @@ public class SwipeView extends FlowPanel {
 			}
 		});
 
-		cameraContainerDiv.addStyleName("cameraContainerDiv");
-		add(cameraContainerDiv);
+//		cameraContainerDiv.addStyleName("cameraContainerDiv");
+//		add(cameraContainerDiv);
 		add(formPanel);
 
 	}

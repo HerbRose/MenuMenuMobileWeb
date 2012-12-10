@@ -145,6 +145,9 @@ public class Customization {
 
 
 	public static final String BOSS_LABEL = translated.bossName();
+
+
+	public static final String PROFILE_PUBLISHED = translated.profilePublished();
 };
 	
 	

@@ -303,6 +303,9 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Add board")
 	String addBoard();
+
+	@DefaultStringValue("Published")  //brak w translations
+	String profilePublished();
 	
 	
 }

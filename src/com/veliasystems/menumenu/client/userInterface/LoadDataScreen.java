@@ -27,7 +27,6 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 
 public class LoadDataScreen extends JQMPage {
 	
