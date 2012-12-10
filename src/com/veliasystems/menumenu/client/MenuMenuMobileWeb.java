@@ -29,7 +29,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 			if(isMobile()) JQMContext.changePage( Pages.PAGE_LOGIN_OK );
 			else {
 				R.isMobile = false;
-				JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoginScreen(true) );
+				JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoginScreen(false) );
 			}
 		}
 	
