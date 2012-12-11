@@ -1,9 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -19,7 +17,6 @@ import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -39,7 +36,7 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 public class SwipeView extends FlowPanel {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
@@ -66,7 +63,7 @@ public class SwipeView extends FlowPanel {
 
 	private LoadedPageController loadedPageController;
 
-	private String osType = Navigator.getPlatform();
+	private String osType = getUserAgent(); 
 	private RestaurantController restaurantController = RestaurantController
 			.getInstance();
 
@@ -130,7 +127,7 @@ public class SwipeView extends FlowPanel {
 			imageCounter--;
 		}
 		for (; imageCounter >= 1;) {
-			MyImage emptyImage = new MyImage(imageCounter);
+			MyImage emptyImage = new MyImage(imageCounter, imageType);
 			scrollerContainer.insert(emptyImage, 0);
 			imageCounter--;
 		}
@@ -177,12 +174,12 @@ public class SwipeView extends FlowPanel {
 	}
 
 	private void setMyTitle(String title) {
-		titleDiv.addStyleName("titleDiv");
-		Element span = DOM.createSpan();
-		span.setInnerText(title);
-
-		titleDiv.getElement().insertFirst(span);
-		add(titleDiv);
+//		titleDiv.addStyleName("titleDiv");
+//		Element span = DOM.createSpan();
+//		span.setInnerText(title);
+//
+//		titleDiv.getElement().insertFirst(span);
+//		add(titleDiv);
 	}
 
 	private void setAndroidUpload() {
@@ -202,6 +199,8 @@ public class SwipeView extends FlowPanel {
 	private void setAppleUpload( boolean isOS6) {
 
 		if(isOS6){
+			setOtherUpload();
+		}else{
 			setCameraImg();
 			cameraImg.addClickHandler(new ClickHandler() {
 	
@@ -232,8 +231,7 @@ public class SwipeView extends FlowPanel {
 				}
 	
 			});
-		}else{
-			setOtherUpload();
+			
 		}
 	}
 
@@ -269,11 +267,10 @@ public class SwipeView extends FlowPanel {
 				formPanel.reset();
 			}
 		});
-		
 		if (osType.toLowerCase().indexOf("ipad") >= 0
 		 || osType.toLowerCase().indexOf("ipho") >= 0) { // ipad or iphone
-			if(osType.indexOf("OS 6")>=0) setAppleUpload(true);
-				else setAppleUpload(false);
+			setAppleUpload(osType.toLowerCase().indexOf("os 6")>=0);	
+			
 		} else if (osType.toLowerCase().indexOf("armv") >= 0 
 				|| osType.toLowerCase().indexOf("android")>=0) { // android
 			setAndroidUpload();
@@ -360,6 +357,10 @@ public class SwipeView extends FlowPanel {
 		fillData(imageType);
 		fillImages();
 	}
+	
+	private native String getUserAgent()/*-{
+		return navigator.userAgent;
+	}-*/;
 
 }
 
