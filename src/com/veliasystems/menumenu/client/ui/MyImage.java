@@ -5,20 +5,19 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
-import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 public class MyImage extends FlowPanel {
 
@@ -68,7 +67,7 @@ public class MyImage extends FlowPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 
-				Document.get().getElementById("load").setClassName("show");
+				PagesController.showWaitPanel();
 
 				restaurantController.setEmptyBoard(parent.getRestaurant(),
 						imageType);
@@ -107,7 +106,7 @@ public class MyImage extends FlowPanel {
 				PagesController.showWaitPanel();
 				restaurantController.setMainImage(imgBlob);
 //				JQMContext.changePage(new Test(imgBlob));
-				// getImagesController().selectImage(getMe());
+				getImagesController().selectImage(getMe());
 			}
 		});
 
@@ -122,10 +121,16 @@ public class MyImage extends FlowPanel {
 
 	}
 
-	public MyImage(int emptyImageNumber) {
+	public MyImage(int emptyImageNumber, ImageType imageType) {
 		setStyleName("imagePanel");
-
-		url = "img/empty.png";
+	
+		switch (imageType) {
+		case PROFILE:
+			url = "img/layout/klisza_piktogram_knajpa.png";
+			break;
+		case MENU:
+			url = "img/layout/klisza_piktogram_tablica.png";
+		}
 		setMyImage(url);
 
 		image.addClickHandler(new ClickHandler() {

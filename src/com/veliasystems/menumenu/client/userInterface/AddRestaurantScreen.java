@@ -263,6 +263,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		 			
 		 			@Override
 		 			public void onClick(ClickEvent event) {
+		 				PagesController.showWaitPanel();
 		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
 		 			}
 		 		});
@@ -271,6 +272,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					
 					@Override
 					public void onClick(ClickEvent event) {
+						PagesController.showWaitPanel();
 						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
 					}
 				});
@@ -328,6 +330,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	@Override
 	protected void onPageShow() {	
+		RestaurantController.getInstance().setLastOpenPage(this);
 		clearData();		
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
@@ -358,13 +361,16 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(isToCity){
-					Document.get().getElementById("load").setClassName(R.LOADING);
-					JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
-				}else{
-					Document.get().getElementById("load").setClassName(R.LOADING);
-					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
-				}
+//				if(isToCity){
+//					Document.get().getElementById("load").setClassName(R.LOADING);
+//					JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+//				}else{
+//					Document.get().getElementById("load").setClassName(R.LOADING);
+//					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
+//				}
+				PagesController.showWaitPanel();
+				JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
+				
 			
 			}
 		});

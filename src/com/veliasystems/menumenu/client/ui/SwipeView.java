@@ -143,6 +143,7 @@ public class SwipeView extends FlowPanel {
 	private void addImage(ImageBlob imageBlob) {
 		MyImage newImage;
 		loadedPageController.addImage(getRestId());
+		
 		newImage = new MyImage(imagesController, imageBlob, parent, imageType);
 
 		newImage.image.addLoadHandler(new LoadHandler() {

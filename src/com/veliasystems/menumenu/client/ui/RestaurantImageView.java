@@ -85,15 +85,15 @@ public class RestaurantImageView extends JQMPage{
 		
 		if(!loaded){
 			
-			SwipeView swipeView = new SwipeView(restaurant, ImageType.MENU , this);
-			swipeViews.add(swipeView);
-			addToContent( swipeView );
-			swipeView = new SwipeView(restaurant, ImageType.PROFILE , this);
-			swipeViews.add(swipeView);
-			addToContent( swipeView );
-			swipeView = new SwipeView(restaurant, ImageType.LOGO , this);
-			swipeViews.add(swipeView);
-			addToContent( swipeView );
+//			SwipeView swipeView = new SwipeView(restaurant, ImageType.MENU , this);
+//			swipeViews.add(swipeView);
+//			addToContent( swipeView );
+//			swipeView = new SwipeView(restaurant, ImageType.PROFILE , this);
+//			swipeViews.add(swipeView);
+//			addToContent( swipeView );
+//			swipeView = new SwipeView(restaurant, ImageType.LOGO , this);
+//			swipeViews.add(swipeView);
+//			addToContent( swipeView );
 			
 			Image addUserImage = new Image("/img/addUser.png");
 			addUserImage.addClickHandler(new ClickHandler() {

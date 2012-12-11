@@ -510,7 +510,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		}
 
 		if (!loaded) {
-			backButton = new JQMButton("", PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+			backButton = new JQMButton("", pageToBack, Transition.SLIDE);
 			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"
 					+ Customization.BACK
 					+ "</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";

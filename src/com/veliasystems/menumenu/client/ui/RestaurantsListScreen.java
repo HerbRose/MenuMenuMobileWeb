@@ -88,14 +88,14 @@ public class RestaurantsListScreen extends JQMPage implements IObserver {
 		for(Restaurant item: list){
 			RestaurantImageView restaurantView;
 			if(RestaurantController.restMapView.containsKey(item.getId())){
-				restaurantView = RestaurantController.restMapView.get(item.getId());	
+				//restaurantView = RestaurantController.restMapView.get(item.getId());	
 			}
 			else{
 				restaurantView = new RestaurantImageView(item, this);
-				RestaurantController.restMapView.put(item.getId(), restaurantView);				
+				//RestaurantController.restMapView.put(item.getId(), restaurantView);				
 			}
 
-			this.restaurantList.addItem(item.getName(), restaurantView);
+			//this.restaurantList.addItem(item.getName(), restaurantView);
 
 		}
 	}

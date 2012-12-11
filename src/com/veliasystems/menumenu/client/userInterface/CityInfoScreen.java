@@ -14,8 +14,6 @@ import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.userInterface.AddRestaurantScreen;
-import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
@@ -62,20 +60,8 @@ public class CityInfoScreen extends MyPage{
         
         restaurants = restaurantController.getRestaurantsInCity(city);        
         addRestaurants(restaurants);
-        
-//        add(restaurantList);
-        
-//             footer = new JQMFooter();
-//            addButton = new JQMButton(Customization.ADDRESTAURANT, new AddRestaurantScreen(title), Transition.SLIDE);
-//            addButton.setWidth("100%");
-//            addButton.setIcon(DataIcon.PLUS);
-//            addButton.setIconPos(IconPos.TOP);
-//            footer.add(addButton);
-//            footer.setFixed(true);
-//            footer.setWidth("100%");
-//            add(footer);
-        
-        
+                
+      
     }
 	
 	

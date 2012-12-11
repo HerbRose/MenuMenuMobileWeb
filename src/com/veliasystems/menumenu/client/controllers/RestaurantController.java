@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -27,8 +26,8 @@ import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.ui.CropImage;
 import com.veliasystems.menumenu.client.ui.RestInfoScreen;
-import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 
 
@@ -186,7 +185,7 @@ public class RestaurantController {
 				restaurants.put(result.getId(), result); //add/change restaurant in our list
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
-				History.back();
+//				History.back();
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
