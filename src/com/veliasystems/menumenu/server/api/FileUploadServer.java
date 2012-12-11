@@ -65,6 +65,7 @@ public class FileUploadServer extends HttpServlet {
 			imageType = ImageType.valueOf(imageTypeString);
 		}catch( IllegalArgumentException e){
 			log.warning("FileUploadServer::doPost: IllegalArgumentException - imageTypeString is not a ImageType. imageTypeString: " +imageTypeString );
+			return;
 		}
 		ImageBlob newImageBlob = null;
 		try {
