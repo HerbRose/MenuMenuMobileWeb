@@ -71,6 +71,11 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	private FlowPanel container;
 	
+	private FlowPanel nameWrapper = new FlowPanel();
+	private FlowPanel addressWrapper = new FlowPanel();
+	private FlowPanel phoneWrapper = new FlowPanel();
+	private FlowPanel wwwWrapper = new FlowPanel();
+	private FlowPanel bossWrapper = new FlowPanel();
 	
 	private FocusPanel adminLabel;
 	private FlowPanel adminPanelWrapper;
@@ -109,33 +114,33 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		
 		nameLabel = new Label();
-		nameLabel.addStyleName("addRestaurantLabel");
+		nameLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 		nameLabel.setText(Customization.RESTAURANTNAME + ":");
 		
 		
 		nameText.setTitle(Customization.RESTAURANTNAME);
-		nameText.addStyleName("addRestaurantInput");	
+		nameText.addStyleName("myTextBox nameBox arialBold");	
 		
 		adressLabel = new Label();
 		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-		adressLabel.addStyleName("addRestaurantLabel");
+		adressLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 		
 		adressText.setTitle(Customization.RESTAURANTADRESS);
-		adressText.addStyleName("addRestaurantInput");
+		adressText.addStyleName("myTextBox nameBox arialBold");
 		
 		mailRestaurant = new Label();
 		mailRestaurant.setText(Customization.RESTAURANT_MAIL + ":");
-		mailRestaurant.addStyleName("addRestaurantLabel");
+		mailRestaurant.addStyleName("addRestaurantLabel myLabel arialBold");
 		
 		mailRestaurantTextBox.setTitle(Customization.RESTAURANT_MAIL);
 		
 		
 		phoneRestaurant = new Label();
 		phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
-		phoneRestaurant.addStyleName("addRestaurantLabel");
+		phoneRestaurant.addStyleName("addRestaurantLabel myLabel arialBold");
 		
 		phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
-		phoneRestaurantTextBox.addStyleName("addRestaurantInput");
+		phoneRestaurantTextBox.addStyleName("myTextBox nameBox arialBold");
 
 		
 		nameUser = new Label();
@@ -156,95 +161,42 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		
 		websiteLabel = new Label(Customization.WEBSITE_LABEL);
-		websiteLabel.addStyleName("addRestaurantLabel");
+		websiteLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 		
-		websiteTextBox.addStyleName("addRestaurantInput");
+		websiteTextBox.addStyleName("myTextBox nameBox arialBold");
 		
 		bossLabel = new Label(Customization.BOSS_LABEL);
-		bossLabel.addStyleName("addRestaurantLabel");
+		bossLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 		
-		bossTextBox.addStyleName("addRestaurantInput");
+		bossTextBox.addStyleName("myTextBox nameBox arialBold");
 		
-			
-		FlowPanel nameWrapper = new FlowPanel();
 		nameWrapper.addStyleName("addWrapper");
 		
-		FlowPanel addressWrapper = new FlowPanel();
+		
 		addressWrapper.addStyleName("addWrapper");
 		
-		FlowPanel phoneWrapper = new FlowPanel();
-		phoneWrapper.addStyleName("addWrapper");
 		
-		FlowPanel wwwWrapper = new FlowPanel();
+		phoneWrapper.addStyleName("addWrapper");
+	
 		wwwWrapper.addStyleName("addWrapper");
 		
-		FlowPanel bossWrapper = new FlowPanel();
+		
 		bossWrapper.addStyleName("addWrapper");
+
+		nameWrapper.add(nameLabel);
+		nameWrapper.add(nameText);
 		
+		addressWrapper.add(adressLabel);
+		addressWrapper.add(adressText);
 		
-		FlowPanel nameDiv = new FlowPanel();
-		nameDiv.addStyleName("addRestaurantLabelWrapper");
-		
-		
-		FlowPanel nameInput = new FlowPanel();
-		nameInput.addStyleName("addRestaurantInputWrapper");
-		
-		
-		FlowPanel addressDiv = new FlowPanel();
-		addressDiv.addStyleName("addRestaurantLabelWrapper");
-		
-		FlowPanel addressInput = new FlowPanel();
-		addressInput.addStyleName("addRestaurantInputWrapper");
-		
-		FlowPanel phoneDiv = new FlowPanel();
-		phoneDiv.addStyleName("addRestaurantLabelWrapper");
-		
-		FlowPanel phoneInput = new FlowPanel();
-		phoneInput.addStyleName("addRestaurantInputWrapper");
-		
-		
-		FlowPanel wwwDiv = new FlowPanel();
-		wwwDiv.addStyleName("addRestaurantLabelWrapper");
-		
-		FlowPanel wwwInput = new FlowPanel();
-		wwwInput.addStyleName("addRestaurantInputWrapper");
-		
-		FlowPanel bossDiv = new FlowPanel();
-		bossDiv.addStyleName("addRestaurantLabelWrapper");
-		
-		FlowPanel bossInput = new FlowPanel();
-		bossInput.addStyleName("addRestaurantInputWrapper");
-		
-		nameDiv.add(nameLabel);
-		nameInput.add(nameText);
-		nameWrapper.add(nameDiv);
-		nameWrapper.add(nameInput);
-		
-		
-		
-		addressDiv.add(adressLabel);
-		addressInput.add(adressText);
-		addressWrapper.add(addressDiv);
-		addressWrapper.add(addressInput);
-		
-		
-		phoneDiv.add(phoneRestaurant);
-		phoneInput.add(phoneRestaurantTextBox);
-		phoneWrapper.add(phoneDiv);
-		phoneWrapper.add(phoneInput);
-		
-		
-		wwwDiv.add(websiteLabel);
-		wwwInput.add(websiteTextBox);
-		wwwWrapper.add(wwwDiv);
-		wwwWrapper.add(wwwInput);
-		
-		
-		bossDiv.add(bossLabel);
-		bossInput.add(bossTextBox);
-		bossWrapper.add(bossDiv);
-		bossWrapper.add(bossInput);
-		
+		phoneWrapper.add(phoneRestaurant);
+		phoneWrapper.add(phoneRestaurantTextBox);
+
+		wwwWrapper.add(websiteLabel);
+		wwwWrapper.add(websiteTextBox);
+
+		bossWrapper.add(bossLabel);
+		bossWrapper.add(bossTextBox);
 
 		container.add(nameWrapper);
 		container.add(addressWrapper);
@@ -416,13 +368,13 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		add(warning);
 		if(!nameText.getText().isEmpty() && !adressText.getText().isEmpty()){
 			if(restaurantExist()){
-				setValidDataStyle(false, nameText);
-				setValidDataStyle(false, adressText);
+				setValidDataStyle(false, nameWrapper);
+				setValidDataStyle(false, addressWrapper);
 				warning.setText(Customization.RESTAURANT_EXIST_ERROR);
 				return false;
 			}else{
-				setValidDataStyle(true, nameText);
-				setValidDataStyle(true, adressText);
+				setValidDataStyle(true, nameWrapper);
+				setValidDataStyle(true, addressWrapper);
 			}
 		}
 		
@@ -430,23 +382,23 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		if(nameText.getText().isEmpty() && adressText.getText().isEmpty()){
 			warning.setText(Customization.EMPTYBOTHDATA);
-			setValidDataStyle(false, nameText);
-			setValidDataStyle(false, adressText);
+			setValidDataStyle(false, nameWrapper);
+			setValidDataStyle(false, addressWrapper);
 			isCorrect = false;
 		}else{
 			if(nameText.getText().isEmpty()){
 				warning.setText(Customization.EMPTYNAME);
-				setValidDataStyle(false, nameText);
+				setValidDataStyle(false, nameWrapper);
 				isCorrect = false;
 			}else{
-				setValidDataStyle(true, nameText);
+				setValidDataStyle(true, nameWrapper);
 			}
 			if(adressText.getText().isEmpty()){
 				warning.setText(warning.getText()+ " \n"+ Customization.EMPTYADRESS);
-				setValidDataStyle(false, adressText);
+				setValidDataStyle(false, addressWrapper);
 				isCorrect = false;
 			}else{
-				setValidDataStyle(true, adressText);
+				setValidDataStyle(true, addressWrapper);
 			}
 		}
 		if(!mailRestaurantTextBox.getText().isEmpty() ){
@@ -461,14 +413,14 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		}
 		if(!phoneRestaurantTextBox.getText().isEmpty() ){
 			if(!Util.isValidPhoneNumber(phoneRestaurantTextBox.getText())){
-				setValidDataStyle(false, phoneRestaurantTextBox);
+				setValidDataStyle(false, phoneWrapper);
 				isCorrect = false;
 			}else{
-				setValidDataStyle(true, phoneRestaurantTextBox);
+				setValidDataStyle(true, phoneWrapper);
 			}
 		}
 		else{
-			setValidDataStyle(null, phoneRestaurantTextBox);
+			setValidDataStyle(null, phoneWrapper);
 		}
 		if(!mailUserTextBox.getText().isEmpty()){
 			if(!Util.isValidEmail(mailUserTextBox.getText())){
