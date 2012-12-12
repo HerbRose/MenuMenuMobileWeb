@@ -30,6 +30,7 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -122,11 +123,13 @@ public class SwipeView extends FlowPanel {
 
 	private void fillImages() {
 		imagesController.clear(parent);
-		imagesController.clear(parent);
 		int imageCounter = 30;
 		for (ImageBlob imageBlob : imageBlobList) {
 			addImage(imageBlob);
 			imageCounter--;
+		}
+		if(imageBlobList.isEmpty()){
+			loadedPageController.emptySwipe(getRestId());
 		}
 		for (; imageCounter >= 1;) {
 			MyImage emptyImage = new MyImage(imageCounter, imageType);
@@ -267,7 +270,7 @@ public class SwipeView extends FlowPanel {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 
 				// Window.Location.reload();
-				Document.get().getElementById("load").setClassName("loaded");
+				PagesController.hideWaitPanel();
 				restaurantController.cropImage(restaurant.getId(), imageType);
 				formPanel.reset();
 			}
@@ -360,6 +363,7 @@ public class SwipeView extends FlowPanel {
 		imagesController.clear(parent);
 		scrollerContainer.clear();
 		fillData(imageType);
+		
 		fillImages();
 	}
 	
@@ -388,9 +392,9 @@ class MyUploadForm extends FormPanel {
 		return mainPanel;
 	}
 
-	public FileUpload getFileUpload() {
-		return fileUpload;
-	}
-	
+//	public FileUpload getFileUpload() {
+//		return fileUpload;
+//	}
+//	
 	
 }

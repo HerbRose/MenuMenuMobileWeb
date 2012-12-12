@@ -152,12 +152,13 @@ public class LoadDataScreen extends JQMPage {
 					restaurantView = RestaurantController.restMapView.get(lastPageId);
 				}else{
 					restaurantView = new RestaurantImageView(lastOpenRestaurant,PagesController.getPage(Pages.PAGE_HOME));
+					RestaurantController.restMapView.put(lastOpenRestaurant.getId(), restaurantView);
 				}
 				
-				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
-					restaurantView = RestaurantController.restMapView.get(lastPageId);
-				}
-				
+//				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
+//					restaurantView = RestaurantController.restMapView.get(lastPageId);
+//				}
+//				
 				String imageType = Cookies.getCookie(R.IMAGE_TYPE);
 				
 				if(imageType == null){
