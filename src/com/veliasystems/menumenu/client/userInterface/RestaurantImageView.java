@@ -511,8 +511,10 @@ public class RestaurantImageView extends MyPage {
 			container.add(wwwWrapper);
 			container.add(bossWrapper);
 
+			FlowPanel addBoardWrap = new FlowPanel();
 			
-			addBoard = new FocusPanel();
+			
+			addBoard = new FocusPanel();	
 			addBoard.addStyleName("addBoardWrapper noFocus");
 			
 			addBoardText = new Label(Customization.ADD_BOARD);
@@ -584,19 +586,10 @@ public class RestaurantImageView extends MyPage {
 			});
 
 			
-
-			
-
-			// addBoard.add(addBoardText);
-
-			addBoard.add(formLogoUpload);
-			// addBoard.addClickHandler(new ClickHandler() {
-			//
-			// @Override
-			// public void onClick(ClickEvent event) {
-			//
-			// }
-			// });
+			addBoardWrap.add(addBoardText);
+			addBoardWrap.add(formLogoUpload);
+			addBoard.add(addBoardWrap);
+		
 
 			setData();
 			editPanel.add(container);
