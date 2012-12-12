@@ -87,16 +87,19 @@ public class Customization {
 	public static final String CHANGE_OK = translated.changeDataOk();
 	public static final String SET_DEFAULT_EMPTY_PROFIL = translated.setEmptyBoard();
 	public static final String REMOVE_USERS = translated.removeUsers();
-	public static String INFO = translated.largeImageInfo();
+	public static final String INFO = translated.largeImageInfo();
 
 
-	public static String ADMIN_PANEL = translated.adminPanel();
+	public static final String ADMIN_PANEL = translated.adminPanel();
 
 
-	public static String WEBSITE_LABEL = translated.websiteLabel();
+	public static final String WEBSITE_LABEL = translated.websiteLabel();
 
 
-	public static String ADD_BOARD = translated.addBoard();;
+	public static final String ADD_BOARD = translated.addBoard();
+
+
+	public static final  String LAST_UPLOADED = translated.lastUploaded();
 
 
 	public static final String EMAIL_SEND = translated.emailSend();

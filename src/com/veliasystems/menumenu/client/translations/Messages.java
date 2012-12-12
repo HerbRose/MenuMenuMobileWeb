@@ -307,5 +307,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Published")  //brak w translations
 	String profilePublished();
 	
+	@DefaultStringValue("Last uploaded photo") //brak w translations
+	String lastUploaded();
+	
 	
 }

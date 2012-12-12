@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -41,6 +42,7 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -591,9 +593,59 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	public void  checkImageSize(){
 		
 	}
+
+	@Override
+	public List<ImageBlob> getLast24hImages() {
+		changeTimeToMiliSec();
+		List<ImageBlob> images = new ArrayList<ImageBlob>();
+		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+		if (imgQuery == null){
+			return images;
+		}
+		
+//		Date today = new Date();
+		
+//		String monthToday = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat. ).format(today);
+//		String dayToday = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DAY).format(today);
+//		String yearToday =  DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.YEAR).format(today);
+		
+		//Date yesterday = new Date(Integer., month, date)
+		
+		//new Date(year, month, date, hrs, min)
+		
+		
+		Calendar today = Calendar.getInstance();
+		today.add(Calendar.DATE, -1);
+		
+		Date yesterday = new Date(today.getTimeInMillis());
+		
+		
+		
+		return imgQuery.filter("timeInMiliSec >", yesterday.getTime()).list();
+	}
+	
+	
+	private void changeTimeToMiliSec(){
+		List<ImageBlob> images = new ArrayList<ImageBlob>();
+		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+		if (imgQuery == null){
+			return;
+		}
+		
+		images = imgQuery.list();
+		
+		for (ImageBlob imageBlob : images) {
+			
+			imageBlob.setDateCreated(imageBlob.getDateCreated());
+			dao.ofy().put(imageBlob);
+		}
+		
+	}
+	
 }
 
 
+	
 
 class MyComparator implements Comparator<ImageBlob> {
 	public int compare(ImageBlob o1, ImageBlob o2) {

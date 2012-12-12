@@ -648,3 +648,24 @@ body{
 	height: 100%;
 }
 /* KONIEC -  Restaurant Image View*/
+
+
+/* LastUploadedImages */
+
+.imgWrapper{
+	margin: 10px;
+	border: 2px solid black;
+	display: block;
+	padding: 10px;
+}
+
+.lastUploadedImage{
+	width: 200px;
+	display: inline-block;
+}
+
+.lastUploadedDeleteButton{
+
+}
+
+/* KONIEC -  LastUploadedImages*/
