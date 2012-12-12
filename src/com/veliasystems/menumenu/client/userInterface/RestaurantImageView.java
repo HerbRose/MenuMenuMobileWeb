@@ -540,6 +540,8 @@ public class RestaurantImageView extends MyPage {
 						@Override
 						public void onSubmitComplete(SubmitCompleteEvent event) {
 							PagesController.showWaitPanel();
+							Window.alert(restaurant.getId() + " "+ 
+									ImageType.LOGO.name());
 							restaurantController.cropImage(restaurant.getId(),
 									ImageType.LOGO);
 							formLogoUpload.reset();
