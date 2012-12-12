@@ -6,6 +6,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -369,7 +370,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
 //				}
 				PagesController.showWaitPanel();
-				JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
+				History.back();
 				
 			
 			}
@@ -397,6 +398,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					
 					Document.get().getElementById("load").setClassName(R.LOADING);
 					restaurantController.saveRestaurant(restaurant);
+					History.back();
 				}	
 			}
 		});
