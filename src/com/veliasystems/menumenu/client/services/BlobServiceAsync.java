@@ -2,7 +2,6 @@ package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -52,5 +51,7 @@ public interface BlobServiceAsync {
 	void getEmptyList(AsyncCallback<List<ImageBlob>> callback);
 
 	void setEmptyBoard(ImageBlob imageBlob, AsyncCallback<String> callback);
+
+	void getLast24hImages(AsyncCallback<List<ImageBlob>> callback);
 
 }

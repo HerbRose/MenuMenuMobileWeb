@@ -171,7 +171,7 @@ public class RestaurantController {
 		return restaurants.keySet();
 	}
 	
-	public void saveRestaurant(Restaurant restaurant){
+	public void saveRestaurant(Restaurant restaurant, final boolean isBack){
 		final Restaurant restaurantToSave = restaurant;
 	
 		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Restaurant>() {
@@ -185,6 +185,8 @@ public class RestaurantController {
 				restaurants.put(result.getId(), result); //add/change restaurant in our list
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
+				if(isBack)
+					JQMContext.changePage(CityController.cityMapView.get(result.getCityId()) , Transition.SLIDE);
 //				History.back();
 			}
 			@Override
@@ -321,10 +323,28 @@ public class RestaurantController {
 	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
 	 */
 	public void afterCrop(Long restaurantId, ImageType imageType, ImageBlob imageBlob) {
+		getImagesList(imageBlob.getImageType(), Long.parseLong(imageBlob.getRestaurantId())).add(imageBlob);
 		
-		getImagesList(imageType, restaurantId).add(imageBlob);
-		JQMContext.changePage(restMapView.get(restaurantId), Transition.SLIDE);
+		if(imageBlob.getImageType() == ImageType.LOGO){
+			storeService.setMainImage(imageBlob, new AsyncCallback<Restaurant>() {
+				
+				@Override
+				public void onSuccess(Restaurant restaurant) {
+					
+					restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+					JQMContext.changePage(restMapView.get(restaurant.getId()), Transition.SLIDE);
+					
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					PagesController.hideWaitPanel();
+					Window.alert(Customization.CONNECTION_ERROR);
+				}
+			});
+		}
 		
+		JQMContext.changePage(restMapView.get(Long.parseLong(imageBlob.getRestaurantId())), Transition.SLIDE);
 	}
 	
 	public void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){

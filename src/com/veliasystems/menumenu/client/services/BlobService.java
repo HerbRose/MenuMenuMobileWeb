@@ -2,7 +2,6 @@ package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -42,4 +41,6 @@ public interface BlobService extends RemoteService {
 		List<ImageBlob> getEmptyList();
         
 		String setEmptyBoard(ImageBlob imageBlob);
+		
+		List<ImageBlob> getLast24hImages();
 }

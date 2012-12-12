@@ -7,6 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -32,6 +33,7 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
+import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -81,15 +83,15 @@ public class RestaurantImageView extends MyPage {
 
 	private FlowPanel container;
 
-	private FlowPanel infoContainer;
-	private FlowPanel logoImageWrapper;
-	private FlowPanel infoTextWrapper;
-	private FlowPanel swipeContainer;
-	private FlowPanel publishWrapper;
-	private FlowPanel publishImage;
-	private FlowPanel publishLabelWrapper;
-	private FlowPanel editPanel;
-	private FlowPanel adminPanelWrapper;
+	private FlowPanel infoContainer = new FlowPanel();;
+	private FlowPanel logoImageWrapper = new FlowPanel();;
+	private FlowPanel infoTextWrapper = new FlowPanel();;
+	private FlowPanel swipeContainer = new FlowPanel();;
+	private FlowPanel publishWrapper = new FlowPanel();;
+	private FlowPanel publishImage = new FlowPanel();;
+	private FlowPanel publishLabelWrapper = new FlowPanel();;
+	private FlowPanel editPanel = new FlowPanel();
+	private FlowPanel adminPanelWrapper = new FlowPanel();
 	private FlowPanel nameWrapper = new FlowPanel();
 	private FlowPanel addressWrapper = new FlowPanel();
 	private FlowPanel phoneWrapper = new FlowPanel();
@@ -275,7 +277,10 @@ public class RestaurantImageView extends MyPage {
 		if (loaded)
 			checkChanges();
 
-		PagesController.hideWaitPanel();
+		setValidVisibility();
+		
+		logoImage.setUrl(restaurant.getMainLogoImageString()==null?"":restaurant.getMainLogoImageString());
+		//PagesController.hideWaitPanel(); made on imageController
 
 	};
 
@@ -303,7 +308,7 @@ public class RestaurantImageView extends MyPage {
 							.getText());
 					PagesController.showWaitPanel();
 					RestaurantController.getInstance().saveRestaurant(
-							restaurant);
+							restaurant, false);
 					setProperButtons();
 					setValidVisibility();
 
@@ -530,9 +535,9 @@ public class RestaurantImageView extends MyPage {
 
 			fileLogoUpload.addStyleName("fileLogoUplaod");
 			fileLogoUpload.setName("image");
-			VerticalPanel mainPanel = new VerticalPanel();
-			mainPanel.add(fileLogoUpload);
-			formLogoUpload.add(mainPanel);
+			//VerticalPanel mainPanel = new VerticalPanel();
+			//mainPanel.add(fileLogoUpload);
+			formLogoUpload.add(fileLogoUpload);
 
 			formLogoUpload
 					.addSubmitCompleteHandler(new SubmitCompleteHandler() {
@@ -540,8 +545,7 @@ public class RestaurantImageView extends MyPage {
 						@Override
 						public void onSubmitComplete(SubmitCompleteEvent event) {
 							PagesController.showWaitPanel();
-							Window.alert(restaurant.getId() + " "+ 
-									ImageType.LOGO.name());
+							
 							restaurantController.cropImage(restaurant.getId(),
 									ImageType.LOGO);
 							formLogoUpload.reset();
@@ -549,7 +553,7 @@ public class RestaurantImageView extends MyPage {
 					});
 
 			if (osType.toLowerCase().indexOf("ipad") >= 0
-					|| osType.toLowerCase().indexOf("ipho") >= 0) { // ipad or
+					|| osType.toLowerCase().indexOf("iphone") >= 0) { // ipad or
 																	// iphone
 				setAppleUpload(osType.toLowerCase().indexOf("os 6") >= 0);
 
@@ -624,6 +628,7 @@ public class RestaurantImageView extends MyPage {
 	}
 
 	public void checkChanges() {
+		LoadedPageController.getInstance().clear(restaurant.getId());
 		for (SwipeView swipeView : swipeViews) {
 			swipeView.checkChanges();
 		}
@@ -647,6 +652,8 @@ public class RestaurantImageView extends MyPage {
 			// setCameraImg();
 			formLogoUpload.setStyleName("hidden", true);
 			fileLogoUpload.setStyleName("hidden", true);
+			formLogoUpload.getElement().getStyle().setPosition(Position.ABSOLUTE);
+			formLogoUpload.getElement().getStyle().setTop(10000, Unit.PX); // aby nie kliknąć na niego ;/
 			addBoard.addClickHandler(new ClickHandler() {
 
 				@Override

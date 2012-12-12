@@ -1,7 +1,5 @@
 package com.veliasystems.menumenu.client.ui;
 
-
-
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
@@ -9,7 +7,6 @@ import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Position;
@@ -18,7 +15,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -108,7 +104,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	
 	public CropImage(ImageBlob imageInsert, Long restaurantId) {
 		this.imageInsert = imageInsert;
-		this.restaurantId = restaurantId;
+		this.restaurantId = Long.parseLong(imageInsert.getRestaurantId());
 		newImage = new Image(imageInsert.getImageUrl());
 		blobHeight = imageInsert.getHeight();
 		blobWidth = imageInsert.getWidth();	
