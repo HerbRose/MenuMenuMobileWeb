@@ -90,6 +90,11 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel publishLabelWrapper;
 	private FlowPanel editPanel;
 	private FlowPanel adminPanelWrapper;
+	private FlowPanel nameWrapper = new FlowPanel();
+	private FlowPanel addressWrapper = new FlowPanel();
+	private FlowPanel phoneWrapper = new FlowPanel();
+	private FlowPanel wwwWrapper = new FlowPanel();
+	private FlowPanel bossWrapper = new FlowPanel();
 
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
@@ -323,6 +328,11 @@ public class RestaurantImageView extends MyPage {
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		infoContainer.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 		publishWrapper.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+		setValidDataStyle(null, nameWrapper);
+		setValidDataStyle(null, addressWrapper);
+		setValidDataStyle(null, phoneWrapper);
+		setValidDataStyle(null, wwwWrapper);
+		setValidDataStyle(null, bossWrapper);
 	}
 
 	private boolean validate() {
@@ -331,13 +341,13 @@ public class RestaurantImageView extends MyPage {
 		getContentPanel().add(warning);
 		if (!nameText.getText().isEmpty() && !adressText.getText().isEmpty()) {
 			if (restaurantExist()) {
-				setValidDataStyle(false, nameText);
-				setValidDataStyle(false, adressText);
+				setValidDataStyle(false, nameWrapper);
+				setValidDataStyle(false, addressWrapper);
 				warning.setText(Customization.RESTAURANT_EXIST_ERROR);
 				return false;
 			} else {
-				setValidDataStyle(true, nameText);
-				setValidDataStyle(true, adressText);
+				setValidDataStyle(true, nameWrapper);
+				setValidDataStyle(true, addressWrapper);
 			}
 		}
 
@@ -345,35 +355,35 @@ public class RestaurantImageView extends MyPage {
 
 		if (nameText.getText().isEmpty() && adressText.getText().isEmpty()) {
 			warning.setText(Customization.EMPTYBOTHDATA);
-			setValidDataStyle(false, nameText);
-			setValidDataStyle(false, adressText);
+			setValidDataStyle(false, nameWrapper);
+			setValidDataStyle(false, addressWrapper);
 			isCorrect = false;
 		} else {
 			if (nameText.getText().isEmpty()) {
 				warning.setText(Customization.EMPTYNAME);
-				setValidDataStyle(false, nameText);
+				setValidDataStyle(false, nameWrapper);
 				isCorrect = false;
 			} else {
-				setValidDataStyle(true, nameText);
+				setValidDataStyle(true, nameWrapper);
 			}
 			if (adressText.getText().isEmpty()) {
 				warning.setText(warning.getText() + " \n"
 						+ Customization.EMPTYADRESS);
-				setValidDataStyle(false, adressText);
+				setValidDataStyle(false, addressWrapper);
 				isCorrect = false;
 			} else {
-				setValidDataStyle(true, adressText);
+				setValidDataStyle(true, addressWrapper);
 			}
 		}
 		if (!phoneRestaurantTextBox.getText().isEmpty()) {
 			if (!Util.isValidPhoneNumber(phoneRestaurantTextBox.getText())) {
-				setValidDataStyle(false, phoneRestaurantTextBox);
+				setValidDataStyle(false, phoneWrapper);
 				isCorrect = false;
 			} else {
-				setValidDataStyle(true, phoneRestaurantTextBox);
+				setValidDataStyle(true, phoneWrapper);
 			}
 		} else {
-			setValidDataStyle(null, phoneRestaurantTextBox);
+			setValidDataStyle(null, phoneWrapper);
 		}
 		return isCorrect;
 	}
@@ -437,105 +447,63 @@ public class RestaurantImageView extends MyPage {
 			container.addStyleName("containerPanelAddRestaurant");
 
 			nameLabel = new Label();
-			nameLabel.addStyleName("addRestaurantLabel");
+			nameLabel.addStyleName("addRestaurantLabel myLabel arialBold ");
 			nameLabel.setText(Customization.RESTAURANTNAME + ":");
 
 			nameText.setTitle(Customization.RESTAURANTNAME);
-			nameText.addStyleName("addRestaurantInput");
+			nameText.addStyleName("myTextBox nameBox arialBold");//addRestaurantInput
+			
 
 			adressLabel = new Label();
 			adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-			adressLabel.addStyleName("addRestaurantLabel");
+			adressLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 
 			adressText.setTitle(Customization.RESTAURANTADRESS);
-			adressText.addStyleName("addRestaurantInput");
+			adressText.addStyleName("myTextBox nameBox arialBold");
 
 			phoneRestaurant = new Label();
 			phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
-			phoneRestaurant.addStyleName("addRestaurantLabel");
+			phoneRestaurant.addStyleName("addRestaurantLabel myLabel arialBold");
 
 			phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
-			phoneRestaurantTextBox.addStyleName("addRestaurantInput");
+			phoneRestaurantTextBox.addStyleName("myTextBox nameBox arialBold");
 
 			websiteLabel = new Label(Customization.WEBSITE_LABEL);
-			websiteLabel.addStyleName("addRestaurantLabel");
+			websiteLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 
-			websiteTextBox.addStyleName("addRestaurantInput");
+			websiteTextBox.addStyleName("myTextBox nameBox arialBold");
 
 			bossLabel = new Label(Customization.BOSS_LABEL);
-			bossLabel.addStyleName("addRestaurantLabel");
+			bossLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 
-			bossTextBox.addStyleName("addRestaurantInput");
+			bossTextBox.addStyleName("myTextBox nameBox arialBold");
 
-			FlowPanel nameWrapper = new FlowPanel();
-			nameWrapper.addStyleName("addWrapper");
+			
+			nameWrapper.addStyleName("namePanel addWrapper");
+			
+			addressWrapper.addStyleName("namePanel addWrapper");
+			
+			phoneWrapper.addStyleName("namePanel addWrapper");
+			
+			wwwWrapper.addStyleName("namePanel addWrapper");
+			
+			bossWrapper.addStyleName("namePanel addWrapper");
 
-			FlowPanel addressWrapper = new FlowPanel();
-			addressWrapper.addStyleName("addWrapper");
+			
+			nameWrapper.add(nameLabel);
+			nameWrapper.add(nameText);
 
-			FlowPanel phoneWrapper = new FlowPanel();
-			phoneWrapper.addStyleName("addWrapper");
+			addressWrapper.add(adressLabel);
+			addressWrapper.add(adressText);
+	
+			phoneWrapper.add(phoneRestaurant);
+			phoneWrapper.add(phoneRestaurantTextBox);
 
-			FlowPanel wwwWrapper = new FlowPanel();
-			wwwWrapper.addStyleName("addWrapper");
+			wwwWrapper.add(websiteLabel);
+			wwwWrapper.add(websiteTextBox);
 
-			FlowPanel bossWrapper = new FlowPanel();
-			bossWrapper.addStyleName("addWrapper");
-
-			FlowPanel nameDiv = new FlowPanel();
-			nameDiv.addStyleName("addRestaurantLabelWrapper");
-
-			FlowPanel nameInput = new FlowPanel();
-			nameInput.addStyleName("addRestaurantInputWrapper");
-
-			FlowPanel addressDiv = new FlowPanel();
-			addressDiv.addStyleName("addRestaurantLabelWrapper");
-
-			FlowPanel addressInput = new FlowPanel();
-			addressInput.addStyleName("addRestaurantInputWrapper");
-
-			FlowPanel phoneDiv = new FlowPanel();
-			phoneDiv.addStyleName("addRestaurantLabelWrapper");
-
-			FlowPanel phoneInput = new FlowPanel();
-			phoneInput.addStyleName("addRestaurantInputWrapper");
-
-			FlowPanel wwwDiv = new FlowPanel();
-			wwwDiv.addStyleName("addRestaurantLabelWrapper");
-
-			FlowPanel wwwInput = new FlowPanel();
-			wwwInput.addStyleName("addRestaurantInputWrapper");
-
-			FlowPanel bossDiv = new FlowPanel();
-			bossDiv.addStyleName("addRestaurantLabelWrapper");
-
-			FlowPanel bossInput = new FlowPanel();
-			bossInput.addStyleName("addRestaurantInputWrapper");
-
-			nameDiv.add(nameLabel);
-			nameInput.add(nameText);
-			nameWrapper.add(nameDiv);
-			nameWrapper.add(nameInput);
-
-			addressDiv.add(adressLabel);
-			addressInput.add(adressText);
-			addressWrapper.add(addressDiv);
-			addressWrapper.add(addressInput);
-
-			phoneDiv.add(phoneRestaurant);
-			phoneInput.add(phoneRestaurantTextBox);
-			phoneWrapper.add(phoneDiv);
-			phoneWrapper.add(phoneInput);
-
-			wwwDiv.add(websiteLabel);
-			wwwInput.add(websiteTextBox);
-			wwwWrapper.add(wwwDiv);
-			wwwWrapper.add(wwwInput);
-
-			bossDiv.add(bossLabel);
-			bossInput.add(bossTextBox);
-			bossWrapper.add(bossDiv);
-			bossWrapper.add(bossInput);
+			bossWrapper.add(bossLabel);
+			bossWrapper.add(bossTextBox);
 
 			container.add(nameWrapper);
 			container.add(addressWrapper);
@@ -635,9 +603,15 @@ public class RestaurantImageView extends MyPage {
 			editPanel.add(addBoard);
 		}
 
+		nameText.setText(restaurant.getName());
+		adressText.setText(restaurant.getAddress());
+		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
+		websiteTextBox.setText("");
+		bossTextBox.setText("");
+		
 		adminPanelWrapper.getElement().getStyle()
-				.setDisplay(Display.INLINE_BLOCK);
-		editPanel.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+				.setDisplay(Display.BLOCK);
+		editPanel.getElement().getStyle().setDisplay(Display.BLOCK);
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
 
@@ -648,7 +622,7 @@ public class RestaurantImageView extends MyPage {
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
 
-		// TO DO
+		// TODO
 		// uzupelnianie o nowe pola: www, imie szefa
 	}
 
@@ -752,8 +726,7 @@ public class RestaurantImageView extends MyPage {
 	}-*/;
 
 	private static native void clickOnInputFile(Element elem) /*-{
-																elem.click();
-
-																}-*/;
+		elem.click();
+	}-*/;
 
 }

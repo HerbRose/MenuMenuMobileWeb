@@ -145,11 +145,11 @@ public class CityListScreen extends MyPage implements IObserver{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					Document.get().getElementById("load").setClassName(R.LOADING);
+					PagesController.showWaitPanel();
 					JQMContext.changePage(cityInfoScreen);
 				}
 			});
-			cityItem.setStyleName("itemList", true);
+			cityItem.setStyleName("itemList noFocus", true);
 			getContentPanel().add(cityItem);
 		}
 	}
