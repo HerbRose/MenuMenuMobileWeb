@@ -101,8 +101,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public ImageBlob getLastUploadedImage(Long restaurantId, ImageType imageType) {
 
-		List<ImageBlob> all = dao.ofy().query(ImageBlob.class)
-				.filter("restId", restaurantId + "")
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if(query == null) return null;
+		
+		List<ImageBlob> all = query.filter("restId", restaurantId + "")
 				.filter("imageType", imageType).list();
 
 		if (!all.isEmpty()) {
@@ -226,7 +229,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	// }
 
 	
-	private void cropImage(ImageBlob imageBlob, double leftX, double topY,
+	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY, String newName) {
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
@@ -236,7 +239,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		if(oldImage == null){
 			log.severe("Picture not found in database:\n blobKey: " + imageBlob.getBlobKey());
-			return;
+			return null;
 		}
 		
 		if(leftX < 0) leftX = 0;
@@ -262,7 +265,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			log.log(Level.SEVERE, "\noldImage: "
 					+oldImage 
 					+"\n", e);
-			return;
+			return null;
 		}
 		Transform scaleTransform = null;
 		switch (imageBlob.getImageType()) {
@@ -286,10 +289,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
 		
 		BlobKey newBlobKey = null;
+		ImageBlob newImageBlob = null;
 		try {
 			newBlobKey = writeToBlobstore("image/jpeg", newName,
 					scaleImage.getImageData());
-			ImageBlob newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
+			newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
 					newBlobKey.getKeyString(), imageBlob.getDateCreated(),
 					imageBlob.getImageType());
 			newImageBlob.setWidth(scaleImage.getWidth());
@@ -313,12 +317,13 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 //			e.printStackTrace();
 //		}
 
+		return newImageBlob;
 	}
 
 	@Override
-	public void cropImage(ImageBlob imageBlob, double leftX, double topY,
+	public ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY){
-		cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg");
+		return cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg");
 	}
 	
 	@Override

@@ -529,8 +529,10 @@ public class RestaurantImageView extends MyPage {
 			formLogoUpload.addStyleName("formLogoUpload");
 
 			fileLogoUpload.addStyleName("fileLogoUplaod");
-
-			formLogoUpload.add(fileLogoUpload);
+			fileLogoUpload.setName("image");
+			VerticalPanel mainPanel = new VerticalPanel();
+			mainPanel.add(fileLogoUpload);
+			formLogoUpload.add(mainPanel);
 
 			formLogoUpload
 					.addSubmitCompleteHandler(new SubmitCompleteHandler() {
@@ -639,12 +641,10 @@ public class RestaurantImageView extends MyPage {
 
 	private void setAppleUpload(boolean isOS6) {
 
-		if (isOS6) {
-			//setOtherUpload();
-		} else {
+		if (!isOS6) {
 			// setCameraImg();
-			formLogoUpload.setVisible(false);
-			
+			formLogoUpload.setStyleName("hidden", true);
+			fileLogoUpload.setStyleName("hidden", true);
 			addBoard.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -662,7 +662,7 @@ public class RestaurantImageView extends MyPage {
 
 									Cookies.setCookie(R.IMAGE_TYPE,
 											ImageType.LOGO.name());
-
+									Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");
 									clickOnInputFile(fileLogoUpload
 											.getElement());
 
