@@ -77,17 +77,19 @@ public class SwipeView extends FlowPanel {
 		fillData(imageType);
 
 		wrapper.addStyleName("wrapper");
-
+		
 		setUpload();
 		scrollerContainer.addStyleName("scroller");
-
+		
 		fillImages();
 		wrapper.setWidget(scrollerContainer);
 		add(wrapper);
-		setMyTitle(title);
+		
+		//setMyTitle(title);
 
 		addStyleName("swipeView");
 	}
+
 
 	private void fillData(ImageType imageType) {
 		switch (imageType) {
@@ -137,8 +139,10 @@ public class SwipeView extends FlowPanel {
 					parent, imageType);
 			scrollerContainer.insert(emptyBoard, 0);
 		}
-
+		wrapper.scrollToRight();
+		
 	}
+	
 
 	private void addImage(ImageBlob imageBlob) {
 		MyImage newImage;
@@ -150,6 +154,7 @@ public class SwipeView extends FlowPanel {
 
 			@Override
 			public void onLoad(LoadEvent event) {
+				wrapper.scrollToRight();
 				loadedPageController.removeImage(getRestId());
 			}
 		});
@@ -157,7 +162,6 @@ public class SwipeView extends FlowPanel {
 
 			@Override
 			public void onError(ErrorEvent event) {
-				// TODO Auto-generated method stub
 				loadedPageController.removeImage(getRestId());
 			}
 		});
@@ -362,7 +366,7 @@ public class SwipeView extends FlowPanel {
 	private native String getUserAgent()/*-{
 		return navigator.userAgent;
 	}-*/;
-
+	
 }
 
 class MyUploadForm extends FormPanel {
@@ -387,4 +391,6 @@ class MyUploadForm extends FormPanel {
 	public FileUpload getFileUpload() {
 		return fileUpload;
 	}
+	
+	
 }
