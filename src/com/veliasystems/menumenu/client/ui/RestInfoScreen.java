@@ -190,7 +190,7 @@ public class RestInfoScreen extends JQMPage implements HasClickHandlers,
 			restaurant.setPhoneUser(phoneUserTextBox.getText());
 			restaurant.setNameUser(nameUserTextBox.getText());
 			if (validate()) {
-				RestaurantController.getInstance().saveRestaurant(restaurant);
+			//	RestaurantController.getInstance().saveRestaurant(restaurant);
 			}
 		}
 

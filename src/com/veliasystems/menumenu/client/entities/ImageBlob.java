@@ -18,7 +18,7 @@ public class ImageBlob implements Serializable {
 	
 	private String blobKey;
     private Date dateCreated;
-    
+    private long timeInMiliSec = 0;
     private ImageType imageType;
     
     private int width;
@@ -73,6 +73,7 @@ public class ImageBlob implements Serializable {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+		setTimeInMiliSec(dateCreated.getTime());
 	}
     
     public void setImageType(ImageType imageType) {
@@ -97,6 +98,13 @@ public class ImageBlob implements Serializable {
     
     public int getWidth() {
 		return width;
+	}
+    
+    public long getTimeInMiliSec() {
+		return timeInMiliSec;
+	}
+    private void setTimeInMiliSec(long timeInMiliSec) {
+		this.timeInMiliSec = timeInMiliSec;
 	}
     
     @Override

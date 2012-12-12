@@ -42,6 +42,7 @@ import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyProfilePan
 import com.veliasystems.menumenu.client.ui.administration.EditDataPanel;
 import com.veliasystems.menumenu.client.ui.administration.EmailPanel;
 import com.veliasystems.menumenu.client.ui.administration.IManager;
+import com.veliasystems.menumenu.client.ui.administration.LastUploadedImages;
 import com.veliasystems.menumenu.client.ui.administration.RemoveUsersPanel;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 
@@ -86,6 +87,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private IManager editDataPanel;
 	private IManager removeUsersPanel;
 	private IManager cityManagerPanel;
+	private IManager lastUploadedImages;
 
 	private IManager currentlyDisplayedPanel = null;
 	
@@ -300,6 +302,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		add(setEditDataPanel());
 		add(setRemoveUsersPanel());
 		add(setCityManager());
+		add(setLastImages());
 	}
 
 	/**
@@ -413,6 +416,13 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) cityManagerPanel;
 	}
 
+	
+	private FlowPanel setLastImages(){
+		lastUploadedImages = new LastUploadedImages();
+		panelList.put(panelCount++, lastUploadedImages);
+		tabBar.addTab(lastUploadedImages.getName());
+		return (FlowPanel) lastUploadedImages;
+	}
 	
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) { // <--- IS IT NECESSARY ???
