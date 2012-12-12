@@ -322,7 +322,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
 //				}
 				PagesController.showWaitPanel();
-				History.back();
+				JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				
 			
 			}
@@ -350,7 +350,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					
 					Document.get().getElementById("load").setClassName(R.LOADING);
 					restaurantController.saveRestaurant(restaurant);
-					History.back();
+					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				}	
 			}
 		});
