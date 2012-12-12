@@ -106,7 +106,7 @@ public class AddRestaurantScreen extends JQMPage implements HasClickHandlers, IO
 				restaurant.setPhoneUser(phoneUserTextBox.getText());
 				restaurant.setMailUser(mailUserTextBox.getText());
 				
-				RestaurantController.getInstance().saveRestaurant(restaurant);
+				//RestaurantController.getInstance().saveRestaurant(restaurant);
 				Document.get().getElementById("load").setClassName(R.LOADING);
 			}
 				

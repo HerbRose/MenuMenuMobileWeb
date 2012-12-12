@@ -303,7 +303,7 @@ public class RestaurantImageView extends MyPage {
 							.getText());
 					PagesController.showWaitPanel();
 					RestaurantController.getInstance().saveRestaurant(
-							restaurant);
+							restaurant, false);
 					setProperButtons();
 					setValidVisibility();
 

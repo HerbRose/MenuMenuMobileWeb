@@ -349,8 +349,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					restaurant.setMailUser(mailUserTextBox.getText());
 					
 					Document.get().getElementById("load").setClassName(R.LOADING);
-					restaurantController.saveRestaurant(restaurant);
-					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
+					restaurantController.saveRestaurant(restaurant, true);
+//					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				}	
 			}
 		});
