@@ -9,6 +9,7 @@ import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Position;
@@ -541,7 +542,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			
 			
 			PagesController.showWaitPanel();
-			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
+			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<ImageBlob>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -549,8 +550,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				}
 
 				@Override
-				public void onSuccess(Void result) {
-					restaurantController.afterCrop(restaurantId, imageInsert.getImageType() );				
+				public void onSuccess(ImageBlob result) {
+					restaurantController.afterCrop(restaurantId, imageInsert.getImageType(), result);				
 				}
 				
 			});	

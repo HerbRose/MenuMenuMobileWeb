@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -36,12 +37,14 @@ public interface BlobServiceAsync {
 	void getAllImages(String restaurantId,
 			AsyncCallback<List<ImageBlob>> callback);
 
-	void getLastUploadedImage(String restaurantId,AsyncCallback<ImageBlob> callback);
-	
-	void getLastUploadedImage(Long restaurantId, ImageType imageType, AsyncCallback<ImageBlob> callback);
+	void getLastUploadedImage(String restaurantId,
+			AsyncCallback<ImageBlob> callback);
 
-	void cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX,
-			double bottomY, AsyncCallback<Void> callback);
+	void getLastUploadedImage(Long restaurantId, ImageType imageType,
+			AsyncCallback<ImageBlob> callback);
+
+	void cropImage(ImageBlob imageBlob, double leftX, double topY,
+			double rightX, double bottomY, AsyncCallback<ImageBlob> callback);
 
 	void getImagesByType(Long restaurantId, ImageType imageType,
 			AsyncCallback<List<ImageBlob>> callback);
@@ -50,6 +53,4 @@ public interface BlobServiceAsync {
 
 	void setEmptyBoard(ImageBlob imageBlob, AsyncCallback<String> callback);
 
-
-	
 }

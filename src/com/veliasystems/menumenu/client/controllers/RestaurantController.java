@@ -310,54 +310,10 @@ public class RestaurantController {
 	 * @param imageType
 	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
 	 */
-	public void afterCrop(Long restaurantId, ImageType imageType) {
+	public void afterCrop(Long restaurantId, ImageType imageType, ImageBlob imageBlob) {
 		
-		final long myRestaurantId = restaurantId;
-		final ImageType myImageType = imageType;
-		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
-		
-		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
-			@Override
-			public void onSuccess(List<ImageBlob> result) {
-				
-				if(result == null || result.isEmpty()){
-					Window.alert("Please refresh page");
-					return;
-				}
-				
-				Long restaurantId = Long.parseLong(result.get(0).getRestaurantId());
-				
-				List<ImageBlob> imagesBlobs = getImagesList(result.get(0).getImageType(), restaurantId);
-				imagesBlobs.clear();
-				for (ImageBlob imageBlob : result) {
-					imagesBlobs.add(imageBlob);
-//					boolean isIn = false;
-//					if(oldImages != null){
-//						for (ImageBlob oldImageBlob : oldImages) {
-//							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
-//								isIn = true;
-//							}
-//						}
-//					}
-//					if (!isIn) {
-//						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
-//						if(imagList == null){
-//							imagList = new ArrayList<ImageBlob>();
-//						}
-//						imagList.add(imageBlob);
-//					}
-					
-					
-				}
-				JQMContext.changePage(restMapView.get(myRestaurantId));
-				PagesController.hideWaitPanel();
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-		});
-		
-		
+		getImagesList(imageType, restaurantId).add(imageBlob);
+		JQMContext.changePage(restMapView.get(restaurantId), Transition.SLIDE);
 		
 	}
 	

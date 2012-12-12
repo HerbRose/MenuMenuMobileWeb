@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -32,7 +33,7 @@ public interface BlobService extends RemoteService {
          
         boolean deleteBlob(ImageBlob imageBlob);
         
-        void cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY);
+        ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY);
 
 		List<ImageBlob> getImagesByType(Long restaurantId, ImageType imageType);
 
