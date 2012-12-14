@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -162,6 +163,27 @@ public class CityController {
 		
 		
 	}
+	
+	
+	public long getCityId(String cityName){
+		
+		for (Long id : cities.keySet()) {
+			if(cities.get(id).getCity().equals(cityName)){
+				return id;
+			}
+		}
+		return -1;
+	}
+	
+	
+//	private <T, E> T getKeyByValue(Map<T, E> map, String value) {
+//	    for (Entry<T, E> entry : map.entrySet()) {
+//	        if (value.equals(entry.getValue())) {
+//	            return entry.getKey();
+//	        }
+//	    }
+//	    return null;
+//	}
 	
 	/**
 	 * save edited city

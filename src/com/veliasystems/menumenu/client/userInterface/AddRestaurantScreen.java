@@ -1,12 +1,12 @@
 package com.veliasystems.menumenu.client.userInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -24,6 +24,7 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
@@ -342,11 +343,16 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					int index = cityListBox.getSelectedIndex();			
 //					restaurant.setCity(cityListBox.getItemText(index));	
 					restaurant.setCity(city);
+					long cityId = cityController.getCityId(city);
+					restaurant.setCityId(cityId);
+					//restaurant.setCityId(cityController.)
 //					restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox.getText());
 //					restaurant.setNameUser(nameUserTextBox.getText());
 //					restaurant.setPhoneUser(phoneUserTextBox.getText());
 //					restaurant.setMailUser(mailUserTextBox.getText());
+					
+					
 					
 					Document.get().getElementById("load").setClassName(R.LOADING);
 					restaurantController.saveRestaurant(restaurant, true);

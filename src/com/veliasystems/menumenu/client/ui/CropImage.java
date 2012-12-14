@@ -17,6 +17,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -549,7 +550,6 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 
 				@Override
 				public void onSuccess(Map<String, ImageBlob> result) {
-					
 					restaurantController.afterCrop(result.get("new"), result.get("old"));				
 				}
 				

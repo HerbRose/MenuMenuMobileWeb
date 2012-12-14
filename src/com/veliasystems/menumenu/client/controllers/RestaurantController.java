@@ -171,23 +171,24 @@ public class RestaurantController {
 		return restaurants.keySet();
 	}
 	
-	public void saveRestaurant(Restaurant restaurant, final boolean isBack){
-		final Restaurant restaurantToSave = restaurant;
-	
-		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Restaurant>() {
+	public void saveRestaurant(Restaurant restaurant, final boolean isBack){	
+		storeService.saveRestaurant(restaurant, new AsyncCallback<Restaurant>() {
 			@Override
 			public void onSuccess(Restaurant result) {
-				
-//				restaurantToSave.setLogoImages(new ArrayList<ImageBlob>());
-//				restaurantToSave.setProfileImages(new ArrayList<ImageBlob>());
-//				restaurantToSave.setMenuImages(new ArrayList<ImageBlob>());
-				
+				if(result.getLogoImages() == null){
+					result.setLogoImages(new ArrayList<ImageBlob>());
+				}
+				if(result.getMenuImages() == null){
+					result.setMenuImages(new ArrayList<ImageBlob>());
+				}
+				if(result.getProfileImages() == null){
+					result.setProfileImages(new ArrayList<ImageBlob>());
+				}	
 				restaurants.put(result.getId(), result); //add/change restaurant in our list
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
 				if(isBack)
 					JQMContext.changePage(CityController.cityMapView.get(result.getCityId()) , Transition.SLIDE);
-//				History.back();
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
@@ -316,6 +317,10 @@ public class RestaurantController {
 		return oldImages;
 	}
 	
+	private void setNewImageList(ImageBlob newImageBlob){
+		
+	}
+	
 	/**
 	 * 
 	 * @param restaurantId
@@ -330,6 +335,10 @@ public class RestaurantController {
 		}
 		
 		List<ImageBlob> imageBlobs = getImagesList(newImageBlob.getImageType(), Long.parseLong(newImageBlob.getRestaurantId()));
+		if(imageBlobs == null){
+			imageBlobs = new ArrayList<ImageBlob>();
+			
+		}
 		imageBlobs.add(newImageBlob);
 
 		if(newImageBlob.getImageType() == ImageType.LOGO){ //jezeli logo to ustawiamy jako glowne
