@@ -176,7 +176,8 @@ public class RestaurantController {
 		return restaurants.keySet();
 	}
 	
-	public void saveRestaurant(Restaurant restaurant, final boolean isBack){	
+	public void saveRestaurant(Restaurant restaurant, final boolean isBack){
+		PagesController.showWaitPanel();
 		storeService.saveRestaurant(restaurant, new AsyncCallback<Restaurant>() {
 			@Override
 			public void onSuccess(Restaurant result) {

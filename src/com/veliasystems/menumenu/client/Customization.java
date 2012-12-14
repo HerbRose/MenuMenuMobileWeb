@@ -151,6 +151,8 @@ public class Customization {
 
 
 	public static final String PROFILE_PUBLISHED = translated.profilePublished();
+	
+	public static final String PROFILE_UNPUBLISHED = translated.profileUnPublished();
 };
 	
 	
