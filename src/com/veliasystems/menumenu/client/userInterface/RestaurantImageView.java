@@ -88,7 +88,7 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel infoTextWrapper = new FlowPanel();;
 	private FlowPanel swipeContainer = new FlowPanel();;
 	private FlowPanel publishWrapper = new FlowPanel();;
-	private FlowPanel publishImage = new FlowPanel();;
+	private FlowPanel publishImageWrapper = new FlowPanel();;
 	private FlowPanel publishLabelWrapper = new FlowPanel();;
 	private FlowPanel editPanel = new FlowPanel();
 	private FlowPanel adminPanelWrapper = new FlowPanel();
@@ -97,9 +97,13 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel phoneWrapper = new FlowPanel();
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
+	
+	
+	private Image publishImage;
 
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
+	private FocusPanel publish;
 
 	private FileUpload fileLogoUpload = new FileUpload();
 	private FormPanel formLogoUpload = new FormPanel();
@@ -222,22 +226,50 @@ public class RestaurantImageView extends MyPage {
 			publishWrapper = new FlowPanel();
 			publishWrapper.addStyleName("publishWrapper");
 
-			publishImage = new FlowPanel();
-			publishImage.addStyleName("publishImage");
+			publishImageWrapper = new FlowPanel();
+			publishImageWrapper.addStyleName("publishImage");
 
 			publishLabelWrapper = new FlowPanel();
 			publishLabelWrapper.addStyleName("publishLabelWrapper");
-
-			publishText = new Label(Customization.PROFILE_PUBLISHED);
-
-			Image img = new Image("img/layout/plus.png");
-			publishImage.add(img);
+			
+			publishText = new Label();
+			publishImage = new Image();
+			
+			publish = new FocusPanel();
+			publish.addStyleName("noFocus");
+			
+			
+			changeIcons();
+			
+			publishImage.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
+					restaurantController.saveRestaurant(restaurant, false);
+					changeIcons();
+				}
+			});
+			
+			publish.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
+					restaurantController.saveRestaurant(restaurant, false);
+					changeIcons();
+				}
+			});
+			
+			
+			
+			publishImageWrapper.add(publishImage);
 
 			publishLabelWrapper.add(publishText);
-
-			publishWrapper.add(publishImage);
-			publishWrapper.add(publishLabelWrapper);
-
+			publish.add(publishLabelWrapper);
+			publishWrapper.add(publish);
+			publishWrapper.add(publishImageWrapper);
+			
 			getContentPanel().add(publishWrapper);
 
 			loaded = true;
@@ -283,6 +315,18 @@ public class RestaurantImageView extends MyPage {
 		//PagesController.hideWaitPanel(); made on imageController
 
 	};
+	
+	private void changeIcons(){
+		if(restaurant.isVisibleForApp()){
+			publishText.setText(Customization.PROFILE_PUBLISHED);
+			publishImage.removeStyleName("rotatedPlus");
+			publishImage.setUrl("img/layout/confirme.png");
+		}else{
+			publishText.setText(Customization.PROFILE_UNPUBLISHED);
+			publishImage.setUrl("img/layout/plus.png");
+			publishImage.setStyleName("rotatedPlus", true);
+		}
+	}
 
 	private void changeButtons() {
 		cancelButton.setStyleName("saveButton leftButton", true);
@@ -293,6 +337,7 @@ public class RestaurantImageView extends MyPage {
 				getContentPanel().remove(warning);
 				setProperButtons();
 				setValidVisibility();
+				showCamera();
 			}
 		});
 
@@ -311,7 +356,7 @@ public class RestaurantImageView extends MyPage {
 							restaurant, false);
 					setProperButtons();
 					setValidVisibility();
-
+					showCamera();
 					nameLabelInfo.setText(restaurant.getName());
 					addressLabelInfo.setText(restaurant.getAddress());
 
@@ -604,6 +649,9 @@ public class RestaurantImageView extends MyPage {
 			editPanel.add(addBoard);
 		}
 
+		hideCamera();
+		
+		
 		nameText.setText(restaurant.getName());
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
@@ -616,6 +664,16 @@ public class RestaurantImageView extends MyPage {
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
 
+	}
+	
+	private void hideCamera(){
+		Document.get().getElementById(ImageType.PROFILE.name()).addClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()).addClassName("hidden");
+	}
+	
+	private void showCamera(){
+		Document.get().getElementById(ImageType.PROFILE.name()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()).removeClassName("hidden");
 	}
 
 	private void setData() {
@@ -662,15 +720,13 @@ public class RestaurantImageView extends MyPage {
 							ImageType.LOGO, new AsyncCallback<String>() {
 								@Override
 								public void onSuccess(String result) {
-									String callbackURL = R.HOST_URL + "picupCallback.html?"+R.IMAGE_TYPE+"=" +ImageType.LOGO.name() +"&"+R.LAST_PAGE+"="+restaurant.getId() ;
 									
+									String callbackURL = R.HOST_URL + "picupCallback.html" ;
+									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name() );
+									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
 
-//									Cookies.setCookie(R.IMAGE_TYPE,
-//											ImageType.LOGO.name());
-//									Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");
-									clickOnInputFile(fileLogoUpload
-											.getElement());
+									clickOnInputFile(fileLogoUpload.getElement());
 
 								}
 
