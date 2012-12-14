@@ -220,6 +220,8 @@ body{
 	border-bottom-left-radius: 14px !important;
 		-moz-border-bottom-left-radius: 14px !important;
 		-webkit-border-bottom-left-radius: 14px !important;
+		
+	text-align: left !important;
 	
 }
 .myTextBox{
@@ -646,6 +648,13 @@ body{
 .fileLogoUplaod{
 	width: 100%;
 	height: 100%;
+}
+
+.rotatedPlus{
+	-moz-transform:rotate(45deg);
+	-webkit-transform:rotate(45deg);
+	-o-transform:rotate(45deg);
+	-ms-transform:rotate(45deg);
 }
 /* KONIEC -  Restaurant Image View*/
 

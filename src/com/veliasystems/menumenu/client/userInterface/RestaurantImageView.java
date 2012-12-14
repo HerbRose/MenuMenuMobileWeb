@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -664,6 +665,16 @@ public class RestaurantImageView extends MyPage {
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
 
+	}
+	
+	private void hideCamera(){
+		Document.get().getElementById(ImageType.PROFILE.name()).addClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()).addClassName("hidden");
+	}
+	
+	private void showCamera(){
+		Document.get().getElementById(ImageType.PROFILE.name()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()).removeClassName("hidden");
 	}
 	
 	private void hideCamera(){

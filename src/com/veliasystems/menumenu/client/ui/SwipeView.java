@@ -200,7 +200,7 @@ public class SwipeView extends FlowPanel {
 	private void setCameraImg() {
 		cameraDiv.add(cameraImg);
 		cameraDiv.addStyleName("cameraDiv");
-
+		cameraDiv.getElement().setId(imageType.name());
 		cameraContainerDiv.add(cameraDiv);
 	}
 
