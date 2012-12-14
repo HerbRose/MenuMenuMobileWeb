@@ -98,10 +98,11 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel phoneWrapper = new FlowPanel();
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
-	
+	private FlowPanel addBoardWrapper = new FlowPanel();
 	
 	private Image publishImage;
-
+	private Image logoEditImage = new Image();
+	
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
 	private FocusPanel publish;
@@ -563,14 +564,14 @@ public class RestaurantImageView extends MyPage {
 			container.add(bossWrapper);
 
 			FlowPanel addBoardWrap = new FlowPanel();
+			addBoardWrap.addStyleName("addBoardWrap");
 			
-			
-			addBoard = new FocusPanel();	
+			addBoard = new FocusPanel();
 			addBoard.addStyleName("addBoardWrapper noFocus");
 			
 			addBoardText = new Label(Customization.ADD_BOARD);
 			addBoardText.addStyleName("addBoardLabel");
-			
+							
 			
 			// setting logo upload
 
@@ -643,7 +644,26 @@ public class RestaurantImageView extends MyPage {
 			addBoardWrap.add(addBoardText);
 			addBoardWrap.add(formLogoUpload);
 			addBoard.add(addBoardWrap);
-		
+			
+			
+			if(restaurant.getMainLogoImageString() != null){
+				addBoard.setHeight("50px"); //takie samo co w css dla logo image
+				addBoard.setWidth("220px");
+				addBoardWrap.remove(addBoardText);
+				
+				logoEditImage.addStyleName("logoEditImage");
+				FlowPanel edit = new FlowPanel();
+				
+				edit.addStyleName("editImagePanel");
+				Label editLabel = new Label(Customization.EDIT.toUpperCase());
+				editLabel.addStyleName("editLabelImage");
+				
+				edit.add(editLabel);
+				
+				logoEditImage.setUrl(restaurant.getMainLogoImageString());
+				addBoardWrap.add(logoEditImage);
+				addBoardWrap.add(edit);
+			}
 
 			setData();
 			editPanel.add(container);
@@ -651,6 +671,10 @@ public class RestaurantImageView extends MyPage {
 		}
 
 		hideCamera();
+		
+		if(restaurant.getMainLogoImageString() != null){
+			logoEditImage.setUrl(restaurant.getMainLogoImageString());
+		}
 		
 		
 		nameText.setText(restaurant.getName());
