@@ -1,6 +1,8 @@
 package com.veliasystems.menumenu.client;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -10,7 +12,9 @@ import com.google.gwt.user.client.ui.Focusable;
 
 public class Util
 {
-	
+
+    private static String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    
 	public static long getRandom() {
 	   return (long) (Math.random() * 999999999);
 	}
@@ -143,5 +147,15 @@ public class Util
 			return s;
 		} 
     }
+    
+    /**
+     * 1-Jan, 2-Feb, ....
+     * @param monthNo -number of month
+     * @return if <i>monthNo</i> [1,12] return month name, else return <i>Jan</i>
+     */
+    public static String getMonthShortName( int monthNo) {
+    	if(monthNo < 1 || monthNo >12) return month[0];
+		return month[monthNo-1];
+	}
     
 }

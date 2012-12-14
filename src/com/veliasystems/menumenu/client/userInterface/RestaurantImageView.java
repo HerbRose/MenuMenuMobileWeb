@@ -676,8 +676,6 @@ public class RestaurantImageView extends MyPage {
 			logoEditImage.setUrl(restaurant.getMainLogoImageString());
 		}
 		
-		
-	
 		nameText.setText(restaurant.getName());
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());

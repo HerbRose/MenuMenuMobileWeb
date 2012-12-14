@@ -35,11 +35,6 @@ public class R {
     public static final String POLISH_CODE = "pl";
     public static final String LANGUAGE = "gwtLocale";
     public static final String LOGIN = "Login";
+    
 
-	
-
-	
-    
-    
-    
 }
