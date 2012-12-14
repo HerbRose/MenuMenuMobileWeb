@@ -40,8 +40,7 @@ public class MyImage extends FlowPanel {
 			.getInstance();
 
 	/**
-	 * tworzy nowe zdjecie, po kliknieciu na zdjecie, zdjecie ustawiane jest
-	 * jako glowne
+	 * zdjęcie z pustą tablicą
 	 * 
 	 * @param imagesController
 	 *            - controler do zarzadzania zdjeciami w danej kliszy

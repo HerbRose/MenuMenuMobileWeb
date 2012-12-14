@@ -753,6 +753,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		}
 //		
 		restaurant.setEmptyMenuImageString(null);
+		restaurant.setMainMenuImageString(null);
+		restaurant.setClearBoard(true);
 		saveRestaurant(restaurant);
 		
 		return restaurant;
