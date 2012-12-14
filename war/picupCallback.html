@@ -10,12 +10,16 @@
 		var lastPage = readCookie("lastPageFromPicup"); 
 
 		createCookie("imageType", imageType, 1);
-		alert("after created imageType coockie");
+		
 		createCookie("lastPage", lastPage, 1);
-		alert("after created coockies: \nimageType: " + imageType + " \nlastPage: " + lastPage);
-		window.open("http://menutester.appspot.com/");
-	}
+		
+		window.setTimeout(refreshPage(),500);
 	
+	}
+	function refreshPage() {
+		
+		window.open("http://menutester.appspot.com", "_self");
+	}
 	function createCookie(name,value,minuts) {
 		var expires = "";
 		if (minuts) {
