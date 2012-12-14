@@ -242,18 +242,18 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setLogoImages(null);
 		r.setMenuImages(null);
 		r.setProfileImages(null);
-		r.setCityId(getCityId(r.getCity()));
+//		r.setCityId(getCityId(r.getCity()));
 		dao.ofy().put(r);
 		return r;
 //		System.out.println("saved succes: " + r.getName());
 	}
 
 	
-	private Long getCityId(String city){
-		
-		City newCity = dao.ofy().query(City.class).filter("city", city).get();
-		return newCity.getId();
-	}
+//	private Long getCityId(String city){
+//		
+//		City newCity = dao.ofy().query(City.class).filter("city", city).get();
+//		return newCity.getId();
+//	}
 	
 	private void getGeocoding( Restaurant r, boolean trimCity ) throws Exception {
 	//	Geocoder.setConnectionManager(new SimpleHttpConnectionManager());
@@ -409,6 +409,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		List<City> cityList = dao.ofy().query(City.class).list();
 		
 		for ( Restaurant r : restaurants ) {
+			
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
 			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
@@ -641,12 +642,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}
 
 		
@@ -683,12 +684,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}
 		List<User> usersList = getUsers();
 		for (User user1 : usersList) {
@@ -730,28 +731,30 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public Restaurant clearBoard(Restaurant restaurant, ImageType imageType) {
 		
-		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
-			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
-			if(query != null){
-				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_PROFILE).filter("restId", "0").get();
-				if(imageBlob != null) restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
-			}
-		}
-
-		switch(imageType){
-		case PROFILE:
-			restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
-			break;
-		case LOGO:
-			restaurant.setMainLogoImageString(restaurant.getEmptyMenuImageString());
-			break;
-		case MENU:
-			restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
-			restaurant.setClearBoard(true);
-			break;
-		}
-		
+//		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
+//			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+//			if(query != null){
+//				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_MENU).filter("restId", "0").get();
+//				if(imageBlob != null) restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
+//			}
+//		}
+//
+//		switch(imageType){
+//		case PROFILE:
+//			restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
+//			break;
+//		case LOGO:
+//			restaurant.setMainLogoImageString(restaurant.getEmptyMenuImageString());
+//			break;
+//		case MENU:
+//			restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
+//			restaurant.setClearBoard(true);
+//			break;
+//		}
+//		
+		restaurant.setEmptyMenuImageString(null);
 		saveRestaurant(restaurant);
+		
 		return restaurant;
 	}
 

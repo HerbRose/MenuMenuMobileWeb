@@ -662,16 +662,13 @@ public class RestaurantImageView extends MyPage {
 							ImageType.LOGO, new AsyncCallback<String>() {
 								@Override
 								public void onSuccess(String result) {
-									String callbackURL = R.HOST_URL;
+									String callbackURL = R.HOST_URL + "picupCallback.html?"+R.IMAGE_TYPE+"=" +ImageType.LOGO.name() +"&"+R.LAST_PAGE+"="+restaurant.getId() ;
+									
+									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
 
-									onUploadFormLoaded(restaurant.getName()
-											+ "_" + ImageType.LOGO,
-											fileLogoUpload.getElement(),
-											result, callbackURL);
-
-									Cookies.setCookie(R.IMAGE_TYPE,
-											ImageType.LOGO.name());
-									Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");
+//									Cookies.setCookie(R.IMAGE_TYPE,
+//											ImageType.LOGO.name());
+//									Cookies.setCookie(R.LAST_PAGE, restaurant.getId()+"");
 									clickOnInputFile(fileLogoUpload
 											.getElement());
 
@@ -705,17 +702,16 @@ public class RestaurantImageView extends MyPage {
 		return navigator.userAgent;
 	}-*/;
 
-	private static native void onUploadFormLoaded(String windowName,
-			Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
-		window.name = windowName;
+	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{
+		window.name = "picup";
 
 		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
 				+ encodeURI(blobStoreUrl)
 				+ "&callbackURL="
 				+ encodeURI(callbackURL)
 				+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
-				+ encodeURI(callbackURL)
-				+ "&returnStatus=false&minVersionRequired=2.1";
+				+ encodeURI(cancelURL)
+				+ "&returnStatus=false&minVersionRequired=2.1&callbackParamType=query";
 
 		$wnd.Picup2.convertFileInput(fileUpload, {
 			windowName : encodeURI('My Web App'),

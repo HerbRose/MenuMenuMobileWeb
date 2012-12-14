@@ -80,7 +80,7 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 			@Override
 			public void onChange(ChangeEvent event) {
 				Document.get().getElementById("load").setClassName("loading");
-				blobService.getBlobStoreUrl("1", ImageType.EMPTY_PROFILE,
+				blobService.getBlobStoreUrl("1", ImageType.EMPTY_MENU,
 						new AsyncCallback<String>() {
 
 							@Override

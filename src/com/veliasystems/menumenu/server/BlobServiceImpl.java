@@ -13,7 +13,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +44,6 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -127,6 +128,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		ids.add("0");
 		ids.add("1");
 		listBoards = queryBoards.filter("restId IN", ids).list();
+		
 		return listBoards;
 	}
 
@@ -146,7 +148,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return imageBlob.getId();
 	}
 
-	public List<ImageBlob> getDefaultEmptyProfil() {
+	public List<ImageBlob> getDefaultEmptyMenu() {
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
 		if (imgQuery == null)
 			return null;
@@ -323,9 +325,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
+	public Map<String, ImageBlob> cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY){
-		return cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg");
+		
+		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
+		
+		mapToReturn.put("old", imageBlob);
+		mapToReturn.put("new", cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg") );
+		return mapToReturn;
 	}
 	
 	@Override
@@ -599,31 +606,18 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public List<ImageBlob> getLast24hImages() {
-		changeTimeToMiliSec();
+		//changeTimeToMiliSec();
 		List<ImageBlob> images = new ArrayList<ImageBlob>();
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
 		if (imgQuery == null){
 			return images;
 		}
-		
-//		Date today = new Date();
-		
-//		String monthToday = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat. ).format(today);
-//		String dayToday = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DAY).format(today);
-//		String yearToday =  DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.YEAR).format(today);
-		
-		//Date yesterday = new Date(Integer., month, date)
-		
-		//new Date(year, month, date, hrs, min)
-		
-		
+
 		Calendar today = Calendar.getInstance();
 		today.add(Calendar.DATE, -1);
 		
 		Date yesterday = new Date(today.getTimeInMillis());
-		
-		
-		
+
 		return imgQuery.filter("timeInMiliSec >", yesterday.getTime()).list();
 	}
 	

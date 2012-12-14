@@ -218,14 +218,10 @@ public class SwipeView extends FlowPanel {
 							new AsyncCallback<String>() {
 								@Override
 								public void onSuccess(String result) {
-									String callbackURL = R.HOST_URL;
-	
-									onUploadFormLoaded(restaurant.getName() + "_"
-											+ imageType, fileUpload.getElement(),
-											result, callbackURL);
-	
-									Cookies.setCookie(R.IMAGE_TYPE,
-											imageType.toString());
+									String callbackURL = R.HOST_URL + "picupCallback.html" ;
+									Cookies.setCookie(R.IMAGE_TYPE_PICUP, imageType.name());
+									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
+									onUploadFormLoaded(fileUpload.getElement(), result, callbackURL, R.HOST_URL);
 	
 									clickOnInputFile(fileUpload.getElement());
 	
@@ -276,7 +272,7 @@ public class SwipeView extends FlowPanel {
 			}
 		});
 		if (osType.toLowerCase().indexOf("ipad") >= 0
-		 || osType.toLowerCase().indexOf("ipho") >= 0) { // ipad or iphone
+		 || osType.toLowerCase().indexOf("iphone") >= 0) { // ipad or iphone
 			setAppleUpload(osType.toLowerCase().indexOf("os 6")>=0);	
 			
 		} else if (osType.toLowerCase().indexOf("armv") >= 0 
@@ -328,27 +324,26 @@ public class SwipeView extends FlowPanel {
 
 	}-*/;
 
-	private static native void onUploadFormLoaded(String windowName,
-			Element fileUpload, String blobStoreUrl, String callbackURL) /*-{
-		window.name = windowName;
+	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{
+	window.name = "picup";
 
-		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
-				+ encodeURI(blobStoreUrl)
-				+ "&callbackURL="
-				+ encodeURI(callbackURL)
-				+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
-				+ encodeURI(callbackURL)
-				+ "&returnStatus=false&minVersionRequired=2.1";
+	var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
+			+ encodeURI(blobStoreUrl)
+			+ "&callbackURL="
+			+ encodeURI(callbackURL)
+			+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
+			+ encodeURI(cancelURL)
+			+ "&returnStatus=false&minVersionRequired=2.1&callbackParamType=query";
 
-		$wnd.Picup2.convertFileInput(fileUpload, {
-			windowName : encodeURI('My Web App'),
-			'purpose' : encodeURI(url)
-		});
+	$wnd.Picup2.convertFileInput(fileUpload, {
+		windowName : encodeURI('My Web App'),
+		'purpose' : encodeURI(url)
+	});
 
-		window.open('', '_self', '');
-		window.close();
+	window.open('', '_self', '');
+	window.close();
 
-	}-*/;
+}-*/;
 
 	public String getRestId() {
 		return restaurant.getId() + "";

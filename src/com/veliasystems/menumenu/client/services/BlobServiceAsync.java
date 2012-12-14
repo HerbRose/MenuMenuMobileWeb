@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.services;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -43,7 +44,8 @@ public interface BlobServiceAsync {
 			AsyncCallback<ImageBlob> callback);
 
 	void cropImage(ImageBlob imageBlob, double leftX, double topY,
-			double rightX, double bottomY, AsyncCallback<ImageBlob> callback);
+			double rightX, double bottomY,
+			AsyncCallback<Map<String, ImageBlob>> callback);
 
 	void getImagesByType(Long restaurantId, ImageType imageType,
 			AsyncCallback<List<ImageBlob>> callback);

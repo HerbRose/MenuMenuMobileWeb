@@ -322,11 +322,18 @@ public class RestaurantController {
 	 * @param imageType
 	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
 	 */
-	public void afterCrop(Long restaurantId, ImageType imageType, ImageBlob imageBlob) {
-		getImagesList(imageBlob.getImageType(), Long.parseLong(imageBlob.getRestaurantId())).add(imageBlob);
+	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob) {
 		
-		if(imageBlob.getImageType() == ImageType.LOGO){
-			storeService.setMainImage(imageBlob, new AsyncCallback<Restaurant>() {
+		if(newImageBlob == null){
+			Window.alert(Customization.CONNECTION_ERROR);
+			return;
+		}
+		
+		List<ImageBlob> imageBlobs = getImagesList(newImageBlob.getImageType(), Long.parseLong(newImageBlob.getRestaurantId()));
+		imageBlobs.add(newImageBlob);
+
+		if(newImageBlob.getImageType() == ImageType.LOGO){ //jezeli logo to ustawiamy jako glowne
+			storeService.setMainImage(newImageBlob, new AsyncCallback<Restaurant>() {
 				
 				@Override
 				public void onSuccess(Restaurant restaurant) {
@@ -342,9 +349,21 @@ public class RestaurantController {
 					Window.alert(Customization.CONNECTION_ERROR);
 				}
 			});
+		}else{ //jezeli nie logo to ustawiamy jako glowne
+			if(oldImageBlob != null){ // dla pickup'a, usuwanie starego zdjecia (wymagany byl restart po uploudzie wiec na liscie jest zdjecie sprzed cropa)
+				ImageBlob imageBlobToDelete = null;
+				for (ImageBlob imageBlob : imageBlobs) {
+					if(imageBlob.getBlobKey().equals(oldImageBlob.getBlobKey())) {
+						imageBlobToDelete = imageBlob;
+						break;
+					}
+				}
+				imageBlobs.remove(imageBlobToDelete);
+			}
+			JQMContext.changePage(restMapView.get(Long.parseLong(newImageBlob.getRestaurantId())), Transition.SLIDE);
 		}
 		
-		JQMContext.changePage(restMapView.get(Long.parseLong(imageBlob.getRestaurantId())), Transition.SLIDE);
+		
 	}
 	
 	public void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){
@@ -415,8 +434,8 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(Restaurant restaurant) {
 				restaurants.get(restaurant.getId()).setMainMenuImageString(restaurant.getMainMenuImageString());
-				restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
-				restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
+//				restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+//				restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
 				
 				restMapView.get(restaurant.getId()).checkChanges();
 				PagesController.hideWaitPanel();

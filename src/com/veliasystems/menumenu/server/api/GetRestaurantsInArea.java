@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.server.BlobServiceImpl;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class GetRestaurantsInArea extends HttpServlet {
@@ -41,7 +42,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger log = Logger.getLogger(GetRestaurantsInArea.class.getName());
-	
+	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private StoreServiceImpl storeService = new StoreServiceImpl();
 
 	@Override
@@ -109,7 +110,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 		if (jsonp != null) {
 			resp.getWriter().print(jsonp + "(");
 		}
-
+		ImageBlob emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
 		List<Map<String, String>> attributes = new ArrayList<Map<String, String>>();
 
 		for (Restaurant restaurant : restaurantList) {
@@ -181,9 +182,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 					map.put("logoImage",
 							(restaurant.getMainLogoImageString() != null) ? addHostToUrl(restaurant
 									.getMainLogoImageString()) : "EMPTY");
-					map.put("menuImage",
-							(restaurant.getMainMenuImageString() != null) ? addHostToUrl(restaurant
-									.getMainMenuImageString()) : "EMPTY");
+					map.put( "menuImage", (restaurant.getMainMenuImageString()!=null) ? addHostToUrl(restaurant.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 					map.put("profileImage",
 							(restaurant.getMainProfileImageString() != null) ? addHostToUrl(restaurant
 									.getMainProfileImageString()) : "EMPTY");

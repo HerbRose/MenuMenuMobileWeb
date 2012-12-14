@@ -1,5 +1,7 @@
 package com.veliasystems.menumenu.client.ui;
 
+import java.util.Map;
+
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
@@ -538,7 +540,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			
 			
 			PagesController.showWaitPanel();
-			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<ImageBlob>() {
+			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Map<String, ImageBlob>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -546,8 +548,9 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				}
 
 				@Override
-				public void onSuccess(ImageBlob result) {
-					restaurantController.afterCrop(restaurantId, imageInsert.getImageType(), result);				
+				public void onSuccess(Map<String, ImageBlob> result) {
+					
+					restaurantController.afterCrop(result.get("new"), result.get("old"));				
 				}
 				
 			});	
