@@ -10,9 +10,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
@@ -20,6 +22,7 @@ import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 public class LastUploadedImages extends FlowPanel implements IManager{
 	
 	private BlobServiceAsync blobService = GWT.create(BlobService.class);
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
 	public LastUploadedImages() {
 		blobService.getLast24hImages(new AsyncCallback<List<ImageBlob>>() {
@@ -27,15 +30,21 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 			@Override
 			public void onSuccess(List<ImageBlob> result) {
 				for (final ImageBlob imageBlob : result) {
+					
 					final FlowPanel imgWrapper = new FlowPanel();
-					imgWrapper.addStyleName("imgWrapper");
-					
-					
+					Label nameRestaurant = new Label();
 					Image img = new Image(imageBlob.getImageUrl());
-					img.addStyleName("lastUploadedImage");
-					
 					Button deleteButton = new Button();
+					
+					
+					imgWrapper.addStyleName("imgWrapper");
+					nameRestaurant.addStyleName("lastUploadedName");
+					img.addStyleName("lastUploadedImage");
 					deleteButton.addStyleName("lastUploadedDeleteButton");
+					
+					
+					nameRestaurant.setText(restaurantController.getRestaurantName(Long.parseLong(imageBlob.getRestaurantId())));
+			
 					deleteButton.setText(Customization.DELETE);
 					deleteButton.addClickHandler(new ClickHandler() {
 						
@@ -61,7 +70,7 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 						}
 					});
 					
-					
+					imgWrapper.add(nameRestaurant);
 					imgWrapper.add(img);
 					imgWrapper.add(deleteButton);
 					

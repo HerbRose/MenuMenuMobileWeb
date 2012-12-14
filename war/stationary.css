@@ -668,4 +668,9 @@ body{
 
 }
 
+.lastUploadedName{
+	margin: 10px;
+	font-weight: bold;
+}
+
 /* KONIEC -  LastUploadedImages*/

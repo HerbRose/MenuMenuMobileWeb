@@ -121,6 +121,11 @@ public class RestaurantController {
 		
 		return restaurantsList;
 	}
+	
+	public String getRestaurantName(long id){
+		return restaurants.get(id).getName();
+	}
+	
 	/**
 	 * 
 	 * @param restaurantId
