@@ -106,21 +106,7 @@
 	background-color: transparent;
 }
 
-.imagePanel, .image{
-	height: 70px;
-}
-.imagePanel {
-	position: relative;
-	display: inline-block;
-	white-space: nowrap;
-	padding-top: 50px;
-}
-.image{
-	margin-right: 10px;
-}
-.imageSelected{
-	border: #f00 4px solid;
-}
+
 
 .cameraContainerDiv{
 	position: absolute;

@@ -1,6 +1,8 @@
 package com.veliasystems.menumenu.client.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -15,7 +17,6 @@ import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
@@ -118,6 +119,8 @@ public class SwipeView extends FlowPanel {
 		if (imageBlobList == null) {
 			this.imageBlobList = new ArrayList<ImageBlob>();
 		}
+		
+		Collections.sort(this.imageBlobList, new MyComparator());
 
 	}
 
@@ -392,4 +395,16 @@ class MyUploadForm extends FormPanel {
 //	}
 //	
 	
+}
+
+class MyComparator implements Comparator<ImageBlob> {
+	public int compare(ImageBlob o1, ImageBlob o2) {
+		if (o1.getTimeInMiliSec() > o2.getTimeInMiliSec()) {
+			return -1;
+		} else if (o1.getTimeInMiliSec() < o2.getTimeInMiliSec()) {
+			return 1;
+		}
+		return 0;
+	}
+
 }

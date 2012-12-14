@@ -8,6 +8,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -24,11 +26,16 @@ public class MyImage extends FlowPanel {
 	Image image = new Image();
 
 	private ImageBlob imgBlob;
+	
 	private Label txtLabel;
 	private Label mainLAbel;
+	private Label editLabel;
+	
 	private String url;
 
 	private FlowPanel detailsPanel;
+	private FlowPanel editPanel;
+	
 	private HTML detailsContent;
 
 	private boolean mainImage = false;
@@ -90,6 +97,14 @@ public class MyImage extends FlowPanel {
 	 */
 	public MyImage(ImagesController imagesController, ImageBlob imageBlob,
 			RestaurantImageView myParent, ImageType myImageType) {
+		
+		editPanel = new FlowPanel();
+		editPanel.addStyleName("editImagePanel myImageEditPanel" + imageBlob.getRestaurantId());
+		
+		editLabel = new Label(Customization.EDIT.toUpperCase());
+		editLabel.addStyleName("editLabelImage");
+		
+		
 		url = imageBlob.getImageUrl();
 		parent = myParent;
 		imageType = myImageType;
@@ -110,11 +125,20 @@ public class MyImage extends FlowPanel {
 		String dateTimeFormat = DateTimeFormat.getFormat(
 						DateTimeFormat.PredefinedFormat.MONTH_NUM_DAY).format(
 						imageBlob.getDateCreated());
-
-		add(setDetailsPanel(dateTimeFormat));
+		String day = DateTimeFormat.getFormat(
+				DateTimeFormat.PredefinedFormat.DAY).format(
+				imageBlob.getDateCreated());
+		String month = DateTimeFormat.getFormat(
+				DateTimeFormat.PredefinedFormat.MONTH_ABBR).format(
+				imageBlob.getDateCreated());
+		add(setDetailsPanel(day +" " +  month));
+		//add(setDetailsPanel(day + " " + Util.getMonthShortName(monthCounter)));
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
 		add(image);
+		
+		editPanel.add(editLabel);
+		add(editPanel);
 
 	}
 

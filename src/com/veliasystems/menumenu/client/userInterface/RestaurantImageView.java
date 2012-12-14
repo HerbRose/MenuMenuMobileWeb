@@ -14,7 +14,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -115,7 +114,7 @@ public class RestaurantImageView extends MyPage {
 
 	public RestaurantImageView(Restaurant r, JQMPage back) {
 		super(r.getName());
-
+		
 		this.restaurant = r;
 
 		infoContainer = new FlowPanel();
@@ -212,7 +211,10 @@ public class RestaurantImageView extends MyPage {
 
 	@Override
 	protected void onPageShow() {
-
+		
+		
+		
+		
 		if (!loaded) {
 			SwipeView swipeView = new SwipeView(restaurant, ImageType.PROFILE,
 					this);
@@ -302,6 +304,7 @@ public class RestaurantImageView extends MyPage {
 			public void onClick(ClickEvent event) {
 				setEditable();
 				changeButtons();
+				changeVisibility("myImageEditPanel"+restaurant.getId(), true);
 			}
 		});
 
@@ -310,9 +313,9 @@ public class RestaurantImageView extends MyPage {
 
 		if (loaded)
 			checkChanges();
-
+		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
 		setValidVisibility();
-		
+		showCamera();
 		logoImage.setUrl(restaurant.getMainLogoImageString()==null?"":restaurant.getMainLogoImageString());
 		//PagesController.hideWaitPanel(); made on imageController
 
@@ -376,6 +379,7 @@ public class RestaurantImageView extends MyPage {
 	}
 
 	private void setValidVisibility() {
+		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
 		editPanel.getElement().getStyle().setDisplay(Display.NONE);
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		infoContainer.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
@@ -670,7 +674,7 @@ public class RestaurantImageView extends MyPage {
 			editPanel.add(addBoard);
 		}
 
-		hideCamera();
+		
 		
 		if(restaurant.getMainLogoImageString() != null){
 			logoEditImage.setUrl(restaurant.getMainLogoImageString());
@@ -687,18 +691,12 @@ public class RestaurantImageView extends MyPage {
 		editPanel.getElement().getStyle().setDisplay(Display.BLOCK);
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
+		hideCamera();
 
 	}
 	
-	private void hideCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()).addClassName("hidden");
-		Document.get().getElementById(ImageType.MENU.name()).addClassName("hidden");
-	}
+
 	
-	private void showCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()).removeClassName("hidden");
-		Document.get().getElementById(ImageType.MENU.name()).removeClassName("hidden");
-	}
 
 	private void setData() {
 		nameText.setText(restaurant.getName());
@@ -714,6 +712,8 @@ public class RestaurantImageView extends MyPage {
 		for (SwipeView swipeView : swipeViews) {
 			swipeView.checkChanges();
 		}
+		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
+		
 	}
 
 	private JQMPage getMe() {
@@ -778,10 +778,29 @@ public class RestaurantImageView extends MyPage {
 //		});
 //	}
 
+	private void hideCamera(){
+		Document.get().getElementById(ImageType.PROFILE.name()).addClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()).addClassName("hidden");
+	}
+	
+	private void showCamera(){
+		Document.get().getElementById(ImageType.PROFILE.name()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()).removeClassName("hidden");
+	}
+	
 	private native String getUserAgent()/*-{
 		return navigator.userAgent;
 	}-*/;
 
+	private native void changeVisibility(String className, boolean show)/*-{
+		var elements = 	$wnd.document.getElementsByClassName(className);
+		if(elements === 'undefined') return;
+		for(var i=0; i<elements.length; i++){
+			if(show) elements[i].style.display = 'block';
+			else elements[i].style.display = 'none';
+		}
+	}-*/;
+	
 	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{
 		window.name = "picup";
 
