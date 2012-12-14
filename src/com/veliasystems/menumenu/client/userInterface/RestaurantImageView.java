@@ -677,6 +677,7 @@ public class RestaurantImageView extends MyPage {
 		}
 		
 		
+	
 		nameText.setText(restaurant.getName());
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
