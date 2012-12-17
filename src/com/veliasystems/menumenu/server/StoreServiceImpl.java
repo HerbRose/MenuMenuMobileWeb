@@ -842,4 +842,46 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public void saveImageBlob( ImageBlob imageBlob) {
 		if(imageBlob != null) dao.ofy().put(imageBlob);
 	}
+	
+	public List<Restaurant> getRestaurantsInArea(double latitude){
+		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
+		
+		double R = 6371;  // earth radius in km
+
+		double radius = 1; // km
+
+	
+		double y1 = latitude + Math.toDegrees(radius/R);
+
+		double y2 = latitude - Math.toDegrees(radius/R);
+		
+		
+		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
+		
+		if(restaurantQuery == null) return restaurantsList;
+		updatePositions();
+		
+			
+		
+		
+		restaurantsList = restaurantQuery.filter("latitude >=", y2).filter("latitude <=", y1).list();
+		return restaurantsList;
+		
+	}
+	
+	
+	private void updatePositions(){
+		Query<Restaurant> rest = dao.ofy().query(Restaurant.class);
+		
+		for (Restaurant restaurant : rest.list()) {
+			if(restaurant.getLat() != null && restaurant.getLng() != null){
+				restaurant.setLatitude(Double.valueOf(restaurant.getLat()));
+				restaurant.setLongitude(Double.valueOf(restaurant.getLng()));
+				dao.ofy().put(restaurant);
+			}
+			
+		}
+		
+	}
+	
 }
