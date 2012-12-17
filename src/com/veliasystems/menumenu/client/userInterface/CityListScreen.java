@@ -81,41 +81,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	    getHeader().setLeftButton(logoutButton);
 	    getHeader().setRightButton(addButton);
 	    
-		    if(userController.getLoggedUser().isAdmin()){
-		    	
-		    	adminPanel = new MyButton("");
-		    	adminPanel.removeStyleName("borderButton");
-		    	adminPanel.addStyleName("addButton adminButton");
-		    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
-		 	    adminPanel.addClickHandler(new ClickHandler() {
-		 			
-		 			@Override
-		 			public void onClick(ClickEvent event) {
-		 				Document.get().getElementById("load").setClassName(R.LOADING);
-		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
-		 			}
-		 		});
-		    	adminLabel = new FocusPanel();
-		    	adminLabel.addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-						Document.get().getElementById("load").setClassName(R.LOADING);
-						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
-					}
-				});
-		    	adminLabel.addStyleName("adminLabel noFocus");
-		    	
-		    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
-		 	    
-		 	    
-		    	adminPanelWrapper = new FlowPanel();
-		    	adminPanelWrapper.addStyleName("adminWrapper");
-
-		    	adminPanelWrapper.add(adminPanel);
-		    	adminPanelWrapper.add(adminLabel);
-		    	getContentPanel().add(adminPanelWrapper);
-		    }
+		   
 
 	 
 	}
@@ -161,6 +127,43 @@ public class CityListScreen extends MyPage implements IObserver{
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE);
 		}
+		
+		 if(userController.getLoggedUser().isAdmin()){
+		    	
+		    	adminPanel = new MyButton("");
+		    	adminPanel.removeStyleName("borderButton");
+		    	adminPanel.addStyleName("addButton adminButton");
+		    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
+		 	    adminPanel.addClickHandler(new ClickHandler() {
+		 			
+		 			@Override
+		 			public void onClick(ClickEvent event) {
+		 				Document.get().getElementById("load").setClassName(R.LOADING);
+		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+		 			}
+		 		});
+		    	adminLabel = new FocusPanel();
+		    	adminLabel.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						Document.get().getElementById("load").setClassName(R.LOADING);
+						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+					}
+				});
+		    	adminLabel.addStyleName("adminLabel noFocus");
+		    	
+		    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
+		 	    
+		 	    
+		    	adminPanelWrapper = new FlowPanel();
+		    	adminPanelWrapper.addStyleName("adminWrapper");
+
+		    	adminPanelWrapper.add(adminPanel);
+		    	adminPanelWrapper.add(adminLabel);
+		    	getContentPanel().add(adminPanelWrapper);
+		    }
+		
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 
