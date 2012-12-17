@@ -13,6 +13,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,6 +35,7 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
+import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -98,9 +101,9 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
 	private FlowPanel addBoardWrapper = new FlowPanel();
-	
+	private FlowPanel addBoardWrap = new FlowPanel();
 	private Image publishImage;
-	private Image logoEditImage = new Image();
+	private Image logoEditImage;
 	
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
@@ -186,7 +189,13 @@ public class RestaurantImageView extends MyPage {
 
 		}
 		logoImage.addStyleName("logoImage");
-
+		logoImage.addErrorHandler(new ErrorHandler() {
+			
+			@Override
+			public void onError(ErrorEvent event) {
+				logoImage.getElement().getStyle().setHeight(60, Unit.PX);
+			}
+		});
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 
 		nameLabelInfo = new Label(restaurant.getName());
@@ -238,7 +247,14 @@ public class RestaurantImageView extends MyPage {
 			
 			publishText = new Label();
 			publishImage = new Image();
+			logoEditImage = new Image();
+			logoEditImage.addErrorHandler(new ErrorHandler() {
 			
+				@Override
+				public void onError(ErrorEvent event) {
+					logoEditImage.getElement().getStyle().setHeight(60, Unit.PX);
+				}
+			});
 			publish = new FocusPanel();
 			publish.addStyleName("noFocus");
 			
@@ -291,8 +307,8 @@ public class RestaurantImageView extends MyPage {
 			@Override
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
-				JQMContext.changePage(new CityInfoScreen(restaurant.getCity()),
-						Transition.SLIDE);
+
+				JQMContext.changePage(CityController.cityMapView.get(restaurant.getCityId()), Transition.SLIDE);
 			}
 		});
 
@@ -307,7 +323,8 @@ public class RestaurantImageView extends MyPage {
 				changeVisibility("myImageEditPanel"+restaurant.getId(), true);
 			}
 		});
-
+		
+		getHeader().setTitle(restaurant.getName());
 		getHeader().setLeftButton(backButton);
 		getHeader().setRightButton(editButton);
 
@@ -317,7 +334,6 @@ public class RestaurantImageView extends MyPage {
 		setValidVisibility();
 		showCamera();
 		logoImage.setUrl(restaurant.getMainLogoImageString()==null?"":restaurant.getMainLogoImageString());
-		//PagesController.hideWaitPanel(); made on imageController
 
 	};
 	
@@ -364,6 +380,7 @@ public class RestaurantImageView extends MyPage {
 					showCamera();
 					nameLabelInfo.setText(restaurant.getName());
 					addressLabelInfo.setText(restaurant.getAddress());
+					getHeader().setTitle(restaurant.getName());
 
 				}
 			}
@@ -567,7 +584,7 @@ public class RestaurantImageView extends MyPage {
 			container.add(wwwWrapper);
 			container.add(bossWrapper);
 
-			FlowPanel addBoardWrap = new FlowPanel();
+			
 			addBoardWrap.addStyleName("addBoardWrap");
 			
 			addBoard = new FocusPanel();
@@ -576,18 +593,13 @@ public class RestaurantImageView extends MyPage {
 			addBoardText = new Label(Customization.ADD_BOARD);
 			addBoardText.addStyleName("addBoardLabel");
 							
-			
-			// setting logo upload
 
-			// formLogoUpload.setVisible(false);
 			formLogoUpload.setEncoding(FormPanel.ENCODING_MULTIPART);
 			formLogoUpload.setMethod(FormPanel.METHOD_POST);
 			formLogoUpload.addStyleName("formLogoUpload");
 
 			fileLogoUpload.addStyleName("fileLogoUplaod");
 			fileLogoUpload.setName("image");
-			//VerticalPanel mainPanel = new VerticalPanel();
-			//mainPanel.add(fileLogoUpload);
 			formLogoUpload.add(fileLogoUpload);
 
 			formLogoUpload
@@ -607,14 +619,8 @@ public class RestaurantImageView extends MyPage {
 					|| osType.toLowerCase().indexOf("iphone") >= 0) { // ipad or
 																	// iphone
 				setAppleUpload(osType.toLowerCase().indexOf("os 6") >= 0);
-
-				// } else if (osType.toLowerCase().indexOf("armv") >= 0
-				// || osType.toLowerCase().indexOf("android")>=0) { // android
-				// setAndroidUpload();
 			} 
-//			else {
-//				setOtherUpload();
-//			}
+
 
 			fileLogoUpload.addChangeHandler(new ChangeHandler() {
 
@@ -626,9 +632,6 @@ public class RestaurantImageView extends MyPage {
 
 								@Override
 								public void onSuccess(String result) {
-
-									// result =
-									// "http://mymenumenu.appspot.com/fileUploadServer?token=a1b2c3";
 									formLogoUpload.setAction(result);
 
 									formLogoUpload.submit();
@@ -649,24 +652,9 @@ public class RestaurantImageView extends MyPage {
 			addBoardWrap.add(formLogoUpload);
 			addBoard.add(addBoardWrap);
 			
-			
+		
 			if(restaurant.getMainLogoImageString() != null){
-				addBoard.setHeight("50px"); //takie samo co w css dla logo image
-				addBoard.setWidth("220px");
-				addBoardWrap.remove(addBoardText);
-				
-				logoEditImage.addStyleName("logoEditImage");
-				FlowPanel edit = new FlowPanel();
-				
-				edit.addStyleName("editImagePanel");
-				Label editLabel = new Label(Customization.EDIT.toUpperCase());
-				editLabel.addStyleName("editLabelImage");
-				
-				edit.add(editLabel);
-				
-				logoEditImage.setUrl(restaurant.getMainLogoImageString());
-				addBoardWrap.add(logoEditImage);
-				addBoardWrap.add(edit);
+				setMainLogoBoard();
 			}
 
 			setData();
@@ -676,8 +664,9 @@ public class RestaurantImageView extends MyPage {
 
 		
 		
+		
 		if(restaurant.getMainLogoImageString() != null){
-			logoEditImage.setUrl(restaurant.getMainLogoImageString());
+			setMainLogoBoard();
 		}
 		
 		nameText.setText(restaurant.getName());
@@ -695,7 +684,24 @@ public class RestaurantImageView extends MyPage {
 
 	}
 	
-
+	private void setMainLogoBoard(){
+		addBoard.setHeight("50px"); //takie samo co w css dla logo image
+		addBoard.setWidth("220px");
+		addBoardWrap.remove(addBoardText);
+		
+		logoEditImage.addStyleName("logoEditImage");
+		FlowPanel edit = new FlowPanel();
+		
+		edit.addStyleName("editImagePanel");
+		Label editLabel = new Label(Customization.EDIT.toUpperCase());
+		editLabel.addStyleName("editLabelImage");
+		
+		edit.add(editLabel);
+		
+		logoEditImage.setUrl(restaurant.getMainLogoImageString());
+		addBoardWrap.add(logoEditImage);
+		addBoardWrap.add(edit);
+	}
 	
 
 	private void setData() {
@@ -766,26 +772,14 @@ public class RestaurantImageView extends MyPage {
 		}
 	}
 
-//	private void setOtherUpload() {
-//
-//		addBoard.addClickHandler(new ClickHandler() {
-//
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				clickOnInputFile(fileLogoUpload.getElement());
-//			}
-//
-//		});
-//	}
-
 	private void hideCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()).addClassName("hidden");
-		Document.get().getElementById(ImageType.MENU.name()).addClassName("hidden");
+		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).addClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).addClassName("hidden");
 	}
 	
 	private void showCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()).removeClassName("hidden");
-		Document.get().getElementById(ImageType.MENU.name()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).removeClassName("hidden");
 	}
 	
 	private native String getUserAgent()/*-{
