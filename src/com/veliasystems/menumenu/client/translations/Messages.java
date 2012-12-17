@@ -304,13 +304,13 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Add board")
 	String addBoard();
 
-	@DefaultStringValue("Published")  //brak w translations
+	@DefaultStringValue("Published")  
 	String profilePublished();
 	
-	@DefaultStringValue("Last uploaded photo") //brak w translations
+	@DefaultStringValue("Last uploaded photo") 
 	String lastUploaded();
 	
-	@DefaultStringValue("Unpublished") //brak w translations
+	@DefaultStringValue("Unpublished") 
 	String profileUnPublished();
 	
 	
