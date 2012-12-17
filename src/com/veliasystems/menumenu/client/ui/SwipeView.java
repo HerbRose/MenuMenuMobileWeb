@@ -61,7 +61,7 @@ public class SwipeView extends FlowPanel {
 
 	private Restaurant restaurant;
 	private ImageType imageType;
-	private Image cameraImg = new Image("img/camera.png");
+	private Image cameraImg = new Image("img/layout/plus.png");
 
 	private LoadedPageController loadedPageController;
 

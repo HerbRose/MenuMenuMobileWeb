@@ -193,8 +193,13 @@ public class RestaurantController {
 				restaurants.put(result.getId(), result); //add/change restaurant in our list
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
-				if(isBack)
+				
+				if(isBack){
+					Window.alert(Customization.RESTAURANTSAVED);
 					JQMContext.changePage(CityController.cityMapView.get(result.getCityId()) , Transition.SLIDE);
+					
+				}
+					
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
