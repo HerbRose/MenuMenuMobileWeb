@@ -141,7 +141,7 @@ public class SwipeView extends FlowPanel {
 		}
 		if (imageType == ImageType.MENU) {
 			MyImage emptyBoard = new MyImage(imagesController, new Image(
-					imagesController.getDefoultEmptyProfile().getImageUrl()),
+					imagesController.getDefoultEmptyMenu().getImageUrl()),
 					parent, imageType);
 			scrollerContainer.insert(emptyBoard, 0);
 		}
@@ -203,7 +203,7 @@ public class SwipeView extends FlowPanel {
 	private void setCameraImg() {
 		cameraDiv.add(cameraImg);
 		cameraDiv.addStyleName("cameraDiv");
-		cameraDiv.getElement().setId(imageType.name());
+		cameraDiv.getElement().setId(imageType.name()+restaurant.getId());
 		cameraContainerDiv.add(cameraDiv);
 	}
 

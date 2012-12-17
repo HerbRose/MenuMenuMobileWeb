@@ -38,7 +38,7 @@ import com.veliasystems.menumenu.client.ui.administration.AddAdminPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddAgentPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddRestauratorPanel;
 import com.veliasystems.menumenu.client.ui.administration.CityManagerPanel;
-import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyProfilePanel;
+import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyMenuPanel;
 import com.veliasystems.menumenu.client.ui.administration.EditDataPanel;
 import com.veliasystems.menumenu.client.ui.administration.EmailPanel;
 import com.veliasystems.menumenu.client.ui.administration.IManager;
@@ -403,7 +403,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	 * @return instance of DefaultEmptyProfilrPanel 
 	 */
 	private FlowPanel setDefaultEmptyProfile() {
-		defaultEmptyBoard = new DefaultEmptyProfilePanel();
+		defaultEmptyBoard = new DefaultEmptyMenuPanel();
 		panelList.put(panelCount++, defaultEmptyBoard);
 		tabBar.addTab(defaultEmptyBoard.getName());
 		return (FlowPanel) defaultEmptyBoard;

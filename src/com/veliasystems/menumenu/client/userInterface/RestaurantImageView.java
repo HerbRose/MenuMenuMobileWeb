@@ -13,6 +13,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -100,7 +102,7 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel addBoardWrapper = new FlowPanel();
 	
 	private Image publishImage;
-	private Image logoEditImage = new Image();
+	private Image logoEditImage;
 	
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
@@ -186,7 +188,13 @@ public class RestaurantImageView extends MyPage {
 
 		}
 		logoImage.addStyleName("logoImage");
-
+		logoImage.addErrorHandler(new ErrorHandler() {
+			
+			@Override
+			public void onError(ErrorEvent event) {
+				logoImage.getElement().getStyle().setHeight(60, Unit.PX);
+			}
+		});
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 
 		nameLabelInfo = new Label(restaurant.getName());
@@ -238,7 +246,14 @@ public class RestaurantImageView extends MyPage {
 			
 			publishText = new Label();
 			publishImage = new Image();
-			
+			logoEditImage = new Image();
+			logoEditImage.addErrorHandler(new ErrorHandler() {
+				
+				@Override
+				public void onError(ErrorEvent event) {
+					logoEditImage.getElement().getStyle().setHeight(60, Unit.PX);
+				}
+			});
 			publish = new FocusPanel();
 			publish.addStyleName("noFocus");
 			
@@ -743,15 +758,12 @@ public class RestaurantImageView extends MyPage {
 					blobService.getBlobStoreUrl(restaurant.getId() + "",
 							ImageType.LOGO, new AsyncCallback<String>() {
 								@Override
-								public void onSuccess(String result) {
-									
+								public void onSuccess(String result) {				
 									String callbackURL = R.HOST_URL + "picupCallback.html" ;
 									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name() );
 									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
-
 									clickOnInputFile(fileLogoUpload.getElement());
-
 								}
 
 								@Override
@@ -779,13 +791,13 @@ public class RestaurantImageView extends MyPage {
 //	}
 
 	private void hideCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()).addClassName("hidden");
-		Document.get().getElementById(ImageType.MENU.name()).addClassName("hidden");
+		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).addClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).addClassName("hidden");
 	}
 	
 	private void showCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()).removeClassName("hidden");
-		Document.get().getElementById(ImageType.MENU.name()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).removeClassName("hidden");
+		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).removeClassName("hidden");
 	}
 	
 	private native String getUserAgent()/*-{
