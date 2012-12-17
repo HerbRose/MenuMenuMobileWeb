@@ -258,7 +258,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-//		outputSettings.setQuality(40);
+		outputSettings.setQuality(100);
 		
 		
 //		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);

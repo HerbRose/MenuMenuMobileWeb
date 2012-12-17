@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
+import com.google.appengine.api.datastore.PostLoad;
+import com.googlecode.objectify.Objectify;
 import com.veliasystems.menumenu.client.Util;
 
 public class Restaurant implements Serializable {
@@ -29,6 +32,9 @@ public class Restaurant implements Serializable {
 	private String surnameUser = "";
 	private boolean isVisibleForApp = false;
 	private boolean clearBoard = false;
+	
+	private double latitude = 0;
+	private double longitude = 0;
 	
 	/**Lists of url's with profile images */
 	private List<ImageBlob> profileImages;
@@ -107,6 +113,7 @@ public class Restaurant implements Serializable {
 	}
 
 	public void setLng(String lng) {
+		setLatitude(Double.valueOf(lng));
 		this.lng = lng;
 	}
 
@@ -115,6 +122,7 @@ public class Restaurant implements Serializable {
 	}
 
 	public void setLat(String lat) {
+		setLongitude(Double.valueOf(lat));
 		this.lat = lat;
 	}
 
@@ -246,4 +254,27 @@ public class Restaurant implements Serializable {
 		return false;
 		
 	}
+	
+	public double getLatitude() {
+		return latitude;
+	}
+	
+	public double getLongitude() {
+		return longitude;
+	}
+	/**
+	 * Should not be used by user
+	 * @param latitude
+	 */
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	/**
+	 * Should not be used by user
+	 * @param longitude
+	 */
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
 }

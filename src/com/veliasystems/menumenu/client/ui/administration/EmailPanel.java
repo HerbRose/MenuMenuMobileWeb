@@ -229,7 +229,6 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 	@Override
 	public void onChange() {
 		clearData();	
-		Window.alert("to byl notify");
 	}
 	
 	

@@ -220,8 +220,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		 			
 		 			@Override
 		 			public void onClick(ClickEvent event) {
-		 				PagesController.showWaitPanel();
-		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+//		 				PagesController.showWaitPanel();
+//		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
 		 			}
 		 		});
 		    	adminLabel = new FocusPanel();
@@ -229,8 +229,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					
 					@Override
 					public void onClick(ClickEvent event) {
-						PagesController.showWaitPanel();
-						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+//						PagesController.showWaitPanel();
+//						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
 					}
 				});
 		    	adminLabel.addStyleName("adminLabel noFocus");

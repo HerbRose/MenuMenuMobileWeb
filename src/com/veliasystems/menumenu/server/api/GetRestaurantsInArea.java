@@ -80,14 +80,15 @@ public class GetRestaurantsInArea extends HttpServlet {
 			resp.flushBuffer();
 			return;
 		}
-
-		List<Restaurant> restaurantList = storeService.loadRestaurants();
+		
+		
+//		List<Restaurant> restaurantList = storeService.loadRestaurants();
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
-
+//
 		double latDevice;
 		double lonDevice;
-
+//
 		try {
 			latDevice = Double.parseDouble(latDeviceString); // Double.valueOf(latDeviceString);
 			lonDevice = Double.parseDouble(lonDeviceString);// Double.valueOf(lonDeviceString);
@@ -98,6 +99,9 @@ public class GetRestaurantsInArea extends HttpServlet {
 			resp.flushBuffer();
 			return;
 		}
+		
+		List<Restaurant> restaurantList = storeService.getRestaurantsInArea(latDevice);
+	
 
 		long distance = 1;
 
@@ -110,7 +114,15 @@ public class GetRestaurantsInArea extends HttpServlet {
 		if (jsonp != null) {
 			resp.getWriter().print(jsonp + "(");
 		}
-		ImageBlob emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
+		List<ImageBlob> emptyBlobsList = blobService.getDefaultEmptyMenu();
+		ImageBlob emptyDefoultMenu;
+		
+		if(emptyBlobsList.isEmpty()){
+			emptyDefoultMenu = null;
+		}else{
+			emptyDefoultMenu = emptyBlobsList.get(0);
+		}
+		
 		List<Map<String, String>> attributes = new ArrayList<Map<String, String>>();
 
 		for (Restaurant restaurant : restaurantList) {
@@ -131,9 +143,8 @@ public class GetRestaurantsInArea extends HttpServlet {
 
 				}
 			}
-			if (restaurant.isVisibleForApp()) {
-				if (isPosition
-						&& distFromByStreets(latDevice, lonDevice, restLat, restLon) <= distance) {
+			if (!restaurant.isVisibleForApp()) {
+				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){
 					Map<String, String> map = new HashMap<String, String>();
 
 					List<String> blobkeys = new ArrayList<String>();
