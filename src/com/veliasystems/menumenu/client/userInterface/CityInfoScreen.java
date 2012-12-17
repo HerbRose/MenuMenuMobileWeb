@@ -29,37 +29,12 @@ public class CityInfoScreen extends MyPage{
 	private List<Restaurant> restaurants;
 	
 	private String cityName;
-
+	private boolean loaded = false;
+	
     public CityInfoScreen(String city){
     	super(city);
     	cityName = city;
-    	backButton = new BackButton(Customization.BACK);
-    	backButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
-			}
-		});
     	
-    	addButton = new MyButton("");
-    	addButton.removeStyleName("borderButton");
-		addButton.setStyleName("rightButton addButton", true);
-    	addButton.addClickHandler(new ClickHandler() {	
-			@Override
-			public void onClick(ClickEvent event) {
-				Document.get().getElementById("load").setClassName(R.LOADING);
-				JQMContext.changePage(new AddRestaurantScreen(cityName), Transition.SLIDE);	
-			}
-		});
-    	
-    	
-    	getHeader().setLeftButton(backButton);
-    	getHeader().setRightButton(addButton);
-    
-        
-        restaurants = restaurantController.getRestaurantsInCity(city);        
-        addRestaurants(restaurants);
                 
       
     }
@@ -104,6 +79,11 @@ public class CityInfoScreen extends MyPage{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
+		if(!loaded){
+			setContent();
+		}
+		
+		
 		
 		refreshRestaurantList();
 		restaurantController.setLastOpenPage(this);
@@ -114,4 +94,35 @@ public class CityInfoScreen extends MyPage{
 		addRestaurants(restaurantController.getRestaurantsInCity(cityName));
 	}
 
+	private  void setContent(){
+		backButton = new BackButton(Customization.BACK);
+    	backButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+			}
+		});
+    	
+    	addButton = new MyButton("");
+    	addButton.removeStyleName("borderButton");
+		addButton.setStyleName("rightButton addButton", true);
+    	addButton.addClickHandler(new ClickHandler() {	
+			@Override
+			public void onClick(ClickEvent event) {
+				Document.get().getElementById("load").setClassName(R.LOADING);
+				JQMContext.changePage(new AddRestaurantScreen(cityName), Transition.SLIDE);	
+			}
+		});
+    	
+    	
+    	getHeader().setLeftButton(backButton);
+    	getHeader().setRightButton(addButton);
+    
+        
+        restaurants = restaurantController.getRestaurantsInCity(cityName);        
+        addRestaurants(restaurants);
+        
+        loaded = true;
+	}
 }

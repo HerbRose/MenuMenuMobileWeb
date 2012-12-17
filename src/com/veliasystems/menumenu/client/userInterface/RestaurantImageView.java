@@ -249,7 +249,6 @@ public class RestaurantImageView extends MyPage {
 			publishImage = new Image();
 			logoEditImage = new Image();
 			logoEditImage.addErrorHandler(new ErrorHandler() {
-			
 				@Override
 				public void onError(ErrorEvent event) {
 					logoEditImage.getElement().getStyle().setHeight(60, Unit.PX);
@@ -749,15 +748,12 @@ public class RestaurantImageView extends MyPage {
 					blobService.getBlobStoreUrl(restaurant.getId() + "",
 							ImageType.LOGO, new AsyncCallback<String>() {
 								@Override
-								public void onSuccess(String result) {
-									
+								public void onSuccess(String result) {				
 									String callbackURL = R.HOST_URL + "picupCallback.html" ;
 									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name() );
 									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
-
 									clickOnInputFile(fileLogoUpload.getElement());
-
 								}
 
 								@Override

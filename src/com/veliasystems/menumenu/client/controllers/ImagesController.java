@@ -22,8 +22,8 @@ public class ImagesController {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
-	private Map<String, ImageBlob> defoultEmptyProfilImageBlobMap;
-	
+	private Map<String, ImageBlob> defoultEmptyMenuImageBlobMap;
+	private List<ImageBlob> defoultEmptyMenuImageBlobList = new ArrayList<ImageBlob>();
 	/**
 	 * used in SwipeView to select main image
 	 */
@@ -55,7 +55,7 @@ public class ImagesController {
 		}
 	}
 	
-	public void setEmptyBoard(ImageBlob imageBlob){
+	public void setEmptyMenuBoard(ImageBlob imageBlob){
 		PagesController.showWaitPanel();
 		blobService.setEmptyBoard(imageBlob, new AsyncCallback<String>() {
 
@@ -68,23 +68,27 @@ public class ImagesController {
 
 			@Override
 			public void onSuccess(String imageBlobId) {
-				changeDefoultEmptyProfile(imageBlobId);
+				changeDefoultEmptyMenu(imageBlobId);
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
 			}
 		});
 	}
 
-	public void setDefoultEmptyProfilImageBlobMap(Map<String, ImageBlob> defoultEmptyProfilImageBlobMap){
-		this.defoultEmptyProfilImageBlobMap = defoultEmptyProfilImageBlobMap;
+	public void setDefoultEmptyMenuImageBlobMap(Map<String, ImageBlob> defoultEmptyMenuImageBlobMap){
+		this.defoultEmptyMenuImageBlobMap = defoultEmptyMenuImageBlobMap;
+		
+		for (String imageBlobString : defoultEmptyMenuImageBlobMap.keySet()) {
+			defoultEmptyMenuImageBlobList.add(defoultEmptyMenuImageBlobMap.get(imageBlobString));
+		}
 	}
 	
-	private void changeDefoultEmptyProfile(String imageBlobId){
-		for (String key : defoultEmptyProfilImageBlobMap.keySet() ) {
-			defoultEmptyProfilImageBlobMap.get(key).setRestaurantId("1");
+	private void changeDefoultEmptyMenu(String imageBlobId){
+		for (String key : defoultEmptyMenuImageBlobMap.keySet() ) {
+			defoultEmptyMenuImageBlobMap.get(key).setRestaurantId("1");
 		}
 
-		defoultEmptyProfilImageBlobMap.get(imageBlobId).setRestaurantId("0");
+		defoultEmptyMenuImageBlobMap.get(imageBlobId).setRestaurantId("0");
 	}
 	
 	
@@ -125,22 +129,43 @@ public class ImagesController {
 		}
 	}
 
-	public Map<String, ImageBlob> getEmptyProfileImages(){
-		if(defoultEmptyProfilImageBlobMap == null){
+	public Map<String, ImageBlob> getEmptyMenuImages(){
+		if(defoultEmptyMenuImageBlobMap == null){
 			return null;
 		}else {
-			return defoultEmptyProfilImageBlobMap;
+			return defoultEmptyMenuImageBlobMap;
 		}
 	}
 	
-	public ImageBlob getDefoultEmptyProfile(){
-		if(defoultEmptyProfilImageBlobMap == null){
-			//Window.alert("defoultEmptyProfilImageBlobMap == null");
+	public void getEmptyMenuImagesFromServer(){
+		blobService.getEmptyList(new AsyncCallback<List<ImageBlob>>() {
+			
+			@Override
+			public void onSuccess(List<ImageBlob> result) {
+				defoultEmptyMenuImageBlobList.clear();
+				defoultEmptyMenuImageBlobList.addAll(result);
+				notifyAllObservers();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+				
+			}
+		});
+	}
+	
+	public ImageBlob getDefoultEmptyMenu(){
+		if(defoultEmptyMenuImageBlobMap == null){
 			return new ImageBlob();
 		}
-		for (String key : defoultEmptyProfilImageBlobMap.keySet()) {
-			if(defoultEmptyProfilImageBlobMap.get(key).getRestaurantId().equals("0")) return defoultEmptyProfilImageBlobMap.get(key);
+		for (String key : defoultEmptyMenuImageBlobMap.keySet()) {
+			if(defoultEmptyMenuImageBlobMap.get(key).getRestaurantId().equals("0")) return defoultEmptyMenuImageBlobMap.get(key);
 		}
 		return new ImageBlob();
+	}
+	public List<ImageBlob> getDefoultEmptyMenuImageBlobList() {
+		return defoultEmptyMenuImageBlobList;
 	}
 }

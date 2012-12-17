@@ -12,7 +12,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
+import com.sksamuel.jqm4gwt.panel.JQMControlGroup;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
@@ -82,6 +84,9 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	private FlowPanel addBoard;
 	private Label addBoardText;
+	
+	
+	private JQMPage pageToDelete = null;
 	
 	private void init(boolean isToCity){
 		
@@ -266,6 +271,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 
 	public AddRestaurantScreen(String city){
 		super(city);
+		pageToDelete = this;
 		cityController.addObserver(this);
 		this.city = city;
 		init(true);
@@ -285,6 +291,12 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		RestaurantController.getInstance().setLastOpenPage(this);
 		clearData();		
 		Document.get().getElementById("load").setClassName(R.LOADED);
+	}
+	
+	@Override
+	protected void onPageHide() {
+		super.onPageHide();
+		getElement().removeFromParent();
 	}
 	
 	private void clearData() {
@@ -350,9 +362,6 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					restaurant.setPhoneUser(phoneUserTextBox.getText());
 //					restaurant.setMailUser(mailUserTextBox.getText());
 					
-					
-					
-					Document.get().getElementById("load").setClassName(R.LOADING);
 					restaurantController.saveRestaurant(restaurant, true);
 //					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				}	

@@ -201,6 +201,7 @@ public class RestaurantController {
 				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
+		
 	}
 	
 	public void deleteRestaurant(Restaurant restaurant, String page){

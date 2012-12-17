@@ -124,7 +124,7 @@ public class LoadDataScreen extends JQMPage {
 		userController.setUserType(email);
 		restaurantController.setRestaurants(restaurantsFromServer);
 		cityController.setCities(citiesFromServer);
-		imagesController.setDefoultEmptyProfilImageBlobMap(defoultEmptyProfilImageBlobMap);
+		imagesController.setDefoultEmptyMenuImageBlobMap(defoultEmptyProfilImageBlobMap);
 	}
 	
 	@Override
