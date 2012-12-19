@@ -24,6 +24,10 @@ import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class FixedImagesTask extends HttpServlet{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3038330141784552495L;
 	private static final Logger log = Logger.getLogger(FixedImagesTask.class.getName());
 	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private EmailServiceImpl emailService = new EmailServiceImpl();

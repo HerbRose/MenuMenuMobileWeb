@@ -1,14 +1,9 @@
 package com.veliasystems.menumenu.server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -22,21 +17,17 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesService.OutputEncoding;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.InputSettings;
+import com.google.appengine.api.images.InputSettings.OrientationCorrection;
 import com.google.appengine.api.images.OutputSettings;
 import com.google.appengine.api.images.Transform;
-import com.google.appengine.api.images.ImagesService.OutputEncoding;
-import com.google.appengine.api.images.InputSettings.OrientationCorrection;
-import com.google.appengine.api.urlfetch.FetchOptions;
-import com.google.appengine.api.urlfetch.HTTPHeader;
-import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
-import com.google.appengine.api.urlfetch.URLFetchService;
-import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.googlecode.objectify.Key;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class BlobUploadServlet extends HttpServlet {
 
@@ -47,7 +38,9 @@ public class BlobUploadServlet extends HttpServlet {
 	// init the blog store service
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     private static final Logger log = Logger.getLogger(BlobUploadServlet.class.getName()); 
-
+    /**
+     * Servlet to upload images from mobile iPhone app
+     */
     public void doPost(HttpServletRequest request, HttpServletResponse res) throws ServletException, IOException {
 
     	
@@ -131,7 +124,14 @@ public class BlobUploadServlet extends HttpServlet {
             
     }
     
-    
+    /**
+     * @deprecated
+     * @param restId - id of restaurant
+     * @param image - given image
+     * @param imageType - type of image
+     * @param req - Http request
+     * @return always null
+     */
     public HTTPRequest makeResize(String restId, Image image, ImageType imageType, HttpServletRequest req){
     	
     	String uploadUrl = blobstoreService.createUploadUrl("/blobUpload?restId=" + restId + "&imageType=" + imageType.name());
@@ -140,7 +140,13 @@ public class BlobUploadServlet extends HttpServlet {
     	
     }
     
-    
+    /**
+     * 
+     * @param restId - id of {@link Restaurant}
+     * @param imageType - type of Image {@link ImageType}
+     * @param blobKey - {@link BlobKey}
+     * @return {@link BlobKey}
+     */
    private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
 		
  //   	System.out.println("BlobUploadServlet::storeImageBlob");

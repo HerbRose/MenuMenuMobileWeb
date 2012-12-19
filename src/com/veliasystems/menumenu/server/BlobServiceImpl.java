@@ -68,6 +68,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	private static final Logger log = Logger.getLogger(BlobServiceImpl.class
 			.getName());
 
+	
 	@Override
 	public String getBlobStoreUrl(String restId, ImageType imageType) {
 		String url = BlobstoreServiceFactory.getBlobstoreService()
@@ -77,10 +78,15 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return url;
 	}
 
+	
 	public List<ImageBlob> getAllImages(Restaurant r) {
 		return getAllImages("" + r.getId());
 	}
 
+	/**
+	 * @param restaurantId = id of {@link Restaurant}
+	 * @return List of images connected to given {@link Restaurant}
+	 */
 	public List<ImageBlob> getAllImages(String restaurantId) {
 		List<ImageBlob> images = new ArrayList<ImageBlob>();
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
@@ -147,14 +153,22 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		dao.ofy().put(imageBlob);
 		return imageBlob.getId();
 	}
-
+	/**
+	 * 
+	 * @return List of {@link ImageBlob}, which id is set to 0, default empty board
+	 */
 	public List<ImageBlob> getDefaultEmptyMenu() {
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
 		if (imgQuery == null)
 			return null;
 		return imgQuery.filter("restId =", "0").list();
 	}
-
+	/**
+	 * 
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image specified in {@link ImageType}
+	 * @return List of images of the same type in given {@link Restaurant}
+	 */
 	private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
 		List<ImageBlob> allImages = getAllImages(restaurantId);
 		List<ImageBlob> ret = new ArrayList<ImageBlob>();
@@ -233,7 +247,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	// }
 
 	/**
-	 * 
+	 * <h1>Short description</h1>
+	 * <ul>
+	 * <li>All values must be in range of 0.0 to 1.0, otherwise all incorrect values will be rounded to maximum</li>
+	 * <li>For example:if leftX < 0, then leftX is automatically rounded to 0.0 </li>
+	 * </ul>
 	 * @param imageBlob - image to crop
 	 * @param leftX - percentage of left line, counting from left side
 	 * @param topY - percentage of top line, counting from top
@@ -241,11 +259,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * @param bottomY - percentage of bottom line, counting from top side
 	 * @param newName - name of new image after crop, old image will be deleted from blobstore and datastore
 	 * @return ImageBlob which contains all informations about new image, like blobkey etc.
-	 * <br/>
-	 * <br/>
-	 * <h1>Short description</h1>
-	 * <li>All values must be in range of 0.0 to 1.0, otherwise all incorrect values will be rounded to maximum</li>
-	 * <li>For example:if leftX < 0, then leftX is automatically rounded to 0.0;
+	 * 
 	 */
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY, String newName) {
@@ -366,7 +380,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 				.filter("restId", restaurantId + "")
 				.filter("imageType", imageType).list();
 	}
-
+	@Deprecated
 	private void sendToBlobstore(ImageBlob imageBlob, String cmd,
 			byte[] imageBytes) throws IOException {
 
@@ -416,22 +430,41 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 
 	}
-
+	/**
+	 * 
+	 * @return boundary
+	 */
 	private String makeBoundary() {
 		return "---------------------------" + randomString() + randomString()
 				+ randomString();
 	}
-
+	/**
+	 * 
+	 * @return The resultant string is a maximum of ceil(ln(263) / ln(36)) = 13 characters long and is suitable for use as a temporary id or cookie name.
+	 */
 	private static String randomString() {
 		return Long.toString(random.nextLong(), 36);
 	}
-
+	/**
+	 * static object of Random class
+	 */
 	private static Random random = new Random();
-
+	/**
+	 * 
+	 * @param os - OutputStream to write
+	 * @param s - content to write
+	 * @throws IOException
+	 */
 	private void write(OutputStream os, String s) throws IOException {
 		os.write(s.getBytes());
 	}
-
+	/**
+	 * 
+	 * @param os - OutputStream
+	 * @param name - name, e.g: id
+	 * @param value - value of name
+	 * @throws IOException
+	 */
 	private void writeParameter(OutputStream os, String name, String value)
 			throws IOException {
 		write(os, "Content-Disposition: form-data; name=\"" + name
@@ -446,10 +479,18 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		os.write(bs);
 		write(os, "\r\n");
 	}
-
+	/**
+	 * 
+	 * @param imageBlob - image to copy and delete old, used to resize images to smaller
+	 */
 	public void copyAndDeleteBlob(ImageBlob imageBlob) {
 		cropImage(imageBlob, 0, 0, 1, 1, "imageResized.jpg");
 	}
+	/**
+	 * 
+	 * @param imageBlob - image to copy
+	 * @param newRestaurantId - id of {@link Restaurant}, the image will be copied to this {@link Restaurant} 
+	 */
 	public void copyBlob(ImageBlob imageBlob, String newRestaurantId) {
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
@@ -539,7 +580,12 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		// e.printStackTrace();
 		// }
 	}
-
+	/**
+	 * 
+	 * @param blobKey - {@link BlobKey} of image
+	 * @param filesize - size of file
+	 * @return array of bytes
+	 */
 	private byte[] getImageBytes(BlobKey blobKey, long filesize) {
 
 		if (blobKey == null) {
@@ -593,7 +639,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		return filebytes;
 	}
-
+	/**
+	 * 
+	 * @param contentType - content of file: "image/jpeg";
+	 * @param fileName - name of file after save to restaurant
+	 * @param filebytes - array of bytes, use getImageBytes() method
+	 * @return BlobKey of newly created blob
+	 * @throws IOException if fileService cannot create new BlobFile
+	 */
 	public BlobKey writeToBlobstore(String contentType, String fileName,
 			byte[] filebytes) throws IOException {
 		// Get a file service
@@ -645,7 +698,9 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return imgQuery.filter("timeInMiliSec >", yesterday.getTime()).list();
 	}
 	
-	
+	/**
+	 * @deprecated
+	 */
 	private void changeTimeToMiliSec(){
 		List<ImageBlob> images = new ArrayList<ImageBlob>();
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
@@ -667,7 +722,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 
 	
-
+/***
+ * 
+ * Comparator class used to compare image blobs by creation date
+ *
+ */
 class MyComparator implements Comparator<ImageBlob> {
 	public int compare(ImageBlob o1, ImageBlob o2) {
 		if (o1.getDateCreated().getTime() > o2.getDateCreated().getTime()) {

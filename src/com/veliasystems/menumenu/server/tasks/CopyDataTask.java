@@ -15,13 +15,16 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-
 import com.veliasystems.menumenu.server.BlobServiceImpl;
 import com.veliasystems.menumenu.server.EmailServiceImpl;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class CopyDataTask extends HttpServlet{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2317294957266920644L;
 	private static final Logger log = Logger.getLogger(CopyDataTask.class.getName()); 
 	private StoreServiceImpl storeService = new StoreServiceImpl();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
