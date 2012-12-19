@@ -232,7 +232,21 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	//
 	// }
 
-	
+	/**
+	 * 
+	 * @param imageBlob - image to crop
+	 * @param leftX - percentage of left line, counting from left side
+	 * @param topY - percentage of top line, counting from top
+	 * @param rightX - percentage of right line, counting from left side
+	 * @param bottomY - percentage of bottom line, counting from top side
+	 * @param newName - name of new image after crop, old image will be deleted from blobstore and datastore
+	 * @return ImageBlob which contains all informations about new image, like blobkey etc.
+	 * <br/>
+	 * <br/>
+	 * <h1>Short description</h1>
+	 * <li>All values must be in range of 0.0 to 1.0, otherwise all incorrect values will be rounded to maximum</li>
+	 * <li>For example:if leftX < 0, then leftX is automatically rounded to 0.0;
+	 */
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY, String newName) {
 
@@ -245,11 +259,21 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			log.severe("Picture not found in database:\n blobKey: " + imageBlob.getBlobKey());
 			return null;
 		}
+		/**
+		 * check if the range is ok
+		 */
 		
-		if(leftX < 0) leftX = 0;
-		if(rightX > 1) rightX = 1;
-		if(bottomY > 1) bottomY = 1;
-		if(topY < 0) topY = 0;
+		
+		if(leftX <= 0) leftX = 0;
+		if(rightX >= 1) rightX = 1;
+		if(bottomY >= 1) bottomY = 1;
+		if(topY <= 0) topY = 0;
+		
+		if(leftX >=1) leftX = 1-0.1;
+		if(rightX <=0) rightX = 0 + 0.1;
+		if(bottomY <=0) bottomY = 0 + 0.1;
+		if(topY >=1) topY = 1 -0.1;
+		
 
 		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY,
 				rightX, bottomY);
