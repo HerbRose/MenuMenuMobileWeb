@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
@@ -26,7 +25,6 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.CropImage;
 import com.veliasystems.menumenu.client.ui.RestInfoScreen;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;

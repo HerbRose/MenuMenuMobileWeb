@@ -373,6 +373,7 @@ public class RestaurantImageView extends MyPage {
 					restaurant.setAddress(adressText.getText());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox
 							.getText());
+					restaurant.setNameUser(bossTextBox.getText());
 					PagesController.showWaitPanel();
 					RestaurantController.getInstance().saveRestaurant(
 							restaurant, false);
@@ -620,7 +621,7 @@ public class RestaurantImageView extends MyPage {
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
 		websiteTextBox.setText("");
-		bossTextBox.setText("");
+		bossTextBox.setText(restaurant.getNameUser());
 		
 		adminPanelWrapper.getElement().getStyle()
 				.setDisplay(Display.BLOCK);

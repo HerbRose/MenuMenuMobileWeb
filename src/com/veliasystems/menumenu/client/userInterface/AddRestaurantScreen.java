@@ -361,7 +361,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					restaurant.setNameUser(nameUserTextBox.getText());
 //					restaurant.setPhoneUser(phoneUserTextBox.getText());
 //					restaurant.setMailUser(mailUserTextBox.getText());
-					
+					restaurant.setNameUser(bossTextBox.getText());
 					restaurantController.saveRestaurant(restaurant, true);
 //					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				}	
