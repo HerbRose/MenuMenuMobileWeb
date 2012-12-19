@@ -348,9 +348,10 @@ public class Restaurant implements Serializable {
 	public boolean isVisibleForApp() {
 		return isVisibleForApp;
 	}
+	
 	/**
 	 * 
-	 * @param clearBoard - return value of clear Board
+	 * @return value of {@link Restaurant#clearBoard}
 	 */
 	public boolean isClearBoard() {
 		return clearBoard;
