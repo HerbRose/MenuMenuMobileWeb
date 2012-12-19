@@ -1,5 +1,9 @@
 package com.veliasystems.menumenu.client;
-
+/**
+ * 
+ * class with constants
+ *
+ */
 public class R {
 
 	public static boolean isMobile = true;
