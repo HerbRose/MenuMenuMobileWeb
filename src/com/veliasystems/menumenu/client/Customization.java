@@ -3,7 +3,11 @@ package com.veliasystems.menumenu.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.veliasystems.menumenu.client.translations.Messages;
-
+/**
+ * 
+ *class with all translations
+ *
+ */
 public class Customization {
 	
 	private static Messages translated = GWT.create(Messages.class);
