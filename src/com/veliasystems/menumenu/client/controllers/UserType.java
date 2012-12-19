@@ -1,5 +1,20 @@
 package com.veliasystems.menumenu.client.controllers;
-
+/**
+ * 
+ * User types that can be used
+ *
+ */
 public enum UserType {
-	ADMIN, AGENT, RESTAURATOR
+	/**
+	 * Admin type
+	 */
+	ADMIN, 
+	/**
+	 * Agent type
+	 */
+	AGENT, 
+	/**
+	 * Restaurateur type
+	 */
+	RESTAURATOR
 }

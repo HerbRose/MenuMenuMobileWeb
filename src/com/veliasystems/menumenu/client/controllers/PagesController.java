@@ -33,11 +33,15 @@ public class PagesController {
 			return new JQMPage();
 		}
 	}
-	
+	/**
+	 * get div of name <strong>"load"</strong> and sets display to none
+	 */
 	public static void showWaitPanel(){
 		Document.get().getElementById("load").setClassName(R.LOADING);
 	}
-	
+	/**
+	 *  get div of name <strong>"load"</strong> and sets display to block
+	 */
 	public static void hideWaitPanel(){
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}

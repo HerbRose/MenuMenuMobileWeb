@@ -3,9 +3,12 @@ package com.veliasystems.menumenu.client.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.Window;
-
+import com.veliasystems.menumenu.client.entities.Restaurant;
+/**
+ * 
+ * Controller to page operations
+ *
+ */
 
 public class LoadedPageController {
 
@@ -13,7 +16,10 @@ public class LoadedPageController {
 	private Map<String, Integer> loadController;
 	private boolean isEmptyList = false; //jeżeli nie ma zdjec na liscie pole jest ustawiane na true
 	private static LoadedPageController instance = null;
-	
+	/**
+	 * 
+	 * @return Single instance of {@link LoadedPageController}
+	 */
 	public static LoadedPageController getInstance(){
 		if(instance == null){
 			instance = new LoadedPageController();
@@ -24,7 +30,10 @@ public class LoadedPageController {
 	private LoadedPageController() {
 		loadController = new HashMap<String, Integer>();
 	}
-	
+	/**
+	 * 
+	 * @param restaurantId - id of {@link Restaurant}
+	 */
 	public void addImage(String restaurantId){
 		PagesController.showWaitPanel();
 		Integer count = loadController.get(restaurantId);
@@ -36,7 +45,10 @@ public class LoadedPageController {
 		}
 		
 	}
-	
+	/**
+	 * 
+	 * @param restaurantId - id of {@link Restaurant}
+	 */
 	public void removeImage(String restaurantId){
 		Integer count = loadController.get(restaurantId);
 		
@@ -59,7 +71,10 @@ public class LoadedPageController {
 		loadController.remove(id+"");
 		isEmptyList = true;
 	}
-
+	/**
+	 * Hides wait panel
+	 * @param restId - id of {@link Restaurant}
+	 */
 	public void emptySwipe(String restId) {
 		if(isEmptyList){
 			PagesController.hideWaitPanel();
