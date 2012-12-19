@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
@@ -28,13 +29,14 @@ import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.ui.CropImage;
 import com.veliasystems.menumenu.client.ui.RestInfoScreen;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 
 
 /**
  * @author mateusz
- *
+ * Controller to all operations on {@link Restaurant} 
  */
 public class RestaurantController {
 
@@ -60,15 +62,24 @@ public class RestaurantController {
 //	public boolean isFromCityView() {
 //		return fromCityView;
 //	}
-	
+	/**
+	 * Sets given page to last visited
+	 * @param lastOpenPage - {@link JQMPage} 
+	 */
 	public void setLastOpenPage(JQMPage lastOpenPage) {
 		this.lastOpenPage = lastOpenPage;
 	}
-	
+	/**
+	 * Return last visited page
+	 * @return {@link JQMPage}
+	 */
 	public JQMPage getLastOpenPage() {
 		return lastOpenPage;
 	}
-	
+	/**
+	 * 
+	 * @return Single instance of {@link RestaurantController}
+	 */
 	public static RestaurantController getInstance(){
 		
 		if(instance == null ){
@@ -113,7 +124,10 @@ public class RestaurantController {
 	public void setRestaurants(Map<Long, Restaurant> restaurants) {
 		this.restaurants = restaurants;
 	}
-	
+	/**
+	 * Return list of {@link Restaurant} from local datastore
+	 * @return List of {@link Restaurant}
+	 */
 	public List<Restaurant> getRestaurantsList() {
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		for (Long restaurantId : getRestaurantsKey()) {
@@ -122,7 +136,11 @@ public class RestaurantController {
 		
 		return restaurantsList;
 	}
-	
+	/**
+	 * 
+	 * @param id - id of {@link Restaurant}
+	 * @return name of  given {@link Restaurant}
+	 */
 	public String getRestaurantName(long id){
 		return restaurants.get(id).getName();
 	}
@@ -176,7 +194,11 @@ public class RestaurantController {
 	private Set<Long> getRestaurantsKey(){
 		return restaurants.keySet();
 	}
-	
+	/**
+	 * 
+	 * @param restaurant - {@link Restaurant} to save
+	 * @param isBack - boolean value, should we return to {@link CityInfoScreen} or not
+	 */
 	public void saveRestaurant(Restaurant restaurant, final boolean isBack){
 		PagesController.showWaitPanel();
 		storeService.saveRestaurant(restaurant, new AsyncCallback<Restaurant>() {
@@ -209,7 +231,11 @@ public class RestaurantController {
 		});
 		
 	}
-	
+	/**
+	 * 
+	 * @param restaurant - {@link Restaurant} to delete
+	 * @param page - source of action
+	 */
 	public void deleteRestaurant(Restaurant restaurant, String page){
 		
 		final Restaurant restaurantToDelete = restaurant;
@@ -233,18 +259,31 @@ public class RestaurantController {
 		});
 		
 	}
+	/**
+	 * Remove {@link Restaurant} only locally
+	 * @param restaurantId - id of {@link Restaurant}
+	 */
 	public void removeRestaurantLocally(Long restaurantId){
 		
 		restaurants.remove(restaurantId);
 		
 	}
+	/**
+	 * Remove list of {@link Restaurant}'s only locally
+	 * @param restaurantIds - List of {@link Restaurant}
+	 */
 	public void removeRestaurantLocally(List<Restaurant> restaurantIds){
 		
 		for (Restaurant restaurant : restaurantIds) {
 			removeRestaurantLocally(restaurant.getId());
 		}
 	}
-	
+	/**
+	 * Change Page to {@link com.veliasystems.menumenu.client.userInterface.CropImage} 
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of image, specified in {@link ImageType}
+	 * @param blobKey - {@link BlobKey} in {@link String} format
+	 */
 	public void cropImage(long restaurantId, ImageType imageType, String blobKey){
 		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
 			Cookies.removeCookie(R.IMAGE_TYPE);
@@ -252,7 +291,11 @@ public class RestaurantController {
 		ImageBlob imageBlob = new ImageBlob(restaurantId+"", blobKey, new Date(), imageType);
 		JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
 	}
-	
+	/**
+	 * Should not be used at all, but if {@link BlobKey} is null this method is called
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image, specified of {@link ImageType}
+	 */
 	public void cropImage(long restaurantId, ImageType imageType){
 		
 		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
@@ -295,7 +338,11 @@ public class RestaurantController {
 //			}
 //		});
 	}
-	
+	/**
+	 * Crop image on Apple devices
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image, specified in {@link ImageType}
+	 */
 	public void cropImageApple(long restaurantId, ImageType imageType){
 		
 		final long myRestaurantId = restaurantId;
@@ -316,7 +363,12 @@ public class RestaurantController {
 			}
 		});
 	}
-	
+	/**
+	 * Return list with {@link ImageBlob}'s by given type and {@link Restaurant} id
+	 * @param imageType - type of image, specified in {@link ImageType}
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @return List of {@link ImageBlob}
+	 */
 	public List<ImageBlob> getImagesList(ImageType imageType, Long restaurantId){
 		
 		List<ImageBlob> oldImages;
@@ -344,8 +396,8 @@ public class RestaurantController {
 	
 	/**
 	 * 
-	 * @param restaurantId
-	 * @param imageType
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image, specified in {@link ImageType}
 	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
 	 */
 	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob) {
@@ -395,7 +447,10 @@ public class RestaurantController {
 		
 		
 	}
-	
+	/**
+	 * 
+	 * @param restaurantMap - Map of id's {@link Restaurant}'s and {@link Boolean} value of visibility for mobile device
+	 */
 	public void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){
 		List<Restaurant> restaurantsToChange = new ArrayList<Restaurant>();
 		
@@ -427,7 +482,10 @@ public class RestaurantController {
 		
 		
 	}
-
+	/**
+	 * Save list of {@link Restaurant}'s to datastore
+	 * @param restaurantsToSave - List of {@link Restaurant}, which must be saved
+	 */
 	public void saveRestaurants(List<Restaurant> restaurantsToSave) {
 		final List<Restaurant> restaurantsSentToServer = restaurantsToSave;
 		
@@ -456,7 +514,11 @@ public class RestaurantController {
 	private static native void historyGoBack(int howMany) /*-{
 		history.go(-howMany);
 	}-*/;
-
+	/**
+	 * Set empty image
+	 * @param restaurant - {@link Restaurant} object
+	 * @param imageType - type of Image, specified in {@link ImageType}
+	 */
 	public void setEmptyBoard(Restaurant restaurant, ImageType imageType) {
 		
 		storeService.clearBoard(restaurant, imageType, new AsyncCallback<Restaurant>() {
@@ -479,7 +541,10 @@ public class RestaurantController {
 		});
 		
 	}
-
+	/**
+	 * Set {@link ImageBlob} as main image
+	 * @param imgBlob - {@link ImageBlob}
+	 */
 	public void setMainImage(ImageBlob imgBlob) {
 		
 		final ImageType imageType = imgBlob.getImageType();

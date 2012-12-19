@@ -8,9 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.Customization;
@@ -20,7 +18,11 @@ import com.veliasystems.menumenu.client.services.EmailService;
 import com.veliasystems.menumenu.client.services.EmailServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-
+/**
+ * 
+ * Controller to all {@link User} operations
+ *
+ */
 public class UserController {
 	
 	private List<IObserver> observers = new ArrayList<IObserver>();
@@ -34,13 +36,20 @@ public class UserController {
 	
 	private UserController() {
 	}
+	/**
+	 * 
+	 * @return Single instance of {@link UserController}
+	 */
 	public static UserController getInstance(){
 		if(instance == null){
 			instance = new UserController();
 		}
 		return instance;
 	}
-	
+	/**
+	 * get all {@link User}'s list
+	 * @return List of {@link User}'s
+	 */
 	public List<User> getUserList(){
 		List<User> userList = new ArrayList<User>();
 		
@@ -51,16 +60,26 @@ public class UserController {
 		}
 		return userList;
 	}
-	
+	/**
+	 * 
+	 * @return Map of {@link User}'s  as value, email as key
+	 */
 	public Map<String, User> getUsers() {
 		return users;
 	}
-	
+	/**
+	 * add observer to list only if observer != null and list doesn't contains this observer.
+	 * @param observer
+	 */
 	public void addObserver( IObserver observer){
 		if(observer != null && !observers.contains(observer)){
 			observers.add(observer);
 		}
 	}
+	/**
+	 * remove observer from list.
+	 * @param observer
+	 */
 	public void removeObserver( IObserver observer ){
 		if(observer != null){
 			observers.remove(observer);
@@ -72,7 +91,10 @@ public class UserController {
 			observer.onChange();
 		}
 	}
-	
+	/**
+	 * Add {@link User} to server
+	 * @param user - {@link User} object
+	 */
 	public void addUser(User user){
 		
 		final User userToAdd = user;
@@ -97,7 +119,10 @@ public class UserController {
 			}
 		});
 	}
-	
+	/**
+	 * Change user data's 
+	 * @param user - {@link User} object
+	 */
 	public void changeUserData(User user){
 		User userToChange = getLoggedUser();
 		storeService.changeUserData(user, userToChange.getEmail(), new AsyncCallback<User>() {
@@ -118,7 +143,11 @@ public class UserController {
 			}
 		});
 	}
-	
+	/**
+	 * 
+	 * @param password - {@link User} password
+	 * @return true if valid, else false
+	 */
 	public boolean isValidPassword(String password){
 		boolean isCorrect = false;
 		
@@ -132,11 +161,18 @@ public class UserController {
 		
 		return isCorrect;
 	}
-	
+	/**
+	 * 
+	 * @param users - Map of {@link User}'s as values, email's as keys
+	 */
 	public void setUsers(Map<String, User> users) {
 		this.users = users;
 	}
-	
+	/**
+	 * @deprecated
+	 * @param login
+	 * @return
+	 */
 	private User getUser(String login){
 		
 		Set<String> key = users.keySet();
@@ -147,7 +183,10 @@ public class UserController {
 		
 		return null;
 	}
-	
+	/**
+	 * Set {@link User} type 
+	 * @param login - {@link User} login
+	 */
 	public void setUserType(String login) {
 		
 		
@@ -163,17 +202,35 @@ public class UserController {
 		else if(logUser.getCitiesId() != null) userType = UserType.AGENT;
 		else userType = UserType.RESTAURATOR;
 	}
+	/**
+	 * 
+	 * @return {@link UserType}
+	 */
 	public UserType getUserType(){
 		return userType;
 	}
-	
+	/**
+	 * 
+	 * @return logged {@link User}
+	 */
 	public User getLoggedUser() {
 		return users.get(loggedUser);
 	}
-
+	/**
+	 * 
+	 * @param email - {@link User} login
+	 * @return true if {@link User} is in store
+	 */
 	public boolean isUserInStor(String email){
 		return users.containsKey(email);
 	}
+	/**
+	 * 
+	 * @param chosenEmailList - List of email's addresses 
+	 * @param from - Sender email
+	 * @param subject - Subject of message
+	 * @param message - message to send
+	 */
 	public void sendMail(List<String> chosenEmailList, String from,
 			String subject, String message) {
 		
@@ -199,7 +256,10 @@ public class UserController {
 		PagesController.hideWaitPanel();
 		
 	}
-	
+	/**
+	 * Remove {@link User} from server
+	 * @param user - email of user
+	 */
 	public void removeUser(String user){
 		
 		PagesController.showWaitPanel();
