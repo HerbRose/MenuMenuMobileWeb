@@ -213,10 +213,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * get blob info list
+	 * get blob info array
 	 * 
 	 * @param filter
-	 * @return
+	 * @return array of {@link BlobData} 
 	 */
 	public BlobData[] getBlobs(BlobDataFilter filter) {
 

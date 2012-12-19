@@ -17,7 +17,7 @@ public class BlobDataFilter implements IsSerializable {
   
   /**
    * get start of range
-   * @return
+   * @return start
    */
   public long getRangeStart() {
     return start;
@@ -25,7 +25,7 @@ public class BlobDataFilter implements IsSerializable {
 
   /**
    * get end of range finish - this is a work around for the offset
-   * @return
+   * @return start + limit
    */
   public long getRangeFinish() {
     long finish = start + limit;

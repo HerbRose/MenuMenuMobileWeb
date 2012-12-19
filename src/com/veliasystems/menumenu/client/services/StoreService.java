@@ -136,16 +136,17 @@ public interface StoreService extends RemoteService {
 	String removeUser(User user);
 	/**
 	 * 
+	 * This method create a Task in Queue on server side. When Task is done, notification is send to user
+	 * <br/>
+	 * <br/>
+	 * This method can increase server consumption, in extreme cases can use all resources
+	 * 
 	 * @param cityIdFrom - id of city from data must be copied
 	 * @param cityIdTo - id of city to data will be copied
 	 * @param email - email address, where notification will be send after copy data
 	 * @return id's of {@link City}
 	 * 
-	 * <br/>
-	 * This method create a {@link Queue} on server side. When {@link Queue} is done, notification is send to user
-	 * <br/>
-	 * <br/>
-	 * This method can increase server consumption, in extreme cases can use all resources
+	 * 
 	 */
 	Map<String, String> copyCityData(String cityIdFrom, String cityIdTo, String email);
 	/**

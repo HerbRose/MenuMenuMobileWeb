@@ -94,7 +94,7 @@ public class ImageBlob implements Serializable {
 
 	/**
 	 * set the restaurant's id that is assigned to this {@link ImageBlob}
-	 * @param - restId the restaurant's id that is assigned to this {@link ImageBlob}
+	 * @param restId the restaurant's id that is assigned to this {@link ImageBlob}
 	 */
 	public void setRestaurantId(String restId) {
 		this.restId = restId;

@@ -395,10 +395,11 @@ public class RestaurantController {
 	}
 	
 	/**
-	 * 
-	 * @param restaurantId - id of {@link Restaurant}
-	 * @param imageType - type of Image, specified in {@link ImageType}
-	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
+	 * Remove (if exist) old {@link ImageBlob} from the image list (list is dependent of ImageTape).<br>
+	 * Add new {@link ImageBlob} to the list (list is dependent of ImageTape).<br>
+	 * If {@link ImageBlob#getImageType()} of <code> newImageBlob</code> is equal to {@link ImageType#LOGO} the image is set as main.
+	 * @param newImageBlob - new {@link ImageBlob}
+	 * @param oldImageBlob - old {@link ImageBlob}
 	 */
 	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob) {
 		

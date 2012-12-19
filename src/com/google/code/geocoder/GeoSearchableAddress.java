@@ -30,7 +30,7 @@ public interface GeoSearchableAddress {
 	 * This method receives address as string input and
 	 * and returns a LatLng object which represents this address
 	 * @param address
-	 * @return
+	 * @return LatLng
 	 */
 	abstract LatLng getLatLngPointsByAddress(String address);
 

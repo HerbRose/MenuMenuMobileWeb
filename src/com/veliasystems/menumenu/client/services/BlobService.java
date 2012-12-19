@@ -52,7 +52,7 @@ public interface BlobService extends RemoteService {
         List<ImageBlob> getProfileImages( Restaurant r ); // zdjecia profilowe
         /**
          * 
-         * @param {@link Restaurant} - id of restaurant
+         * @param restaurantId - id of restaurant
          * @return List of {@link ImageBlob} which contains all profiles images in specified {@link Restaurant}
          */
         List<ImageBlob> getProfileImages( String restaurantId );

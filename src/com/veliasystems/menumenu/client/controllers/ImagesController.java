@@ -50,7 +50,7 @@ public class ImagesController {
 	}
 	/**
 	 * add observer to list only if observer != null and list doesn't contains this observer.
-	 * @param observer
+	 * @param iObserver
 	 */
 	public void addObserver(IObserver iObserver){
 		observers.add(iObserver);

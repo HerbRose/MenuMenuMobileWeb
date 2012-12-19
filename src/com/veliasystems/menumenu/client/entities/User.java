@@ -192,7 +192,7 @@ public class User implements Serializable {
 	 * <br/>
 	 * <br/>
 	 * remove {@link Restaurant} id to {@link User}
-	 * @param restauarantId - id of {@link Restaurant}
+	 * @param restaurantId - id of {@link Restaurant}
 	 */
 	public void removeRestaurantsId(Long restaurantId){
 		this.restaurantsId.remove(restaurantId);
