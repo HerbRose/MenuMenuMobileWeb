@@ -2,13 +2,27 @@ package com.veliasystems.menumenu.client.controllers;
 
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
 import com.veliasystems.menumenu.client.userInterface.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
 import com.veliasystems.menumenu.client.userInterface.HomePageScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsListScreen;
 
-
+/**
+ * All {@link JQMPage}s all are singletons
+ * <br/>
+ * Contains {@link JQMPage}:
+ * <ul>
+ * <li>PAGE_CITY_LIST</li>
+ * <li>PAGE_RESTAURANT_LIST</li>
+ * <li>PAGE_HOME</li>
+ * <li>PAGE_ADD_RESTAURANT</li>
+ * <li>PAGE_RESTAURANT_MANAGER</li>
+ * </ul>
+ *
+ */
 
 public enum Pages {
 	
