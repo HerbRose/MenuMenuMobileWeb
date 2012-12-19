@@ -76,13 +76,17 @@ public class Util
     {
         return in.replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]");
     }
-
+   
     private static String capitalizeWord(String s)
     {
         if (s.length() == 0) return s;
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
-
+    /**
+     * Capitalize given word
+     * @param s - String
+     * @return String
+     */
     public static String capitalize(String s)
     {
         return capitalizeWord(s);
@@ -128,7 +132,11 @@ public class Util
             }
         });
     }
-
+    /**
+     * Fix url if does not start with "http://"
+     * @param url - in String
+     * @return String
+     */
     public static String fixUrl( String url )
     {
         String prefix = "http://";
