@@ -262,7 +262,7 @@ public class SwipeView extends FlowPanel {
 		formPanel.setVisible(false);
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		formPanel.setMethod(FormPanel.METHOD_POST);
-		formPanel.getMainPanel().add(fileUpload);
+//		formPanel.getMainPanel().add(fileUpload);
 		formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 
 			@Override
@@ -328,25 +328,25 @@ public class SwipeView extends FlowPanel {
 	}-*/;
 
 	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{
-	window.name = "picup";
+		window.name = "picup";
+	
+		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
+				+ encodeURI(blobStoreUrl)
+				+ "&callbackURL="
+				+ encodeURI(callbackURL)
+				+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
+				+ encodeURI(cancelURL)
+				+ "&returnStatus=false&minVersionRequired=2.1&callbackParamType=query";
+	
+		$wnd.Picup2.convertFileInput(fileUpload, {
+			windowName : encodeURI('My Web App'),
+			'purpose' : encodeURI(url)
+		});
+	
+		window.open('', '_self', '');
+		window.close();
 
-	var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
-			+ encodeURI(blobStoreUrl)
-			+ "&callbackURL="
-			+ encodeURI(callbackURL)
-			+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
-			+ encodeURI(cancelURL)
-			+ "&returnStatus=false&minVersionRequired=2.1&callbackParamType=query";
-
-	$wnd.Picup2.convertFileInput(fileUpload, {
-		windowName : encodeURI('My Web App'),
-		'purpose' : encodeURI(url)
-	});
-
-	window.open('', '_self', '');
-	window.close();
-
-}-*/;
+	}-*/;
 
 	public String getRestId() {
 		return restaurant.getId() + "";

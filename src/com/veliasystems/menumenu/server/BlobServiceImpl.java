@@ -322,7 +322,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			scaleTransform = ImagesServiceFactory.makeResize(220,
 					newImage.getHeight());
 			break;
-
+		default:
+			log.severe("Unknow image type: " + imageBlob.getImageType());
 		}
 
 		Image scaleImage = imagesService.applyTransform(scaleTransform,
@@ -369,7 +370,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
 		
 		mapToReturn.put("old", imageBlob);
-		mapToReturn.put("new", cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg") );
+		mapToReturn.put("new", cropImage(imageBlob, leftX, topY, rightX, bottomY, "imageCrop.jpg") );
 		return mapToReturn;
 	}
 	
