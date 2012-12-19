@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,19 +244,27 @@ public class RestaurantController {
 			removeRestaurantLocally(restaurant.getId());
 		}
 	}
+	
+	public void cropImage(long restaurantId, ImageType imageType, String blobKey){
+		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
+			Cookies.removeCookie(R.IMAGE_TYPE);
+		}
+		ImageBlob imageBlob = new ImageBlob(restaurantId+"", blobKey, new Date(), imageType);
+		JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
+	}
+	
 	public void cropImage(long restaurantId, ImageType imageType){
 		
+		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
+			Cookies.removeCookie(R.IMAGE_TYPE);
+		}
 		
-		final long myRestaurantId = restaurantId;
-		final ImageType myImageType = imageType;
-		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
-		Cookies.removeCookie(R.IMAGE_TYPE);
-		
-		blobService.getLastUploadedImage(restaurantId, myImageType, new AsyncCallback<ImageBlob>() {
+		blobService.getLastUploadedImage(restaurantId, imageType, new AsyncCallback<ImageBlob>() {
 			@Override
-			public void onSuccess(ImageBlob result) {
-				if(result == null) Window.alert(Customization.CONNECTION_ERROR);
-				else JQMContext.changePage(new CropImage(result, myRestaurantId), Transition.SLIDE);
+			public void onSuccess(ImageBlob imageBlob) {
+				log.info("getLastUploadedImage onSuccess: " + imageBlob == null?"null":imageBlob.getImageUrl());
+				if(imageBlob == null) Window.alert(Customization.CONNECTION_ERROR);
+				else JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -298,7 +307,7 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(ImageBlob result) {
 				if(result == null) Window.alert(Customization.CONNECTION_ERROR);
-				else JQMContext.changePage(new CropImage(result, myRestaurantId), Transition.SLIDE);
+				else JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(result), Transition.SLIDE);
 				
 			}
 			@Override

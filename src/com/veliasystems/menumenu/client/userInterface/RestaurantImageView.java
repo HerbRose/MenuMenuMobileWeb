@@ -7,7 +7,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -24,6 +23,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -48,7 +48,7 @@ import com.veliasystems.menumenu.client.ui.SwipeView;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
-
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 public class RestaurantImageView extends MyPage {
 
 	private VerticalPanel scrollerDiv;
@@ -100,8 +100,8 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel phoneWrapper = new FlowPanel();
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
-	private FlowPanel addBoardWrapper = new FlowPanel();
 	private FlowPanel addBoardWrap = new FlowPanel();
+
 	private Image publishImage;
 	private Image logoEditImage;
 	
@@ -110,7 +110,7 @@ public class RestaurantImageView extends MyPage {
 	private FocusPanel publish;
 
 	private FileUpload fileLogoUpload = new FileUpload();
-	private FormPanel formLogoUpload = new FormPanel();
+	private MyUploadForm formLogoUpload;
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	private String osType = getUserAgent();
@@ -317,7 +317,9 @@ public class RestaurantImageView extends MyPage {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				
 				setEditable();
+				
 				changeButtons();
 				changeVisibility("myImageEditPanel"+restaurant.getId(), true);
 			}
@@ -329,7 +331,7 @@ public class RestaurantImageView extends MyPage {
 
 		if (loaded)
 			checkChanges();
-		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
+//		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
 		setValidVisibility();
 		showCamera();
 		logoImage.setUrl(restaurant.getMainLogoImageString()==null?"":restaurant.getMainLogoImageString());
@@ -512,7 +514,7 @@ public class RestaurantImageView extends MyPage {
 		return false;
 	}
 
-	private void setEditable() {
+	private void setEditable(){
 
 		if (container == null) {
 			container = new FlowPanel();
@@ -591,64 +593,10 @@ public class RestaurantImageView extends MyPage {
 			
 			addBoardText = new Label(Customization.ADD_BOARD);
 			addBoardText.addStyleName("addBoardLabel");
-							
-
-			formLogoUpload.setEncoding(FormPanel.ENCODING_MULTIPART);
-			formLogoUpload.setMethod(FormPanel.METHOD_POST);
-			formLogoUpload.addStyleName("formLogoUpload");
-
-			fileLogoUpload.addStyleName("fileLogoUplaod");
-			fileLogoUpload.setName("image");
-			formLogoUpload.add(fileLogoUpload);
-
-			formLogoUpload
-					.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-
-						@Override
-						public void onSubmitComplete(SubmitCompleteEvent event) {
-							PagesController.showWaitPanel();
-							
-							restaurantController.cropImage(restaurant.getId(),
-									ImageType.LOGO);
-							formLogoUpload.reset();
-						}
-					});
-
-			if (osType.toLowerCase().indexOf("ipad") >= 0
-					|| osType.toLowerCase().indexOf("iphone") >= 0) { // ipad or
-																	// iphone
-				setAppleUpload(osType.toLowerCase().indexOf("os 6") >= 0);
-			} 
 
 
-			fileLogoUpload.addChangeHandler(new ChangeHandler() {
-
-				@Override
-				public void onChange(ChangeEvent event) {
-					PagesController.showWaitPanel();
-					blobService.getBlobStoreUrl(restaurant.getId() + "",
-							ImageType.LOGO, new AsyncCallback<String>() {
-
-								@Override
-								public void onSuccess(String result) {
-									formLogoUpload.setAction(result);
-
-									formLogoUpload.submit();
-								}
-
-								@Override
-								public void onFailure(Throwable caught) {
-									PagesController.hideWaitPanel();
-									Window.alert("Problem with upload. Try again");
-
-								}
-							});
-				}
-			});
-
-			
 			addBoardWrap.add(addBoardText);
-			addBoardWrap.add(formLogoUpload);
+			setUpload();
 			addBoard.add(addBoardWrap);
 			
 		
@@ -657,12 +605,12 @@ public class RestaurantImageView extends MyPage {
 			}
 
 			setData();
+			
 			editPanel.add(container);
 			editPanel.add(addBoard);
+			
+			
 		}
-
-		
-		
 		
 		if(restaurant.getMainLogoImageString() != null){
 			setMainLogoBoard();
@@ -733,41 +681,95 @@ public class RestaurantImageView extends MyPage {
 		return restaurant;
 	}
 
-	private void setAppleUpload(boolean isOS6) {
+	private void setUpload() {
 
-		if (!isOS6) {
-			// setCameraImg();
-			formLogoUpload.setStyleName("hidden", true);
-			fileLogoUpload.setStyleName("hidden", true);
-			formLogoUpload.getElement().getStyle().setPosition(Position.ABSOLUTE);
-			formLogoUpload.getElement().getStyle().setTop(10000, Unit.PX); // aby nie kliknąć na niego ;/
+		formLogoUpload = new MyUploadForm(fileLogoUpload, ImageType.LOGO, restaurant.getId() + "");
+		
+		formLogoUpload.setVisible(false);
+		formLogoUpload.setStyleName("formLogoUpload", true);
+		formLogoUpload.getElement().getStyle().setDisplay(Display.NONE);
+		
+		boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
+		boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;
+		boolean isAndroid = osType.toLowerCase().indexOf("android")>=0;
+		if (isOSMobile && !isOS6) {
+			
 			addBoard.addClickHandler(new ClickHandler() {
-
+				
 				@Override
 				public void onClick(ClickEvent event) {
-					blobService.getBlobStoreUrl(restaurant.getId() + "",
-							ImageType.LOGO, new AsyncCallback<String>() {
+					blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
+							new AsyncCallback<String>() {
 								@Override
-								public void onSuccess(String result) {				
+								public void onSuccess(String result) {
 									String callbackURL = R.HOST_URL + "picupCallback.html" ;
-									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name() );
+									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
 									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
+	
 									clickOnInputFile(fileLogoUpload.getElement());
+	
 								}
-
+	
 								@Override
 								public void onFailure(Throwable caught) {
-
+	
 								}
 							});
 				}
-
+	
 			});
-
+			add(formLogoUpload);
+		}else if(isAndroid){
+			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+			addBoardWrap.add(formLogoUpload);
+		}else{
+			
+			addBoard.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					clickOnInputFile(fileLogoUpload.getElement());
+					
+				}
+			});
+//			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+//			addBoardWrap.add(formLogoUpload);
+			add(formLogoUpload);
 		}
+		
+		fileLogoUpload.setVisible(true);
+		fileLogoUpload.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				PagesController.showWaitPanel();
+				// clickOnInputFile(formPanel.getUploadButton().getElement());
+				blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
+						new AsyncCallback<String>() {
+
+							@Override
+							public void onSuccess(String result) {
+								formLogoUpload.setAction(result);
+								
+								formLogoUpload.submit();
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								PagesController.hideWaitPanel();
+								Window.alert("Problem with upload. Try again");
+
+							}
+						});
+			}
+		});
+		
+		add(addBoard);
+		
 	}
 
+	
 	private void hideCamera(){
 		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).addClassName("hidden");
 		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).addClassName("hidden");
@@ -815,5 +817,7 @@ public class RestaurantImageView extends MyPage {
 	private static native void clickOnInputFile(Element elem) /*-{
 		elem.click();
 	}-*/;
+	
+
 
 }

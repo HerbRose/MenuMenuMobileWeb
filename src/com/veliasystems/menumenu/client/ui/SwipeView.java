@@ -39,6 +39,7 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 public class SwipeView extends FlowPanel {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
@@ -193,26 +194,20 @@ public class SwipeView extends FlowPanel {
 //		add(titleDiv);
 	}
 
-	private void setAndroidUpload() {
-		formPanel.setVisible(true);
-		formPanel.addStyleName("androidForm");
-		cameraContainerDiv.add(formPanel);
+//	private void setAndroidUpload() {
+//		formPanel.setVisible(true);
+//		formPanel.addStyleName("androidForm");
+//		cameraDiv.add(formPanel);
+//
+//	}
 
-	}
-
-	private void setCameraImg() {
-		cameraDiv.add(cameraImg);
-		cameraDiv.addStyleName("cameraDiv");
-		cameraDiv.getElement().setId(imageType.name()+restaurant.getId());
-		cameraContainerDiv.add(cameraDiv);
-	}
 
 	private void setAppleUpload( boolean isOS6) {
 
 		if(isOS6){
-			setOtherUpload();
+			setOtherUpload(true);
 		}else{
-			setCameraImg();
+			setOtherUpload(false);
 			cameraImg.addClickHandler(new ClickHandler() {
 	
 				@Override
@@ -242,17 +237,26 @@ public class SwipeView extends FlowPanel {
 		}
 	}
 
-	private void setOtherUpload() {
-		setCameraImg();
-
-		cameraImg.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				clickOnInputFile(fileUpload.getElement());
-			}
-
-		});
+	private void setOtherUpload( boolean isVisable) {
+		formPanel.setVisible(isVisable);
+		formPanel.addStyleName("swipeViewForm");
+		
+		FlowPanel cameraDivRelative = new FlowPanel();
+		cameraDivRelative.setStyleName("cameraDivRelative", true);
+		cameraDivRelative.add(formPanel);
+		
+		cameraDivRelative.add(cameraImg);
+		cameraDivRelative.addStyleName("cameraDiv");
+		cameraDivRelative.getElement().setId(imageType.name()+restaurant.getId());
+		
+		
+		cameraDiv.add(cameraDivRelative);
+		
+		FlowPanel cameraContainerDivRelative = new FlowPanel();
+		cameraContainerDivRelative.setStyleName("cameraContainerDivRelative", true);
+		cameraContainerDivRelative.add(cameraDiv);
+		cameraContainerDiv.add(cameraContainerDivRelative);
+		
 	}
 
 	private void setUpload() {
@@ -260,29 +264,13 @@ public class SwipeView extends FlowPanel {
 		formPanel = new MyUploadForm(fileUpload, imageType, restaurant.getId()
 				+ "");
 		formPanel.setVisible(false);
-		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
-		formPanel.setMethod(FormPanel.METHOD_POST);
-//		formPanel.getMainPanel().add(fileUpload);
-		formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-
-			@Override
-			public void onSubmitComplete(SubmitCompleteEvent event) {
-
-				// Window.Location.reload();
-				PagesController.hideWaitPanel();
-				restaurantController.cropImage(restaurant.getId(), imageType);
-				formPanel.reset();
-			}
-		});
+		
 		if (osType.toLowerCase().indexOf("ipad") >= 0
 		 || osType.toLowerCase().indexOf("iphone") >= 0) { // ipad or iphone
 			setAppleUpload(osType.toLowerCase().indexOf("os 6")>=0);	
 			
-		} else if (osType.toLowerCase().indexOf("armv") >= 0 
-				|| osType.toLowerCase().indexOf("android")>=0) { // android
-			setAndroidUpload();
-		} else {
-			setOtherUpload();
+		} else{
+			setOtherUpload(true);
 		}
 
 		
@@ -318,7 +306,7 @@ public class SwipeView extends FlowPanel {
 
 		cameraContainerDiv.addStyleName("cameraContainerDiv");
 		add(cameraContainerDiv);
-		add(formPanel);
+		//add(formPanel);
 
 	}
 
@@ -368,32 +356,6 @@ public class SwipeView extends FlowPanel {
 	private native String getUserAgent()/*-{
 		return navigator.userAgent;
 	}-*/;
-	
-}
-
-class MyUploadForm extends FormPanel {
-	private VerticalPanel mainPanel = new VerticalPanel();
-
-	FileUpload fileUpload;
-
-	public MyUploadForm(FileUpload fileUpload, ImageType imageType,
-			String restId) {
-
-		this.fileUpload = fileUpload;
-		mainPanel.add(fileUpload);
-		fileUpload.setName("image");
-		setWidget(mainPanel);
-
-	}
-
-	public VerticalPanel getMainPanel() {
-		return mainPanel;
-	}
-
-//	public FileUpload getFileUpload() {
-//		return fileUpload;
-//	}
-//	
 	
 }
 

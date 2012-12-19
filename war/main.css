@@ -107,10 +107,14 @@
 }
 
 
-
+.cameraContainerDivRelative{
+	position: relative;
+	
+	height: 100%;
+}
 .cameraContainerDiv{
 	position: absolute;
- 	width: 128px;/*  .cameraDiv width + .cameraDiv left */
+/*  	width: 128px; .cameraDiv width + .cameraDiv left */
 /*  	height: 350px; like .wrapper */
 	z-index: 11;
 	top: 40px;
@@ -118,24 +122,24 @@
 /* 	background: transparent url('img/backgroundForImagesScroll.png') repeat-x ; */
 	
 }
-.cameraDiv, .androidForm{
+.cameraDiv{
 	position: absolute;
 	left: 20px;
 	top: 50%;
 	margin-top: -15px;
 	z-index: 15;
 }
+.cameraDiv{
+	width: 30px !important;
+	overflow: hidden;
+}
 .cameraDiv img{
 	height: 30px;
 }
-.androidForm, .androidForm input{
-	width: 120px;
-	height: 30px;
+.swipeViewForm{
+	position: absolute;
+	opacity: 0;
 }
-.androidForm{
-	margin-top: -5px;
-}
-
 .flowPanelButtonsVisible{
 	width: 100px;
 	height: 35px;
