@@ -33,6 +33,7 @@ public class BlobUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6876072793481198419L;
 
+	
 	private DAO dao = new DAO();
 	
 	// init the blog store service
@@ -148,50 +149,39 @@ public class BlobUploadServlet extends HttpServlet {
      * @return {@link BlobKey}
      */
    private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKeyOrgin ) {
-		
- //   	System.out.println("BlobUploadServlet::storeImageBlob");
-    	
-		
-			
-        Image image = ImagesServiceFactory.makeImageFromBlob(blobKeyOrgin);
+	   
+	   Image image = ImagesServiceFactory.makeImageFromBlob(blobKeyOrgin);
+	   
+	   BlobServiceImpl blobService = new BlobServiceImpl();
+	   
+	   ImagesService imageServiceOrginal = ImagesServiceFactory.getImagesService();
+       InputSettings inputSettingsOrginal = new InputSettings();
+       inputSettingsOrginal.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
+       Transform dummyOrgin = ImagesServiceFactory.makeRotate(0);
+       OutputSettings outputSettingsOrginal = new OutputSettings(OutputEncoding.JPEG);
+       
+       Image newImageOrgin = imageServiceOrginal.applyTransform( dummyOrgin, image ,inputSettingsOrginal, outputSettingsOrginal);
+       BlobKey newOrginalBlobKey = null;
+       try {  	
+       		newOrginalBlobKey = blobService.writeToBlobstore("image/jpeg", imageType+"ImageOrginalSize.jpg", newImageOrgin.getImageData());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+      
         ImagesService imageService = ImagesServiceFactory.getImagesService();
-        
-//        Transform dummy = ImagesServiceFactory.makeResize(800, 600);
        
-         Transform	dummy = ImagesServiceFactory.makeResize(500, 375);
-       
-         Transform dummyOrgin = ImagesServiceFactory.makeRotate(0);
+        Transform dummy = ImagesServiceFactory.makeResize(500, 375);
 
         InputSettings inputSettings = new InputSettings();
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
-		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-		//outputSettings.setQuality(40);
-		
         Image newImage = imageService.applyTransform( dummy, image ,inputSettings, outputSettings);
-        Image newImageOrgin = imageService.applyTransform( dummyOrgin, image ,inputSettings, outputSettings);
-//        int ratio = image.getWidth() / 220;
-//        
-//        Transform resize;
-//        
-//        if (imageType.equalsIgnoreCase(ImageType.LOGO.name())) {
-//        	resize = ImagesServiceFactory.makeResize(220, newImage.getHeight() / ratio);
-//        } 
-//        else if (imageType.equalsIgnoreCase(ImageType.MENU.name())) {
-//            	resize = ImagesServiceFactory.makeResize(220, newImage.getHeight() / ratio);
-//            }	
-//        else {
-//        	resize = ImagesServiceFactory.makeResize(420, 280);
-//        }
-//    
-//        Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
-     
-        BlobServiceImpl blobService = new BlobServiceImpl();
        
         BlobKey newblobKey = null;
-        BlobKey newOrginalBlobKey = null;
+      
         try {
-        	newOrginalBlobKey = blobService.writeToBlobstore("image/jpeg", "imageOrginalSize.jpg", newImageOrgin.getImageData());
 			newblobKey = blobService.writeToBlobstore("image/jpeg", "imageMin.jpg", newImage.getImageData());
 			blobstoreService.delete(blobKeyOrgin);
 			

@@ -358,6 +358,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 					imageBlob.getImageType());
 			newImageBlob.setWidth(scaleImage.getWidth());
 			newImageBlob.setHeight(scaleImage.getHeight());
+			newImageBlob.setBlobKeyOriginalSize(imageBlob2.getBlobKeyOriginalSize());
 			dao.ofy().put(newImageBlob);
 			
 			//remove old image and image's data
