@@ -118,7 +118,7 @@ public class BlobUploadServlet extends HttpServlet {
 //            		
 //            		Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
             		
-            		blobKey = storeImageBlob( restId, imageType, blobKey );
+            		blobKey = storeImageBlob(restId, imageType, blobKey);
                     res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
             }
             
@@ -142,22 +142,26 @@ public class BlobUploadServlet extends HttpServlet {
     
     /**
      * 
-     * @param restId - id of {@link Restaurant}
-     * @param imageType - type of Image {@link ImageType}
-     * @param blobKey - {@link BlobKey}
+     * @param restId id of {@link Restaurant}
+     * @param imageType type of Image {@link ImageType}
+     * @param blobKeyOrgin {@link BlobKey}
      * @return {@link BlobKey}
      */
-   private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
+   private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKeyOrgin ) {
 		
  //   	System.out.println("BlobUploadServlet::storeImageBlob");
     	
 		
 			
-        Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
+        Image image = ImagesServiceFactory.makeImageFromBlob(blobKeyOrgin);
         ImagesService imageService = ImagesServiceFactory.getImagesService();
         
-        Transform dummy = ImagesServiceFactory.makeResize(800, 600);
-        
+//        Transform dummy = ImagesServiceFactory.makeResize(800, 600);
+       
+         Transform	dummy = ImagesServiceFactory.makeResize(500, 375);
+       
+         Transform dummyOrgin = ImagesServiceFactory.makeRotate(0);
+
         InputSettings inputSettings = new InputSettings();
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
@@ -165,7 +169,7 @@ public class BlobUploadServlet extends HttpServlet {
 		//outputSettings.setQuality(40);
 		
         Image newImage = imageService.applyTransform( dummy, image ,inputSettings, outputSettings);
-        
+        Image newImageOrgin = imageService.applyTransform( dummyOrgin, image ,inputSettings, outputSettings);
 //        int ratio = image.getWidth() / 220;
 //        
 //        Transform resize;
@@ -185,24 +189,26 @@ public class BlobUploadServlet extends HttpServlet {
         BlobServiceImpl blobService = new BlobServiceImpl();
        
         BlobKey newblobKey = null;
+        BlobKey newOrginalBlobKey = null;
         try {
-        	
-			newblobKey = blobService.writeToBlobstore("image/jpeg", "image.jpg", newImage.getImageData());
-			blobstoreService.delete(blobKey);
+        	newOrginalBlobKey = blobService.writeToBlobstore("image/jpeg", "imageOrginalSize.jpg", newImageOrgin.getImageData());
+			newblobKey = blobService.writeToBlobstore("image/jpeg", "imageMin.jpg", newImage.getImageData());
+			blobstoreService.delete(blobKeyOrgin);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        ImageBlob imageBlob = new ImageBlob(restId, newblobKey==null?blobKey.getKeyString():newblobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
-		imageBlob.setWidth(newImage.getWidth());
-		imageBlob.setHeight(newImage.getHeight());
+        ImageBlob imageBlob = new ImageBlob(restId, newblobKey==null?blobKeyOrgin.getKeyString():newblobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
 		
+        imageBlob.setWidth(newImage.getWidth());
+		imageBlob.setHeight(newImage.getHeight());
+		imageBlob.setBlobKeyOriginalSize(newOrginalBlobKey.getKeyString());
 		
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		
 //		System.out.println("Blob saved: " + key.getKind() + ", " + key.getName() + ", blobKey: " + blobKey.getKeyString());
-		return newblobKey==null?blobKey:newblobKey;
+		return newblobKey==null?blobKeyOrgin:newblobKey;
 		
 	}
     

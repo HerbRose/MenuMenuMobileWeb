@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -163,7 +164,8 @@ public class CityListScreen extends MyPage implements IObserver{
 		if(userController.getLoggedUser().isAdmin()){
 			getContentPanel().add(adminPanelWrapper);
 		}
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
+		PagesController.hideWaitPanel();
 	}
 
 	@Override
@@ -175,4 +177,9 @@ public class CityListScreen extends MyPage implements IObserver{
 		cityList = cityController.getCitiesList();
 	    addCities(cityList);
 	}
+	
+	private native int getOffsetWidth(Element element)/*-{
+		$wnd.console.log(element);
+		return element.offsetWidth;
+	}-*/;
 }

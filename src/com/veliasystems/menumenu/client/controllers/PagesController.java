@@ -14,7 +14,7 @@ import com.veliasystems.menumenu.client.ui.RestaurantsListScreen;
 public class PagesController {
 
 	private static Map<Pages, JQMPage> pagesMap = new HashMap<Pages, JQMPage>();
-	
+	public static int contentWidth = 0;
 	/**
 	 * set the page only if local page is null
 	 * @param enumPage

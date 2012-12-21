@@ -146,7 +146,7 @@ public class SwipeView extends FlowPanel {
 					parent, imageType);
 			scrollerContainer.insert(emptyBoard, 0);
 		}
-		wrapper.scrollToRight();
+	//	wrapper.scrollToRight();
 		
 	}
 	
@@ -161,7 +161,7 @@ public class SwipeView extends FlowPanel {
 
 			@Override
 			public void onLoad(LoadEvent event) {
-				wrapper.scrollToRight();
+				//wrapper.scrollToRight();
 				loadedPageController.removeImage(getRestId());
 			}
 		});

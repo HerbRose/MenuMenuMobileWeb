@@ -93,6 +93,24 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public City findCity(Long cityId){
 		return dao.ofy().find(City.class, cityId);
 	}
+	public ImageBlob findImageBlob(BlobKey blobKey){
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if (query == null) {
+			return new ImageBlob();
+		}
+		
+		return query.filter("blobKey", blobKey.getKeyString()).get();
+	}
+	public ImageBlob findImageBlob(String blobKey){
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if (query == null) {
+			return new ImageBlob();
+		}
+		
+		return query.filter("blobKey", blobKey).get();
+	}
 	/**
 	 * 
 	 * @param user - Logged {@link User}

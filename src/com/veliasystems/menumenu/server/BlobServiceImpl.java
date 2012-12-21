@@ -65,6 +65,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	private BlobstoreService blobstoreService = BlobstoreServiceFactory
 			.getBlobstoreService();
 
+	
 	private static final Logger log = Logger.getLogger(BlobServiceImpl.class
 			.getName());
 
@@ -264,13 +265,29 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY, String newName) {
 
-		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		ImageBlob imageBlob2;
+		if (query == null) {
+			imageBlob2 =  new ImageBlob();
+		}else{
+			imageBlob2 = query.filter("blobKey", imageBlob.getBlobKey()).get();
+		}
+		
+		BlobKey blobKey ;
+		if(imageBlob2.getBlobKeyOriginalSize() != null){
+			blobKey = new BlobKey(imageBlob2.getBlobKeyOriginalSize());
+			log.info("used getBlobKeyOriginalSize()");
+		}else{
+			blobKey = new BlobKey(imageBlob.getBlobKey());
+			log.info("used getBlobKey()");
+		}
+		 
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
 		
 		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
 		
 		if(oldImage == null){
-			log.severe("Picture not found in database:\n blobKey: " + imageBlob.getBlobKey());
+			log.severe("Picture not found in database:\n blobKey: " + blobKey);
 			return null;
 		}
 		/**
@@ -296,7 +313,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-		outputSettings.setQuality(100);
+//		outputSettings.setQuality(100);
 		
 		
 //		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
@@ -316,11 +333,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			break;
 		case LOGO:
 			scaleTransform = ImagesServiceFactory.makeResize(220,
-					newImage.getHeight());
+					4000);//newImage.getHeight());
 			break;
 		case MENU:
 			scaleTransform = ImagesServiceFactory.makeResize(220,
-					newImage.getHeight());
+					4000);//newImage.getHeight());
 			break;
 		default:
 			log.severe("Unknow image type: " + imageBlob.getImageType());
@@ -334,7 +351,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		BlobKey newBlobKey = null;
 		ImageBlob newImageBlob = null;
 		try {
-			newBlobKey = writeToBlobstore("image/jpeg", newName,
+			newBlobKey = writeToBlobstore("image/jpeg", imageBlob.getImageType().name()+newName,
 					scaleImage.getImageData());
 			newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
 					newBlobKey.getKeyString(), imageBlob.getDateCreated(),

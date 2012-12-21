@@ -84,6 +84,7 @@
 	padding:0;
 	display: inline-block;
 	padding-left: 100px;
+	direction: rtl;
 }
 #scroller td, .scroller td{
 	vertical-align: middle !important;
@@ -372,7 +373,7 @@ width: 100px;
 /* testing only */
 
 .mainPanel{
-	width: 239px;
+/* 	width: 239px; */
 	position: relative;
 }
 .topPanel{

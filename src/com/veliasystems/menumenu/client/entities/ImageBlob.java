@@ -31,6 +31,10 @@ public class ImageBlob implements Serializable {
 	 */
 	private String blobKey;
 	/**
+	 * The image blobKey (converted to {@link String}) to original size
+	 */
+	private String blobKeyOriginalSize = null;
+	/**
 	 * Date of creation of image
 	 */
     private Date dateCreated;
@@ -102,7 +106,7 @@ public class ImageBlob implements Serializable {
 	
 	/**
 	 * set the image blobKey (converted to {@link String}) 
-	 * @param blobKey - the image blobKey (converted to {@link String}) 
+	 * @param blobKey the image blobKey (converted to {@link String}) 
 	 */
 	public void setBlobKey(String blobKey) {
 		this.blobKey = blobKey;
@@ -114,6 +118,20 @@ public class ImageBlob implements Serializable {
 	 */
 	public String getBlobKey() {
 		return blobKey;
+	}
+	/**
+	 * 
+	 * @return the image blobKey (converted to {@link String}) to original size
+	 */
+    public String getBlobKeyOriginalSize() {
+		return blobKeyOriginalSize;
+	}
+    /**
+     * set the image blobKey (converted to {@link String}) to original size
+     * @param blobKeyOriginalSize the image blobKey (converted to {@link String}) to original size
+     */
+    public void setBlobKeyOriginalSize(String blobKeyOriginalSize) {
+		this.blobKeyOriginalSize = blobKeyOriginalSize;
 	}
 	
 	/**
@@ -205,7 +223,7 @@ public class ImageBlob implements Serializable {
     private void setTimeInMiliSec(long timeInMiliSec) {
 		this.timeInMiliSec = timeInMiliSec;
 	}
-    
+ 
     
     /**
      * @return <code>true</code> if and only if <code>imageBlobToCheck</code> have the {@link ImageBlob#getImageUrl()} and {@link ImageBlob#restId} and {@link ImageBlob#imageType} or <code>false</code>
