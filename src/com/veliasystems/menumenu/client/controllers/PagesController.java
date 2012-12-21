@@ -6,10 +6,6 @@ import java.util.Map;
 import com.google.gwt.dom.client.Document;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.ui.AddRestaurantScreen;
-import com.veliasystems.menumenu.client.ui.CityListScreen;
-import com.veliasystems.menumenu.client.ui.HomePageScreen;
-import com.veliasystems.menumenu.client.ui.RestaurantsListScreen;
 
 public class PagesController {
 

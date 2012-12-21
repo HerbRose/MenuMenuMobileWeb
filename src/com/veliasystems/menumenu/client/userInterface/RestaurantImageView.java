@@ -44,7 +44,6 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-import com.veliasystems.menumenu.client.ui.SwipeView;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;

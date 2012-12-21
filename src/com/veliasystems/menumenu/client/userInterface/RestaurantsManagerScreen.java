@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,23 +28,21 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
-import com.veliasystems.menumenu.client.controllers.Pages;
-import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.ui.administration.AddAdminPanel;
-import com.veliasystems.menumenu.client.ui.administration.AddAgentPanel;
-import com.veliasystems.menumenu.client.ui.administration.AddRestauratorPanel;
-import com.veliasystems.menumenu.client.ui.administration.CityManagerPanel;
-import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyMenuPanel;
-import com.veliasystems.menumenu.client.ui.administration.EditDataPanel;
-import com.veliasystems.menumenu.client.ui.administration.EmailPanel;
-import com.veliasystems.menumenu.client.ui.administration.IManager;
-import com.veliasystems.menumenu.client.ui.administration.LastUploadedImages;
-import com.veliasystems.menumenu.client.ui.administration.RemoveUsersPanel;
-import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.AddAdminPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.AddAgentPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.AddRestauratorPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.CityManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.DefaultEmptyMenuPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.EditDataPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.EmailPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.IManager;
+import com.veliasystems.menumenu.client.userInterface.administration.LastUploadedImages;
+import com.veliasystems.menumenu.client.userInterface.administration.RemoveUsersPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 
 public class RestaurantsManagerScreen extends JQMPage implements
 		HasClickHandlers, IObserver {
@@ -100,7 +98,6 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		userController.addObserver(this);
 		restaurantController.addObserver(this);
 		cityController.addObserver(this);
-		
 		userType = userController.getUserType();
 		setHeader();
 		setContent();

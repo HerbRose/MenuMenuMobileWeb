@@ -3,10 +3,8 @@ package com.veliasystems.menumenu.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Cookies;
 import com.sksamuel.jqm4gwt.JQMContext;
-import com.veliasystems.menumenu.client.ui.LoadDataScreen;
-import com.veliasystems.menumenu.client.ui.Pages;
-//import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
-//import com.veliasystems.menumenu.client.userInterface.Pages;
+import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
+import com.veliasystems.menumenu.client.userInterface.Pages;
 
 public class MenuMenuMobileWeb implements EntryPoint {
 

@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -17,7 +17,6 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 public class MyImage extends FlowPanel {
 

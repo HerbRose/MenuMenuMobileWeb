@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.administration;
+package com.veliasystems.menumenu.client.userInterface.administration;
 
 import java.util.ArrayList;
 import java.util.HashMap;

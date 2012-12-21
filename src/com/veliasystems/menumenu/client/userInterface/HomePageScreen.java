@@ -10,7 +10,6 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
-import com.veliasystems.menumenu.client.ui.LogoutScreen;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;

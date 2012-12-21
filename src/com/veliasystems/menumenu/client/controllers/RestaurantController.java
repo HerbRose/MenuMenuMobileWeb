@@ -25,10 +25,9 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.RestInfoScreen;
-import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
+import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 
 
 
@@ -245,7 +244,7 @@ public class RestaurantController {
 				if(lastPage.equalsIgnoreCase(RestaurantsManagerPanel.class.getName())){
 					
 				}
-				if(lastPage.equalsIgnoreCase(RestInfoScreen.class.getName())){
+				if(lastPage.equalsIgnoreCase(RestaurantImageView.class.getName())){
 					historyGoBack(2);
 				}
 				notifyAllObservers();

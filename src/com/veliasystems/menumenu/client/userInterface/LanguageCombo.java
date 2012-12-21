@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
 
 import java.util.HashMap;
 import java.util.Map;

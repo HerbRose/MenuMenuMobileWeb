@@ -15,7 +15,7 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-import com.veliasystems.menumenu.client.ui.MyImage;
+import com.veliasystems.menumenu.client.userInterface.MyImage;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 
