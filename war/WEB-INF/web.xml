@@ -149,6 +149,16 @@
   </servlet-mapping>
   
   <servlet>
+     <servlet-name>GetRestaurantServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.mobile.GetRestaurantServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetRestaurantServlet</servlet-name>
+     <url-pattern>/getRestaurantServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
      <servlet-name>FileUploadServer</servlet-name>
      <servlet-class>com.veliasystems.menumenu.server.api.FileUploadServer</servlet-class>
   </servlet>

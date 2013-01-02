@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -25,16 +25,16 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.CropImage;
 import com.veliasystems.menumenu.client.ui.RestInfoScreen;
-import com.veliasystems.menumenu.client.ui.RestaurantImageView;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 
 
 /**
  * @author mateusz
- *
+ * Controller to all operations on {@link Restaurant} 
  */
 public class RestaurantController {
 
@@ -60,15 +60,24 @@ public class RestaurantController {
 //	public boolean isFromCityView() {
 //		return fromCityView;
 //	}
-	
+	/**
+	 * Sets given page to last visited
+	 * @param lastOpenPage - {@link JQMPage} 
+	 */
 	public void setLastOpenPage(JQMPage lastOpenPage) {
 		this.lastOpenPage = lastOpenPage;
 	}
-	
+	/**
+	 * Return last visited page
+	 * @return {@link JQMPage}
+	 */
 	public JQMPage getLastOpenPage() {
 		return lastOpenPage;
 	}
-	
+	/**
+	 * 
+	 * @return Single instance of {@link RestaurantController}
+	 */
 	public static RestaurantController getInstance(){
 		
 		if(instance == null ){
@@ -113,7 +122,10 @@ public class RestaurantController {
 	public void setRestaurants(Map<Long, Restaurant> restaurants) {
 		this.restaurants = restaurants;
 	}
-	
+	/**
+	 * Return list of {@link Restaurant} from local datastore
+	 * @return List of {@link Restaurant}
+	 */
 	public List<Restaurant> getRestaurantsList() {
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		for (Long restaurantId : getRestaurantsKey()) {
@@ -122,6 +134,15 @@ public class RestaurantController {
 		
 		return restaurantsList;
 	}
+	/**
+	 * 
+	 * @param id - id of {@link Restaurant}
+	 * @return name of  given {@link Restaurant}
+	 */
+	public String getRestaurantName(long id){
+		return restaurants.get(id).getName();
+	}
+	
 	/**
 	 * 
 	 * @param restaurantId
@@ -171,30 +192,48 @@ public class RestaurantController {
 	private Set<Long> getRestaurantsKey(){
 		return restaurants.keySet();
 	}
-	
-	public void saveRestaurant(Restaurant restaurant){
-		final Restaurant restaurantToSave = restaurant;
-	
-		storeService.saveRestaurant(restaurantToSave, new AsyncCallback<Restaurant>() {
+	/**
+	 * 
+	 * @param restaurant - {@link Restaurant} to save
+	 * @param isBack - boolean value, should we return to {@link CityInfoScreen} or not
+	 */
+	public void saveRestaurant(Restaurant restaurant, final boolean isBack){
+		PagesController.showWaitPanel();
+		storeService.saveRestaurant(restaurant, new AsyncCallback<Restaurant>() {
 			@Override
 			public void onSuccess(Restaurant result) {
-				
-//				restaurantToSave.setLogoImages(new ArrayList<ImageBlob>());
-//				restaurantToSave.setProfileImages(new ArrayList<ImageBlob>());
-//				restaurantToSave.setMenuImages(new ArrayList<ImageBlob>());
-				
+				if(result.getLogoImages() == null){
+					result.setLogoImages(new ArrayList<ImageBlob>());
+				}
+				if(result.getMenuImages() == null){
+					result.setMenuImages(new ArrayList<ImageBlob>());
+				}
+				if(result.getProfileImages() == null){
+					result.setProfileImages(new ArrayList<ImageBlob>());
+				}	
 				restaurants.put(result.getId(), result); //add/change restaurant in our list
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
-				History.back();
+				
+				if(isBack){
+					Window.alert(Customization.RESTAURANTSAVED);
+					JQMContext.changePage(CityController.cityMapView.get(result.getCityId()) , Transition.SLIDE);
+					
+				}
+					
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
 				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
+		
 	}
-	
+	/**
+	 * 
+	 * @param restaurant - {@link Restaurant} to delete
+	 * @param page - source of action
+	 */
 	public void deleteRestaurant(Restaurant restaurant, String page){
 		
 		final Restaurant restaurantToDelete = restaurant;
@@ -218,51 +257,90 @@ public class RestaurantController {
 		});
 		
 	}
+	/**
+	 * Remove {@link Restaurant} only locally
+	 * @param restaurantId - id of {@link Restaurant}
+	 */
 	public void removeRestaurantLocally(Long restaurantId){
 		
 		restaurants.remove(restaurantId);
 		
 	}
+	/**
+	 * Remove list of {@link Restaurant}'s only locally
+	 * @param restaurantIds - List of {@link Restaurant}
+	 */
 	public void removeRestaurantLocally(List<Restaurant> restaurantIds){
 		
 		for (Restaurant restaurant : restaurantIds) {
 			removeRestaurantLocally(restaurant.getId());
 		}
 	}
+	/**
+	 * Change Page to {@link com.veliasystems.menumenu.client.userInterface.CropImage} 
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of image, specified in {@link ImageType}
+	 * @param blobKey - {@link BlobKey} in {@link String} format
+	 */
+	public void cropImage(long restaurantId, ImageType imageType, String blobKey){
+		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
+			Cookies.removeCookie(R.IMAGE_TYPE);
+		}
+		ImageBlob imageBlob = new ImageBlob(restaurantId+"", blobKey, new Date(), imageType);
+		JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
+	}
+	/**
+	 * Should not be used at all, but if {@link BlobKey} is null this method is called
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image, specified of {@link ImageType}
+	 */
 	public void cropImage(long restaurantId, ImageType imageType){
 		
+		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
+			Cookies.removeCookie(R.IMAGE_TYPE);
+		}
 		
-		final long myRestaurantId = restaurantId;
-		final ImageType myImageType = imageType;
-		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
-		Cookies.removeCookie(R.IMAGE_TYPE);
-		
-		
-		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
+		blobService.getLastUploadedImage(restaurantId, imageType, new AsyncCallback<ImageBlob>() {
 			@Override
-			public void onSuccess(List<ImageBlob> result) {
-				for (ImageBlob imageBlob : result) {
-					boolean isIn = false;
-					if(oldImages != null){
-						for (ImageBlob oldImageBlob : oldImages) {
-							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
-								isIn = true;
-								
-							}
-						}
-					}
-					if (!isIn && imageBlob != null) {
-						JQMContext.changePage(new CropImage(imageBlob, myRestaurantId), Transition.SLIDE);
-					}
-				}
-				
+			public void onSuccess(ImageBlob imageBlob) {
+				log.info("getLastUploadedImage onSuccess: " + imageBlob == null?"null":imageBlob.getImageUrl());
+				if(imageBlob == null) Window.alert(Customization.CONNECTION_ERROR);
+				else JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
+//		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
+//			@Override
+//			public void onSuccess(List<ImageBlob> result) {
+//				for (ImageBlob imageBlob : result) {
+//					boolean isIn = false;
+//					if(oldImages != null){
+//						for (ImageBlob oldImageBlob : oldImages) {
+//							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
+//								isIn = true;
+//								
+//							}
+//						}
+//					}
+//					if (!isIn && imageBlob != null) {
+//						JQMContext.changePage(new CropImage(imageBlob, myRestaurantId), Transition.SLIDE);
+//					}
+//				}
+//				
+//			}
+//			@Override
+//			public void onFailure(Throwable caught) {
+//			}
+//		});
 	}
-	
+	/**
+	 * Crop image on Apple devices
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image, specified in {@link ImageType}
+	 */
 	public void cropImageApple(long restaurantId, ImageType imageType){
 		
 		final long myRestaurantId = restaurantId;
@@ -273,17 +351,22 @@ public class RestaurantController {
 		blobService.getLastUploadedImage(restaurantId, myImageType, new AsyncCallback<ImageBlob>() {
 			@Override
 			public void onSuccess(ImageBlob result) {
-				JQMContext.changePage(new CropImage(result, myRestaurantId), Transition.SLIDE);
+				if(result == null) Window.alert(Customization.CONNECTION_ERROR);
+				else JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(result), Transition.SLIDE);
 				
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				Window.alert(Customization.CONNECTION_ERROR);
 			}
 		});
 	}
-	
+	/**
+	 * Return list with {@link ImageBlob}'s by given type and {@link Restaurant} id
+	 * @param imageType - type of image, specified in {@link ImageType}
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @return List of {@link ImageBlob}
+	 */
 	public List<ImageBlob> getImagesList(ImageType imageType, Long restaurantId){
 		
 		List<ImageBlob> oldImages;
@@ -305,63 +388,68 @@ public class RestaurantController {
 		return oldImages;
 	}
 	
-	/**
-	 * 
-	 * @param restaurantId
-	 * @param imageType
-	 * @param imageBlobToDelete - image which was cropped but is in local storage (ipad, iphone) 
-	 */
-	public void afterCrop(Long restaurantId, ImageType imageType) {
-		
-		final long myRestaurantId = restaurantId;
-		final ImageType myImageType = imageType;
-		final List<ImageBlob> oldImages = getImagesList(imageType, restaurantId);
-		
-		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
-			@Override
-			public void onSuccess(List<ImageBlob> result) {
-				
-				if(result == null || result.isEmpty()){
-					Window.alert("Please refresh page");
-					return;
-				}
-				
-				Long restaurantId = Long.parseLong(result.get(0).getRestaurantId());
-				
-				List<ImageBlob> imagesBlobs = getImagesList(result.get(0).getImageType(), restaurantId);
-				imagesBlobs.clear();
-				for (ImageBlob imageBlob : result) {
-					imagesBlobs.add(imageBlob);
-//					boolean isIn = false;
-//					if(oldImages != null){
-//						for (ImageBlob oldImageBlob : oldImages) {
-//							if(oldImageBlob.getBlobKey().equals(imageBlob.getBlobKey())){
-//								isIn = true;
-//							}
-//						}
-//					}
-//					if (!isIn) {
-//						List<ImageBlob> imagList = getImagesList(myImageType, myRestaurantId);
-//						if(imagList == null){
-//							imagList = new ArrayList<ImageBlob>();
-//						}
-//						imagList.add(imageBlob);
-//					}
-					
-					
-				}
-				JQMContext.changePage(restMapView.get(myRestaurantId));
-				PagesController.hideWaitPanel();
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-		});
-		
-		
+	private void setNewImageList(ImageBlob newImageBlob){
 		
 	}
 	
+	/**
+	 * Remove (if exist) old {@link ImageBlob} from the image list (list is dependent of ImageTape).<br>
+	 * Add new {@link ImageBlob} to the list (list is dependent of ImageTape).<br>
+	 * If {@link ImageBlob#getImageType()} of <code> newImageBlob</code> is equal to {@link ImageType#LOGO} the image is set as main.
+	 * @param newImageBlob - new {@link ImageBlob}
+	 * @param oldImageBlob - old {@link ImageBlob}
+	 */
+	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob) {
+		
+		if(newImageBlob == null){
+			Window.alert(Customization.CONNECTION_ERROR);
+			return;
+		}
+		
+		List<ImageBlob> imageBlobs = getImagesList(newImageBlob.getImageType(), Long.parseLong(newImageBlob.getRestaurantId()));
+		if(imageBlobs == null){
+			imageBlobs = new ArrayList<ImageBlob>();
+			
+		}
+		imageBlobs.add(newImageBlob);
+
+		if(newImageBlob.getImageType() == ImageType.LOGO){ //jezeli logo to ustawiamy jako glowne
+			storeService.setMainImage(newImageBlob, new AsyncCallback<Restaurant>() {
+				
+				@Override
+				public void onSuccess(Restaurant restaurant) {
+					
+					restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+					JQMContext.changePage(restMapView.get(restaurant.getId()), Transition.SLIDE);
+					
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					PagesController.hideWaitPanel();
+					Window.alert(Customization.CONNECTION_ERROR);
+				}
+			});
+		}else{ //jezeli nie logo to ustawiamy jako glowne
+			if(oldImageBlob != null){ // dla pickup'a, usuwanie starego zdjecia (wymagany byl restart po uploudzie wiec na liscie jest zdjecie sprzed cropa)
+				ImageBlob imageBlobToDelete = null;
+				for (ImageBlob imageBlob : imageBlobs) {
+					if(imageBlob.getBlobKey().equals(oldImageBlob.getBlobKey())) {
+						imageBlobToDelete = imageBlob;
+						break;
+					}
+				}
+				imageBlobs.remove(imageBlobToDelete);
+			}
+			JQMContext.changePage(restMapView.get(Long.parseLong(newImageBlob.getRestaurantId())), Transition.SLIDE);
+		}
+		
+		
+	}
+	/**
+	 * 
+	 * @param restaurantMap - Map of id's {@link Restaurant}'s and {@link Boolean} value of visibility for mobile device
+	 */
 	public void setRestaurantsVisable(Map<Long,Boolean> restaurantMap){
 		List<Restaurant> restaurantsToChange = new ArrayList<Restaurant>();
 		
@@ -393,7 +481,10 @@ public class RestaurantController {
 		
 		
 	}
-
+	/**
+	 * Save list of {@link Restaurant}'s to datastore
+	 * @param restaurantsToSave - List of {@link Restaurant}, which must be saved
+	 */
 	public void saveRestaurants(List<Restaurant> restaurantsToSave) {
 		final List<Restaurant> restaurantsSentToServer = restaurantsToSave;
 		
@@ -422,7 +513,11 @@ public class RestaurantController {
 	private static native void historyGoBack(int howMany) /*-{
 		history.go(-howMany);
 	}-*/;
-
+	/**
+	 * Set empty image
+	 * @param restaurant - {@link Restaurant} object
+	 * @param imageType - type of Image, specified in {@link ImageType}
+	 */
 	public void setEmptyBoard(Restaurant restaurant, ImageType imageType) {
 		
 		storeService.clearBoard(restaurant, imageType, new AsyncCallback<Restaurant>() {
@@ -430,8 +525,8 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(Restaurant restaurant) {
 				restaurants.get(restaurant.getId()).setMainMenuImageString(restaurant.getMainMenuImageString());
-				restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
-				restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
+//				restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+//				restaurants.get(restaurant.getId()).setMainProfileImageString(restaurant.getMainProfileImageString());
 				
 				restMapView.get(restaurant.getId()).checkChanges();
 				PagesController.hideWaitPanel();
@@ -445,7 +540,10 @@ public class RestaurantController {
 		});
 		
 	}
-
+	/**
+	 * Set {@link ImageBlob} as main image
+	 * @param imgBlob - {@link ImageBlob}
+	 */
 	public void setMainImage(ImageBlob imgBlob) {
 		
 		final ImageType imageType = imgBlob.getImageType();

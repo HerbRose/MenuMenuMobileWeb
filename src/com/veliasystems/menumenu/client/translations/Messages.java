@@ -303,6 +303,15 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Add board")
 	String addBoard();
+
+	@DefaultStringValue("Published")  
+	String profilePublished();
+	
+	@DefaultStringValue("Last uploaded photo") 
+	String lastUploaded();
+	
+	@DefaultStringValue("Unpublished") 
+	String profileUnPublished();
 	
 	
 }

@@ -9,10 +9,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,9 +65,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	private BlobstoreService blobstoreService = BlobstoreServiceFactory
 			.getBlobstoreService();
 
+	
 	private static final Logger log = Logger.getLogger(BlobServiceImpl.class
 			.getName());
 
+	
 	@Override
 	public String getBlobStoreUrl(String restId, ImageType imageType) {
 		String url = BlobstoreServiceFactory.getBlobstoreService()
@@ -74,10 +79,15 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return url;
 	}
 
+	
 	public List<ImageBlob> getAllImages(Restaurant r) {
 		return getAllImages("" + r.getId());
 	}
 
+	/**
+	 * @param restaurantId = id of {@link Restaurant}
+	 * @return List of images connected to given {@link Restaurant}
+	 */
 	public List<ImageBlob> getAllImages(String restaurantId) {
 		List<ImageBlob> images = new ArrayList<ImageBlob>();
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
@@ -101,8 +111,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public ImageBlob getLastUploadedImage(Long restaurantId, ImageType imageType) {
 
-		List<ImageBlob> all = dao.ofy().query(ImageBlob.class)
-				.filter("restId", restaurantId + "")
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if(query == null) return null;
+		
+		List<ImageBlob> all = query.filter("restId", restaurantId + "")
 				.filter("imageType", imageType).list();
 
 		if (!all.isEmpty()) {
@@ -122,6 +135,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		ids.add("0");
 		ids.add("1");
 		listBoards = queryBoards.filter("restId IN", ids).list();
+		
 		return listBoards;
 	}
 
@@ -140,14 +154,22 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		dao.ofy().put(imageBlob);
 		return imageBlob.getId();
 	}
-
-	public List<ImageBlob> getDefaultEmptyProfil() {
+	/**
+	 * 
+	 * @return List of {@link ImageBlob}, which id is set to 0, default empty board
+	 */
+	public List<ImageBlob> getDefaultEmptyMenu() {
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
 		if (imgQuery == null)
 			return null;
 		return imgQuery.filter("restId =", "0").list();
 	}
-
+	/**
+	 * 
+	 * @param restaurantId - id of {@link Restaurant}
+	 * @param imageType - type of Image specified in {@link ImageType}
+	 * @return List of images of the same type in given {@link Restaurant}
+	 */
 	private List<ImageBlob> getImages(String restaurantId, ImageType imageType) {
 		List<ImageBlob> allImages = getAllImages(restaurantId);
 		List<ImageBlob> ret = new ArrayList<ImageBlob>();
@@ -192,10 +214,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * get blob info list
+	 * get blob info array
 	 * 
 	 * @param filter
-	 * @return
+	 * @return array of {@link BlobData} 
 	 */
 	public BlobData[] getBlobs(BlobDataFilter filter) {
 
@@ -225,24 +247,64 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	//
 	// }
 
-	
-	private void cropImage(ImageBlob imageBlob, double leftX, double topY,
+	/**
+	 * <h1>Short description</h1>
+	 * <ul>
+	 * <li>All values must be in range of 0.0 to 1.0, otherwise all incorrect values will be rounded to maximum</li>
+	 * <li>For example:if leftX < 0, then leftX is automatically rounded to 0.0 </li>
+	 * </ul>
+	 * @param imageBlob - image to crop
+	 * @param leftX - percentage of left line, counting from left side
+	 * @param topY - percentage of top line, counting from top
+	 * @param rightX - percentage of right line, counting from left side
+	 * @param bottomY - percentage of bottom line, counting from top side
+	 * @param newName - name of new image after crop, old image will be deleted from blobstore and datastore
+	 * @return ImageBlob which contains all informations about new image, like blobkey etc.
+	 * 
+	 */
+	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY, String newName) {
 
-		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		ImageBlob imageBlob2;
+		if (query == null) {
+			imageBlob2 =  new ImageBlob();
+		}else{
+			imageBlob2 = query.filter("blobKey", imageBlob.getBlobKey()).get();
+		}
+		
+		BlobKey blobKey ;
+		if(imageBlob2.getBlobKeyOriginalSize() != null){
+			blobKey = new BlobKey(imageBlob2.getBlobKeyOriginalSize());
+			log.info("used getBlobKeyOriginalSize()");
+		}else{
+			blobKey = new BlobKey(imageBlob.getBlobKey());
+			log.info("used getBlobKey()");
+		}
+		 
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
 		
 		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
 		
 		if(oldImage == null){
-			log.severe("Picture not found in database:\n blobKey: " + imageBlob.getBlobKey());
-			return;
+			log.severe("Picture not found in database:\n blobKey: " + blobKey);
+			return null;
 		}
+		/**
+		 * check if the range is ok
+		 */
 		
-		if(leftX < 0) leftX = 0;
-		if(rightX > 1) rightX = 1;
-		if(bottomY > 1) bottomY = 1;
-		if(topY < 0) topY = 0;
+		
+		if(leftX <= 0) leftX = 0;
+		if(rightX >= 1) rightX = 1;
+		if(bottomY >= 1) bottomY = 1;
+		if(topY <= 0) topY = 0;
+		
+		if(leftX >=1) leftX = 1-0.1;
+		if(rightX <=0) rightX = 0 + 0.1;
+		if(bottomY <=0) bottomY = 0 + 0.1;
+		if(topY >=1) topY = 1 -0.1;
+		
 
 		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY,
 				rightX, bottomY);
@@ -251,7 +313,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-//		outputSettings.setQuality(40);
+//		outputSettings.setQuality(100);
 		
 		
 //		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
@@ -262,7 +324,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			log.log(Level.SEVERE, "\noldImage: "
 					+oldImage 
 					+"\n", e);
-			return;
+			return null;
 		}
 		Transform scaleTransform = null;
 		switch (imageBlob.getImageType()) {
@@ -271,13 +333,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			break;
 		case LOGO:
 			scaleTransform = ImagesServiceFactory.makeResize(220,
-					newImage.getHeight());
+					4000);//newImage.getHeight());
 			break;
 		case MENU:
 			scaleTransform = ImagesServiceFactory.makeResize(220,
-					newImage.getHeight());
+					4000);//newImage.getHeight());
 			break;
-
+		default:
+			log.severe("Unknow image type: " + imageBlob.getImageType());
 		}
 
 		Image scaleImage = imagesService.applyTransform(scaleTransform,
@@ -286,20 +349,23 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
 		
 		BlobKey newBlobKey = null;
+		ImageBlob newImageBlob = null;
 		try {
-			newBlobKey = writeToBlobstore("image/jpeg", newName,
+			newBlobKey = writeToBlobstore("image/jpeg", imageBlob.getImageType().name()+newName,
 					scaleImage.getImageData());
-			ImageBlob newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
+			newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
 					newBlobKey.getKeyString(), imageBlob.getDateCreated(),
 					imageBlob.getImageType());
 			newImageBlob.setWidth(scaleImage.getWidth());
 			newImageBlob.setHeight(scaleImage.getHeight());
+			newImageBlob.setBlobKeyOriginalSize(imageBlob2.getBlobKeyOriginalSize());
 			dao.ofy().put(newImageBlob);
 			
 			//remove old image and image's data
 			BlobstoreServiceFactory.getBlobstoreService().delete(
 					new BlobKey(imageBlob.getBlobKey()));
-			dao.ofy().delete(imageBlob);
+			removeImageBlobByBlobKey(imageBlob.getBlobKey());
+			//dao.ofy().delete(imageBlob);
 			//END - remove old image and image's data
 		} catch (IOException e) {
 			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
@@ -313,12 +379,25 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 //			e.printStackTrace();
 //		}
 
+		return newImageBlob;
+	}
+	
+	private void removeImageBlobByBlobKey(String blobKey){
+		Query<ImageBlob> blobQuery = dao.ofy().query(ImageBlob.class);
+		if(blobQuery == null) return;
+		ImageBlob imgBlob = blobQuery.filter("blobKey =", blobKey).get();
+		dao.ofy().delete(imgBlob);
 	}
 
 	@Override
-	public void cropImage(ImageBlob imageBlob, double leftX, double topY,
+	public Map<String, ImageBlob> cropImage(ImageBlob imageBlob, double leftX, double topY,
 			double rightX, double bottomY){
-		cropImage(imageBlob, leftX, topY, rightX, bottomY, "image.jpg");
+		
+		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
+		
+		mapToReturn.put("old", imageBlob);
+		mapToReturn.put("new", cropImage(imageBlob, leftX, topY, rightX, bottomY, "imageCrop.jpg") );
+		return mapToReturn;
 	}
 	
 	@Override
@@ -328,7 +407,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 				.filter("restId", restaurantId + "")
 				.filter("imageType", imageType).list();
 	}
-
+	@Deprecated
 	private void sendToBlobstore(ImageBlob imageBlob, String cmd,
 			byte[] imageBytes) throws IOException {
 
@@ -378,22 +457,41 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 
 	}
-
+	/**
+	 * 
+	 * @return boundary
+	 */
 	private String makeBoundary() {
 		return "---------------------------" + randomString() + randomString()
 				+ randomString();
 	}
-
+	/**
+	 * 
+	 * @return The resultant string is a maximum of ceil(ln(263) / ln(36)) = 13 characters long and is suitable for use as a temporary id or cookie name.
+	 */
 	private static String randomString() {
 		return Long.toString(random.nextLong(), 36);
 	}
-
+	/**
+	 * static object of Random class
+	 */
 	private static Random random = new Random();
-
+	/**
+	 * 
+	 * @param os - OutputStream to write
+	 * @param s - content to write
+	 * @throws IOException
+	 */
 	private void write(OutputStream os, String s) throws IOException {
 		os.write(s.getBytes());
 	}
-
+	/**
+	 * 
+	 * @param os - OutputStream
+	 * @param name - name, e.g: id
+	 * @param value - value of name
+	 * @throws IOException
+	 */
 	private void writeParameter(OutputStream os, String name, String value)
 			throws IOException {
 		write(os, "Content-Disposition: form-data; name=\"" + name
@@ -408,10 +506,18 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		os.write(bs);
 		write(os, "\r\n");
 	}
-
+	/**
+	 * 
+	 * @param imageBlob - image to copy and delete old, used to resize images to smaller
+	 */
 	public void copyAndDeleteBlob(ImageBlob imageBlob) {
 		cropImage(imageBlob, 0, 0, 1, 1, "imageResized.jpg");
 	}
+	/**
+	 * 
+	 * @param imageBlob - image to copy
+	 * @param newRestaurantId - id of {@link Restaurant}, the image will be copied to this {@link Restaurant} 
+	 */
 	public void copyBlob(ImageBlob imageBlob, String newRestaurantId) {
 
 		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
@@ -501,7 +607,12 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		// e.printStackTrace();
 		// }
 	}
-
+	/**
+	 * 
+	 * @param blobKey - {@link BlobKey} of image
+	 * @param filesize - size of file
+	 * @return array of bytes
+	 */
 	private byte[] getImageBytes(BlobKey blobKey, long filesize) {
 
 		if (blobKey == null) {
@@ -555,7 +666,14 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		return filebytes;
 	}
-
+	/**
+	 * 
+	 * @param contentType - content of file: "image/jpeg";
+	 * @param fileName - name of file after save to restaurant
+	 * @param filebytes - array of bytes, use getImageBytes() method
+	 * @return BlobKey of newly created blob
+	 * @throws IOException if fileService cannot create new BlobFile
+	 */
 	public BlobKey writeToBlobstore(String contentType, String fileName,
 			byte[] filebytes) throws IOException {
 		// Get a file service
@@ -589,10 +707,53 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	public void  checkImageSize(){
 		
 	}
+
+	@Override
+	public List<ImageBlob> getLast24hImages() {
+		//changeTimeToMiliSec();
+		List<ImageBlob> images = new ArrayList<ImageBlob>();
+		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+		if (imgQuery == null){
+			return images;
+		}
+
+		Calendar today = Calendar.getInstance();
+		today.add(Calendar.DATE, -1);
+		
+		Date yesterday = new Date(today.getTimeInMillis());
+
+		return imgQuery.filter("timeInMiliSec >", yesterday.getTime()).list();
+	}
+	
+	/**
+	 * @deprecated
+	 */
+	private void changeTimeToMiliSec(){
+		List<ImageBlob> images = new ArrayList<ImageBlob>();
+		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+		if (imgQuery == null){
+			return;
+		}
+		
+		images = imgQuery.list();
+		
+		for (ImageBlob imageBlob : images) {
+			
+			imageBlob.setDateCreated(imageBlob.getDateCreated());
+			dao.ofy().put(imageBlob);
+		}
+		
+	}
+	
 }
 
 
-
+	
+/***
+ * 
+ * Comparator class used to compare image blobs by creation date
+ *
+ */
 class MyComparator implements Comparator<ImageBlob> {
 	public int compare(ImageBlob o1, ImageBlob o2) {
 		if (o1.getDateCreated().getTime() > o2.getDateCreated().getTime()) {

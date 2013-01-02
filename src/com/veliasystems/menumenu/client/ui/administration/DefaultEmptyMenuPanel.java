@@ -31,13 +31,14 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
-public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IObserver {
+public class DefaultEmptyMenuPanel extends FlowPanel implements IManager, IObserver {
 
 	private FormPanel formPanel;
 	private FileUpload fileUpload = new FileUpload();
@@ -48,7 +49,7 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	private ImagesController imagesController = ImagesController.getInstance();
 
-	public DefaultEmptyProfilePanel() {
+	public DefaultEmptyMenuPanel() {
 		
 		imagesController.addObserver(this);
 		
@@ -68,7 +69,7 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				Document.get().getElementById("load").setClassName("loaded");
+				imagesController.getEmptyMenuImagesFromServer();
 				formPanel.reset();
 			}
 		});
@@ -80,20 +81,19 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 			@Override
 			public void onChange(ChangeEvent event) {
 				Document.get().getElementById("load").setClassName("loading");
-				blobService.getBlobStoreUrl("1", ImageType.EMPTY_PROFILE,
+				blobService.getBlobStoreUrl("1", ImageType.EMPTY_MENU,
 						new AsyncCallback<String>() {
 
 							@Override
 							public void onSuccess(String result) {
 								formPanel.setAction(result);
 								formPanel.submit();
-								refresh();
+								
 							}
 
 							@Override
 							public void onFailure(Throwable caught) {
-								Document.get().getElementById("load")
-										.setClassName("loaded");
+								PagesController.hideWaitPanel();
 								Window.alert("Problem with upload. Try again");
 								
 							}
@@ -108,18 +108,12 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 	
 	private void refresh(){
 		
-		Map<String, ImageBlob> imageMap = imagesController.getEmptyProfileImages();
-		
-		if(imageMap == null)return;
-		
 		emptyProfileList.clear();
-		for (String	key : imageMap.keySet()) {
-			emptyProfileList.add(imagesController.getEmptyProfileImages().get(key));
-		}
+		emptyProfileList.addAll(imagesController.getDefoultEmptyMenuImageBlobList());
 		
 		cellTable.setRowData(emptyProfileList);
 		cellTable.redraw();
-		
+		PagesController.hideWaitPanel();
 	}
 		 
 	private void setImagesFlowPanel() {
@@ -147,7 +141,7 @@ public class DefaultEmptyProfilePanel extends FlowPanel implements IManager, IOb
 
 			@Override
 			public void update(int index, ImageBlob object, Boolean value) {
-				imagesController.setEmptyBoard(object);
+				imagesController.setEmptyMenuBoard(object);
 			}
 		});
 		

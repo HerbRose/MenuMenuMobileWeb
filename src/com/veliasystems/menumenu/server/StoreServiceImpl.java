@@ -1,6 +1,8 @@
 
 package com.veliasystems.menumenu.server;
 
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +15,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
@@ -85,11 +85,37 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		
 //		return city;
 //	}
-	
+	/**
+	 * 
+	 * @param cityId - id of {@link City} to find
+	 * @return Single {@link City} object or null if is not found
+	 */
 	public City findCity(Long cityId){
 		return dao.ofy().find(City.class, cityId);
 	}
-	
+	public ImageBlob findImageBlob(BlobKey blobKey){
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if (query == null) {
+			return new ImageBlob();
+		}
+		
+		return query.filter("blobKey", blobKey.getKeyString()).get();
+	}
+	public ImageBlob findImageBlob(String blobKey){
+		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+		
+		if (query == null) {
+			return new ImageBlob();
+		}
+		
+		return query.filter("blobKey", blobKey).get();
+	}
+	/**
+	 * 
+	 * @param user - Logged {@link User}
+	 * @return List of {@link City} available for the {@link User}
+	 */
 	private List<City> loadCitiesForUser(User user){
 		
 		List<Long> tmpList = user.getCitiesId();
@@ -101,7 +127,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return listCities;
 		
 	}
-	
+	/**
+	 * 
+	 * @param restList - List of {@link Restaurant} 
+	 * @return List of {@link City} found by list of {@link Restaurant}
+	 * <br/>
+	 * <br/>
+	 * <strong>Method used to getting data for user</strong>
+	 */
 	private List<City> loadCitiesByRestaurant(List<Restaurant> restList){
 		Set<Long> citiesId = new HashSet<Long>();		
 		for (Restaurant restaurant : restList) {
@@ -112,7 +145,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		List<City> cityList = cityQuery.filter("id IN", citiesId).list();	
 		return cityList;	
 	}
-	
+	/**
+	 * 
+	 * @param citiesList - List of {@link City}
+	 * @return List of {@link Restaurant} found by {@link City} list
+	 * <br/>
+	 * <br/>
+	 * <strong>Method used to getting data for user</strong>
+	 */
 	private List<Restaurant> loadRestaurantsByCities(List<City> citiesList){
 		Set<Long> restaurantsId = new HashSet<Long>();
 		for (City city : citiesList) {
@@ -138,7 +178,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			saveRestaurant(r,true);
 		}
 	}
-	
+	/**
+	 * 
+	 * @param r - {@link Restaurant} to save
+	 * @param trimCity - boolean is {@link City} must be trimmed from "city - district" naming convention
+	 */
 	private void saveRestaurant(Restaurant r, boolean trimCity) {
 		try {
 			getGeocoding(r,trimCity);
@@ -149,7 +193,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		dao.ofy().put(r);
 	}
-	
+	/**
+	 * @deprecated
+	 * @return List of test {@link Restaurant}
+	 */
 	private List<Restaurant> getData() {
 		List<Restaurant> r = new ArrayList<Restaurant>();
 		
@@ -242,19 +289,24 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setLogoImages(null);
 		r.setMenuImages(null);
 		r.setProfileImages(null);
-		r.setCityId(getCityId(r.getCity()));
+//		r.setCityId(getCityId(r.getCity()));
 		dao.ofy().put(r);
 		return r;
 //		System.out.println("saved succes: " + r.getName());
 	}
 
 	
-	private Long getCityId(String city){
-		
-		City newCity = dao.ofy().query(City.class).filter("city", city).get();
-		return newCity.getId();
-	}
-	
+//	private Long getCityId(String city){
+//		
+//		City newCity = dao.ofy().query(City.class).filter("city", city).get();
+//		return newCity.getId();
+//	}
+	/**
+	 * 
+	 * @param r - {@link Restaurant}
+	 * @param trimCity - boolean is {@link City} must be trimmed from "city - district" naming convention
+	 * @throws Exception
+	 */
 	private void getGeocoding( Restaurant r, boolean trimCity ) throws Exception {
 	//	Geocoder.setConnectionManager(new SimpleHttpConnectionManager());
 		final Geocoder geocoder = new Geocoder();
@@ -323,7 +375,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		
 	}
-	
+	/**
+	 * @deprecated
+	 * @param r - {@link Restaurant}
+	 * @throws Exception 
+	 */
 	private void getGeocodingOld( Restaurant r ) throws Exception {
 		String queryString = r.getCity().trim();
 		
@@ -354,7 +410,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return getImageLists( restQuery.order("name").list() );  
 	}
-	
+	/**
+	 * 
+	 * @return List of keys {@link Restaurant}
+	 */
 	public List<Key<Restaurant>> loadRestaurantsId() {
 		
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
@@ -369,7 +428,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		//System.out.println(restQuery.filter("city =", city).order("name").count());
 		return getImageLists( restQuery.filter("city =", city).order("name").list() );
 	}
-	
+	/**
+	 * 
+	 * @param cityId - id of {@link City}
+	 * @return List of {@link Restaurant} 
+	 */
 	public List<Restaurant> loadRestaurants( Long cityId ) {
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
@@ -390,7 +453,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return restaurantTmp;
 	}
-	
+	/**
+	 * 
+	 * @param user - logged {@link User}
+	 * @return List of {@link Restaurant} for {@link User}
+	 */
 	private List<Restaurant> loadRestaurantsForUser(User user){
 		
 		List<Long> tmpList = user.getRestaurantsId();
@@ -403,12 +470,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return getImageLists(listRestaurant);
 		
 	}
-	
+	/**
+	 * 
+	 * @param restaurants - list of {@link Restaurant}
+	 * @return List of {@link Restaurant} with images
+	 */
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
 		List<City> cityList = dao.ofy().query(City.class).list();
 		
 		for ( Restaurant r : restaurants ) {
+			
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
 			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
@@ -641,12 +713,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}
 
 		
@@ -659,6 +731,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return allData;
 		
 	}
+	/**
+	 * 
+	 * @param login - {@link User} login
+	 * @return {@link User} if is permitted or null if not
+	 */
 	private User authorization(String login){
 		Query<User> userQuery = dao.ofy().query(User.class);
 		if(userQuery != null){
@@ -683,12 +760,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyProfil());
+			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 		}
 		List<User> usersList = getUsers();
 		for (User user1 : usersList) {
@@ -730,28 +807,32 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public Restaurant clearBoard(Restaurant restaurant, ImageType imageType) {
 		
-		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
-			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
-			if(query != null){
-				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_PROFILE).filter("restId", "0").get();
-				if(imageBlob != null) restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
-			}
-		}
-
-		switch(imageType){
-		case PROFILE:
-			restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
-			break;
-		case LOGO:
-			restaurant.setMainLogoImageString(restaurant.getEmptyMenuImageString());
-			break;
-		case MENU:
-			restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
-			restaurant.setClearBoard(true);
-			break;
-		}
-		
+//		if(restaurant.getEmptyMenuImageString()==null || restaurant.getEmptyMenuImageString().equals("")){
+//			Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
+//			if(query != null){
+//				ImageBlob imageBlob = query.filter("imageType", ImageType.EMPTY_MENU).filter("restId", "0").get();
+//				if(imageBlob != null) restaurant.setEmptyMenuImageString(imageBlob.getImageUrl());
+//			}
+//		}
+//
+//		switch(imageType){
+//		case PROFILE:
+//			restaurant.setMainProfileImageString(restaurant.getEmptyMenuImageString());
+//			break;
+//		case LOGO:
+//			restaurant.setMainLogoImageString(restaurant.getEmptyMenuImageString());
+//			break;
+//		case MENU:
+//			restaurant.setMainMenuImageString(restaurant.getEmptyMenuImageString());
+//			restaurant.setClearBoard(true);
+//			break;
+//		}
+//		
+		restaurant.setEmptyMenuImageString(null);
+		restaurant.setMainMenuImageString(null);
+		restaurant.setClearBoard(true);
 		saveRestaurant(restaurant);
+		
 		return restaurant;
 	}
 
@@ -823,7 +904,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	    response.put("cityIdTo", cityIdTo);
 	    return response;
 	}
-	
+	/**
+	 * 
+	 * @param blobkey - List of {@link BlobKey}
+	 * @return List of images in range of {@link BlobKey}
+	 */
 	public List<ImageBlob> getImageBlobs(List<String> blobkey){
 		if(blobkey ==null || blobkey.isEmpty()) return new ArrayList<ImageBlob>();
 		
@@ -833,8 +918,60 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 		return query.filter("blobKey IN", blobkey).list();
 	}
-	
+	/**
+	 * 
+	 * @param imageBlob - {@link ImageBlob} to save
+	 */
 	public void saveImageBlob( ImageBlob imageBlob) {
 		if(imageBlob != null) dao.ofy().put(imageBlob);
 	}
+	/**
+	 * 
+	 * @param latitude - latitude of device 
+	 * @return List of {@link Restaurant} in range of 1km in latitude from device
+	 */
+	public List<Restaurant> getRestaurantsInArea(double latitude){
+		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
+		
+		double R = 6371;  // earth radius in km
+
+		double radius = 1; // km
+
+	
+		double y1 = latitude + Math.toDegrees(radius/R);
+
+		double y2 = latitude - Math.toDegrees(radius/R);
+		
+		
+		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
+		
+		if(restaurantQuery == null) return restaurantsList;
+		updatePositions();
+		
+			
+		
+		
+		restaurantsList = restaurantQuery.filter("latitude >=", y2).filter("latitude <=", y1).list();
+		return restaurantsList;
+		
+	}
+	
+	/**
+	 * @deprecated
+	 * Method to update fields in datastore, from latitude and longitude in String to new double fields
+	 */
+	private void updatePositions(){
+		Query<Restaurant> rest = dao.ofy().query(Restaurant.class);
+		
+		for (Restaurant restaurant : rest.list()) {
+			if(restaurant.getLat() != null && restaurant.getLng() != null){
+				restaurant.setLatitude(Double.valueOf(restaurant.getLat()));
+				restaurant.setLongitude(Double.valueOf(restaurant.getLng()));
+				dao.ofy().put(restaurant);
+			}
+			
+		}
+		
+	}
+	
 }

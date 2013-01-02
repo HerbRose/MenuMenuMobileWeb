@@ -124,7 +124,7 @@ public class LoadDataScreen extends JQMPage {
 		userController.setUserType(email);
 		restaurantController.setRestaurants(restaurantsFromServer);
 		cityController.setCities(citiesFromServer);
-		imagesController.setDefoultEmptyProfilImageBlobMap(defoultEmptyProfilImageBlobMap);
+		imagesController.setDefoultEmptyMenuImageBlobMap(defoultEmptyProfilImageBlobMap);
 	}
 	
 	@Override
@@ -148,19 +148,19 @@ public class LoadDataScreen extends JQMPage {
 				RestaurantImageView restaurantView;
 				
 				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
-					restaurantView = RestaurantController.restMapView.get(lastPageId);
+					//restaurantView = RestaurantController.restMapView.get(lastPageId);
 				}else{
 					restaurantView = new RestaurantImageView(lastOpenRestaurant,PagesController.getPage(Pages.PAGE_HOME));
 				}
 				
 				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
-					restaurantView = RestaurantController.restMapView.get(lastPageId);
+					//restaurantView = RestaurantController.restMapView.get(lastPageId);
 				}
 				
 				String imageType = Cookies.getCookie(R.IMAGE_TYPE);
 				
 				if(imageType == null){
-					JQMContext.changePage(restaurantView, Transition.SLIDE);
+				//	JQMContext.changePage(restaurantView, Transition.SLIDE);
 				}else{
 					restaurantController.cropImageApple(lastPageId, ImageType.valueOf(imageType));
 				}

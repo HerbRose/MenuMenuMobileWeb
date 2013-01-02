@@ -21,7 +21,7 @@ import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 /**
  * Singleton.
  * @author mateusz
- *
+ * Controller to all cities operations
  */
 public class CityController {
 
@@ -85,6 +85,10 @@ public class CityController {
 	private Set<Long> getCitiesKey(){
 		return cities.keySet();
 	}
+	/**
+	 * 
+	 * @return List of {@link City} 
+	 */
 	public List<City> getCitiesList(){
 		List<City> citiesList = new ArrayList<City>();
 		for (Long cityId : getCitiesKey()) {
@@ -92,6 +96,12 @@ public class CityController {
 		}
 		return citiesList;
 	}
+	
+	/**
+	 *Saving city in datastore and put to local map with cities
+	 * 
+	 * @param cityName - name of {@link City}
+	 */
 	public void saveCity(String cityName){
 		
 		log.info("Saving city: " + cityName);
@@ -112,11 +122,20 @@ public class CityController {
 			}
 		});
 	}
-
+	/**
+	 * 
+	 * @param cityId - id of {@link City}
+	 * @return {@link City}
+	 */
 	public City getCity(Long cityId) {
 		return cities.get(cityId);
 	}
-	
+	/**
+	 * Method to copy all data to another {@link City}
+	 * 
+	 * @param cityIdFrom - id of {@link City} - source of data
+	 * @param cityIdTo - id of {@link City} - destination of copying data
+	 */
 	public void copyAllDataFromCity(String cityIdFrom, String cityIdTo){
 		PagesController.showWaitPanel();
 		storeService.copyCityData(cityIdFrom, cityIdTo, userController.getLoggedUser().getEmail() , new AsyncCallback<Map<String, String>>() {
@@ -140,7 +159,10 @@ public class CityController {
 			}
 		});
 	}
-
+	/**
+	 * Delete city from datastore
+	 * @param id - id of {@link City}
+	 */
 	public void deleteCity(Long id) {
 		PagesController.showWaitPanel();
 		storeService.deleteRestaurants(id, new AsyncCallback<Long>() {
@@ -164,8 +186,33 @@ public class CityController {
 	}
 	
 	/**
-	 * save edited city
-	 * @param city - city to save
+	 * 
+	 * @param cityName - name of {@link City}
+	 * @return id fo {@link City}
+	 */
+	public long getCityId(String cityName){
+		
+		for (Long id : cities.keySet()) {
+			if(cities.get(id).getCity().equals(cityName)){
+				return id;
+			}
+		}
+		return -1;
+	}
+	
+	
+//	private <T, E> T getKeyByValue(Map<T, E> map, String value) {
+//	    for (Entry<T, E> entry : map.entrySet()) {
+//	        if (value.equals(entry.getValue())) {
+//	            return entry.getKey();
+//	        }
+//	    }
+//	    return null;
+//	}
+	
+	/**
+	 * save edited {@link City}
+	 * @param city - {@link City} to save
 	 */
 	public void saveCity(City city) {
 		if(city == null) return;

@@ -1,6 +1,6 @@
 package com.veliasystems.menumenu.client.ui;
 
-
+import java.util.Map;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
@@ -107,7 +107,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 	
 	public CropImage(ImageBlob imageInsert, Long restaurantId) {
 		this.imageInsert = imageInsert;
-		this.restaurantId = restaurantId;
+		this.restaurantId = Long.parseLong(imageInsert.getRestaurantId());
 		newImage = new Image(imageInsert.getImageUrl());
 		blobHeight = imageInsert.getHeight();
 		blobWidth = imageInsert.getWidth();	
@@ -541,7 +541,7 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 			
 			
 			PagesController.showWaitPanel();
-			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Void>() {
+			blobService.cropImage(imageInsert, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Map<String, ImageBlob>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -549,8 +549,8 @@ public class CropImage extends JQMPage implements HasClickHandlers {
 				}
 
 				@Override
-				public void onSuccess(Void result) {
-					restaurantController.afterCrop(restaurantId, imageInsert.getImageType() );				
+				public void onSuccess(Map<String, ImageBlob> result) {
+					restaurantController.afterCrop(result.get("new"), result.get("old"));				
 				}
 				
 			});	

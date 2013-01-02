@@ -20,9 +20,9 @@ public class MyButton extends FocusPanel {
 	
 	/**
 	 * 
-	 * @param image - image to display
-	 * @param repeatX - The background image will be repeated horizontally 
-	 * @param repeatY - The background image will be repeated vertically
+	 * @param imageUrl - image to display
+	 * @param isRepeatX - The background image will be repeated horizontally 
+	 * @param isRepeatY - The background image will be repeated vertically
 	 * @param backgroundColor - The background color
 	 */
 	public void setBackGroundImage(String imageUrl, boolean isRepeatX, boolean isRepeatY, String backgroundColor){

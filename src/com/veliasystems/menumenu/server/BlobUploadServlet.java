@@ -1,14 +1,9 @@
 package com.veliasystems.menumenu.server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -22,32 +17,31 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesService.OutputEncoding;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.InputSettings;
+import com.google.appengine.api.images.InputSettings.OrientationCorrection;
 import com.google.appengine.api.images.OutputSettings;
 import com.google.appengine.api.images.Transform;
-import com.google.appengine.api.images.ImagesService.OutputEncoding;
-import com.google.appengine.api.images.InputSettings.OrientationCorrection;
-import com.google.appengine.api.urlfetch.FetchOptions;
-import com.google.appengine.api.urlfetch.HTTPHeader;
-import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
-import com.google.appengine.api.urlfetch.URLFetchService;
-import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.googlecode.objectify.Key;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 
 public class BlobUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6876072793481198419L;
 
+	
 	private DAO dao = new DAO();
 	
 	// init the blog store service
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     private static final Logger log = Logger.getLogger(BlobUploadServlet.class.getName()); 
-
+    /**
+     * Servlet to upload images from mobile iPhone app
+     */
     public void doPost(HttpServletRequest request, HttpServletResponse res) throws ServletException, IOException {
 
     	
@@ -125,13 +119,20 @@ public class BlobUploadServlet extends HttpServlet {
 //            		
 //            		Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
             		
-            		blobKey = storeImageBlob( restId, imageType, blobKey );
+            		blobKey = storeImageBlob(restId, imageType, blobKey);
                     res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
             }
             
     }
     
-    
+    /**
+     * @deprecated
+     * @param restId - id of restaurant
+     * @param image - given image
+     * @param imageType - type of image
+     * @param req - Http request
+     * @return always null
+     */
     public HTTPRequest makeResize(String restId, Image image, ImageType imageType, HttpServletRequest req){
     	
     	String uploadUrl = blobstoreService.createUploadUrl("/blobUpload?restId=" + restId + "&imageType=" + imageType.name());
@@ -140,63 +141,64 @@ public class BlobUploadServlet extends HttpServlet {
     	
     }
     
-    
-   private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKey ) {
-		
- //   	System.out.println("BlobUploadServlet::storeImageBlob");
-    	
-		
-			
-        Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
+    /**
+     * 
+     * @param restId id of {@link Restaurant}
+     * @param imageType type of Image {@link ImageType}
+     * @param blobKeyOrgin {@link BlobKey}
+     * @return {@link BlobKey}
+     */
+   private BlobKey storeImageBlob( String restId, String imageType, BlobKey blobKeyOrgin ) {
+	   
+	   Image image = ImagesServiceFactory.makeImageFromBlob(blobKeyOrgin);
+	   
+	   BlobServiceImpl blobService = new BlobServiceImpl();
+	   
+	   ImagesService imageServiceOrginal = ImagesServiceFactory.getImagesService();
+       InputSettings inputSettingsOrginal = new InputSettings();
+       inputSettingsOrginal.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
+       Transform dummyOrgin = ImagesServiceFactory.makeRotate(0);
+       OutputSettings outputSettingsOrginal = new OutputSettings(OutputEncoding.JPEG);
+       
+       Image newImageOrgin = imageServiceOrginal.applyTransform( dummyOrgin, image ,inputSettingsOrginal, outputSettingsOrginal);
+       BlobKey newOrginalBlobKey = null;
+       try {  	
+       		newOrginalBlobKey = blobService.writeToBlobstore("image/jpeg", imageType+"ImageOrginalSize.jpg", newImageOrgin.getImageData());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+      
         ImagesService imageService = ImagesServiceFactory.getImagesService();
-        
-        Transform dummy = ImagesServiceFactory.makeResize(800, 600);
-        
+       
+        Transform dummy = ImagesServiceFactory.makeResize(500, 375);
+
         InputSettings inputSettings = new InputSettings();
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
-		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-		//outputSettings.setQuality(40);
-		
         Image newImage = imageService.applyTransform( dummy, image ,inputSettings, outputSettings);
-        
-//        int ratio = image.getWidth() / 220;
-//        
-//        Transform resize;
-//        
-//        if (imageType.equalsIgnoreCase(ImageType.LOGO.name())) {
-//        	resize = ImagesServiceFactory.makeResize(220, newImage.getHeight() / ratio);
-//        } 
-//        else if (imageType.equalsIgnoreCase(ImageType.MENU.name())) {
-//            	resize = ImagesServiceFactory.makeResize(220, newImage.getHeight() / ratio);
-//            }	
-//        else {
-//        	resize = ImagesServiceFactory.makeResize(420, 280);
-//        }
-//    
-//        Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
-     
-        BlobServiceImpl blobService = new BlobServiceImpl();
        
         BlobKey newblobKey = null;
+      
         try {
-        	
-			newblobKey = blobService.writeToBlobstore("image/jpeg", "image.jpg", newImage.getImageData());
-			blobstoreService.delete(blobKey);
+			newblobKey = blobService.writeToBlobstore("image/jpeg", "imageMin.jpg", newImage.getImageData());
+			blobstoreService.delete(blobKeyOrgin);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        ImageBlob imageBlob = new ImageBlob(restId, newblobKey==null?blobKey.getKeyString():newblobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
-		imageBlob.setWidth(newImage.getWidth());
-		imageBlob.setHeight(newImage.getHeight());
+        ImageBlob imageBlob = new ImageBlob(restId, newblobKey==null?blobKeyOrgin.getKeyString():newblobKey.getKeyString(), new Date(), ImageType.valueOf(imageType) );
 		
+        imageBlob.setWidth(newImage.getWidth());
+		imageBlob.setHeight(newImage.getHeight());
+		imageBlob.setBlobKeyOriginalSize(newOrginalBlobKey.getKeyString());
 		
 		Key<ImageBlob> key = dao.ofy().put(imageBlob);
 		
 //		System.out.println("Blob saved: " + key.getKind() + ", " + key.getName() + ", blobKey: " + blobKey.getKeyString());
-		return newblobKey==null?blobKey:newblobKey;
+		return newblobKey==null?blobKeyOrgin:newblobKey;
 		
 	}
     

@@ -12,17 +12,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.ui.MyImage;
-import com.veliasystems.menumenu.client.ui.RestaurantImageView;
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
+
 
 public class ImagesController {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	
-	private Map<String, ImageBlob> defoultEmptyProfilImageBlobMap;
-	
+	private Map<String, ImageBlob> defoultEmptyMenuImageBlobMap;
+	private List<ImageBlob> defoultEmptyMenuImageBlobList = new ArrayList<ImageBlob>();
 	/**
 	 * used in SwipeView to select main image
 	 */
@@ -35,7 +37,10 @@ public class ImagesController {
 	
 	private ImagesController() {
 	}
-	
+	/**
+	 * 
+	 * @return Single instance of {@link ImagesController} object
+	 */
 	public static ImagesController getInstance(){
 		if(instance == null){
 			instance = new ImagesController();
@@ -43,7 +48,10 @@ public class ImagesController {
 		
 		return instance;
 	}
-	
+	/**
+	 * add observer to list only if observer != null and list doesn't contains this observer.
+	 * @param iObserver
+	 */
 	public void addObserver(IObserver iObserver){
 		observers.add(iObserver);
 	}
@@ -53,8 +61,11 @@ public class ImagesController {
 			observer.onChange();
 		}
 	}
-	
-	public void setEmptyBoard(ImageBlob imageBlob){
+	/**
+	 * 
+	 * @param imageBlob - {@link ImageBlob} to set as default empty board
+	 */
+	public void setEmptyMenuBoard(ImageBlob imageBlob){
 		PagesController.showWaitPanel();
 		blobService.setEmptyBoard(imageBlob, new AsyncCallback<String>() {
 
@@ -67,23 +78,31 @@ public class ImagesController {
 
 			@Override
 			public void onSuccess(String imageBlobId) {
-				changeDefoultEmptyProfile(imageBlobId);
+				changeDefoultEmptyMenu(imageBlobId);
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
 			}
 		});
 	}
-
-	public void setDefoultEmptyProfilImageBlobMap(Map<String, ImageBlob> defoultEmptyProfilImageBlobMap){
-		this.defoultEmptyProfilImageBlobMap = defoultEmptyProfilImageBlobMap;
+	
+	/**
+	 * 
+	 * @param defoultEmptyMenuImageBlobMap - Map of {@link ImageBlob} which may be default empty menu Image
+	 */
+	public void setDefoultEmptyMenuImageBlobMap(Map<String, ImageBlob> defoultEmptyMenuImageBlobMap){
+		this.defoultEmptyMenuImageBlobMap = defoultEmptyMenuImageBlobMap;
+		
+		for (String imageBlobString : defoultEmptyMenuImageBlobMap.keySet()) {
+			defoultEmptyMenuImageBlobList.add(defoultEmptyMenuImageBlobMap.get(imageBlobString));
+		}
 	}
 	
-	private void changeDefoultEmptyProfile(String imageBlobId){
-		for (String key : defoultEmptyProfilImageBlobMap.keySet() ) {
-			defoultEmptyProfilImageBlobMap.get(key).setRestaurantId("1");
+	private void changeDefoultEmptyMenu(String imageBlobId){
+		for (String key : defoultEmptyMenuImageBlobMap.keySet() ) {
+			defoultEmptyMenuImageBlobMap.get(key).setRestaurantId("1");
 		}
 
-		defoultEmptyProfilImageBlobMap.get(imageBlobId).setRestaurantId("0");
+		defoultEmptyMenuImageBlobMap.get(imageBlobId).setRestaurantId("0");
 	}
 	
 	
@@ -103,7 +122,10 @@ public class ImagesController {
 			}
 		}
 	}
-	
+	/**
+	 * Set image as main on server to {@link Restaurant} 
+	 * @param image - {@link MyImage} image to select as main
+	 */
 	public void selectImage(MyImage image){	
 		
 		if(image!=null){
@@ -114,7 +136,10 @@ public class ImagesController {
 	
 		selectedImage = image;
 	}
-	
+	/**
+	 * Used to secure before add duplicate Images after refresh page
+	 * @param parent - {@link RestaurantImageView} is parent
+	 */
 	public void clear(RestaurantImageView parent) {
 		Map<ImageType,MyImage> map = selectedImageControler.get(parent);
 		if(map==null) return;
@@ -123,23 +148,56 @@ public class ImagesController {
 			map.put(imageType, null);
 		}
 	}
-
-	public Map<String, ImageBlob> getEmptyProfileImages(){
-		if(defoultEmptyProfilImageBlobMap == null){
+	/**
+	 * 
+	 * @return Map of {@link ImageBlob} of empty menu images
+	 */
+	public Map<String, ImageBlob> getEmptyMenuImages(){
+		if(defoultEmptyMenuImageBlobMap == null){
 			return null;
 		}else {
-			return defoultEmptyProfilImageBlobMap;
+			return defoultEmptyMenuImageBlobMap;
 		}
 	}
-	
-	public ImageBlob getDefoultEmptyProfile(){
-		if(defoultEmptyProfilImageBlobMap == null){
-			//Window.alert("defoultEmptyProfilImageBlobMap == null");
+	/**
+	 * Get empty menu images from server and add to local list
+	 */
+	public void getEmptyMenuImagesFromServer(){
+		blobService.getEmptyList(new AsyncCallback<List<ImageBlob>>() {
+			
+			@Override
+			public void onSuccess(List<ImageBlob> result) {
+				defoultEmptyMenuImageBlobList.clear();
+				defoultEmptyMenuImageBlobList.addAll(result);
+				notifyAllObservers();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+				
+			}
+		});
+	}
+	/**
+	 * 
+	 * @return {@link ImageBlob} - default empty menu
+	 */
+	public ImageBlob getDefoultEmptyMenu(){
+		if(defoultEmptyMenuImageBlobMap == null){
 			return new ImageBlob();
 		}
-		for (String key : defoultEmptyProfilImageBlobMap.keySet()) {
-			if(defoultEmptyProfilImageBlobMap.get(key).getRestaurantId().equals("0")) return defoultEmptyProfilImageBlobMap.get(key);
+		for (String key : defoultEmptyMenuImageBlobMap.keySet()) {
+			if(defoultEmptyMenuImageBlobMap.get(key).getRestaurantId().equals("0")) return defoultEmptyMenuImageBlobMap.get(key);
 		}
 		return new ImageBlob();
+	}
+	/**
+	 * 
+	 * @return List of {@link ImageBlob} - default empty menu images
+	 */
+	public List<ImageBlob> getDefoultEmptyMenuImageBlobList() {
+		return defoultEmptyMenuImageBlobList;
 	}
 }

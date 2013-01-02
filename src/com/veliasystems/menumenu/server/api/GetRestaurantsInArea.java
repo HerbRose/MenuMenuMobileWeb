@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.server.BlobServiceImpl;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class GetRestaurantsInArea extends HttpServlet {
@@ -41,7 +42,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger log = Logger.getLogger(GetRestaurantsInArea.class.getName());
-	
+	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private StoreServiceImpl storeService = new StoreServiceImpl();
 
 	@Override
@@ -79,14 +80,15 @@ public class GetRestaurantsInArea extends HttpServlet {
 			resp.flushBuffer();
 			return;
 		}
-
-		List<Restaurant> restaurantList = storeService.loadRestaurants();
+		
+		
+//		List<Restaurant> restaurantList = storeService.loadRestaurants();
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
-
+//
 		double latDevice;
 		double lonDevice;
-
+//
 		try {
 			latDevice = Double.parseDouble(latDeviceString); // Double.valueOf(latDeviceString);
 			lonDevice = Double.parseDouble(lonDeviceString);// Double.valueOf(lonDeviceString);
@@ -97,6 +99,9 @@ public class GetRestaurantsInArea extends HttpServlet {
 			resp.flushBuffer();
 			return;
 		}
+		
+		List<Restaurant> restaurantList = storeService.getRestaurantsInArea(latDevice);
+	
 
 		long distance = 1;
 
@@ -109,7 +114,15 @@ public class GetRestaurantsInArea extends HttpServlet {
 		if (jsonp != null) {
 			resp.getWriter().print(jsonp + "(");
 		}
-
+		List<ImageBlob> emptyBlobsList = blobService.getDefaultEmptyMenu();
+		ImageBlob emptyDefoultMenu;
+		
+		if(emptyBlobsList.isEmpty()){
+			emptyDefoultMenu = null;
+		}else{
+			emptyDefoultMenu = emptyBlobsList.get(0);
+		}
+		
 		List<Map<String, String>> attributes = new ArrayList<Map<String, String>>();
 
 		for (Restaurant restaurant : restaurantList) {
@@ -130,9 +143,8 @@ public class GetRestaurantsInArea extends HttpServlet {
 
 				}
 			}
-			if (restaurant.isVisibleForApp()) {
-				if (isPosition
-						&& distFromByStreets(latDevice, lonDevice, restLat, restLon) <= distance) {
+			if (!restaurant.isVisibleForApp()) {
+				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){
 					Map<String, String> map = new HashMap<String, String>();
 
 					List<String> blobkeys = new ArrayList<String>();
@@ -181,9 +193,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 					map.put("logoImage",
 							(restaurant.getMainLogoImageString() != null) ? addHostToUrl(restaurant
 									.getMainLogoImageString()) : "EMPTY");
-					map.put("menuImage",
-							(restaurant.getMainMenuImageString() != null) ? addHostToUrl(restaurant
-									.getMainMenuImageString()) : "EMPTY");
+					map.put( "menuImage", (restaurant.getMainMenuImageString()!=null) ? addHostToUrl(restaurant.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 					map.put("profileImage",
 							(restaurant.getMainProfileImageString() != null) ? addHostToUrl(restaurant
 									.getMainProfileImageString()) : "EMPTY");

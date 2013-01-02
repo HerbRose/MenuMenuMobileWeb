@@ -19,6 +19,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
+import com.veliasystems.menumenu.server.BlobServiceImpl;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class GetRestaurantsServlet extends HttpServlet {
@@ -26,7 +27,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 	private static final long serialVersionUID = 2566472678914274709L;
 	
 	private StoreServiceImpl storeService = new StoreServiceImpl();
-
+	private BlobServiceImpl blobService = new BlobServiceImpl();
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -94,7 +95,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 		
 		List< Map<String,String> > attributes = new ArrayList< Map<String,String>>();
-		
+		ImageBlob emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
 		
 		for (Restaurant r : rests) {
 			if(r.isVisibleForApp()){
@@ -131,7 +132,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "district", r.getDistrict());
 				map.put( "address", r.getAddress());
 				map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
-				map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : "EMPTY");
+				map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 				map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
 				map.put( "lat", "" + r.getLat());
 				map.put( "lng", "" + r.getLng());

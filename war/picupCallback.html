@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	function createCookies() {
+// 		console.log(QueryString.www);
+		var imageType = readCookie("imageTypeFromPicup");
+		var lastPage = readCookie("lastPageFromPicup"); 
+
+		createCookie("imageType", imageType, 1);
+		
+		createCookie("lastPage", lastPage, 1);
+		
+		window.setTimeout(refreshPage(),500);
+	
+	}
+	function refreshPage() {
+		
+// 		window.open("http://menutester.appspot.com", "_self");
+		window.open("http://menumenu-cms.appspot.com", "_self");
+	}
+	function createCookie(name,value,minuts) {
+		var expires = "";
+		if (minuts) {
+			var date = new Date();
+			date.setTime(date.getTime()+(minuts*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		}
+		document.cookie = name+"="+value+expires+"; path=/";
+	}
+	
+	function readCookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+	
+</script>
+</head>
+<body onload="createCookies()">
+
+</body>
+</html>

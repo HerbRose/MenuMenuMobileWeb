@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -36,15 +37,15 @@ public class CityListScreen extends MyPage implements IObserver{
 	
 	
 	private MyButton addButton;
-	private MyButton adminPanel;
+	private MyButton adminPanel = new MyButton("");
 	private BackButton logoutButton;
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
 	private List<City> cityList;
 
-	private FlowPanel adminPanelWrapper;
-	private FocusPanel adminLabel;
+	private FlowPanel adminPanelWrapper = new FlowPanel();
+	private FocusPanel adminLabel = new FocusPanel();
 	
 	public CityListScreen() {
 		super(Customization.CITY);
@@ -81,41 +82,39 @@ public class CityListScreen extends MyPage implements IObserver{
 	    getHeader().setLeftButton(logoutButton);
 	    getHeader().setRightButton(addButton);
 	    
-		    if(userController.getLoggedUser().isAdmin()){
-		    	
-		    	adminPanel = new MyButton("");
-		    	adminPanel.removeStyleName("borderButton");
-		    	adminPanel.addStyleName("addButton adminButton");
-		    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
-		 	    adminPanel.addClickHandler(new ClickHandler() {
-		 			
-		 			@Override
-		 			public void onClick(ClickEvent event) {
-		 				Document.get().getElementById("load").setClassName(R.LOADING);
-		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
-		 			}
-		 		});
-		    	adminLabel = new FocusPanel();
-		    	adminLabel.addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-						Document.get().getElementById("load").setClassName(R.LOADING);
-						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
-					}
-				});
-		    	adminLabel.addStyleName("adminLabel noFocus");
-		    	
-		    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
-		 	    
-		 	    
-		    	adminPanelWrapper = new FlowPanel();
-		    	adminPanelWrapper.addStyleName("adminWrapper");
+	    if(userController.getLoggedUser().isAdmin()){
+	    	
+	    	adminPanel.removeStyleName("borderButton");
+	    	adminPanel.addStyleName("addButton adminButton");
+	    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
+	 	    adminPanel.addClickHandler(new ClickHandler() {
+	 			
+	 			@Override
+	 			public void onClick(ClickEvent event) {
+	 				Document.get().getElementById("load").setClassName(R.LOADING);
+	 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+	 			}
+	 		});
+	    	adminLabel.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					Document.get().getElementById("load").setClassName(R.LOADING);
+					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+				}
+			});
+	    	adminLabel.addStyleName("adminLabel noFocus");
+	    	
+	    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
+	 	    
+	 	    
+	    	
+	    	adminPanelWrapper.addStyleName("adminWrapper");
 
-		    	adminPanelWrapper.add(adminPanel);
-		    	adminPanelWrapper.add(adminLabel);
-		    	getContentPanel().add(adminPanelWrapper);
-		    }
+	    	adminPanelWrapper.add(adminPanel);
+	    	adminPanelWrapper.add(adminLabel);
+	    	getContentPanel().add(adminPanelWrapper);
+	    }  
 
 	 
 	}
@@ -145,11 +144,11 @@ public class CityListScreen extends MyPage implements IObserver{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					Document.get().getElementById("load").setClassName(R.LOADING);
+					PagesController.showWaitPanel();
 					JQMContext.changePage(cityInfoScreen);
 				}
 			});
-			cityItem.setStyleName("itemList", true);
+			cityItem.setStyleName("itemList noFocus", true);
 			getContentPanel().add(cityItem);
 		}
 	}
@@ -161,7 +160,12 @@ public class CityListScreen extends MyPage implements IObserver{
 		if(Cookies.getCookie(R.LAST_PAGE) != null){
 			Cookies.removeCookie(R.LAST_PAGE);
 		}
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		
+		if(userController.getLoggedUser().isAdmin()){
+			getContentPanel().add(adminPanelWrapper);
+		}
+		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
+		PagesController.hideWaitPanel();
 	}
 
 	@Override
@@ -173,4 +177,9 @@ public class CityListScreen extends MyPage implements IObserver{
 		cityList = cityController.getCitiesList();
 	    addCities(cityList);
 	}
+	
+	private native int getOffsetWidth(Element element)/*-{
+		$wnd.console.log(element);
+		return element.offsetWidth;
+	}-*/;
 }

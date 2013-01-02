@@ -38,10 +38,11 @@ import com.veliasystems.menumenu.client.ui.administration.AddAdminPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddAgentPanel;
 import com.veliasystems.menumenu.client.ui.administration.AddRestauratorPanel;
 import com.veliasystems.menumenu.client.ui.administration.CityManagerPanel;
-import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyProfilePanel;
+import com.veliasystems.menumenu.client.ui.administration.DefaultEmptyMenuPanel;
 import com.veliasystems.menumenu.client.ui.administration.EditDataPanel;
 import com.veliasystems.menumenu.client.ui.administration.EmailPanel;
 import com.veliasystems.menumenu.client.ui.administration.IManager;
+import com.veliasystems.menumenu.client.ui.administration.LastUploadedImages;
 import com.veliasystems.menumenu.client.ui.administration.RemoveUsersPanel;
 import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 
@@ -86,6 +87,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private IManager editDataPanel;
 	private IManager removeUsersPanel;
 	private IManager cityManagerPanel;
+	private IManager lastUploadedImages;
 
 	private IManager currentlyDisplayedPanel = null;
 	
@@ -300,6 +302,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		add(setEditDataPanel());
 		add(setRemoveUsersPanel());
 		add(setCityManager());
+		add(setLastImages());
 	}
 
 	/**
@@ -400,7 +403,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	 * @return instance of DefaultEmptyProfilrPanel 
 	 */
 	private FlowPanel setDefaultEmptyProfile() {
-		defaultEmptyBoard = new DefaultEmptyProfilePanel();
+		defaultEmptyBoard = new DefaultEmptyMenuPanel();
 		panelList.put(panelCount++, defaultEmptyBoard);
 		tabBar.addTab(defaultEmptyBoard.getName());
 		return (FlowPanel) defaultEmptyBoard;
@@ -413,6 +416,13 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		return (FlowPanel) cityManagerPanel;
 	}
 
+	
+	private FlowPanel setLastImages(){
+		lastUploadedImages = new LastUploadedImages();
+		panelList.put(panelCount++, lastUploadedImages);
+		tabBar.addTab(lastUploadedImages.getName());
+		return (FlowPanel) lastUploadedImages;
+	}
 	
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) { // <--- IS IT NECESSARY ???
@@ -510,7 +520,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		}
 
 		if (!loaded) {
-			backButton = new JQMButton("", PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+			backButton = new JQMButton("", pageToBack, Transition.SLIDE);
 			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"
 					+ Customization.BACK
 					+ "</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";

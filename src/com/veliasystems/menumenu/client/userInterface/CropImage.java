@@ -1,4 +1,6 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
+
+import java.util.Map;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
@@ -7,17 +9,40 @@ import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.Transition;
+import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
-public class Test extends JQMPage{
 
+
+
+public class CropImage extends MyPage implements IObserver{
+	
+	private BackButton backButton;
+	private MyButton saveButton;
 	
 	private Image image;
 	private Long restaurantId;
@@ -39,19 +64,71 @@ public class Test extends JQMPage{
 	
 	private AbsolutePanel boundaryPanel = new AbsolutePanel();
 	private AbsolutePanel targetPanel;
+	private PickupDragController dragController;
+	private DropController dropController;
 	
 	private double ratioProfile = 450.0/280.0;
 	private double minHeightLogo = 55;
 	private double maxHeightLogo = 75;
 	
 	int interval = 0;
-	public Test(ImageBlob imageInsert) {
-		imageBlob = imageInsert;
 	
-		restaurantId = Long.parseLong(imageBlob.getRestaurantId());
+	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
+	
+	public CropImage(final ImageBlob imageInsert) {
+		super(Customization.CROP);
 		
-		image = new Image(imageBlob.getImageUrl());
+		imageBlob = imageInsert;
+		
+		backButton = new BackButton(Customization.BACK);
+    	backButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				JQMContext.changePage(RestaurantController.restMapView.get(Long.parseLong(imageInsert.getRestaurantId())), Transition.SLIDE);
+			}
+		});
+		
+    	saveButton = new MyButton(Customization.SAVE);
+		saveButton.setStyleName("rightButton saveButton", true);
+		saveButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				PagesController.showWaitPanel();
+				
+				double leftXPercentage = (double) getOffsetWidth("moveLeftPanel") / (double) displayWidth;
+				double topYPercentage = (double) getHeight("moveTopPanel") / (double) getOffsetHeight("croapImage");
+				
+				double rightXPercentage = (double) (getOffsetWidth("moveLeftPanel") + getOffsetWidth("centerMovePanel")) / (double) displayWidth;
+				double bottomYPercentage = (double) (getHeight("moveTopPanel") + getHeight("centerMovePanel")) / (double) getOffsetHeight("croapImage");
+				
+				blobService.cropImage(imageBlob, leftXPercentage, topYPercentage, rightXPercentage, bottomYPercentage, new AsyncCallback<Map<String, ImageBlob>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						PagesController.hideWaitPanel();
+					}
+
+					@Override
+					public void onSuccess(Map<String, ImageBlob> result) {
+						restaurantController.afterCrop(result.get("new"), result.get("old"));				
+					}
+					
+				});	
+				
+			}
+		});
+    	
+		getHeader().setLeftButton(backButton);
+		getHeader().setRightButton(saveButton);
+		
+		restaurantId = Long.parseLong(imageBlob.getRestaurantId());
 	
+		image = new Image(imageBlob.getImageUrl());
+		
 		image.getElement().setId("croapImage");
 		mainPanel.setStyleName("mainPanel", true);
 		mainPanel.getElement().setId("cropMainPanel");
@@ -78,29 +155,65 @@ public class Test extends JQMPage{
 		
 		centerMovePanel.setStyleName("centerMovePanel", true);
 		centerMovePanel.getElement().setId("centerMovePanel");
-		
 		switch (imageInsert.getImageType()) {
 		case MENU:
-			displayWidth = 220;
+//			displayWidth = 220;
 			centerMovePanel.setWidth("100px");
 			centerMovePanel.setHeight("60px");
 			break;
 		case LOGO:
-			displayWidth = 220;
-			centerMovePanel.setWidth("100px");
-			centerMovePanel.setHeight("60px");
+//			displayWidth = PagesController.contentWidth; //220;
+			centerMovePanel.setWidth("166px");
+			centerMovePanel.setHeight("58px");
 			break;
 		case PROFILE:
-			displayWidth = 450;
+//			displayWidth = 450;
 			centerMovePanel.setWidth("200px");
 			centerMovePanel.setHeight(200 / ratioProfile + "px");
 			leftHand.getElement().getStyle().setDisplay(Display.NONE);
 			rightHand.getElement().getStyle().setDisplay(Display.NONE);
 		}
-		image.setWidth(displayWidth + "px");
-		mainPanel.add(boundaryPanel);
+		//image.setWidth(displayWidth + "px");
+		displayWidth = PagesController.contentWidth; //temporary 
+		image.getElement().getStyle().setProperty("maxWidth", PagesController.contentWidth +"px");
+
+		dragController = new PickupDragController(boundaryPanel, true);
+		dropController = new AbsolutePositionDropController(boundaryPanel);
 		
+		mainPanel.add(boundaryPanel);
 		boundaryPanel.add(image);
+		add(mainPanel);
+		
+		image.addLoadHandler(new LoadHandler() {
+			
+			@Override
+			public void onLoad(LoadEvent event) {
+				
+				displayWidth = getOffsetWidth(image.getElement().getId());
+
+				boundaryPanel.setWidth(displayWidth + "px");
+				boundaryPanel.setHeight(getOffsetHeight(image.getElement().getId()) + "px");
+				
+				int height = getOffsetHeight(image.getElement().getId());
+				
+				int topPanelHeight = (height - getOffsetHeight(centerMovePanel.getElement().getId())) /2;
+				int bottomPanelHeight = height - topPanelHeight - getOffsetHeight(centerMovePanel.getElement().getId());
+				
+				int leftPanelWidth = (displayWidth - getOffsetWidth(centerMovePanel.getElement().getId()) )/2;
+				int rightPanelWidth = displayWidth - leftPanelWidth - getOffsetWidth(centerMovePanel.getElement().getId());
+				
+				topPanel.setHeight( topPanelHeight + "px");
+				leftPanel.setWidth(leftPanelWidth +"px");
+				bottomPanel.setHeight(bottomPanelHeight + "px");
+				rightPanel.setWidth(rightPanelWidth + "px");
+				centerMovePanel.getElement().getStyle().setTop(topPanelHeight, Unit.PX);
+				centerMovePanel.getElement().getStyle().setLeft(leftPanelWidth, Unit.PX);
+				checkPositions(imageBlob.getImageType().name());
+				PagesController.hideWaitPanel();
+			}
+		});
+		
+		
 		boundaryPanel.add(topPanel);
 		boundaryPanel.add(topHand);
 		boundaryPanel.add(rightPanel);
@@ -110,11 +223,6 @@ public class Test extends JQMPage{
 		boundaryPanel.add(leftPanel);
 		boundaryPanel.add(leftHand);
 		boundaryPanel.add(centerMovePanel);
-		
-		add(mainPanel);
-		
-		PickupDragController dragController = new PickupDragController(boundaryPanel, true);
-		DropController dropController = new AbsolutePositionDropController(boundaryPanel);
 
 		dragController.registerDropController(dropController);		
 		dragController.makeDraggable(rightHand);
@@ -122,104 +230,109 @@ public class Test extends JQMPage{
 		dragController.makeDraggable(leftHand);
 		dragController.makeDraggable(bottomHand);
 		dragController.makeDraggable(centerMovePanel);
-
+		
+		
 		dragController.addDragHandler(new DragHandler() {
+		
+		@Override
+		public void onPreviewDragStart(DragStartEvent event)
+				throws VetoDragException {
+			// TODO Auto-generated method stub
+		}
+		
+		@Override
+		public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
+			if(interval > 0) stopInterval(interval);
 			
-			@Override
-			public void onPreviewDragStart(DragStartEvent event)
-					throws VetoDragException {
-				// TODO Auto-generated method stub
+		}
+		
+		@Override
+		public void onDragStart(DragStartEvent event) {	
+			Object eventSource = event.getSource();
+			
+			if(! (eventSource instanceof HTML)) return;//dziwne???
+			
+			HTML element = (HTML) eventSource;
+			
+			if(element.getElement().getId().equals(centerMovePanel.getElement().getId())){
+				interval = myOnMoveCenter(element.getElement().getId(),getOffsetWidth(centerMovePanel.getElement().getId()), getOffsetHeight(centerMovePanel.getElement().getId()) );
+				return;
 			}
 			
-			@Override
-			public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
-				if(interval > 0) stopInterval(interval);
+			switch (imageBlob.getImageType()) {
+			case LOGO:
+				interval = myOnMoveLogo(element.getElement().getId(), (int) minHeightLogo, (int) maxHeightLogo);
+				break;
+			case PROFILE:
+				interval = myOnMoveProfile(element.getElement().getId(), ratioProfile);
+				break;
 				
+			case MENU:
+				interval = myOnMoveMenu(element.getElement().getId());
+				break;
+			default:
+				break;
 			}
 			
-			@Override
-			public void onDragStart(DragStartEvent event) {	
-				Object eventSource = event.getSource();
-				
-				if(! (eventSource instanceof HTML)) return;//dziwne???
-				
-				HTML element = (HTML) eventSource;
-				
-				if(element.getElement().getId().equals(centerMovePanel.getElement().getId())){
-					interval = myOnMoveCenter(element.getElement().getId(),getWidth(centerMovePanel.getElement().getId()), getHeight(centerMovePanel.getElement().getId()) );
-					return;
-				}
-				
-				switch (imageBlob.getImageType()) {
-				case LOGO:
-					interval = myOnMoveLogo(element.getElement().getId(), (int) minHeightLogo, (int) maxHeightLogo);
-					break;
-				case PROFILE:
-					interval = myOnMoveProfile(element.getElement().getId(), ratioProfile);
-					break;
-					
-				case MENU:
-					interval = myOnMoveMenu(element.getElement().getId());
-					break;
-				default:
-					break;
-				}
-				
-				
-			}
 			
-			@Override
-			public void onDragEnd(DragEndEvent event) {
+		}
+		
+		@Override
+		public void onDragEnd(DragEndEvent event) {
 
-				checkPositions(imageBlob.getImageType().name());
-			}
-		});
+			checkPositions(imageBlob.getImageType().name());
+		}
+	});
 	}
-	
+
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
 		
-		boundaryPanel.setWidth(displayWidth + "px");
-		boundaryPanel.setHeight(getHeight(image.getElement().getId()) + "px");
 		
-//		centerMovePanel.setWidth("100px");
-//		centerMovePanel.setHeight("60px");
 		
-		int height = getHeight(image.getElement().getId());
+	//	centerMovePanel.setWidth("100px");
+	//	centerMovePanel.setHeight("60px");
 		
-		int topPanelHeight = (height - getHeight(centerMovePanel.getElement().getId())) /2;
-		int bottomPanelHeight = height - topPanelHeight - getHeight(centerMovePanel.getElement().getId());
 		
-		int leftPanelWidth = (displayWidth - getWidth(centerMovePanel.getElement().getId()) )/2;
-		int rightPanelWidth = displayWidth - leftPanelWidth - getWidth(centerMovePanel.getElement().getId());
+	}
+
+	@Override
+	public void onChange() {
+		// TODO Auto-generated method stub
 		
-		topPanel.setHeight( topPanelHeight + "px");
-		leftPanel.setWidth(leftPanelWidth +"px");
-		bottomPanel.setHeight(bottomPanelHeight + "px");
-		rightPanel.setWidth(rightPanelWidth + "px");
-		centerMovePanel.getElement().getStyle().setTop(topPanelHeight, Unit.PX);
-		centerMovePanel.getElement().getStyle().setLeft(leftPanelWidth, Unit.PX);
+	}
+
+	@Override
+	protected void onPageHide() {
+		super.onPageHide();
 		
-		checkPositions(imageBlob.getImageType().name());
+		getElement().removeFromParent();
 	}
 	
 	private native int myOnMoveLogo(String elementId, int minHeightLogo, int maxHeightLogo)/*-{
 		var element = $wnd.document.getElementById(elementId);
-
+	
 		if(element === "undefined") return -1;
 		
 		var image = $wnd.document.getElementById("croapImage");
 		
 		var width = image.width;
 		var height = image.height;
-
+		
+		var minRatio = 220/75;
+		var maxRatio = 220/55;
+	
 		var interval = -1;
+		
+		
 		if(elementId.indexOf("Top") >=0 ){ // jeżeli strzałka w górę
 			$wnd.document.getElementById("moveTopHand").className = $wnd.document.getElementById("moveTopHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveRightHand").className = $wnd.document.getElementById("moveRightHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveBottomHand").className = $wnd.document.getElementById("moveBottomHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveLeftHand").className = $wnd.document.getElementById("moveLeftHand").className + " moveElementHidden";
+			$wnd.document.getElementById("moveTopPanel").className = "topPanel moveChecked" ;
+			$wnd.document.getElementById("moveRightPanel").className = "rightPanel moveChecked" ;
 			var position;
 			
 			$wnd.setTimeout(function(){
@@ -227,53 +340,50 @@ public class Test extends JQMPage{
 				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			}, 250);
 			
-			var bottomPanelHeight = $wnd.document.getElementById("moveBottomPanel").offsetHeight;
-			$wnd.document.getElementById("moveTopPanel").className = "topPanel moveChecked" ;
+//			var bottomPanelHeight = $wnd.document.getElementById("moveBottomPanel").offsetHeight;
+			var moveBottomPanelHeight = $wnd.document.getElementById("moveBottomPanel").style.height;
+				moveBottomPanelHeight = moveBottomPanelHeight.substring(0, moveBottomPanelHeight.length-2); //wyrzucamy koncowke 'px'
+			var moveLeftPanelWidth = $wnd.document.getElementById("moveLeftPanel").style.width;
+				moveLeftPanelWidth = moveLeftPanelWidth.substring(0, moveLeftPanelWidth.length-2);
+				
 			interval = $wnd.setInterval(function(){
 				var currentPosition = element.parentNode.style.top; //y
 				currentPosition = currentPosition.substring(0, currentPosition.length-2); //wyrzucamy koncowke 'px'
 				
-				if(currentPosition >=height || currentPosition<=0){
-					$wnd.document.getElementById("centerMovePanel").style.top = "0px";
-					$wnd.document.getElementById("moveTopPanel").style.height = "0px";
-					 return;
-				}
+//				if(currentPosition >=height || currentPosition<=0){
+//					$wnd.document.getElementById("centerMovePanel").style.top = "0px";
+//					$wnd.document.getElementById("moveTopPanel").style.height = "0px";
+//					 return;
+//				}
 				var deltaPosition = currentPosition - position; //delta y
 				
 				var moveTopPanelHeight = $wnd.document.getElementById("moveTopPanel").style.height;
-				moveTopPanelHeight = moveTopPanelHeight.substring(0, moveTopPanelHeight.length-2); //wyrzucamy koncowke 'px'
+					moveTopPanelHeight = moveTopPanelHeight.substring(0, moveTopPanelHeight.length-2); //wyrzucamy koncowke 'px'
 				
-				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").offsetHeight;
+				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").style.height;
+					moveCenterPaneHeight = moveCenterPaneHeight.substring(0, moveCenterPaneHeight.length-2); //wyrzucamy koncowke 'px'
+				var moveCenterPaneWidth = $wnd.document.getElementById("centerMovePanel").style.width;
+					moveCenterPaneWidth = moveCenterPaneWidth.substring(0, moveCenterPaneWidth.length-2); //wyrzucamy koncowke 'px'	
 				var centerMovePanelCurrentPosition = $wnd.document.getElementById("centerMovePanel").style.top;
 					centerMovePanelCurrentPosition = centerMovePanelCurrentPosition.substring(0, centerMovePanelCurrentPosition.length-2); //wyrzucamy koncowke 'px'
+
+				//var newMoveTopPanelHeight = parseInt(moveTopPanelHeight) + parseInt(deltaPosition);
+				var newCenterMovePanelWidth = moveCenterPaneWidth;
+				var newCenterMovePanelHeight = parseInt(moveCenterPaneHeight) - parseInt(deltaPosition);
 					
-				//$wnd.console.log("position: "+position +" currentPosition: "+currentPosition + " deltaPosition: " +deltaPosition );
-				if(deltaPosition < 0 && Math.abs(deltaPosition) + moveCenterPaneHeight <= maxHeightLogo ){
-					
-					var newMoveTopPanelHeight = moveTopPanelHeight - Math.abs(deltaPosition);
-					
-					var newCenterMovePanelHeight = height - newMoveTopPanelHeight - bottomPanelHeight;
-					if(newCenterMovePanelHeight > maxHeightLogo || newCenterMovePanelHeight < minHeightLogo){
-						return;
-					}
-					//$wnd.console.log("newCenterMovePanelHeight" + newCenterMovePanelHeight);
-					$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px";
-					$wnd.document.getElementById("centerMovePanel").style.top = centerMovePanelCurrentPosition - Math.abs(deltaPosition) + "px";
-					$wnd.document.getElementById("moveTopPanel").style.height = newMoveTopPanelHeight + "px";
-					
-					
-				}else if(deltaPosition > 0 && moveCenterPaneHeight - deltaPosition >= minHeightLogo ){
-					
-					var newMoveTopPanelHeight = parseInt(moveTopPanelHeight) + deltaPosition;
-					
-					var newCenterMovePanelHeight = height - newMoveTopPanelHeight - bottomPanelHeight;
-					
-					$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px"; //deltaPosition > 0 
-					$wnd.document.getElementById("centerMovePanel").style.top = parseInt(centerMovePanelCurrentPosition) + deltaPosition + "px";
-					$wnd.document.getElementById("moveTopPanel").style.height = newMoveTopPanelHeight + "px";
-					
-					
+
+				if(moveCenterPaneWidth/newCenterMovePanelHeight > maxRatio){
+					newCenterMovePanelWidth = newCenterMovePanelHeight * maxRatio;
+				}else if(moveCenterPaneWidth/newCenterMovePanelHeight < minRatio){
+					newCenterMovePanelWidth = newCenterMovePanelHeight * minRatio;
 				}
+				if(newCenterMovePanelWidth <= 1 || newCenterMovePanelHeight<=1 || parseInt(newCenterMovePanelWidth) + parseInt(moveLeftPanelWidth) >= width ||  parseInt(newCenterMovePanelHeight) + parseInt(moveBottomPanelHeight) >= height){      
+					return;
+				}
+				$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px";
+				$wnd.document.getElementById("centerMovePanel").style.top = parseInt(centerMovePanelCurrentPosition) + parseInt(deltaPosition) + "px";
+				$wnd.document.getElementById("centerMovePanel").style.width = newCenterMovePanelWidth + "px";
+
 				position = element.parentNode.style.top; //y
 				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			},125);
@@ -283,31 +393,48 @@ public class Test extends JQMPage{
 			$wnd.document.getElementById("moveBottomHand").className = $wnd.document.getElementById("moveBottomHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveLeftHand").className = $wnd.document.getElementById("moveLeftHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveRightPanel").className = "rightPanel moveChecked" ;
+			$wnd.document.getElementById("moveBottomPanel").className = "bottomPanel moveChecked" ;
+			
+			
+			$wnd.setTimeout(function(){
+				position = element.parentNode.style.left; //y
+				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
+			}, 250);
 			
 			var moveLeftPanelWidth = $wnd.document.getElementById("moveLeftPanel").style.width;
-			moveLeftPanelWidth = moveLeftPanelWidth.substring(0, moveLeftPanelWidth.length-2);
+				moveLeftPanelWidth = moveLeftPanelWidth.substring(0, moveLeftPanelWidth.length-2);
+			var moveTopPanelHeight = $wnd.document.getElementById("moveTopPanel").style.height;
+				moveTopPanelHeight = moveTopPanelHeight.substring(0, moveTopPanelHeight.length-2); //wyrzucamy koncowke 'px'
 			
 			interval = $wnd.setInterval(function(){
 				var currentPosition = element.parentNode.style.left;
+					currentPosition = currentPosition.substring(0, currentPosition.length-2);	
+				var moveCenterPaneWidth = $wnd.document.getElementById("centerMovePanel").style.width;
+					moveCenterPaneWidth = moveCenterPaneWidth.substring(0, moveCenterPaneWidth.length-2); //wyrzucamy koncowke 'px'
+
+				var deltaPosition = parseInt(currentPosition) - parseInt(position); //delta y
 				
-				if(parseInt(currentPosition) >=parseInt(width) ){
-					$wnd.document.getElementById("centerMovePanel").style.width = width - moveLeftPanelWidth;
-					$wnd.document.getElementById("moveRightPanel").style.width = "0px";
-					return;
-				}else if(parseInt(currentPosition) <= parseInt(moveLeftPanelWidth)){
-					$wnd.document.getElementById("centerMovePanel").style.width = "1px";
-//					$wnd.console.log($wnd.document.getElementById("centerMovePanel").style.width);
-//					$wnd.console.log(-1 +parseInt(width) - parseInt(moveLeftPanelWidth));
-					$wnd.document.getElementById("moveRightPanel").style.width = -1 +parseInt(width) - parseInt(moveLeftPanelWidth)  +"px";
-					return;
+				var newCenterMovePanelWidth = parseInt(moveCenterPaneWidth) + parseInt(deltaPosition);
+//				var newMoveRightPanelWidth = width - newCenterMovePanelWidth - moveLeftPanelWidth;
+
+				var newCenterMovePanelHeight = $wnd.document.getElementById("centerMovePanel").style.height;
+					newCenterMovePanelHeight = newCenterMovePanelHeight.substring(0, newCenterMovePanelHeight.length-2); //wyrzucamy koncowke 'px'
+				
+				if(newCenterMovePanelWidth/newCenterMovePanelHeight > maxRatio){
+					newCenterMovePanelHeight = newCenterMovePanelWidth / maxRatio;
+				}else if(newCenterMovePanelWidth/newCenterMovePanelHeight < minRatio){
+					newCenterMovePanelHeight = newCenterMovePanelWidth / minRatio;
 				}
 				
-				currentPosition=currentPosition.substring(0, currentPosition.length-2);
-				var moveRightPanelWidth = $wnd.document.getElementById("moveRightPanel").style.width = width - currentPosition + "px";
-				moveRightPanelWidth = moveRightPanelWidth.substring(0, moveRightPanelWidth.length-2);
+				if(newCenterMovePanelWidth <= 1 || newCenterMovePanelHeight<=1 || parseInt(newCenterMovePanelWidth) + parseInt(moveLeftPanelWidth) >= width ||  parseInt(newCenterMovePanelHeight) + parseInt(moveTopPanelHeight) >= height){      
+					return;
+				}
+				$wnd.document.getElementById("centerMovePanel").style.width = newCenterMovePanelWidth +"px";
+				$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight +"px";
+				//$wnd.document.getElementById("moveRightPanel").style.width = newMoveRightPanelWidth +"px";
 				
-				$wnd.document.getElementById("centerMovePanel").style.width = width - moveLeftPanelWidth - moveRightPanelWidth +"px";
-				
+				position = element.parentNode.style.left; //y
+				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			},125);
 		}else if(elementId.indexOf("Bottom") >=0){
 			$wnd.document.getElementById("moveTopHand").className = $wnd.document.getElementById("moveTopHand").className + " moveElementHidden";
@@ -315,96 +442,103 @@ public class Test extends JQMPage{
 			$wnd.document.getElementById("moveBottomHand").className = $wnd.document.getElementById("moveBottomHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveLeftHand").className = $wnd.document.getElementById("moveLeftHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveBottomPanel").className = "bottomPanel moveChecked" ;
+			$wnd.document.getElementById("moveRightPanel").className = "rightPanel moveChecked" ;
 			var position;
 			
 			$wnd.setTimeout(function(){ //czekamy aż drag stworzy swoje div'y
-			position = element.parentNode.style.top; //y
-			position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
+				position = element.parentNode.style.top; //y
+				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			}, 250);
 			
-			var moveTopPanelHeight = $wnd.document.getElementById("moveTopPanel").offsetHeight;
+			var moveTopPanelHeight = $wnd.document.getElementById("moveTopPanel").style.height;
+				moveTopPanelHeight = moveTopPanelHeight.substring(0, moveTopPanelHeight.length-2); //wyrzucamy koncowke 'px'
+			var moveLeftPanelWidth = $wnd.document.getElementById("moveLeftPanel").style.width;
+				moveLeftPanelWidth = moveLeftPanelWidth.substring(0, moveLeftPanelWidth.length-2);
 			
 			interval = $wnd.setInterval(function(){
 				var currentPosition = element.parentNode.style.top; //y
-				currentPosition = currentPosition.substring(0, currentPosition.length-2); //wyrzucamy koncowke 'px'
+					currentPosition = currentPosition.substring(0, currentPosition.length-2); //wyrzucamy koncowke 'px'
+				var deltaPosition = currentPosition - position; //delta y
+
+				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").style.height;
+					moveCenterPaneHeight = moveCenterPaneHeight.substring(0, moveCenterPaneHeight.length-2); //wyrzucamy koncowke 'px'
+				var moveCenterPaneWidth = $wnd.document.getElementById("centerMovePanel").style.width;
+					moveCenterPaneWidth = moveCenterPaneWidth.substring(0, moveCenterPaneWidth.length-2); //wyrzucamy koncowke 'px'	
+					
+				var newCenterMovePanelHeight = parseInt(moveCenterPaneHeight) + parseInt(deltaPosition);
+				var newCenterMovePanelWidth = moveCenterPaneWidth;
 				
-				if(currentPosition >=height || currentPosition<=0){
-					$wnd.document.getElementById("centerMovePanel").style.top = "0px";
-					$wnd.document.getElementById("moveTopPanel").style.height = "0px";
-					 return;
+				if(moveCenterPaneWidth/newCenterMovePanelHeight > maxRatio){
+					newCenterMovePanelWidth = newCenterMovePanelHeight * maxRatio;
+				}else if(moveCenterPaneWidth/newCenterMovePanelHeight < minRatio){
+					newCenterMovePanelWidth = newCenterMovePanelHeight * minRatio;
 				}
-				
-				var deltaPosition = position - currentPosition; //delta y
-				
-				var moveBottomPanelHeight = $wnd.document.getElementById("moveBottomPanel").style.height;
-				moveBottomPanelHeight = moveBottomPanelHeight.substring(0, moveBottomPanelHeight.length-2); //wyrzucamy koncowke 'px'
-				
-				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").offsetHeight;
-				
-				//$wnd.console.log("position: "+position +" currentPosition: "+currentPosition + " deltaPosition: " +deltaPosition );
-				if(deltaPosition < 0 && Math.abs(deltaPosition) + moveCenterPaneHeight <= maxHeightLogo ){ //zwiekszamy
-					
-					var newMoveBottomPanelHeight = moveBottomPanelHeight - Math.abs(deltaPosition);
-					
-					var newCenterMovePanelHeight = height - moveTopPanelHeight - newMoveBottomPanelHeight;
-					
-					//$wnd.console.log("newCenterMovePanelHeight" + newCenterMovePanelHeight);
-					$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px";
-					
-					$wnd.document.getElementById("moveBottomPanel").style.height = newMoveBottomPanelHeight + "px";
-					
-				}else if(deltaPosition > 0 && moveCenterPaneHeight - deltaPosition >= minHeightLogo ){ //zmniejszamy
-					
-					var newMoveBottomPanelHeight = parseInt(moveBottomPanelHeight) + deltaPosition;
-					
-					var newCenterMovePanelHeight = height - moveTopPanelHeight - newMoveBottomPanelHeight;
-					
-					$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px"; //deltaPosition > 0 
-					
-					$wnd.document.getElementById("moveBottomPanel").style.height = newMoveBottomPanelHeight + "px";
-					
-					
-				}
+				if(newCenterMovePanelWidth <= 1 || newCenterMovePanelHeight<=1 || parseInt(newCenterMovePanelWidth) + parseInt(moveLeftPanelWidth) >= width ||  parseInt(newCenterMovePanelHeight) + parseInt(moveTopPanelHeight) >= height){      
+					return;
+				}		
+				$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px"; 
+				$wnd.document.getElementById("centerMovePanel").style.width = newCenterMovePanelWidth + "px"; 
+
 				position = element.parentNode.style.top; //y
 				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			},125);
-		}else if(elementId.indexOf("Left") >=0){
+		}else if(elementId.indexOf("Left") >= 0){
 			$wnd.document.getElementById("moveTopHand").className = $wnd.document.getElementById("moveTopHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveRightHand").className = $wnd.document.getElementById("moveRightHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveBottomHand").className = $wnd.document.getElementById("moveBottomHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveLeftHand").className = $wnd.document.getElementById("moveLeftHand").className + " moveElementHidden";
 			$wnd.document.getElementById("moveLeftPanel").className = "leftPanel moveChecked" ;
+			$wnd.document.getElementById("moveBottomPanel").className = "bottomPanel moveChecked" ;
+			
 			var moveRightPanelWidth = $wnd.document.getElementById("moveRightPanel").style.width;
 				moveRightPanelWidth = moveRightPanelWidth.substring(0, moveRightPanelWidth.length-2);
+			var moveTopPanelHeight = $wnd.document.getElementById("moveTopPanel").style.height;
+				moveTopPanelHeight = moveTopPanelHeight.substring(0, moveTopPanelHeight.length-2); //wyrzucamy koncowke 'px'
+				
+			$wnd.setTimeout(function(){
+				position = element.parentNode.style.left; //y
+				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
+			}, 250);
 			
 			interval = $wnd.setInterval(function(){
 				var currentPosition = element.parentNode.style.left;
 					currentPosition=currentPosition.substring(0, currentPosition.length-2);
+				var deltaPosition = parseInt(position) - parseInt(currentPosition); //delta y
+
+				
+				var centerMovePanelWidth = $wnd.document.getElementById("centerMovePanel").style.width;
+					centerMovePanelWidth = centerMovePanelWidth.substring(0, centerMovePanelWidth.length-2); //wyrzucamy koncowke 'px'
+				var newCenterMovePanelHeight = $wnd.document.getElementById("centerMovePanel").style.height;
+					newCenterMovePanelHeight = newCenterMovePanelHeight.substring(0, newCenterMovePanelHeight.length-2); //wyrzucamy koncowke 'px'
 					
-				if(parseInt(currentPosition) >= parseInt(width) - parseInt(moveRightPanelWidth) ){
-					$wnd.document.getElementById("centerMovePanel").style.width = "1px";
-					$wnd.document.getElementById("moveLeftPanel").style.width = -1 + parseInt(width) - parseInt(moveRightPanelWidth) + "px";
-					return;
-				}else if(parseInt(currentPosition) <= 0){
-					$wnd.document.getElementById("centerMovePanel").style.width = parseInt(width) - parseInt(moveRightPanelWidth)+" px";
-					$wnd.document.getElementById("moveLeftPanel").style.width = "0px";
+				var newCenterMovePanelWidth = parseInt(centerMovePanelWidth) + parseInt(deltaPosition);
+				var newCenterMovePanelLeft = width - parseInt(newCenterMovePanelWidth) - parseInt(moveRightPanelWidth);
+				
+				if(newCenterMovePanelWidth/newCenterMovePanelHeight > maxRatio){
+					newCenterMovePanelHeight = newCenterMovePanelWidth / maxRatio;
+				}else if(newCenterMovePanelWidth/newCenterMovePanelHeight < minRatio){
+					newCenterMovePanelHeight = newCenterMovePanelWidth / minRatio;
+				}
+				
+				if(newCenterMovePanelWidth <= 1 || newCenterMovePanelHeight<=1 || parseInt(newCenterMovePanelWidth) + parseInt(moveRightPanelWidth) >= width ||  parseInt(newCenterMovePanelHeight) + parseInt(moveTopPanelHeight) >= height){      
 					return;
 				}
-				$wnd.document.getElementById("moveLeftPanel").style.width = currentPosition + "px" ;
+				$wnd.document.getElementById("centerMovePanel").style.width = newCenterMovePanelWidth +"px";
+				$wnd.document.getElementById("centerMovePanel").style.height = newCenterMovePanelHeight + "px";
+				$wnd.document.getElementById("centerMovePanel").style.left = newCenterMovePanelLeft + "px";
 				
-				$wnd.document.getElementById("centerMovePanel").style.width = width - currentPosition - moveRightPanelWidth +"px";
-				$wnd.document.getElementById("centerMovePanel").style.left = currentPosition + "px";
-				
+				position = element.parentNode.style.left; //y
+				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			},125);
 		}
-
+	
 		return interval;
 		
 	}-*/;
-	
+
 	private native int myOnMoveProfile( String elementId, double ratio )/*-{
 		var element = $wnd.document.getElementById(elementId);
-
+	
 		if(element === "undefined") return -1;
 		
 		var image = $wnd.document.getElementById("croapImage");
@@ -440,6 +574,7 @@ public class Test extends JQMPage{
 					currentPosition = currentPosition.substring(0, currentPosition.length-2); //wyrzucamy koncowke 'px'
 			
 				var deltaPosition = currentPosition - position; //delta y
+				
 				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").style.height;
 					moveCenterPaneHeight = moveCenterPaneHeight.substring(0, moveCenterPaneHeight.length-2);
 				var centerMovePanelCurrentPosition = $wnd.document.getElementById("centerMovePanel").style.top;
@@ -480,7 +615,7 @@ public class Test extends JQMPage{
 				position = element.parentNode.style.top; //y
 				position = position.substring(0, position.length-2); //wyrzucamy koncowke 'px'
 			}, 250);
-
+	
 			interval = $wnd.setInterval(function(){
 				var currentPosition = element.parentNode.style.top; //y
 					currentPosition = currentPosition.substring(0, currentPosition.length-2); //wyrzucamy koncowke 'px'
@@ -489,6 +624,7 @@ public class Test extends JQMPage{
 				
 				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").style.height;
 					moveCenterPaneHeight = moveCenterPaneHeight.substring(0, moveCenterPaneHeight.length-2); //wyrzucamy koncowke 'px'
+				
 				var centerMovePanelLeft = $wnd.document.getElementById("centerMovePanel").style.left;
 					centerMovePanelLeft = centerMovePanelLeft.substring(0, centerMovePanelLeft.length-2); //wyrzucamy koncowke 'px'
 				
@@ -518,11 +654,11 @@ public class Test extends JQMPage{
 			},125);
 		
 		}
-
+	
 		return interval;
 		
 	}-*/;
-	
+
 	private native int myOnMoveMenu(String elementId)/*-{
 		var element = $wnd.document.getElementById(elementId);
 	
@@ -624,7 +760,7 @@ public class Test extends JQMPage{
 					return;
 				}
 				var deltaPosition = parseInt(position) - parseInt(currentPosition); //delta y
-
+	
 				var moveCenterPaneHeight = $wnd.document.getElementById("centerMovePanel").style.height;
 					moveCenterPaneHeight = moveCenterPaneHeight.substring(0, moveCenterPaneHeight.length-2); //wyrzucamy koncowke 'px'
 				var newCenterMovePanelHeight = moveCenterPaneHeight - deltaPosition;
@@ -646,7 +782,7 @@ public class Test extends JQMPage{
 			interval = $wnd.setInterval(function(){
 				var currentPosition = element.parentNode.style.left;
 					currentPosition=currentPosition.substring(0, currentPosition.length-2);
-
+	
 				if(parseInt(currentPosition) >= parseInt(width) - parseInt(moveRightPanelWidth) ){
 					$wnd.document.getElementById("centerMovePanel").style.width = "1px";
 					return;
@@ -663,7 +799,7 @@ public class Test extends JQMPage{
 		return interval;
 		
 	}-*/;
-	
+
 	private native int myOnMoveCenter(String elementId, int moveElementWidth, int moveElementHeight)/*-{
 		var element = $wnd.document.getElementById(elementId);
 		if(element === "undefined") return -1;
@@ -705,20 +841,15 @@ public class Test extends JQMPage{
 	
 		return interval;
 	
- 	}-*/;
-	
+	}-*/;
+
 	private native void stopInterval(int interval)/*-{
 		$wnd.clearInterval(interval);
 		
 		
 	}-*/ ;
+
 	
-	private native int getHeight(String elementId)/*-{
-		return $wnd.document.getElementById(elementId).offsetHeight;
-	}-*/;
-	private native int getWidth(String elementId)/*-{
-		return $wnd.document.getElementById(elementId).offsetWidth;
-	}-*/;
 	private native void checkPositions(String isProfile)/*-{
 		
 		var image = $wnd.document.getElementById("croapImage");
@@ -787,4 +918,34 @@ public class Test extends JQMPage{
 		
 		
 	}-*/;
+	
+
+	private native int getOffsetHeight(String elementId)/*-{
+		return $wnd.document.getElementById(elementId).offsetHeight;
+	}-*/;
+	private native int getOffsetWidth(String elementId)/*-{
+		return $wnd.document.getElementById(elementId).offsetWidth;
+	}-*/;
+	
+	private native int getHeight(String elementId)/*-{
+		var element = $wnd.document.getElementById(elementId);
+		var height = element.style.height;
+			height = height.substring(0, height.length-2); //usuwa koncowke '-px'
+		return parseInt(height);
+	}-*/;
+	private native int getWidth(String elementId)/*-{
+		var element = $wnd.document.getElementById(elementId);
+		var width = element.style.width;
+			width = width.substring(0, width.length-2); //usuwa koncowke '-px'
+		
+		return parseInt(width);
+	}-*/;
+	private native int getMaxWidth(String elementId)/*-{
+		var element = $wnd.document.getElementById(elementId);
+		var width = element.style.maxWidth;
+			width = width.substring(0, width.length-2); //usuwa koncowke '-px'
+		
+		return parseInt(width);
+	}-*/;
+	
 }

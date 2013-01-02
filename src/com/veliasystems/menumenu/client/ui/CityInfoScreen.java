@@ -82,14 +82,14 @@ public class CityInfoScreen extends JQMPage{
 		for(Restaurant item: list){
 			RestaurantImageView restaurantView;
 			if(RestaurantController.restMapView.containsKey(item.getId())){
-				restaurantView = RestaurantController.restMapView.get(item.getId());
+				//restaurantView = RestaurantController.restMapView.get(item.getId());
 			}
 			else{
 				restaurantView = new RestaurantImageView(item, this);
-				RestaurantController.restMapView.put(item.getId(), restaurantView);
+				//RestaurantController.restMapView.put(item.getId(), restaurantView);
 			}
 
-			restaurantList.addItem(item.getName(), restaurantView);
+			//restaurantList.addItem(item.getName(), restaurantView);
 
 		}
 	}

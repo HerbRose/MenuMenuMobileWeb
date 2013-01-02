@@ -1,24 +1,23 @@
 package com.veliasystems.menumenu.client.ui;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.sksamuel.jqm4gwt.JQMContext;
+import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
-import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 public class MyImage extends FlowPanel {
 
@@ -27,11 +26,16 @@ public class MyImage extends FlowPanel {
 	Image image = new Image();
 
 	private ImageBlob imgBlob;
+	
 	private Label txtLabel;
 	private Label mainLAbel;
+	private Label editLabel;
+	
 	private String url;
 
 	private FlowPanel detailsPanel;
+	private FlowPanel editPanel;
+	
 	private HTML detailsContent;
 
 	private boolean mainImage = false;
@@ -43,8 +47,7 @@ public class MyImage extends FlowPanel {
 			.getInstance();
 
 	/**
-	 * tworzy nowe zdjecie, po kliknieciu na zdjecie, zdjecie ustawiane jest
-	 * jako glowne
+	 * zdjęcie z pustą tablicą
 	 * 
 	 * @param imagesController
 	 *            - controler do zarzadzania zdjeciami w danej kliszy
@@ -68,7 +71,7 @@ public class MyImage extends FlowPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 
-				Document.get().getElementById("load").setClassName("show");
+				PagesController.showWaitPanel();
 
 				restaurantController.setEmptyBoard(parent.getRestaurant(),
 						imageType);
@@ -94,6 +97,14 @@ public class MyImage extends FlowPanel {
 	 */
 	public MyImage(ImagesController imagesController, ImageBlob imageBlob,
 			RestaurantImageView myParent, ImageType myImageType) {
+		
+		editPanel = new FlowPanel();
+		editPanel.addStyleName("editImagePanel myImageEditPanel" + imageBlob.getRestaurantId());
+		
+		editLabel = new Label(Customization.EDIT.toUpperCase());
+		editLabel.addStyleName("editLabelImage");
+		
+		
 		url = imageBlob.getImageUrl();
 		parent = myParent;
 		imageType = myImageType;
@@ -107,25 +118,40 @@ public class MyImage extends FlowPanel {
 				PagesController.showWaitPanel();
 				restaurantController.setMainImage(imgBlob);
 //				JQMContext.changePage(new Test(imgBlob));
-				// getImagesController().selectImage(getMe());
+				getImagesController().selectImage(getMe());
 			}
 		});
 
 		String dateTimeFormat = DateTimeFormat.getFormat(
 						DateTimeFormat.PredefinedFormat.MONTH_NUM_DAY).format(
 						imageBlob.getDateCreated());
-
-		add(setDetailsPanel(dateTimeFormat));
+		String day = DateTimeFormat.getFormat(
+				DateTimeFormat.PredefinedFormat.DAY).format(
+				imageBlob.getDateCreated());
+		String month = DateTimeFormat.getFormat(
+				DateTimeFormat.PredefinedFormat.MONTH_ABBR).format(
+				imageBlob.getDateCreated());
+		add(setDetailsPanel(day +" " +  month));
+		//add(setDetailsPanel(day + " " + Util.getMonthShortName(monthCounter)));
 		setStyleName("imagePanel");
 		this.imagesController = imagesController;
 		add(image);
+		
+		editPanel.add(editLabel);
+		add(editPanel);
 
 	}
 
-	public MyImage(int emptyImageNumber) {
+	public MyImage(int emptyImageNumber, ImageType imageType) {
 		setStyleName("imagePanel");
-
-		url = "img/empty.png";
+	
+		switch (imageType) {
+		case PROFILE:
+			url = "img/layout/klisza_piktogram_knajpa.png";
+			break;
+		case MENU:
+			url = "img/layout/klisza_piktogram_tablica.png";
+		}
 		setMyImage(url);
 
 		image.addClickHandler(new ClickHandler() {

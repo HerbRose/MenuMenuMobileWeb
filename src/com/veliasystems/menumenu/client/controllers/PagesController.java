@@ -14,7 +14,7 @@ import com.veliasystems.menumenu.client.ui.RestaurantsListScreen;
 public class PagesController {
 
 	private static Map<Pages, JQMPage> pagesMap = new HashMap<Pages, JQMPage>();
-	
+	public static int contentWidth = 0;
 	/**
 	 * set the page only if local page is null
 	 * @param enumPage
@@ -33,11 +33,15 @@ public class PagesController {
 			return new JQMPage();
 		}
 	}
-	
+	/**
+	 * get div of name <strong>"load"</strong> and sets display to none
+	 */
 	public static void showWaitPanel(){
 		Document.get().getElementById("load").setClassName(R.LOADING);
 	}
-	
+	/**
+	 *  get div of name <strong>"load"</strong> and sets display to block
+	 */
 	public static void hideWaitPanel(){
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}

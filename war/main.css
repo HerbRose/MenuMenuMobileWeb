@@ -64,12 +64,13 @@
 #wrapper, .wrapper {
 /* 	z-index:10; */
 	width: 100%;
+	height: 187px;
 	overflow:scroll;
  	white-space: nowrap; 
  	text-align: right;
 }
 #wrapper, .wrapper, .cameraContainerDiv{
-	background: #000 url('img/backgroundForImagesScroll.png') repeat-x ;
+/* 	background: #000 url('img/layout/klisza.png') repeat-x ; */
 	background-size: 20px 100px;
 }
 
@@ -77,9 +78,13 @@
 
 /* 	z-index:10; */
 	-webkit-tap-highlight-color:rgba(0,0,0,0);
-	margin-left: 130px;
+/* 	margin-left: 130px; */
+	background: #000 url('img/layout/klisza.png') repeat-x ;
+	height: 160px;
 	padding:0;
 	display: inline-block;
+	padding-left: 100px;
+	direction: rtl;
 }
 #scroller td, .scroller td{
 	vertical-align: middle !important;
@@ -87,7 +92,7 @@
 }
 
 #scroller, .scroller, .cameraContainerDiv, .wrapper{
-	height: 100px !important;
+	height: 187px !important;
 }
 
 .titleDiv{
@@ -102,25 +107,15 @@
 	background-color: transparent;
 }
 
-.imagePanel, .image{
-	height: 36px;
-}
-.imagePanel {
-	position: relative;
-	display: inline-block;
-	white-space: nowrap;
-	padding-top: 29px;
-}
-.image{
-	margin-right: 10px;
-}
-.imageSelected{
-	border: #f00 4px solid;
-}
 
+.cameraContainerDivRelative{
+	position: relative;
+	
+	height: 100%;
+}
 .cameraContainerDiv{
 	position: absolute;
- 	width: 128px;/*  .cameraDiv width + .cameraDiv left */
+/*  	width: 128px; .cameraDiv width + .cameraDiv left */
 /*  	height: 350px; like .wrapper */
 	z-index: 11;
 	top: 40px;
@@ -128,24 +123,24 @@
 /* 	background: transparent url('img/backgroundForImagesScroll.png') repeat-x ; */
 	
 }
-.cameraDiv, .androidForm{
+.cameraDiv{
 	position: absolute;
 	left: 20px;
 	top: 50%;
 	margin-top: -15px;
 	z-index: 15;
 }
+.cameraDiv{
+	width: 30px !important;
+	overflow: hidden;
+}
 .cameraDiv img{
 	height: 30px;
 }
-.androidForm, .androidForm input{
-	width: 120px;
-	height: 30px;
+.swipeViewForm{
+	position: absolute;
+	opacity: 0;
 }
-.androidForm{
-	margin-top: -5px;
-}
-
 .flowPanelButtonsVisible{
 	width: 100px;
 	height: 35px;
@@ -378,7 +373,7 @@ width: 100px;
 /* testing only */
 
 .mainPanel{
-	width: 239px;
+/* 	width: 239px; */
 	position: relative;
 }
 .topPanel{
@@ -403,8 +398,8 @@ width: 100px;
 	border-right: 15px solid transparent;
 	border-left: 15px solid transparent;
 	border-bottom: 15px solid rgba(255, 255, 255, 0.5);
-	
-	z-index: 10;
+
+
 }
 .rightPanel{
 	position: absolute;
@@ -427,8 +422,7 @@ width: 100px;
 	border-top: 15px solid transparent;
 	border-bottom: 15px solid transparent;
 	border-left: 15px solid rgba(255, 255, 255, 0.5);
-	
-	z-index: 10;
+
 }
 .leftPanel{
 	position: absolute;
@@ -451,8 +445,7 @@ width: 100px;
 	border-top: 15px solid transparent;
 	border-bottom: 15px solid transparent;
 	border-right: 15px solid rgba(255, 255, 255, 0.5);
-	
-	z-index: 10;
+
 }
 .bottomPanel{
 	position: absolute;
@@ -475,8 +468,7 @@ width: 100px;
 	border-right: 15px solid transparent;
 	border-left: 15px solid transparent;
 	border-top: 15px solid rgba(255, 255, 255, 0.5);
-	
-	z-index: 10;
+
 }
 .centerMovePanel{
 	position: absolute;
@@ -488,7 +480,20 @@ width: 100px;
 	z-index: 10;
 }
 .moveChecked{
-	background-color: rgba(255,255,255,0.3);
-	border: 1px dashed #00F5FF;
+	background-color: rgba(255,255,255,0.0);
+/* 	border: 1px dashed #00F5FF; */
+}
+.cropArrow{
+	z-index: 12;
+}
+.moveElementHidden{
+	display: none;
+}
+.rotation90left{
+	transform:rotate(45deg);
+	-ms-transform:rotate(45deg); /* IE 9 */
+	-moz-transform:rotate(45deg); /* Firefox */
+	-webkit-transform:rotate(45deg); /* Safari and Chrome */
+	-o-transform:rotate(45deg); /* Opera */
 }
 /* KONIEC testing only */
