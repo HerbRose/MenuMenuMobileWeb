@@ -12,7 +12,7 @@ body{
 	right: 0px  !important;
 	
 	width: 100%  !important;;
-	max-width: 100%  !important;
+	max-width: 840px  !important;
 	
 	text-align: center;
 	margin: 0px !important;
@@ -21,7 +21,7 @@ body{
 	padding: 0px !important;
 	
 	background: url("/img/layout/background.png") repeat #eee !important;
-	co
+
 	-webkit-box-shadow: 3px 5px 38px -3px #000 !important;
           	box-shadow: 3px 5px 38px -3px #000 !important;
 
@@ -119,7 +119,7 @@ body{
 .saveButton{
 	top: 15px !important;
 	height: 40px !important;
-	background: url("img/layout/save.png") !important;
+	background: url("img/layout/headerButtonBackground.png") !important;
 	line-height: 40px;
 }
 .itemList{
@@ -137,9 +137,7 @@ body{
 	text-align: left;
 	
 }
-.itemList:HOVER{
-	background-color: #ddd;
-}
+
 .itemList:FOCUS{
 	background-color: #eed;
 }
@@ -179,9 +177,7 @@ body{
 .mainPanelBackButton:ACTIVE .myTextLabel{
 	color: #eed;
 }
-.mainPanelBackButton:HOVER .myTextLabel{
-	color: #ddd;
-}
+
 .rightButton{
 	position: absolute;
 	right: 0px;
@@ -200,11 +196,20 @@ body{
 .pointer{
 	cursor: pointer;
 }
+.arialBold{
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #797979;
+}
 /*********************************
  * ogolny styl dla label i texBox*
  *********************************/
 .myLabel, .myTextBox{	
 	float: left !important;
+	
+	overflow-y: hidden;
+    overflow-x: auto;
+	white-space: nowrap;
 	
 	background: #fff !important;
 	
@@ -215,6 +220,8 @@ body{
 	border-bottom-left-radius: 14px !important;
 		-moz-border-bottom-left-radius: 14px !important;
 		-webkit-border-bottom-left-radius: 14px !important;
+		
+	text-align: left !important;
 	
 }
 .myTextBox{
@@ -290,9 +297,7 @@ body{
 	font-weight: bold;
 	color: #797979;
 }
-.comboListItemLabel:HOVER{
-	background-color: #ddd;
-}
+
 .comboListLabel{
 	position: absolute;
 	top: 15px;
@@ -305,11 +310,7 @@ body{
 
  /* Login screen */
 .namePanel, .passwordPanel{  /* panele na label i pole do wprowadzenia tekstu */
-/* 	position: absolute !important; */
-	
-/* 	right: 94px !important; */
 	height: 60px !important;
-/* 	width: 80% !important; */
 	
 	margin: 20px 10px 0px 10px !important;
 	padding: 0px;
@@ -387,27 +388,40 @@ body{
 
 /* Add Restaurant Screen */
 .containerPanelAddRestaurant{
-	background: white;
-	width: 90%;
-	margin-left: 5%;
+	margin: 20px 10px 130px 10px !important;
+	
 	border-radius: 20px;
 	margin-top: 10px;
 	border: #c1c1c1 2px solid !important;
+	background: white;
 }
 .addRestaurantLabel{
-/* 	display: inline-block; */
-/* 	min-width: 25%; */
-/* 	max-width: 25%; */
+	
+	min-width: 30% !important;	
+	max-width: 30% !important;	
+	height: inherit !important;
+
+	margin-right: 10px !important;
+	padding: 0px 0px 0px 10px !important;
+	
+	line-height: 60px !important;
+	text-align: left !important;
+	color: #8a8b8e !important;
+	
+/* 	float: left !important; */
+/* 	padding-top: 17px; */
+/* 	padding-right: 10px; */
 /* 	text-align: right; */
-	float: right;
-	padding-right: 10px;
-	padding-top: 10px;
 }
 
 .addRestaurantInput {
-	max-width: 60%;
-	margin-right: 20px;
-	float: right;
+	width: 60% !important;
+	height: inherit !important;
+
+	margin: 0px !important;
+	padding: 0px !important;
+/* 	margin-right: 20px; */
+/* 	float: right; */
 	background: none !important;
 	border: none !important;
 	-moz-box-shadow: none !important;
@@ -429,13 +443,38 @@ body{
 }
 
 .addWrapper{
-	text-align: left;
-	padding-left: 10px;
-	height: 50px;
+	
+	height: 60px !important;
+	
+	margin: 0px 0px 4px 0px !important;
+	padding: 0px;
+	background: #fff !important;
+	
+/* 	text-align: left; */
+/* 	padding-left: 10px; */
+/* 	height: 50px; */
+	border: none !important;
 	border-bottom: #c1c1c1 2px solid !important ;
+	
+	border-radius: 0px !important;
+		-moz-border-radius: 0px !important;
+		-webkit-border-radius: 0px !important;
+}
+
+.addWrapper:first-child {
+	border-top: none !important;
+	
+	border-top-left-radius: 14px !important;
+		-moz-border-top-left-radius: 14px !important;
+		-webkit-border-top-left-radius: 14px !important;
+	
+	border-top-right-radius: 14px !important;	
+		-moz-border-top-right-radius: 14px !important;
+		-webkit-border-top-right-radius: 14px !important;
 }
 
 .addWrapper:last-child {
+	
 	border-bottom-left-radius: 14px !important;
 	-moz-border-bottom-left-radius: 14px !important;
 	-webkit-border-bottom-left-radius: 14px !important;
@@ -456,10 +495,12 @@ body{
 	display: inline-block;
 	border: #c1c1c1 2px solid !important ;
 	border-top: none;
-	margin-top: 10px;
+	margin-top: -90px;
+	margin-bottom: 15px;
 }
 
 .addBoardLabel{
+	position: absolute;
 	font-size: 14px;
 	line-height: 60px;
 	text-align: left;
@@ -512,8 +553,188 @@ body{
 .adminButton{
 	display: inline-block;
 	margin-left: 20px;
+	float: left;
 }
 
 
 /* KONIEC - City list screen*/
 
+
+/* Nowy widok restauracji - Restaurant Image View */
+
+.leftButton{
+	top: 5px !important;
+}
+
+.infoContainer{
+	width: 100%;
+	height: 130px;
+	margin-bottom: 40px;
+	display: inline-block;
+	text-align: left;
+}
+
+.logoImage{
+	width: 220px;
+	margin-top: 30px;
+	margin-left: 20px;
+	float: left;
+}
+
+.logoImageWrapper{
+	display: inline-block;
+}
+
+.infoText{
+	
+}
+
+.infoTextWrapper{
+	display: inline-block;
+	margin-left: 15px;
+	height: 50px;
+	line-height: 25px;
+	font-weight: bold;
+}
+
+.swipeContainer{
+	width: 100%;
+	height: 500px;
+	background: white;
+}
+
+.publishWrapper{
+	width: 100%;
+	height: 100px;
+	display: inline-block;
+	margin-top: 30px;
+	line-height: 100px;
+	text-align: left;
+}
+
+.publishImage{
+	display: inline-block;
+	margin-left: 5%;
+}
+
+.publishLabelWrapper{
+	width: 60%;
+	float: right;
+	margin-right: 5%;
+	height: 70px;
+	background: white;
+	border-radius: 14px;
+	border: 2px solid #C1C1C1;
+	line-height: 70px;
+	text-align: left;
+	margin-left: 15px;
+	padding-left: 15px;
+	
+	font-weight: bold;
+	font-size: 15px;
+	color: #8a8b8e;
+	display: inline-block;
+}
+.editPanel{
+	display: none;
+}
+
+.formLogoUpload{
+	opacity: 0;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+	z-index: 10;
+}
+.fileLogoUplaod{
+	width: 100%;
+	height: 100%;
+}
+
+.rotatedPlus{
+	-moz-transform:rotate(45deg);
+	-webkit-transform:rotate(45deg);
+	-o-transform:rotate(45deg);
+	-ms-transform:rotate(45deg);
+}
+
+.addBoardWrap{
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.addBoardWrap img{
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	width: 220px;
+	margin: 0px !important;
+}
+.editImagePanel{
+	position: absolute;
+	width: 100%;
+	height: 15px;
+	bottom: 0px;
+	background: rgba(0, 0, 0, 0.5);
+	display: block;
+}
+
+.editLabelImage{
+	text-align: center;
+	line-height: 15px;
+	font-size: 14px;
+	color: #fff;
+	
+}
+/* KONIEC -  Restaurant Image View*/
+
+
+/* LastUploadedImages */
+
+.imgWrapper{
+	margin: 10px;
+	border: 2px solid black;
+	display: block;
+	padding: 10px;
+}
+
+.lastUploadedImage{
+	width: 200px;
+	display: inline-block;
+}
+
+.lastUploadedDeleteButton{
+
+}
+
+.lastUploadedName{
+	margin: 10px;
+	font-weight: bold;
+}
+
+/* KONIEC -  LastUploadedImages*/
+
+
+/*MyImage*/
+
+.imagePanel, .image{
+	height: 70px;
+}
+.imagePanel {
+	position: relative;
+	display: inline-block;
+	white-space: nowrap;
+	margin-right: 10px;
+	padding-top: 50px;
+}
+.image{
+/* 	margin-right: 10px; */
+}
+.imageSelected{
+	border: #f00 4px solid;
+}
+
+.myImageEditPanel{
+	
+}
+/* KONIEC -  MyImage*/
