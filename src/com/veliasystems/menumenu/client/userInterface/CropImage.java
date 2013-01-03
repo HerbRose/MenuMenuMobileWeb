@@ -68,8 +68,8 @@ public class CropImage extends MyPage implements IObserver{
 	private DropController dropController;
 	
 	private double ratioProfile = 450.0/280.0;
-	private double minHeightLogo = 55;
-	private double maxHeightLogo = 75;
+	private double minLogoRatio = 220d/75d;
+	private double maxLogoRatio = 220d/55d;
 	
 	int interval = 0;
 	
@@ -86,6 +86,7 @@ public class CropImage extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				PagesController.showWaitPanel();
 				JQMContext.changePage(RestaurantController.restMapView.get(Long.parseLong(imageInsert.getRestaurantId())), Transition.SLIDE);
 			}
 		});
@@ -155,24 +156,24 @@ public class CropImage extends MyPage implements IObserver{
 		
 		centerMovePanel.setStyleName("centerMovePanel", true);
 		centerMovePanel.getElement().setId("centerMovePanel");
-		switch (imageInsert.getImageType()) {
-		case MENU:
-//			displayWidth = 220;
-			centerMovePanel.setWidth("100px");
-			centerMovePanel.setHeight("60px");
-			break;
-		case LOGO:
-//			displayWidth = PagesController.contentWidth; //220;
-			centerMovePanel.setWidth("166px");
-			centerMovePanel.setHeight("58px");
-			break;
-		case PROFILE:
-//			displayWidth = 450;
-			centerMovePanel.setWidth("200px");
-			centerMovePanel.setHeight(200 / ratioProfile + "px");
-			leftHand.getElement().getStyle().setDisplay(Display.NONE);
-			rightHand.getElement().getStyle().setDisplay(Display.NONE);
-		}
+//		switch (imageInsert.getImageType()) {
+//		case MENU:
+////			displayWidth = 220;
+//			centerMovePanel.setWidth("100px");
+//			centerMovePanel.setHeight("60px");
+//			break;
+//		case LOGO:
+////			displayWidth = PagesController.contentWidth; //220;
+//			centerMovePanel.setWidth("166px");
+//			centerMovePanel.setHeight("58px");
+//			break;
+//		case PROFILE:
+////			displayWidth = 450;
+//			centerMovePanel.setWidth("200px");
+//			centerMovePanel.setHeight(200 / ratioProfile + "px");
+//			leftHand.getElement().getStyle().setDisplay(Display.NONE);
+//			rightHand.getElement().getStyle().setDisplay(Display.NONE);
+//		}
 		//image.setWidth(displayWidth + "px");
 		displayWidth = PagesController.contentWidth; //temporary 
 		image.getElement().getStyle().setProperty("maxWidth", PagesController.contentWidth +"px");
@@ -190,7 +191,43 @@ public class CropImage extends MyPage implements IObserver{
 			public void onLoad(LoadEvent event) {
 				
 				displayWidth = getOffsetWidth(image.getElement().getId());
-
+				displayHeight = getOffsetHeight(image.getElement().getId());
+				int displayCenterPanelWidth = displayWidth>20 ? displayWidth- 10 : displayWidth;
+				int displayCenterPanelHeight = displayHeight>20 ? displayHeight - 10 : displayHeight ;
+				
+				switch (imageInsert.getImageType()) {
+				case MENU:
+//					displayWidth = 220;
+					centerMovePanel.setWidth(displayCenterPanelWidth +"px");
+					centerMovePanel.setHeight(displayCenterPanelHeight+"px");
+					break;
+				case LOGO:
+//					displayWidth = PagesController.contentWidth; //220;
+					centerMovePanel.setWidth( displayCenterPanelWidth + "px");
+					
+//					if(displayCenterPanelHeight > displayWidth/maxLogoRatio){
+//						displayCenterPanelHeight = (int) (displayWidth/maxLogoRatio);
+//					}else if(displayCenterPanelHeight < displayWidth/minLogoRatio){
+//						displayCenterPanelHeight = (int) (displayWidth/minLogoRatio);
+//					}
+					double tmp = displayCenterPanelWidth/displayCenterPanelHeight;
+					Window.alert(tmp + " " + minLogoRatio);
+					if(displayCenterPanelWidth/displayCenterPanelHeight < minLogoRatio){
+						displayCenterPanelHeight = (int) (displayCenterPanelWidth/minLogoRatio);
+					}else if(displayCenterPanelWidth/displayCenterPanelHeight > maxLogoRatio){
+						displayCenterPanelHeight = (int) (displayCenterPanelWidth/maxLogoRatio);
+					}
+					
+					centerMovePanel.setHeight(displayCenterPanelHeight +"px");
+					break;
+				case PROFILE:
+//					displayWidth = 450;
+					centerMovePanel.setWidth(displayWidth+"px");
+					centerMovePanel.setHeight(displayWidth / ratioProfile + "px");
+					leftHand.getElement().getStyle().setDisplay(Display.NONE);
+					rightHand.getElement().getStyle().setDisplay(Display.NONE);
+				}
+				
 				boundaryPanel.setWidth(displayWidth + "px");
 				boundaryPanel.setHeight(getOffsetHeight(image.getElement().getId()) + "px");
 				
@@ -201,6 +238,11 @@ public class CropImage extends MyPage implements IObserver{
 				
 				int leftPanelWidth = (displayWidth - getOffsetWidth(centerMovePanel.getElement().getId()) )/2;
 				int rightPanelWidth = displayWidth - leftPanelWidth - getOffsetWidth(centerMovePanel.getElement().getId());
+				
+				if(topPanelHeight<0) topPanelHeight=0;
+				if(bottomPanelHeight<0) bottomPanelHeight=0;
+				if(leftPanelWidth<0) leftPanelWidth=0;
+				if(rightPanelWidth<0) rightPanelWidth=0;
 				
 				topPanel.setHeight( topPanelHeight + "px");
 				leftPanel.setWidth(leftPanelWidth +"px");
@@ -261,7 +303,7 @@ public class CropImage extends MyPage implements IObserver{
 			
 			switch (imageBlob.getImageType()) {
 			case LOGO:
-				interval = myOnMoveLogo(element.getElement().getId(), (int) minHeightLogo, (int) maxHeightLogo);
+				interval = myOnMoveLogo(element.getElement().getId(), minLogoRatio, maxLogoRatio);
 				break;
 			case PROFILE:
 				interval = myOnMoveProfile(element.getElement().getId(), ratioProfile);
@@ -310,7 +352,7 @@ public class CropImage extends MyPage implements IObserver{
 		getElement().removeFromParent();
 	}
 	
-	private native int myOnMoveLogo(String elementId, int minHeightLogo, int maxHeightLogo)/*-{
+	private native int myOnMoveLogo(String elementId, double minRatio, double maxRatio)/*-{
 		var element = $wnd.document.getElementById(elementId);
 	
 		if(element === "undefined") return -1;
@@ -319,9 +361,6 @@ public class CropImage extends MyPage implements IObserver{
 		
 		var width = image.width;
 		var height = image.height;
-		
-		var minRatio = 220/75;
-		var maxRatio = 220/55;
 	
 		var interval = -1;
 		
@@ -371,7 +410,7 @@ public class CropImage extends MyPage implements IObserver{
 				var newCenterMovePanelWidth = moveCenterPaneWidth;
 				var newCenterMovePanelHeight = parseInt(moveCenterPaneHeight) - parseInt(deltaPosition);
 					
-
+				$wnd.console.log(moveCenterPaneWidth/newCenterMovePanelHeight);
 				if(moveCenterPaneWidth/newCenterMovePanelHeight > maxRatio){
 					newCenterMovePanelWidth = newCenterMovePanelHeight * maxRatio;
 				}else if(moveCenterPaneWidth/newCenterMovePanelHeight < minRatio){

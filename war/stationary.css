@@ -114,7 +114,8 @@ body{
 }
 
 .addButton{
-	top: 12px !important;
+	top: 3px !important;
+	height: 50px;
 	min-width: 55px !important;
 	background: url("img/layout/plus.png") no-repeat;
 }
