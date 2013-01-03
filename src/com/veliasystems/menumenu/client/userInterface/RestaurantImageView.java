@@ -220,10 +220,7 @@ public class RestaurantImageView extends MyPage {
 
 	@Override
 	protected void onPageShow() {
-		
-		
-		
-		
+
 		if (!loaded) {
 			SwipeView swipeView = new SwipeView(restaurant, ImageType.PROFILE,
 					this);
@@ -295,7 +292,9 @@ public class RestaurantImageView extends MyPage {
 		}
 
 		if (editPanel != null) {
-			editPanel.getElement().getStyle().setDisplay(Display.NONE);
+//			editPanel.getElement().getStyle().setDisplay(Display.NONE);
+			editPanel.getElement().getStyle().setHeight(0d, Unit.PX);
+			
 		}
 
 		// setting buttons
@@ -399,7 +398,8 @@ public class RestaurantImageView extends MyPage {
 
 	private void setValidVisibility() {
 		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
-		editPanel.getElement().getStyle().setDisplay(Display.NONE);
+//		editPanel.getElement().getStyle().setDisplay(Display.NONE);
+		editPanel.getElement().getStyle().setHeight(0d, Unit.PX);
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		infoContainer.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 		publishWrapper.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
@@ -625,7 +625,8 @@ public class RestaurantImageView extends MyPage {
 		
 		adminPanelWrapper.getElement().getStyle()
 				.setDisplay(Display.BLOCK);
-		editPanel.getElement().getStyle().setDisplay(Display.BLOCK);
+//		editPanel.getElement().getStyle().setDisplay(Display.BLOCK);
+		editPanel.getElement().getStyle().setHeight(462d, Unit.PX);
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		hideCamera();

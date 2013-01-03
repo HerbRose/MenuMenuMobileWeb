@@ -638,7 +638,14 @@ body{
 	display: inline-block;
 }
 .editPanel{
-	display: none;
+/* 	display: none; */
+	height: 0px;
+	overflow: hidden;
+	
+	transition: height 0.5s;
+		-moz-transition: height 0.5s;
+		-webkit-transition: height 0.5s;
+		-o-transition: height 0.5s;
 }
 
 .formLogoUpload{
