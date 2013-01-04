@@ -127,13 +127,11 @@ body{
 }
 .itemList{
 	width: 100%;
-	height: 45px;
 	padding-left: 14px;
 	
 	border-bottom: 2px solid #b6b6b6;
 	background-color: #FeFeFe;
 	
-	line-height: 45px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
@@ -204,6 +202,13 @@ body{
 	font-weight: bold;
 	color: #797979;
 }
+
+.addBoardWrapper, .adminLabel, .publishLabelWrapper, .itemList, .panelForArrow, .addWrapper{
+	
+	height: 45px;
+	line-height: 45px;
+}
+
 /*********************************
  * ogolny styl dla label i texBox*
  *********************************/
@@ -252,7 +257,6 @@ body{
 	float: right;
 	right: 0px;
 	width: 15%;
-	height: 45px;
 		
 	background: url("/img/layout/panelForArrowInComboListBackground.png") repeat-X #999;
 }
@@ -446,8 +450,6 @@ body{
 
 .addWrapper{
 	
-	height: 45px !important;
-	
 	margin: 0px 0px 4px 0px !important;
 	padding: 0px;
 	background: #fff !important;
@@ -458,8 +460,6 @@ body{
 	border-radius: 0px !important;
 		-moz-border-radius: 0px !important;
 		-webkit-border-radius: 0px !important;
-	
-	line-height: 45px;
 }
 
 .addWrapper:first-child {
@@ -477,12 +477,13 @@ body{
 .addWrapper:last-child {
 	
 	border-bottom-left-radius: 14px !important;
-	-moz-border-bottom-left-radius: 14px !important;
-	-webkit-border-bottom-left-radius: 14px !important;
+		-moz-border-bottom-left-radius: 14px !important;
+		-webkit-border-bottom-left-radius: 14px !important;
 	
 	border-bottom-right-radius: 14px !important;	
-	-moz-border-bottom-right-radius: 14px !important;
-	-webkit-border-bottom-right-radius: 14px !important;
+		-moz-border-bottom-right-radius: 14px !important;
+		-webkit-border-bottom-right-radius: 14px !important;
+		
 	border-bottom: none !important;
 }
 
@@ -490,8 +491,9 @@ body{
 .addBoardWrapper{
 	display: inline-block;
 	float: right;
+	
 	width: 60%;
-	height: 45px;
+	
 	margin-top: -90px;
 	margin-right: 5%;
 	margin-bottom: 15px;
@@ -500,8 +502,6 @@ body{
 
 	border: #c1c1c1 2px solid !important ;
 	border-top: none;
-	
-	line-height: 45px;
 }
 
 .addBoardLabel{
@@ -541,7 +541,6 @@ body{
 	display: inline-table;
 	float: right;
 	
-	height: 45px;
 	width: 60%;
 	
 	margin-right: 5%;
@@ -553,7 +552,6 @@ body{
 	
 	background: white !important;
 
-	line-height: 45px;
 	padding-left: 10px;
 	padding-right: 10px;	
 	text-align: center;
@@ -631,7 +629,6 @@ body{
 	float: right;
 	
 	width: 60%;
-	height: 45px;
 	
 	margin-right: 5%;
 	margin-left: 15px;
@@ -642,8 +639,7 @@ body{
 		-webkit-border-radius: 14px;
 		
 	background: white;
-	
-	line-height: 45px;
+
 	text-align: left;
 	
 	padding-left: 15px;
