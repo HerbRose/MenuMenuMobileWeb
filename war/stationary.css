@@ -127,13 +127,13 @@ body{
 }
 .itemList{
 	width: 100%;
-	height: 62px;
+	height: 45px;
 	padding-left: 14px;
 	
 	border-bottom: 2px solid #b6b6b6;
 	background-color: #FeFeFe;
 	
-	line-height: 62px;
+	line-height: 45px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
@@ -242,7 +242,7 @@ body{
 	width: 80%;
 	margin-left: 10%;
 	margin-top: 20px;
-	height: 59px;
+	height: 47px;
 	
 	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
 	text-align: right;
@@ -252,7 +252,7 @@ body{
 	float: right;
 	right: 0px;
 	width: 15%;
-	height: 57px;
+	height: 45px;
 		
 	background: url("/img/layout/panelForArrowInComboListBackground.png") repeat-X #999;
 }
@@ -267,11 +267,11 @@ body{
 	border-left: 10px solid transparent;
 }
 .whiteArrow{
-	top: 20px;
+	top: 12px;
 	border-top: 18px solid rgba(255, 255, 255, 1);
 }
 .blackArrow{
-	top: 25px;
+	top: 17px;
 	border-top: 18px solid rgba(0, 0, 0, 1);
 }
 .listComboScrollPanel{
@@ -303,7 +303,7 @@ body{
 
 .comboListLabel{
 	position: absolute;
-	top: 15px;
+	top: 9px;
 	right: 20%;
 }
 .selected{
@@ -313,7 +313,7 @@ body{
 
  /* Login screen */
 .namePanel, .passwordPanel{  /* panele na label i pole do wprowadzenia tekstu */
-	height: 60px !important;
+	height: 45px !important;
 	
 	margin: 20px 10px 0px 10px !important;
 	padding: 0px;
@@ -347,11 +347,11 @@ body{
 	border-right-width: 2px !important;
 	border-right-color: #c1c1c1 !important;
 	
-	line-height: 60px !important;
+	line-height: 45px !important;
 	text-align: right !important;
 	color: #8a8b8e !important;
 	font-weight: bold !important;
-	font-size: 18px !important;
+	font-size: 15px !important;
 
 }
 .nameBox, .passwordBox, .nameBox:FOCUS, .passwordBox:FOCUS{
@@ -407,7 +407,6 @@ body{
 	margin-right: 10px !important;
 	padding: 0px 0px 0px 10px !important;
 	
-	line-height: 60px !important;
 	text-align: left !important;
 	color: #8a8b8e !important;
 	
@@ -447,21 +446,20 @@ body{
 
 .addWrapper{
 	
-	height: 60px !important;
+	height: 45px !important;
 	
 	margin: 0px 0px 4px 0px !important;
 	padding: 0px;
 	background: #fff !important;
-	
-/* 	text-align: left; */
-/* 	padding-left: 10px; */
-/* 	height: 50px; */
+
 	border: none !important;
 	border-bottom: #c1c1c1 2px solid !important ;
 	
 	border-radius: 0px !important;
 		-moz-border-radius: 0px !important;
 		-webkit-border-radius: 0px !important;
+	
+	line-height: 45px;
 }
 
 .addWrapper:first-child {
@@ -490,26 +488,30 @@ body{
 
 
 .addBoardWrapper{
-	width: 60%;
-	height: 60px;
-	background: url("img/layout/boardBackground.png");
-	float: right;
-	margin-right: 5%;
 	display: inline-block;
+	float: right;
+	width: 60%;
+	height: 45px;
+	margin-top: -90px;
+	margin-right: 5%;
+	margin-bottom: 15px;
+	
+	background: url("img/layout/boardBackground.png");
+
 	border: #c1c1c1 2px solid !important ;
 	border-top: none;
-	margin-top: -90px;
-	margin-bottom: 15px;
+	
+	line-height: 45px;
 }
 
 .addBoardLabel{
 	position: absolute;
-	font-size: 14px;
-	line-height: 60px;
-	text-align: left;
+
 	padding-left: 10px;
 	color: #8a8b8e;
+	text-align: left;
 	font-weight: bold;
+	font-size: 14px;
 }
 
 .adminButtonDiv{
@@ -537,20 +539,24 @@ body{
 
 .adminLabel{
 	display: inline-table;
-	height: 60px;
-	background: white !important;
+	float: right;
+	
+	height: 45px;
+	width: 60%;
+	
+	margin-right: 5%;
+	
 	border: #C1C1C1 2px solid !important;
 	border-radius: 14px !important;
 	-moz-border-radius: 14px !important;
 	-webkit-border-radius: 14px !important;
-	line-height: 60px;
-	padding-left: 10px;
-	padding-right: 10px;
-	text-align: center;
-	width: 60%;
-	float: right;
-	margin-right: 5%;
 	
+	background: white !important;
+
+	line-height: 45px;
+	padding-left: 10px;
+	padding-right: 10px;	
+	text-align: center;
 }
 
 .adminButton{
@@ -621,22 +627,30 @@ body{
 }
 
 .publishLabelWrapper{
-	width: 60%;
+	display: inline-block;
 	float: right;
+	
+	width: 60%;
+	height: 45px;
+	
 	margin-right: 5%;
-	height: 70px;
-	background: white;
-	border-radius: 14px;
-	border: 2px solid #C1C1C1;
-	line-height: 70px;
-	text-align: left;
 	margin-left: 15px;
+	
+	border: 2px solid #C1C1C1;
+	border-radius: 14px;
+		-moz-border-radius: 14px;
+		-webkit-border-radius: 14px;
+		
+	background: white;
+	
+	line-height: 45px;
+	text-align: left;
+	
 	padding-left: 15px;
 	
 	font-weight: bold;
 	font-size: 15px;
-	color: #8a8b8e;
-	display: inline-block;
+	color: #8a8b8e;	
 }
 .editPanel{
 /* 	display: none; */

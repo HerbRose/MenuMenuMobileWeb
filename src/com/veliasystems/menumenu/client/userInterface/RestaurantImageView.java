@@ -626,7 +626,7 @@ public class RestaurantImageView extends MyPage {
 		adminPanelWrapper.getElement().getStyle()
 				.setDisplay(Display.BLOCK);
 //		editPanel.getElement().getStyle().setDisplay(Display.BLOCK);
-		editPanel.getElement().getStyle().setHeight(462d, Unit.PX);
+		editPanel.getElement().getStyle().setHeight(410d, Unit.PX);
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		hideCamera();
