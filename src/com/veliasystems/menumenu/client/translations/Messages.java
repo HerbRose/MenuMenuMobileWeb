@@ -34,7 +34,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Add restaurant")
 	String addRestaurant();
 
-	@DefaultStringValue("Back")
+	@DefaultStringValue("Return")
 	String back();
 
 	@DefaultStringValue("Save profile")

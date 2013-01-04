@@ -114,7 +114,7 @@ body {
 }
 
 .malinaPanel { /* gorny pasek */
-	height: 30px !important;
+	height: 15px !important;
 	background: url("/img/layout/headerBackgroundRed.png") repeat #BF2135
 		!important;
 }
@@ -156,7 +156,7 @@ body {
 
 .myButton {
 	display: inline-block;
-	min-width: 80px;
+	min-width: 118px;
 	/* 	height: 58px; */
 	line-height: 54px;
 	text-align: center;
@@ -206,7 +206,7 @@ body {
 
 .itemList {
 	width: 100%;
-	padding-left: 14px;
+	padding-left: 16px;
 	border-bottom: 2px solid #b6b6b6;
 	background-color: #FeFeFe;
 	font-family: Arial, Helvetica, sans-serif;
@@ -257,6 +257,7 @@ body {
 .rightButton {
 	position: absolute;
 	right: 0px;
+	margin-right: 7px !important
 	/* 	top: 5px !important; */
 /* 	min-width: 120px; */
 /* 	margin-top: 0px; */
@@ -480,7 +481,7 @@ body {
 	padding: 0px 0px 0px 10px !important;
 	text-align: left !important;
 	color: #8a8b8e !important;
-
+	border-right: #C1C1C1 2px solid !important;
 	/* 	float: left !important; */
 /* 	padding-top: 17px; */
 /* 	padding-right: 10px; */
@@ -514,7 +515,7 @@ body {
 }
 
 .addWrapper {
-	margin: 0px 0px 4px 0px !important;
+	margin: 0px 0px 0px 0px !important;
 	padding: 0px;
 	background: #fff !important;
 	border: none !important;
