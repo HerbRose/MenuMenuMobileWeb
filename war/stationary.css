@@ -1,111 +1,188 @@
 @IMPORT url("main.css");
 
-/** * html5doctor.com Reset Stylesheet v1.6.1 (http://html5doctor.com/html-5-reset-stylesheet/) * Richard Clark (http://richclarkdesign.com) * http://cssreset.com */html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,abbr, address, cite, code,del, dfn, em, img, ins, kbd, q, samp,small, strong, sub, sup, var,b, i,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, figcaption, figure,footer, header, hgroup, menu, nav, section, summary,time, mark, audio, video {    margin:0;    padding:0;    border:0;    outline:0;    font-size:100%;    vertical-align:baseline;    background:transparent;}body {    line-height:1;}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {    display:block;}nav ul {    list-style:none;}blockquote, q {    quotes:none;}blockquote:before, blockquote:after,q:before, q:after {    content:'';    content:none;}a {    margin:0;    padding:0;    font-size:100%;    vertical-align:baseline;    background:transparent;}/* change colours to suit your needs */ins {    background-color:#ff9;    color:#000;    text-decoration:none;}/* change colours to suit your needs */mark {    background-color:#ff9;    color:#000;    font-style:italic;    font-weight:bold;}del {    text-decoration: line-through;}abbr[title], dfn[title] {    border-bottom:1px dotted;    cursor:help;}table {    border-collapse:collapse;    border-spacing:0;}/* change border colour to suit your needs */hr {    display:block;    height:1px;    border:0;    border-top:1px solid #cccccc;    margin:1em 0;    padding:0;}input, select {    vertical-align:middle;}
+/** * html5doctor.com Reset Stylesheet v1.6.1 (http://html5doctor.com/html-5-reset-stylesheet/) * Richard Clark (http://richclarkdesign.com) * http://cssreset.com */
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video
+	{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
 
-body{ 
+body {
+	line-height: 1;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section
+	{
+	display: block;
+}
+
+nav ul {
+	list-style: none;
+}
+
+blockquote,q {
+	quotes: none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+	content: '';
+	content: none;
+}
+
+a {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+} /* change colours to suit your needs */
+ins {
+	background-color: #ff9;
+	color: #000;
+	text-decoration: none;
+} /* change colours to suit your needs */
+mark {
+	background-color: #ff9;
+	color: #000;
+	font-style: italic;
+	font-weight: bold;
+}
+
+del {
+	text-decoration: line-through;
+}
+
+abbr[title],dfn[title] {
+	border-bottom: 1px dotted;
+	cursor: help;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+} /* change border colour to suit your needs */
+hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #cccccc;
+	margin: 1em 0;
+	padding: 0;
+}
+
+input,select {
+	vertical-align: middle;
+}
+
+body {
 	margin: 0px !important;
 	padding: 0px !important;
 	overflow: auto;
 }
 
-.myPage{ /* cala strona */
-	position: relative  !important;
-	left: 0px  !important;
-	right: 0px  !important;
-	
-	width: 100%  !important;;
-	max-width: 840px  !important;
-	
+.myPage { /* cala strona */
+	position: relative !important;
+	left: 0px !important;
+	right: 0px !important;
+	width: 100% !important;;
+	max-width: 840px !important;
 	text-align: center;
 	margin: 0px !important;
-	margin-left: auto  !important;
-	margin-right: auto  !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
 	padding: 0px !important;
-	
 	background: url("/img/layout/background.png") repeat #eee !important;
 	-webkit-box-shadow: 3px 5px 38px -3px #000 !important;
-          	box-shadow: 3px 5px 38px -3px #000 !important;
-
+	box-shadow: 3px 5px 38px -3px #000 !important;
 }
-.myPageContent{ /* jqm'owy content */
 
-	width: 100%  !important;;
-	max-width: 100%  !important;
-	
+.myPageContent { /* jqm'owy content */
+	width: 100% !important;;
+	max-width: 100% !important;
 	margin: 0px !important;
 	padding: 0px !important;
 	overflow: hidden;
 }
-.myHeader{
+
+.myHeader {
 	position: relative;
 }
-.malinaPanel{  /* gorny pasek */
-	height: 30px  !important;
-	background: url("/img/layout/headerBackgroundRed.png") repeat #BF2135  !important;
+
+.malinaPanel { /* gorny pasek */
+	height: 30px !important;
+	background: url("/img/layout/headerBackgroundRed.png") repeat #BF2135
+		!important;
 }
-.headerPanel{  /* nagłwek dla buttonów i nazwy strony */
+
+.headerPanel { /* nagłwek dla buttonów i nazwy strony */
 	position: relative;
 	height: 70px;
-	background: url("/img/layout/headerBackgroun.png") repeat-x #818181  !important;
+	background: url("/img/layout/headerBackgroun.png") repeat-x #818181
+		!important;
 	text-align: center;
 }
-.headerTitle{
+
+.headerTitle {
 	margin: auto;
-	
 	line-height: 70px;
 	text-align: center;
-	
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: normal;
 	font-size: 18px;
 	color: white;
 }
-.headerLeftButton{
+
+.headerLeftButton {
 	position: absolute;
 	top: 0px;
 	left: 7px;
 }
-.logoPanel{
-/* 	position: absolute  !important; */
 
-/* 	left: 40% !important; */
-/* 	top: 47px !important; */
-/* 	margin-left: auto !important; */
-/* 	margin-right: auto !important; */
+.logoPanel { /* 	position: absolute  !important; */
+	/* 	left: 40% !important; */ /* 	top: 47px !important; */
+	/* 	margin-left: auto !important; */
+	/* 	margin-right: auto !important; */
+	
 }
-.logoPanel img{
+
+.logoPanel img {
 	margin-top: 15px;
 }
-.myButton{
+
+.myButton {
 	display: inline-block;
 	min-width: 80px;
-/* 	height: 58px; */
+	/* 	height: 58px; */
 	line-height: 54px;
 	text-align: center;
 	margin: 10px;
-	
 }
-.borderButton{
+
+.borderButton {
 	border: #656263 solid;
 	border-width: 2px 1px 1px 1px;
 	border-radius: 14px;
-		-moz-border-radius: 14px;
-		-webkit-border-radius: 14px;
+	-moz-border-radius: 14px;
+	-webkit-border-radius: 14px;
 }
-.borderLabel{
-	line-height: 54px ;
-	text-align: center ;
-	
-	border: #c1c1c1 2px solid !important ;
-	
+
+.borderLabel {
+	line-height: 54px;
+	text-align: center;
+	border: #c1c1c1 2px solid !important;
 	border-radius: 14px !important;
-		-moz-border-radius: 14px !important;
-		-webkit-border-radius: 14px !important;
+	-moz-border-radius: 14px !important;
+	-webkit-border-radius: 14px !important;
 }
-.myTextLabel{
+
+.myTextLabel {
 	margin-left: 10px;
 	margin-right: 10px;
-	
 	color: #fff;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
@@ -113,98 +190,99 @@ body{
 	text-shadow: 0px -2px #000;
 }
 
-.addButton{
+.addButton {
 	top: 3px !important;
 	height: 50px;
 	min-width: 55px !important;
 	background: url("img/layout/plus.png") no-repeat;
 }
-.saveButton{
+
+.saveButton {
 	top: 3px !important;
 	height: 40px !important;
 	background: url("img/layout/headerButtonBackground.png") !important;
 	line-height: 40px;
 }
-.itemList{
+
+.itemList {
 	width: 100%;
 	padding-left: 14px;
-	
 	border-bottom: 2px solid #b6b6b6;
 	background-color: #FeFeFe;
-	
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
 	text-align: left;
-	
 }
 
-.itemList:FOCUS{
+.itemList:FOCUS {
 	background-color: #eed;
 }
-.arrowButtonPart{
+
+.arrowButtonPart {
 	position: absolute;
 	top: 0px;
 	left: 1px;
 	width: 21px;
 	height: 44px;
-	
 	background: url("img/layout/arrowForBackButton.png");
 }
 
-.labelBackButton{
+.labelBackButton {
 	position: absolute;
 	left: 22px;
 	display: inline-block;
-/* 	min-width: 52px; */
+	/* 	min-width: 52px; */
 	height: 40px;
-	
-	line-height: 40px;	
+	line-height: 40px;
 	border: #656263 solid;
 	border-width: 2px 2px 2px 0px;
 	border-bottom-right-radius: 8px;
 	border-top-right-radius: 8px;
 	background: url("img/layout/backButtonBackground.png");
-	
 	-webkit-box-shadow: -1px 3px 3px -3px #fff !important;
-         	box-shadow: -1px 3px 3px -3px #fff !important;
+	box-shadow: -1px 3px 3px -3px #fff !important;
 }
 
-.mainPanelBackButton{
+.mainPanelBackButton {
 	position: absolute;
 	top: 12px;
 	width: 150px;
 }
-.mainPanelBackButton:ACTIVE .myTextLabel{
+
+.mainPanelBackButton:ACTIVE .myTextLabel {
 	color: #eed;
 }
 
-.rightButton{
+.rightButton {
 	position: absolute;
 	right: 0px;
-/* 	top: 5px !important; */
+	/* 	top: 5px !important; */
 /* 	min-width: 120px; */
 /* 	margin-top: 0px; */
 /* 	height: 70px; */
 }
 
-.noFocus, .noFocus:FOCUS{
+.noFocus,.noFocus:FOCUS {
 	outline: none !important;
 }
-.hidden{
+
+.hidden {
 	display: none;
 }
-.pointer{
+
+.pointer {
 	cursor: pointer;
 }
-.arialBold{
+
+.arialBold {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
 }
 
-.addBoardWrapper, .adminLabel, .publishLabelWrapper, .itemList, .panelForArrow, .addWrapper{
-	
+.addBoardWrapper,.adminLabel,.publishLabelWrapper,.itemList,.panelForArrow,.addWrapper
+	{
 	height: 45px;
 	line-height: 45px;
 }
@@ -212,92 +290,90 @@ body{
 /*********************************
  * ogolny styl dla label i texBox*
  *********************************/
-.myLabel, .myTextBox{	
+.myLabel,.myTextBox {
 	float: left !important;
-	
 	overflow-y: hidden;
-    overflow-x: auto;
+	overflow-x: auto;
 	white-space: nowrap;
-	
 	background: #fff !important;
-	
 	border-top-left-radius: 14px !important;
-		-moz-border-top-left-radius: 14px !important;
-		-webkit-border-top-left-radius: 14px !important;
-	
+	-moz-border-top-left-radius: 14px !important;
+	-webkit-border-top-left-radius: 14px !important;
 	border-bottom-left-radius: 14px !important;
-		-moz-border-bottom-left-radius: 14px !important;
-		-webkit-border-bottom-left-radius: 14px !important;
-		
+	-moz-border-bottom-left-radius: 14px !important;
+	-webkit-border-bottom-left-radius: 14px !important;
 	text-align: left !important;
-	
 }
-.myTextBox{
+
+.myTextBox {
 	display: inline-block !important;
 }
 
 /* KONIEC - ogolny styl dla label i texBox */
-
 /* 
  * ogolny styl dla listy rozwijanej - MyListCombo.java
  */
-.listCombo{
+.listCombo {
 	position: relative;
-/* 	width: 400px; */
+	/* 	width: 400px; */
 	width: 80%;
 	margin-left: 10%;
 	margin-top: 20px;
 	height: 47px;
-	
 	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
 	text-align: right;
 }
-.panelForArrow{
+
+.panelForArrow {
 	position: relative;
 	float: right;
 	right: 0px;
 	width: 15%;
-		
-	background: url("/img/layout/panelForArrowInComboListBackground.png") repeat-X #999;
+	background: url("/img/layout/panelForArrowInComboListBackground.png")
+		repeat-X #999;
 }
-.whiteArrow, .blackArrow{
+
+.whiteArrow,.blackArrow {
 	position: absolute !important;
 	left: 30%;
-	
 	width: 0px;
-	height:0px;
-	
+	height: 0px;
 	border-right: 10px solid transparent;
 	border-left: 10px solid transparent;
 }
-.whiteArrow{
+
+.whiteArrow {
 	top: 12px;
 	border-top: 18px solid rgba(255, 255, 255, 1);
 }
-.blackArrow{
+
+.blackArrow {
 	top: 17px;
 	border-top: 18px solid rgba(0, 0, 0, 1);
 }
-.listComboScrollPanel{
+
+.listComboScrollPanel {
 	position: absolute !important;
 	top: 15px;
-	z-index: 1;	
+	z-index: 1;
 	width: 83%;
 	height: 95px;
+	background: url("/img/layout/comboListExpandedBackground.png") repeat-X
+		#f5f5f5;
+	-webkit-box-shadow: -6px 5px 12px -3px #000 !important;
+	box-shadow: -6px 5px 12px -3px #000 !important;
+}
 
-	background: url("/img/layout/comboListExpandedBackground.png") repeat-X #f5f5f5;
-	
-  	-webkit-box-shadow: -6px 5px 12px -3px #000 !important;
-          	box-shadow: -6px 5px 12px -3px #000 !important;
-}
-.expandedPanel{
+.expandedPanel {
 	
 }
-.myListComboItem{
+
+.myListComboItem {
 	width: 100%;
 	height: 28px;
 }
-.comboListItemLabel{
+
+.comboListItemLabel {
 	line-height: 30px;
 	margin-right: 10px;
 	font-family: Arial, Helvetica, sans-serif;
@@ -305,85 +381,81 @@ body{
 	color: #797979;
 }
 
-.comboListLabel{
+.comboListLabel {
 	position: absolute;
 	top: 9px;
 	right: 20%;
 }
-.selected{
+
+.selected {
 	background-color: #e2abb2;
 }
 /* KONIEC - ogulny styl dla listy rozwijanej */
-
- /* Login screen */
-.namePanel, .passwordPanel{  /* panele na label i pole do wprowadzenia tekstu */
+/* Login screen */
+.namePanel,.passwordPanel {
+	/* panele na label i pole do wprowadzenia tekstu */
 	height: 45px !important;
-	
 	margin: 20px 10px 0px 10px !important;
 	padding: 0px;
 	background: #fff !important;
-
-	border: #c1c1c1 2px solid !important ;
+	border: #c1c1c1 2px solid !important;
 	border-radius: 14px !important;
-		-moz-border-radius: 14px !important;
-		-webkit-border-radius: 14px !important;	
+	-moz-border-radius: 14px !important;
+	-webkit-border-radius: 14px !important;
 }
-.namePanel{
+
+.namePanel {
 	top: 115px;
 }
-.passwordPanel{
+
+.passwordPanel {
 	top: 192px;
 }
-.loginButtonPanel{
-/* 	position: absolute; */
-/* 	top: 360px; */
-/* 	right: 94px; */
+
+.loginButtonPanel { /* 	position: absolute; */ /* 	top: 360px; */
+	/* 	right: 94px; */
 	display: inline;
 }
-.nameLabel, .passwordLabel{
-	min-width: 30% !important;	
-	height: inherit !important;
 
+.nameLabel,.passwordLabel {
+	min-width: 30% !important;
+	height: inherit !important;
 	margin-right: 10px !important;
 	padding-right: 10px !important;
-	
 	border-right: solid !important;
 	border-right-width: 2px !important;
 	border-right-color: #c1c1c1 !important;
-	
 	line-height: 45px !important;
 	text-align: right !important;
 	color: #8a8b8e !important;
 	font-weight: bold !important;
 	font-size: 15px !important;
-
 }
-.nameBox, .passwordBox, .nameBox:FOCUS, .passwordBox:FOCUS{
+
+.nameBox,.passwordBox,.nameBox:FOCUS,.passwordBox:FOCUS {
 	height: inherit !important;
-	width: 60% !important;	
+	width: 60% !important;
 	margin: 0px !important;
 	padding: 0px !important;
 	border: none !important;
 	background: #fff !important;
 	background-image: none !important;
-	
 	-moz-box-shadow: none !important;
 	-webkit-box-shadow: none !important;
 	box-shadow: none !important;
 	outline: none !important;
 }
-.languageCombo{
-/* 	position: absolute; */
-/* 	right: 94px; */
-/* 	top: 300px; */
+
+.languageCombo { /* 	position: absolute; */ /* 	right: 94px; */
+	/* 	top: 300px; */
+	
 }
 
- /* KONIEC - Login screen */
- 
- /*
+/* KONIEC - Login screen */
+/*
  * Add City Screen
  */
-.addCityWrapper{
+.addCityWrapper {
 	position: relative;
 	width: 90%;
 	margin-top: 10px;
@@ -391,30 +463,25 @@ body{
 	margin-left: 5%;
 }
 /* KONIEC - Add City Screen */
-
-
 /* Add Restaurant Screen */
-.containerPanelAddRestaurant{
+.containerPanelAddRestaurant {
 	margin: 20px 10px 130px 10px !important;
-	
 	border-radius: 20px;
 	margin-top: 10px;
 	border: #c1c1c1 2px solid !important;
 	background: white;
 }
-.addRestaurantLabel{
-	
-	min-width: 30% !important;	
-	max-width: 30% !important;	
-	height: inherit !important;
 
+.addRestaurantLabel {
+	min-width: 30% !important;
+	max-width: 30% !important;
+	height: inherit !important;
 	margin-right: 10px !important;
 	padding: 0px 0px 0px 10px !important;
-	
 	text-align: left !important;
 	color: #8a8b8e !important;
-	
-/* 	float: left !important; */
+
+	/* 	float: left !important; */
 /* 	padding-top: 17px; */
 /* 	padding-right: 10px; */
 /* 	text-align: right; */
@@ -423,11 +490,9 @@ body{
 .addRestaurantInput {
 	width: 60% !important;
 	height: inherit !important;
-
 	margin: 0px !important;
 	padding: 0px !important;
-/* 	margin-right: 20px; */
-/* 	float: right; */
+	/* 	margin-right: 20px; */ /* 	float: right; */
 	background: none !important;
 	border: none !important;
 	-moz-box-shadow: none !important;
@@ -436,11 +501,11 @@ body{
 	outline: none !important;
 }
 
-.addRestaurantInputWrapper{
+.addRestaurantInputWrapper {
 	display: inline;
 }
 
-.addRestaurantLabelWrapper{
+.addRestaurantLabelWrapper {
 	display: inline-block;
 	min-width: 25%;
 	max-width: 25%;
@@ -448,65 +513,51 @@ body{
 	height: 100%;
 }
 
-.addWrapper{
-	
+.addWrapper {
 	margin: 0px 0px 4px 0px !important;
 	padding: 0px;
 	background: #fff !important;
-
 	border: none !important;
-	border-bottom: #c1c1c1 2px solid !important ;
-	
+	border-bottom: #c1c1c1 2px solid !important;
 	border-radius: 0px !important;
-		-moz-border-radius: 0px !important;
-		-webkit-border-radius: 0px !important;
+	-moz-border-radius: 0px !important;
+	-webkit-border-radius: 0px !important;
 }
 
 .addWrapper:first-child {
 	border-top: none !important;
-	
 	border-top-left-radius: 14px !important;
-		-moz-border-top-left-radius: 14px !important;
-		-webkit-border-top-left-radius: 14px !important;
-	
-	border-top-right-radius: 14px !important;	
-		-moz-border-top-right-radius: 14px !important;
-		-webkit-border-top-right-radius: 14px !important;
+	-moz-border-top-left-radius: 14px !important;
+	-webkit-border-top-left-radius: 14px !important;
+	border-top-right-radius: 14px !important;
+	-moz-border-top-right-radius: 14px !important;
+	-webkit-border-top-right-radius: 14px !important;
 }
 
 .addWrapper:last-child {
-	
 	border-bottom-left-radius: 14px !important;
-		-moz-border-bottom-left-radius: 14px !important;
-		-webkit-border-bottom-left-radius: 14px !important;
-	
-	border-bottom-right-radius: 14px !important;	
-		-moz-border-bottom-right-radius: 14px !important;
-		-webkit-border-bottom-right-radius: 14px !important;
-		
+	-moz-border-bottom-left-radius: 14px !important;
+	-webkit-border-bottom-left-radius: 14px !important;
+	border-bottom-right-radius: 14px !important;
+	-moz-border-bottom-right-radius: 14px !important;
+	-webkit-border-bottom-right-radius: 14px !important;
 	border-bottom: none !important;
 }
 
-
-.addBoardWrapper{
+.addBoardWrapper {
 	display: inline-block;
 	float: right;
-	
 	width: 60%;
-	
 	margin-top: -90px;
 	margin-right: 5%;
 	margin-bottom: 15px;
-	
 	background: url("img/layout/boardBackground.png");
-
-	border: #c1c1c1 2px solid !important ;
+	border: #c1c1c1 2px solid !important;
 	border-top: none;
 }
 
-.addBoardLabel{
+.addBoardLabel {
 	position: absolute;
-
 	padding-left: 10px;
 	color: #8a8b8e;
 	text-align: left;
@@ -514,66 +565,51 @@ body{
 	font-size: 14px;
 }
 
-.adminButtonDiv{
+.adminButtonDiv {
 	clear: both;
 }
 
-.adminLabelDiv{
+.adminLabelDiv {
 	
 }
 
 /* KONIEC - Add Restaurant Screen */
-
-
-
-
 /* City list screen*/
-.adminWrapper{
+.adminWrapper {
 	position: relative;
 	margin-bottom: 10px;
 	width: 100%;
 	margin-top: 15px;
-	
 }
 
-
-.adminLabel{
+.adminLabel {
 	display: inline-table;
 	float: right;
-	
 	width: 60%;
-	
 	margin-right: 5%;
-	
 	border: #C1C1C1 2px solid !important;
 	border-radius: 14px !important;
 	-moz-border-radius: 14px !important;
 	-webkit-border-radius: 14px !important;
-	
 	background: white !important;
-
 	padding-left: 10px;
-	padding-right: 10px;	
+	padding-right: 10px;
 	text-align: center;
 }
 
-.adminButton{
+.adminButton {
 	display: inline-block;
 	margin-left: 20px;
 	float: left;
 }
 
-
 /* KONIEC - City list screen*/
-
-
 /* Nowy widok restauracji - Restaurant Image View */
-
-.leftButton{
-/* 	top: 5px !important; */
+.leftButton { /* 	top: 5px !important; */
+	
 }
 
-.infoContainer{
+.infoContainer {
 	width: 100%;
 	height: 130px;
 	margin-bottom: 40px;
@@ -581,22 +617,22 @@ body{
 	text-align: left;
 }
 
-.logoImage{
+.logoImage {
 	width: 220px;
 	margin-top: 30px;
 	margin-left: 20px;
 	float: left;
 }
 
-.logoImageWrapper{
+.logoImageWrapper {
 	display: inline-block;
 }
 
-.infoText{
+.infoText {
 	
 }
 
-.infoTextWrapper{
+.infoTextWrapper {
 	display: inline-block;
 	margin-left: 15px;
 	height: 50px;
@@ -604,13 +640,13 @@ body{
 	font-weight: bold;
 }
 
-.swipeContainer{
+.swipeContainer {
 	width: 100%;
 	height: 500px;
 	background: white;
 }
 
-.publishWrapper{
+.publishWrapper {
 	width: 100%;
 	height: 100px;
 	display: inline-block;
@@ -619,78 +655,73 @@ body{
 	text-align: left;
 }
 
-.publishImage{
+.publishImage {
 	display: inline-block;
 	margin-left: 5%;
 }
 
-.publishLabelWrapper{
+.publishLabelWrapper {
 	display: inline-block;
 	float: right;
-	
 	width: 60%;
-	
 	margin-right: 5%;
 	margin-left: 15px;
-	
 	border: 2px solid #C1C1C1;
 	border-radius: 14px;
-		-moz-border-radius: 14px;
-		-webkit-border-radius: 14px;
-		
+	-moz-border-radius: 14px;
+	-webkit-border-radius: 14px;
 	background: white;
-
 	text-align: left;
-	
 	padding-left: 15px;
-	
 	font-weight: bold;
 	font-size: 15px;
-	color: #8a8b8e;	
-}
-.editPanel{
-/* 	display: none; */
-	height: 0px;
-	overflow: hidden;
-	
-	transition: height 0.5s;
-		-moz-transition: height 0.5s;
-		-webkit-transition: height 0.5s;
-		-o-transition: height 0.5s;
+	color: #8a8b8e;
 }
 
-.formLogoUpload{
+.editPanel { /* 	display: none; */
+	height: 0px;
+	overflow: hidden;
+	transition: height 0.5s;
+	-moz-transition: height 0.5s;
+	-webkit-transition: height 0.5s;
+	-o-transition: height 0.5s;
+}
+
+.formLogoUpload {
 	opacity: 0;
 	height: 100%;
 	position: absolute;
 	width: 100%;
 	z-index: 10;
 }
-.fileLogoUplaod{
+
+.fileLogoUplaod {
 	width: 100%;
 	height: 100%;
 }
 
-.rotatedPlus{
-	-moz-transform:rotate(45deg);
-	-webkit-transform:rotate(45deg);
-	-o-transform:rotate(45deg);
-	-ms-transform:rotate(45deg);
+.rotatedPlus {
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
 }
 
-.addBoardWrap{
+.addBoardWrap {
 	position: relative;
 	width: 100%;
 	height: 100%;
 }
-.addBoardWrap img{
+
+.addBoardWrap img {
 	position: absolute;
 	left: 0px;
 	bottom: 0px;
 	width: 220px;
 	margin: 0px !important;
 }
-.editImagePanel{
+
+.editImagePanel {
 	position: absolute;
 	width: 100%;
 	height: 15px;
@@ -699,47 +730,113 @@ body{
 	display: block;
 }
 
-.editLabelImage{
+.editLabelImage {
 	text-align: center;
 	line-height: 15px;
 	font-size: 14px;
 	color: #fff;
-	
+}
+
+.deleteProfile {
+	height: 65px;
+	position: relative;
+	background: url("/img/layout/redBackgroundButton.png");
+	border-radius: 20px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 90px;
+	margin-bottom: 20px;
+	line-height: 65px;
+	font-size: 18px;
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	-webkit-box-shadow: 0px 0px 8px 0px black !important;
+	box-shadow: 0px 0px 8px 0px black !important;
+}
+
+.deletePanel {
+	position: absolute;
+	height: 0px;
+	width: 100%;
+	z-index: 100;
+	margin-top: 0px;
+	border-top: 2px solid black;
+	background-image: linear-gradient(bottom, rgb(115, 120, 130) 0%,
+		rgb(172, 174, 179) 100% );
+	background-image: -o-linear-gradient(bottom, rgb(115, 120, 130) 0%,
+		rgb(172, 174, 179) 100% );
+	background-image: -moz-linear-gradient(bottom, rgb(115, 120, 130) 0%,
+		rgb(172, 174, 179) 100% );
+	background-image: -webkit-linear-gradient(bottom, rgb(115, 120, 130) 0%,
+		rgb(172, 174, 179) 100% );
+	background-image: -ms-linear-gradient(bottom, rgb(115, 120, 130) 0%,
+		rgb(172, 174, 179) 100% );
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(115,
+		120, 130) ), color-stop(1, rgb(172, 174, 179) ) );
+	opacity: 0.95;
+	overflow: hidden;
+	transition: height 0.5s;
+	-moz-transition: height 0.5s;
+	-webkit-transition: height 0.5s;
+	-o-transition: height 0.5s;
+}
+
+.cancelDeleteProfile {
+	height: 57px;
+	margin-left: 35px;
+	margin-right: 35px;
+	margin-top: 30px;
+	background: url("/img/layout/blackBackgroundButton.png");
+	line-height: 57px;
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 2px black !important;
+	box-shadow: 0px 0px 8px 2px black !important;
+	font-size: 18px;
+	color: white;
+}
+
+.deleteProfileConfirmed {
+	height: 57px;
+	margin-left: 35px;
+	margin-right: 35px;
+	margin-top: 30px;
+	background: url("/img/layout/redBackgroundButton.png");
+	line-height: 57px;
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 2px black !important;
+	box-shadow: 0px 0px 8px 2px black !important;
+	font-size: 18px;
+	color: white;
 }
 /* KONIEC -  Restaurant Image View*/
-
-
 /* LastUploadedImages */
-
-.imgWrapper{
+.imgWrapper {
 	margin: 10px;
 	border: 2px solid black;
 	display: block;
 	padding: 10px;
 }
 
-.lastUploadedImage{
+.lastUploadedImage {
 	width: 200px;
 	display: inline-block;
 }
 
-.lastUploadedDeleteButton{
-
+.lastUploadedDeleteButton {
+	
 }
 
-.lastUploadedName{
+.lastUploadedName {
 	margin: 10px;
 	font-weight: bold;
 }
 
 /* KONIEC -  LastUploadedImages*/
-
-
 /*MyImage*/
-
-.imagePanel, .image{
+.imagePanel,.image {
 	height: 70px;
 }
+
 .imagePanel {
 	position: relative;
 	display: inline-block;
@@ -747,14 +844,17 @@ body{
 	margin-right: 10px;
 	padding-top: 50px;
 }
-.image{
-/* 	margin-right: 10px; */
-}
-.imageSelected{
-	border: #f00 4px solid;
+
+.image { /* 	margin-right: 10px; */
+	
 }
 
-.myImageEditPanel{
+.imageSelected {
+	border: #00a62d 4px solid;
+	border-radius: 5px;
+}
+
+.myImageEditPanel {
 	
 }
 /* KONIEC -  MyImage*/

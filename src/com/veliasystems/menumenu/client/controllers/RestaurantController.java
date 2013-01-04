@@ -238,6 +238,7 @@ public class RestaurantController {
 		
 		final Restaurant restaurantToDelete = restaurant;
 		final String lastPage = page;
+		PagesController.showWaitPanel();
 		storeService.deleteRestaurant(restaurantToDelete, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
@@ -245,14 +246,15 @@ public class RestaurantController {
 				if(lastPage.equalsIgnoreCase(RestaurantsManagerPanel.class.getName())){
 					
 				}
-				if(lastPage.equalsIgnoreCase(RestInfoScreen.class.getName())){
-					historyGoBack(2);
+				if(lastPage.equalsIgnoreCase(RestaurantImageView.class.getName())){
+					historyGoBack(1);
 				}
 				notifyAllObservers();
+				PagesController.hideWaitPanel();
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				
+				PagesController.hideWaitPanel();
 			}
 		});
 		

@@ -72,6 +72,8 @@ public class RestaurantImageView extends MyPage {
 	private Label bossLabel;
 	private Label addBoardText;
 	private Label warning = new Label();
+	private Label deleteLabel = new Label(Customization.REMOVEPROFILE);
+	private Label cancel = new Label(Customization.CANCEL);
 
 	private Image logoImage;
 	private Label nameLabelInfo;
@@ -101,6 +103,7 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
 	private FlowPanel addBoardWrap = new FlowPanel();
+	private FlowPanel deletePanel = new FlowPanel();
 
 	private Image publishImage;
 	private Image logoEditImage;
@@ -108,6 +111,11 @@ public class RestaurantImageView extends MyPage {
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
 	private FocusPanel publish;
+	private FocusPanel deleteProfile = new FocusPanel();
+	private FocusPanel deleteProfileConfirmed = new FocusPanel();
+	private FocusPanel cancelDeleteProfile = new FocusPanel();
+	
+	
 
 	private FileUpload fileLogoUpload = new FileUpload();
 	private MyUploadForm formLogoUpload;
@@ -119,7 +127,48 @@ public class RestaurantImageView extends MyPage {
 		super(r.getName());
 		
 		this.restaurant = r;
+		
+		deleteProfileConfirmed.addStyleName("deleteProfileConfirmed noFocus pointer");
+		cancelDeleteProfile.addStyleName("cancelDeleteProfile noFocus pointer");
+		
+		deletePanel.add(deleteProfileConfirmed);
+		deletePanel.add(cancelDeleteProfile);
 
+		deleteProfileConfirmed.add(new Label(Customization.REMOVEPROFILE));
+		cancelDeleteProfile.add(cancel);
+		
+		deleteProfile.add(deleteLabel);
+		deletePanel.addStyleName("deletePanel");
+		
+		deleteProfile.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				deletePanel.getElement().getStyle().setHeight(205.00, Unit.PX);
+				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);	
+			}
+		});
+		cancelDeleteProfile.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+			}
+		});
+		
+		deleteProfileConfirmed.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				restaurantController.deleteRestaurant(restaurant, RestaurantImageView.class.getName());
+			}
+		});
+		
+		getContentPanel().add(deletePanel);
+		deleteProfile.addStyleName("noFocus deleteProfile pointer");
+		
+		
+		
 		infoContainer = new FlowPanel();
 		infoContainer.addStyleName("infoContainer");
 
@@ -132,7 +181,6 @@ public class RestaurantImageView extends MyPage {
 		swipeContainer = new FlowPanel();
 		swipeContainer.addStyleName("swipeContainer");
 
-		editPanel = new FlowPanel();
 		editPanel.addStyleName("editPanel");
 
 		adminPanelWrapper = new FlowPanel();
@@ -163,13 +211,17 @@ public class RestaurantImageView extends MyPage {
 						Transition.SLIDE);
 			}
 		});
+		
+		
 		adminLabel.addStyleName("adminLabel noFocus");
 
 		adminLabel.add(new Label(Customization.ADD_USER));
 
 		adminPanelWrapper = new FlowPanel();
 		adminPanelWrapper.addStyleName("adminWrapper");
-
+		
+		
+		
 		FlowPanel adminButtonDiv = new FlowPanel();
 		adminButtonDiv.addStyleName("adminButtonDiv");
 		adminButtonDiv.add(adminPanel);
@@ -216,6 +268,7 @@ public class RestaurantImageView extends MyPage {
 		getContentPanel().add(infoContainer);
 		getContentPanel().add(swipeContainer);
 		getContentPanel().add(adminPanelWrapper);
+
 	}
 
 	@Override
@@ -356,6 +409,7 @@ public class RestaurantImageView extends MyPage {
 			@Override
 			public void onClick(ClickEvent event) {
 				getContentPanel().remove(warning);
+				getContentPanel().remove(deleteProfile);
 				setProperButtons();
 				setValidVisibility();
 				showCamera();
@@ -382,6 +436,7 @@ public class RestaurantImageView extends MyPage {
 					nameLabelInfo.setText(restaurant.getName());
 					addressLabelInfo.setText(restaurant.getAddress());
 					getHeader().setTitle(restaurant.getName());
+					getContentPanel().remove(deleteProfile);
 
 				}
 			}
@@ -408,6 +463,7 @@ public class RestaurantImageView extends MyPage {
 		setValidDataStyle(null, phoneWrapper);
 		setValidDataStyle(null, wwwWrapper);
 		setValidDataStyle(null, bossWrapper);
+	
 	}
 
 	private boolean validate() {
@@ -611,7 +667,11 @@ public class RestaurantImageView extends MyPage {
 			editPanel.add(addBoard);
 			
 			
+			
 		}
+		
+		
+		getContentPanel().add(deleteProfile);
 		
 		if(restaurant.getMainLogoImageString() != null){
 			setMainLogoBoard();
