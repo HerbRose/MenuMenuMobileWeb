@@ -208,13 +208,17 @@ public class RestaurantImageView extends MyPage {
 						Transition.SLIDE);
 			}
 		});
+		
+		
 		adminLabel.addStyleName("adminLabel noFocus");
 
 		adminLabel.add(new Label(Customization.ADD_USER));
 
 		adminPanelWrapper = new FlowPanel();
 		adminPanelWrapper.addStyleName("adminWrapper");
-
+		
+		
+		
 		FlowPanel adminButtonDiv = new FlowPanel();
 		adminButtonDiv.addStyleName("adminButtonDiv");
 		adminButtonDiv.add(adminPanel);
@@ -261,6 +265,7 @@ public class RestaurantImageView extends MyPage {
 		getContentPanel().add(infoContainer);
 		getContentPanel().add(swipeContainer);
 		getContentPanel().add(adminPanelWrapper);
+
 	}
 
 	@Override
@@ -455,6 +460,7 @@ public class RestaurantImageView extends MyPage {
 		setValidDataStyle(null, phoneWrapper);
 		setValidDataStyle(null, wwwWrapper);
 		setValidDataStyle(null, bossWrapper);
+	
 	}
 
 	private boolean validate() {
@@ -656,6 +662,7 @@ public class RestaurantImageView extends MyPage {
 			
 			editPanel.add(container);
 			editPanel.add(addBoard);
+			
 			
 			
 		}
