@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.administration;
+package com.veliasystems.menumenu.client.userInterface.administration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
@@ -232,10 +231,9 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		element.getElement().setAttribute("placeHolder", placeHolder);
 	}
 	
-	private boolean validData( City city) {
-		
+	private boolean validData(City city) {
 		boolean isCorrect = true;
-		
+
 		String matcher =".*[^-]-.*[^-]";
 		if(city.getCity().matches(matcher)) {
 			for (City oldCity : cities) {
@@ -279,7 +277,6 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		setValidDataStyle(null, cityIdFrom);
 		cityIdTo.setValue("");
 		setValidDataStyle(null, cityIdTo);
-		fillCitiesList();
 		
 		for (City city : cities) {
 			fillCityDetails(citiesPanels.get(city.getId()), city);

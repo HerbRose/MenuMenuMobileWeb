@@ -14,15 +14,15 @@
     <url-pattern>/menumenumobileweb/store</url-pattern>
   </servlet-mapping>
   
-  <servlet>
-    <servlet-name>FillCityId</servlet-name>
-    <servlet-class>com.veliasystems.menumenu.server.FillCityIdInRestaurantsServlet</servlet-class>
-  </servlet>
+<!--   <servlet> --><!-- Unused  -->
+<!--     <servlet-name>FillCityId</servlet-name> -->
+<!--     <servlet-class>com.veliasystems.menumenu.server.FillCityIdInRestaurantsServlet</servlet-class> -->
+<!--   </servlet> -->
 
-  <servlet-mapping>
-    <servlet-name>FillCityId</servlet-name>
-    <url-pattern>/FillCityId</url-pattern>
-  </servlet-mapping>
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>FillCityId</servlet-name> -->
+<!--     <url-pattern>/FillCityId</url-pattern> -->
+<!--   </servlet-mapping> -->
   
   <servlet>
     <servlet-name>GetRestaurantsInArea</servlet-name>

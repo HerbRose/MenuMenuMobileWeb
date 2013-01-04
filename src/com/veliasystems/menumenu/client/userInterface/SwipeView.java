@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,6 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 public class SwipeView extends FlowPanel {
 

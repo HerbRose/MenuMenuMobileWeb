@@ -2,13 +2,11 @@ package com.veliasystems.menumenu.client.controllers;
 
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.entities.City;
-import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen;
 import com.veliasystems.menumenu.client.userInterface.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
 import com.veliasystems.menumenu.client.userInterface.HomePageScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsListScreen;
+import com.veliasystems.menumenu.client.userInterface.RestaurantsManagerScreen;
 
 /**
  * All {@link JQMPage}s all are singletons
@@ -43,39 +41,19 @@ public enum Pages {
 		JQMPage page ;
 			switch (enumPage) {
 			case PAGE_CITY_LIST:
-				if(R.isMobile){
-					page = new com.veliasystems.menumenu.client.ui.CityListScreen();
-				}else{
 					page = new CityListScreen();
-				}
 				break;
 			case PAGE_HOME:
-				if(R.isMobile){
-					page = new com.veliasystems.menumenu.client.ui.HomePageScreen();
-				}else {
 					page = new HomePageScreen();
-				}
 				break;
 			case PAGE_RESTAURANT_LIST:
-				if(R.isMobile){
-					page = new com.veliasystems.menumenu.client.ui.RestaurantsListScreen();
-				}else{
 					page = new RestaurantsListScreen();
-				}
 				break;
 			case PAGE_ADD_RESTAURANT:
-				if(R.isMobile){
-					page = new com.veliasystems.menumenu.client.ui.AddRestaurantScreen();
-				}else{
-					page = new AddRestaurantScreen();
-				}
+					page = new AddRestaurantScreen();	
 				break;
 			case PAGE_RESTAURANT_MANAGER:
-				if(R.isMobile){
-					page = new com.veliasystems.menumenu.client.ui.RestaurantsManagerScreen();
-				}else{
 					page = new RestaurantsManagerScreen();
-				}
 				break;
 			default:
 				page = null;

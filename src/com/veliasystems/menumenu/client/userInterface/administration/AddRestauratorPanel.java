@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.administration;
+package com.veliasystems.menumenu.client.userInterface.administration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.Util;
+import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -50,6 +51,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 	
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
+	private CityController cityController = CityController.getInstance();
 
 	public AddRestauratorPanel(Restaurant restaurant) {
 		
@@ -256,7 +258,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 			for (Restaurant restaurant : restaurantController
 					.getRestaurantsList()) {
 				if (restaurant.getName().equals(restNameNoCity)
-						&& restaurant.getCity().equals(city)
+						&& cityController.getCity(restaurant.getCityId()).getCity().equals(city)
 						&& restaurant.getAddress().equals(adress)) {
 					addedRestauration.add(restaurant);
 					// addedRestauration.add(restaurantSuggestBox.getValue());
@@ -276,13 +278,11 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 			if (adress == null)
 				return;
 
-			for (Restaurant restaurant : restaurantController
-					.getRestaurantsList()) {
+			for (Restaurant restaurant : restaurantController.getRestaurantsList()) {
 				if (restaurant.getName().equals(restNameNoCity)
-						&& restaurant.getCity().equals(city)
+						&& cityController.getCity(restaurant.getCityId()).getCity().equals(city)
 						&& restaurant.getAddress().equals(adress)) {
-					addedRestauration.remove(selectionModelRestaurant
-							.getSelectedObject());
+					addedRestauration.remove(selectionModelRestaurant.getSelectedObject());
 					restaurantsIdList.remove(restaurant.getId());
 				}
 			}
@@ -344,7 +344,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
                 addedRestauration.add(restaurant);
             }
             restaurantSuggest.add(restaurant.getName() + " ("
-                    + Customization.CITYONE + ": " + restaurant.getCity()
+                    + Customization.CITYONE + ": " + cityController.getCity(restaurant.getCityId()).getCity()
                     + " ," + Customization.ADRESS + ": "
                     + restaurant.getAddress() + ")");
         }
@@ -368,11 +368,12 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 
 class RestaurantCellClass extends AbstractCell<Restaurant> {
 
+	CityController cityController = CityController.getInstance();
 	@Override
 	public void render(com.google.gwt.cell.client.Cell.Context context,
 			Restaurant restaurant, SafeHtmlBuilder sb) {
 		sb.appendEscaped(restaurant.getName() + " (" + Customization.CITYONE
-				+ ": " + restaurant.getCity() + " ," + Customization.ADRESS
+				+ ": " + cityController.getCity(restaurant.getCityId()).getCity() + " ," + Customization.ADRESS
 				+ ": " + restaurant.getAddress() + ")");
 
 	}

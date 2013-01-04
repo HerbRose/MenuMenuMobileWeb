@@ -13,6 +13,7 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
@@ -30,13 +31,12 @@ public class CityInfoScreen extends MyPage{
 	
 	private String cityName;
 	private boolean loaded = false;
+	private City city;
 	
-    public CityInfoScreen(String city){
-    	super(city);
-    	cityName = city;
-    	
-                
-      
+    public CityInfoScreen(City city){
+    	super(city.getCity());
+    	cityName = city.getCity();
+    	this.city = city;
     }
 	
 	
@@ -79,11 +79,12 @@ public class CityInfoScreen extends MyPage{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
+		
 		if(!loaded){
 			setContent();
 		}
-		
-		
+		cityName = city.getCity();
+		getHeader().setTitle(cityName);
 		
 		refreshRestaurantList();
 		restaurantController.setLastOpenPage(this);
@@ -91,7 +92,7 @@ public class CityInfoScreen extends MyPage{
 	}
 	private void refreshRestaurantList() {
 		getContentPanel().clear();
-		addRestaurants(restaurantController.getRestaurantsInCity(cityName));
+		addRestaurants(restaurantController.getRestaurantsInCity(city.getId()));
 	}
 
 	private  void setContent(){
@@ -111,7 +112,7 @@ public class CityInfoScreen extends MyPage{
 			@Override
 			public void onClick(ClickEvent event) {
 				Document.get().getElementById("load").setClassName(R.LOADING);
-				JQMContext.changePage(new AddRestaurantScreen(cityName), Transition.SLIDE);	
+				JQMContext.changePage(new AddRestaurantScreen(city), Transition.SLIDE);	
 			}
 		});
     	
@@ -120,7 +121,7 @@ public class CityInfoScreen extends MyPage{
     	getHeader().setRightButton(addButton);
     
         
-        restaurants = restaurantController.getRestaurantsInCity(cityName);        
+        restaurants = restaurantController.getRestaurantsInCity(city.getId());        
         addRestaurants(restaurants);
         
         loaded = true;

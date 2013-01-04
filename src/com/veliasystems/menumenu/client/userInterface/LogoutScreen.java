@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui;
+package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;

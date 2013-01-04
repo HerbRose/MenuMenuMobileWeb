@@ -24,7 +24,6 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
-import com.veliasystems.menumenu.client.ui.LogoutScreen;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
@@ -134,7 +133,7 @@ public class CityListScreen extends MyPage implements IObserver{
 			if(CityController.cityMapView.containsKey(city.getId())){
 				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
 			}else{
-				cityInfoScreen = new CityInfoScreen(city.getCity());
+				cityInfoScreen = new CityInfoScreen(city);
 				CityController.cityMapView.put(city.getId(), cityInfoScreen);
 			}
 			
@@ -164,6 +163,7 @@ public class CityListScreen extends MyPage implements IObserver{
 		if(userController.getLoggedUser().isAdmin()){
 			getContentPanel().add(adminPanelWrapper);
 		}
+		
 		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
 		PagesController.hideWaitPanel();
 	}

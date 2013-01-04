@@ -128,7 +128,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 				Map<String,String> map = new HashMap<String,String>();
 				map.put( "id", ""+ r.getId());
 				map.put( "name", r.getName());
-				map.put( "city", r.getCity());
+				map.put( "city", getCityName(r.getCityId()) );
 				map.put( "district", r.getDistrict());
 				map.put( "address", r.getAddress());
 				map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
@@ -155,7 +155,21 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 	}
 	
+private Map<Long, String> cityMap = new HashMap<Long, String>();
 	
+	private String getCityName(Long cityId){
+		
+		if(cityMap.containsKey(cityId)){
+			return cityMap.get(cityId);
+		}else{
+			City city = storeService.loadCity(cityId);
+			if(city == null) return "";
+			
+			cityMap.put(city.getId(), city.getCity());
+			return cityMap.get(cityId);
+		}
+		
+	}
 	private String addHostToUrl( String url ) {
 		if (url.startsWith("http://")) return url;
 		return getHostName() + url;

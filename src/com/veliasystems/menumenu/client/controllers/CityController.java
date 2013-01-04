@@ -128,7 +128,8 @@ public class CityController {
 	 * @return {@link City}
 	 */
 	public City getCity(Long cityId) {
-		return cities.get(cityId);
+		City city = cities.get(cityId);
+		return city == null? new City() : city; 
 	}
 	/**
 	 * Method to copy all data to another {@link City}

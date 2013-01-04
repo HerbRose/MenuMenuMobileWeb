@@ -20,15 +20,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
@@ -44,11 +41,11 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
-import com.veliasystems.menumenu.client.ui.SwipeView;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
+
 public class RestaurantImageView extends MyPage {
 
 	private VerticalPanel scrollerDiv;
@@ -56,8 +53,8 @@ public class RestaurantImageView extends MyPage {
 	private Restaurant restaurant;
 	private boolean loaded = false;
 	private List<SwipeView> swipeViews = new ArrayList<SwipeView>();
-	private RestaurantController restaurantController = RestaurantController
-			.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private CityController cityController = CityController.getInstance();
 
 	private MyButton cancelButton = new MyButton(Customization.CANCEL);;
 	private MyButton saveButton = new MyButton(Customization.SAVE);
@@ -72,6 +69,8 @@ public class RestaurantImageView extends MyPage {
 	private Label bossLabel;
 	private Label addBoardText;
 	private Label warning = new Label();
+	private Label deleteLabel = new Label(Customization.REMOVEPROFILE);
+	private Label cancel = new Label(Customization.CANCEL);
 
 	private Image logoImage;
 	private Label nameLabelInfo;
@@ -101,6 +100,7 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
 	private FlowPanel addBoardWrap = new FlowPanel();
+	private FlowPanel deletePanel = new FlowPanel();
 
 	private Image publishImage;
 	private Image logoEditImage;
@@ -108,6 +108,11 @@ public class RestaurantImageView extends MyPage {
 	private FocusPanel adminLabel;
 	private FocusPanel addBoard;
 	private FocusPanel publish;
+	private FocusPanel deleteProfile = new FocusPanel();
+	private FocusPanel deleteProfileConfirmed = new FocusPanel();
+	private FocusPanel cancelDeleteProfile = new FocusPanel();
+	
+	
 
 	private FileUpload fileLogoUpload = new FileUpload();
 	private MyUploadForm formLogoUpload;
@@ -119,7 +124,48 @@ public class RestaurantImageView extends MyPage {
 		super(r.getName());
 		
 		this.restaurant = r;
+		
+		deleteProfileConfirmed.addStyleName("deleteProfileConfirmed noFocus pointer");
+		cancelDeleteProfile.addStyleName("cancelDeleteProfile noFocus pointer");
+		
+		deletePanel.add(deleteProfileConfirmed);
+		deletePanel.add(cancelDeleteProfile);
 
+		deleteProfileConfirmed.add(new Label(Customization.REMOVEPROFILE));
+		cancelDeleteProfile.add(cancel);
+		
+		deleteProfile.add(deleteLabel);
+		deletePanel.addStyleName("deletePanel");
+		
+		deleteProfile.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				deletePanel.getElement().getStyle().setHeight(205.00, Unit.PX);
+				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);	
+			}
+		});
+		cancelDeleteProfile.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+			}
+		});
+		
+		deleteProfileConfirmed.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				restaurantController.deleteRestaurant(restaurant, RestaurantImageView.class.getName());
+			}
+		});
+		
+		getContentPanel().add(deletePanel);
+		deleteProfile.addStyleName("noFocus deleteProfile pointer");
+		
+		
+		
 		infoContainer = new FlowPanel();
 		infoContainer.addStyleName("infoContainer");
 
@@ -132,7 +178,6 @@ public class RestaurantImageView extends MyPage {
 		swipeContainer = new FlowPanel();
 		swipeContainer.addStyleName("swipeContainer");
 
-		editPanel = new FlowPanel();
 		editPanel.addStyleName("editPanel");
 
 		adminPanelWrapper = new FlowPanel();
@@ -356,6 +401,7 @@ public class RestaurantImageView extends MyPage {
 			@Override
 			public void onClick(ClickEvent event) {
 				getContentPanel().remove(warning);
+				getContentPanel().remove(deleteProfile);
 				setProperButtons();
 				setValidVisibility();
 				showCamera();
@@ -382,6 +428,7 @@ public class RestaurantImageView extends MyPage {
 					nameLabelInfo.setText(restaurant.getName());
 					addressLabelInfo.setText(restaurant.getAddress());
 					getHeader().setTitle(restaurant.getName());
+					getContentPanel().remove(deleteProfile);
 
 				}
 			}
@@ -481,9 +528,9 @@ public class RestaurantImageView extends MyPage {
 
 	private boolean restaurantExist() {
 
-		String cityName = restaurant.getCity();
+		String cityName = cityController.getCity(restaurant.getCityId()).getCity();
 		List<Restaurant> restaurants = restaurantController
-				.getRestaurantsInCity(cityName);
+				.getRestaurantsInCity(restaurant.getCityId());
 
 		for (Restaurant restaurant : restaurants) {
 			String restaurationName = restaurant.getName().replaceAll(" ", "");
@@ -612,6 +659,9 @@ public class RestaurantImageView extends MyPage {
 			
 			
 		}
+		
+		
+		getContentPanel().add(deleteProfile);
 		
 		if(restaurant.getMainLogoImageString() != null){
 			setMainLogoBoard();

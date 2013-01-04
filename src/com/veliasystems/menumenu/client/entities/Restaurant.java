@@ -16,6 +16,9 @@ public class Restaurant implements Serializable {
 	
 	private String name;
 	private String address;
+	/**
+	 * @deprecated
+	 */
 	private String city;
 	private long cityId;
 	private String district;
@@ -119,13 +122,14 @@ public class Restaurant implements Serializable {
 		this.address = address;
 	}
 	/**
-	 * 
+	 * @deprecated
 	 * @return {@link City} name of {@link Restaurant}
 	 */
 	public String getCity() {
 		return city;
 	}
 	/**
+	 * @deprecated
 	 * set {@link City} name to {@link Restaurant}
 	 * @param city
 	 */

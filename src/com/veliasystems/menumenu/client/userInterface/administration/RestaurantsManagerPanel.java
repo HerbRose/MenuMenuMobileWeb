@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.administration;
+package com.veliasystems.menumenu.client.userInterface.administration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,7 +105,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 
 			@Override
 			public String getValue(Restaurant object) {
-				return object.getCity() + ", " + object.getAddress();
+				return cityController.getCity(object.getCityId()).getCity() + ", " + object.getAddress();
 			}
 		};
 
@@ -136,7 +136,7 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
 					Restaurant object, NativeEvent event) {
-				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE + "\n" + object.getName() + " " + object.getCity())){
+				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE + "\n" + object.getName() + " " + cityController.getCity(object.getCityId()).getCity() )){
 					justDeletedItemCity = object.getCityId();
 					restaurantController.deleteRestaurant(object, RestaurantsManagerPanel.class.getName());
 				}

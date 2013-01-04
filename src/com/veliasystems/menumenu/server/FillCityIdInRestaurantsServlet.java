@@ -17,7 +17,11 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
-
+/**
+ * unused 
+ * @author velia-systems
+ *
+ */
 public class FillCityIdInRestaurantsServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 2566472678914274709L;
@@ -36,7 +40,7 @@ public class FillCityIdInRestaurantsServlet extends HttpServlet {
 			return;
 		}
 		
-		storeService.fillCityId();
+//		storeService.fillCityId();
 		
 	}
 	

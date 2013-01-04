@@ -1,6 +1,5 @@
 package com.veliasystems.menumenu.client.userInterface;
 
-import com.veliasystems.menumenu.client.ui.CityInfoScreen;
 
 public class Pages {
 	

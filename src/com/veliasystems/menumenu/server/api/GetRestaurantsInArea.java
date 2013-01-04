@@ -29,6 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.server.BlobServiceImpl;
@@ -187,7 +188,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 
 					map.put("id", "" + restaurant.getId());
 					map.put("name", restaurant.getName());
-					map.put("city", restaurant.getCity());
+					map.put("city", getCityName(restaurant.getCityId()));
 					map.put("district", restaurant.getDistrict());
 					map.put("address", restaurant.getAddress());
 					map.put("logoImage",
@@ -218,6 +219,22 @@ public class GetRestaurantsInArea extends HttpServlet {
 
 	}
 
+	private Map<Long, String> cityMap = new HashMap<Long, String>();
+	
+	private String getCityName(Long cityId){
+		
+		if(cityMap.containsKey(cityId)){
+			return cityMap.get(cityId);
+		}else{
+			City city = storeService.loadCity(cityId);
+			if(city == null) return "";
+			
+			cityMap.put(city.getId(), city.getCity());
+			return cityMap.get(cityId);
+		}
+		
+	}
+	
 	private String addHostToUrl(String url) {
 		if (url.startsWith("http://"))
 			return url;

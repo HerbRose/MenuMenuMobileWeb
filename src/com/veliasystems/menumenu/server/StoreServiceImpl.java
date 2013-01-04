@@ -509,11 +509,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			
 			
 			
-			for (City item : cityList) {			
-					if(r.getCity().equalsIgnoreCase(item.getCity())){
-						r.setCityId(item.getId());
-					}	
-			}			
+//			for (City item : cityList) {	//?????		
+//					if(r.getCity().equalsIgnoreCase(item.getCity())){
+//						r.setCityId(item.getId());
+//					}	
+//			}			
 					
 		}
 		
@@ -627,7 +627,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		 
 		  for (String item : restSet) {
 			  
-			 if(city.contains(map.get(item).getCity())){
+			 if(city.contains(map.get(item).getCity())){ //the city name can not by correct
 				 
 				 	if(!restaurants.contains(map.get(item))){
 				 		saveRestaurant(map.get(item), true);
@@ -674,27 +674,27 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return city;
 	}
 	
-	/**
-	 * filling field cityId in Restaurant.java. Comparing restaurant.getCity() with city.getCity(), if equals cityId in restaurant is filling by cityId 
-	 * 
-	 */
-	public void fillCityId(){
-		
-		Query<Restaurant> query = dao.ofy().query(Restaurant.class);
-		List <Restaurant> restaurants = new ArrayList<Restaurant>();
-		if(query != null) restaurants=query.list();
-		List<City> cities = loadCitiesEntity();
-		
-		for (Restaurant restaurant : restaurants) {
-			for (City city : cities) {
-				if(restaurant.getCity().equals(city.getCity())){
-					restaurant.setCityId(city.getId());
-					saveRestaurant(restaurant, false);
-					continue;
-				}
-			}
-		}
-	}
+//	/**
+//	 * filling field cityId in Restaurant.java. Comparing restaurant.getCity() with city.getCity(), if equals cityId in restaurant is filling by cityId 
+//	 * 
+//	 */
+//	public void fillCityId(){
+//		
+//		Query<Restaurant> query = dao.ofy().query(Restaurant.class);
+//		List <Restaurant> restaurants = new ArrayList<Restaurant>();
+//		if(query != null) restaurants=query.list();
+//		List<City> cities = loadCitiesEntity();
+//		
+//		for (Restaurant restaurant : restaurants) {
+//			for (City city : cities) {
+//				if(restaurant.getCity().equals(city.getCity())){
+//					restaurant.setCityId(city.getId());
+//					saveRestaurant(restaurant, false);
+//					continue;
+//				}
+//			}
+//		}
+//	}
 	
 	@Override
 	public Map<String, Object> getAllData(String login, String password){
@@ -972,6 +972,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			
 		}
 		
+	}
+
+	public City loadCity(Long cityId) {
+		
+		return dao.ofy().find(City.class, cityId);
 	}
 	
 }

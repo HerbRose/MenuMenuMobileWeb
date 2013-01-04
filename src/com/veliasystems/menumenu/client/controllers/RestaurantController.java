@@ -25,15 +25,14 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.ui.RestInfoScreen;
-import com.veliasystems.menumenu.client.ui.administration.RestaurantsManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
+import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 
 
 
 /**
- * @author mateusz
+ * @author velia-systems
  * Controller to all operations on {@link Restaurant} 
  */
 public class RestaurantController {
@@ -170,23 +169,23 @@ public class RestaurantController {
 		}
 		return restaurants;
 	}
-	/**
-	 * 
-	 * @param cityName - name of the city
-	 * @return new ArrayList with chosen restaurants
-	 */
-	public List<Restaurant> getRestaurantsInCity(String cityName){
-		
-		List<Restaurant> restaurants = new ArrayList<Restaurant>();
-		
-		for (Long restaurantid : getRestaurantsKey()) {
-			Restaurant restaurant = this.restaurants.get(restaurantid);
-			if(restaurant.getCity().equals(cityName)){
-				restaurants.add(restaurant);
-			}
-		}
-		return restaurants;
-	}
+//	/**
+//	 * 
+//	 * @param cityName - name of the city
+//	 * @return new ArrayList with chosen restaurants
+//	 */
+//	public List<Restaurant> getRestaurantsInCity(String cityName){
+//		
+//		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+//		
+//		for (Long restaurantid : getRestaurantsKey()) {
+//			Restaurant restaurant = this.restaurants.get(restaurantid);
+//			if(restaurant.getCity().equals(cityName)){
+//				restaurants.add(restaurant);
+//			}
+//		}
+//		return restaurants;
+//	}
 	
 	
 	private Set<Long> getRestaurantsKey(){
@@ -238,6 +237,7 @@ public class RestaurantController {
 		
 		final Restaurant restaurantToDelete = restaurant;
 		final String lastPage = page;
+		PagesController.showWaitPanel();
 		storeService.deleteRestaurant(restaurantToDelete, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
@@ -245,14 +245,15 @@ public class RestaurantController {
 				if(lastPage.equalsIgnoreCase(RestaurantsManagerPanel.class.getName())){
 					
 				}
-				if(lastPage.equalsIgnoreCase(RestInfoScreen.class.getName())){
-					historyGoBack(2);
+				if(lastPage.equalsIgnoreCase(RestaurantImageView.class.getName())){
+					historyGoBack(1);
 				}
 				notifyAllObservers();
+				PagesController.hideWaitPanel();
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				
+				PagesController.hideWaitPanel();
 			}
 		});
 		

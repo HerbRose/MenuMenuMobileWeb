@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.ui.administration;
+package com.veliasystems.menumenu.client.userInterface.administration;
 
 import java.util.List;
 
@@ -87,7 +87,9 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 		});	
 	}
 	
-	
+	private void fillImages(){
+		
+	}
 	
 	@Override
 	public void clearData() {

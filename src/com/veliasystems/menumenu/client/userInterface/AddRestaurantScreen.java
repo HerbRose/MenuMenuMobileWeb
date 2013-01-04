@@ -60,7 +60,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //	private ListBox cityListBox = new ListBox();
 	private Label warning = new Label();
 	
-	private String city;
+	private City city;
 	private Restaurant restaurant;
 	
 	private boolean isToCity;
@@ -269,8 +269,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	}
 	
 
-	public AddRestaurantScreen(String city){
-		super(city);
+	public AddRestaurantScreen(City city){
+		super(city.getCity());
 		pageToDelete = this;
 		cityController.addObserver(this);
 		this.city = city;
@@ -352,8 +352,8 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					restaurant.setAddress(adressText.getText());			
 //					int index = cityListBox.getSelectedIndex();			
 //					restaurant.setCity(cityListBox.getItemText(index));	
-					restaurant.setCity(city);
-					long cityId = cityController.getCityId(city);
+					restaurant.setCity(city.getCity());
+					long cityId = cityController.getCityId(city.getCity());
 					restaurant.setCityId(cityId);
 					//restaurant.setCityId(cityController.)
 //					restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
@@ -484,7 +484,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	 */
 	private boolean restaurantExist(){
 //		String cityName = cityListBox.getItemText(cityListBox.getSelectedIndex());
-		List<Restaurant> restaurants = restaurantController.getRestaurantsInCity(city);
+		List<Restaurant> restaurants = restaurantController.getRestaurantsInCity(city.getId());
 		
 		for (Restaurant restaurant : restaurants) {
 			if( (restaurant.getName().replaceAll(" ", "").equals(nameText.getText().replaceAll(" ", "")))  &&
