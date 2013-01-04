@@ -224,8 +224,9 @@ public class CityController {
 			public void onSuccess(City editedCity) {
 				cities.get(editedCity.getId()).setCity(editedCity.getCity());
 				cities.get(editedCity.getId()).setVisable(editedCity.isVisable());
-				
+				notifyAllObservers();
 				PagesController.hideWaitPanel();
+				Window.alert(Customization.OK);
 			}
 			
 			@Override
