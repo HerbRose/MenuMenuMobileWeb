@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
@@ -133,7 +134,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		buttonsPanel.setStyleName("buttonsPanel", true);
 		
 		Label nameLabel = new Label(Customization.CITY_NAME);
-		TextBox nameTextBox = new TextBox();
+		final TextBox nameTextBox = new TextBox();
 		nameTextBox.getElement().setId("nameTextBox"+city.getId());
 		nameTextBox.setText(city.getCity());
 		
@@ -169,7 +170,12 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				cityController.saveCity(city);
+				city.setCity(nameTextBox.getText());
+				if(validData(city)){
+					cityController.saveCity(city);
+				}else{
+					Window.alert(Customization.WRONG_DATA_ERROR);
+				}
 			}
 		});
 		namePanel.add(nameLabel);
@@ -226,10 +232,24 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		element.getElement().setAttribute("placeHolder", placeHolder);
 	}
 	
-	private boolean validData() {
-		boolean isCorrect = false;
+	private boolean validData( City city) {
 		
-
+		boolean isCorrect = true;
+		
+		String matcher =".*[^-]-.*[^-]";
+		if(city.getCity().matches(matcher)) {
+			for (City oldCity : cities) {
+				if(oldCity.equals(city)){
+					if (oldCity.getId() == city.getId()) {
+						isCorrect = true;
+					}else{
+						isCorrect = false;
+					}
+				}
+			}
+		}else{
+			isCorrect = false;
+		}
 		return isCorrect;
 	}
 	
@@ -259,6 +279,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		setValidDataStyle(null, cityIdFrom);
 		cityIdTo.setValue("");
 		setValidDataStyle(null, cityIdTo);
+		fillCitiesList();
 		
 		for (City city : cities) {
 			fillCityDetails(citiesPanels.get(city.getId()), city);

@@ -74,7 +74,7 @@ public class AddCity extends MyPage{
 	protected void onPageShow() {
 		warningLabel.setText("");		
 		nameCity.setText("");
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		PagesController.hideWaitPanel();
 	}
 
 
