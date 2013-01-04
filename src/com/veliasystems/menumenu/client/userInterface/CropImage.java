@@ -210,8 +210,6 @@ public class CropImage extends MyPage implements IObserver{
 //					}else if(displayCenterPanelHeight < displayWidth/minLogoRatio){
 //						displayCenterPanelHeight = (int) (displayWidth/minLogoRatio);
 //					}
-					double tmp = displayCenterPanelWidth/displayCenterPanelHeight;
-					Window.alert(tmp + " " + minLogoRatio);
 					if(displayCenterPanelWidth/displayCenterPanelHeight < minLogoRatio){
 						displayCenterPanelHeight = (int) (displayCenterPanelWidth/minLogoRatio);
 					}else if(displayCenterPanelWidth/displayCenterPanelHeight > maxLogoRatio){
