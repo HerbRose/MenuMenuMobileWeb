@@ -49,10 +49,10 @@ public interface Messages extends Constants {
 	@DefaultStringValue("City")
 	String cityOne();
 
-	@DefaultStringValue("Restaurant name")
+	@DefaultStringValue("Name")
 	String restaurantName();
 
-	@DefaultStringValue("Restaurant address")
+	@DefaultStringValue("Address")
 	String restaurantAdress();
 
 	@DefaultStringValue("Restaurant saved")
@@ -85,7 +85,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Restaurant email")
 	String restaurantMail();
 
-	@DefaultStringValue("Restaurant phone")
+	@DefaultStringValue("Phone")
 	String restaurantPhone();
 
 	@DefaultStringValue("User mail")
