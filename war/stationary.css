@@ -739,15 +739,15 @@ body {
 }
 
 .deleteProfile {
-	height: 65px;
+	height: 50px;
 	position: relative;
 	background: url("/img/layout/redBackgroundButton.png");
-	border-radius: 20px;
+	border-radius: 13px;
 	margin-left: 10px;
 	margin-right: 10px;
 	margin-top: 90px;
 	margin-bottom: 20px;
-	line-height: 65px;
+	line-height: 50px;
 	font-size: 18px;
 	color: white;
 	font-family: Arial, Helvetica, sans-serif;
@@ -756,9 +756,11 @@ body {
 }
 
 .deletePanel {
-	position: absolute;
+	position: fixed;
+	bottom: 0px;
 	height: 0px;
 	width: 100%;
+	max-width: 840px;
 	z-index: 100;
 	margin-top: 0px;
 	border-top: 2px solid black;
@@ -782,13 +784,14 @@ body {
 	-o-transition: height 0.5s;
 }
 
+
 .cancelDeleteProfile {
-	height: 57px;
+	height: 50px;
 	margin-left: 35px;
 	margin-right: 35px;
-	margin-top: 30px;
+	margin-top: 20px;
 	background: url("/img/layout/blackBackgroundButton.png");
-	line-height: 57px;
+	line-height: 50px;
 	border-radius: 13px;
 	-webkit-box-shadow: 0px 0px 8px 2px black !important;
 	box-shadow: 0px 0px 8px 2px black !important;
@@ -797,17 +800,36 @@ body {
 }
 
 .deleteProfileConfirmed {
-	height: 57px;
+	height: 50px;
 	margin-left: 35px;
 	margin-right: 35px;
-	margin-top: 30px;
+	margin-top: 20px;
 	background: url("/img/layout/redBackgroundButton.png");
-	line-height: 57px;
+	line-height: 50px;
 	border-radius: 13px;
 	-webkit-box-shadow: 0px 0px 8px 2px black !important;
 	box-shadow: 0px 0px 8px 2px black !important;
 	font-size: 18px;
 	color: white;
+}
+
+.deletePanelWhiteBackground {
+	height: 50px;
+	margin-left: 35px;
+	margin-right: 35px;
+	margin-top: 20px;
+	background: url("/img/layout/grayBackgroundButton.png");
+	line-height: 50px;
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 2px black !important;
+	box-shadow: 0px 0px 8px 2px black !important;
+	font-size: 18px !important;
+	color: black;
+	font-weight: bold;
+}
+
+.removeBoard{
+	
 }
 /* KONIEC -  Restaurant Image View*/
 /* LastUploadedImages */

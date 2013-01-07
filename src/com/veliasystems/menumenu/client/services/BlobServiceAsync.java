@@ -56,4 +56,7 @@ public interface BlobServiceAsync {
 
 	void getLast24hImages(AsyncCallback<List<ImageBlob>> callback);
 
+	void removeImageBlobByBlobKey(String blobKey, AsyncCallback<Void> callback);
+
+
 }
