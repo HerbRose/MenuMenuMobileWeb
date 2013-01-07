@@ -164,7 +164,7 @@ public class CityListScreen extends MyPage implements IObserver{
 			getContentPanel().add(adminPanelWrapper);
 		}
 		
-		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
+//		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
 		PagesController.hideWaitPanel();
 	}
 

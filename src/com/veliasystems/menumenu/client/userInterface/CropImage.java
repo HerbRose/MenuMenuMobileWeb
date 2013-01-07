@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -76,7 +77,7 @@ public class CropImage extends MyPage implements IObserver{
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
-	public CropImage(final ImageBlob imageInsert) {
+	public CropImage(ImageBlob imageInsert) {
 		super(Customization.CROP);
 		
 		imageBlob = imageInsert;
@@ -87,7 +88,7 @@ public class CropImage extends MyPage implements IObserver{
 			@Override
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
-				JQMContext.changePage(RestaurantController.restMapView.get(Long.parseLong(imageInsert.getRestaurantId())), Transition.SLIDE);
+				JQMContext.changePage(RestaurantController.restMapView.get(Long.parseLong(imageBlob.getRestaurantId())), Transition.SLIDE);
 			}
 		});
 		
@@ -126,9 +127,14 @@ public class CropImage extends MyPage implements IObserver{
 		getHeader().setLeftButton(backButton);
 		getHeader().setRightButton(saveButton);
 		
-		restaurantId = Long.parseLong(imageBlob.getRestaurantId());
-	
-		image = new Image(imageBlob.getImageUrl());
+		restaurantId = Long.parseLong(imageInsert.getRestaurantId());
+		
+		//Image img = new Image(image.getUrl());
+		image = new Image(imageInsert.getImageUrl());
+		
+		boundaryPanel.add(image);
+		mainPanel.add(boundaryPanel);
+		add(mainPanel);
 		
 		image.getElement().setId("croapImage");
 		mainPanel.setStyleName("mainPanel", true);
@@ -156,34 +162,82 @@ public class CropImage extends MyPage implements IObserver{
 		
 		centerMovePanel.setStyleName("centerMovePanel", true);
 		centerMovePanel.getElement().setId("centerMovePanel");
-//		switch (imageInsert.getImageType()) {
-//		case MENU:
-////			displayWidth = 220;
-//			centerMovePanel.setWidth("100px");
-//			centerMovePanel.setHeight("60px");
-//			break;
-//		case LOGO:
-////			displayWidth = PagesController.contentWidth; //220;
-//			centerMovePanel.setWidth("166px");
-//			centerMovePanel.setHeight("58px");
-//			break;
-//		case PROFILE:
-////			displayWidth = 450;
-//			centerMovePanel.setWidth("200px");
-//			centerMovePanel.setHeight(200 / ratioProfile + "px");
-//			leftHand.getElement().getStyle().setDisplay(Display.NONE);
-//			rightHand.getElement().getStyle().setDisplay(Display.NONE);
-//		}
-		//image.setWidth(displayWidth + "px");
+
 		displayWidth = PagesController.contentWidth; //temporary 
 		image.getElement().getStyle().setProperty("maxWidth", PagesController.contentWidth +"px");
 
 		dragController = new PickupDragController(boundaryPanel, true);
 		dropController = new AbsolutePositionDropController(boundaryPanel);
 		
-		mainPanel.add(boundaryPanel);
-		boundaryPanel.add(image);
-		add(mainPanel);
+		boundaryPanel.add(topPanel);
+		boundaryPanel.add(topHand);
+		boundaryPanel.add(rightPanel);
+		boundaryPanel.add(rightHand);
+		boundaryPanel.add(bottomPanel);
+		boundaryPanel.add(bottomHand);
+		boundaryPanel.add(leftPanel);
+		boundaryPanel.add(leftHand);
+		boundaryPanel.add(centerMovePanel);
+
+		dragController.registerDropController(dropController);		
+		dragController.makeDraggable(rightHand);
+		dragController.makeDraggable(topHand);
+		dragController.makeDraggable(leftHand);
+		dragController.makeDraggable(bottomHand);
+		dragController.makeDraggable(centerMovePanel);
+		
+		dragController.addDragHandler(new DragHandler() {
+		
+			@Override
+			public void onPreviewDragStart(DragStartEvent event)
+					throws VetoDragException {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
+				if(interval > 0) stopInterval(interval);
+				
+			}
+		
+			@Override
+			public void onDragStart(DragStartEvent event) {	
+				Object eventSource = event.getSource();
+				
+				if(! (eventSource instanceof HTML)) return;//dziwne???
+				
+				HTML element = (HTML) eventSource;
+				
+				if(element.getElement().getId().equals(centerMovePanel.getElement().getId())){
+					interval = myOnMoveCenter(element.getElement().getId(),getOffsetWidth(centerMovePanel.getElement().getId()), getOffsetHeight(centerMovePanel.getElement().getId()) );
+					return;
+				}
+				
+				switch (imageBlob.getImageType()) {
+				case LOGO:
+					interval = myOnMoveLogo(element.getElement().getId(), minLogoRatio, maxLogoRatio);
+					break;
+				case PROFILE:
+					interval = myOnMoveProfile(element.getElement().getId(), ratioProfile);
+					break;
+					
+				case MENU:
+					interval = myOnMoveMenu(element.getElement().getId());
+					break;
+				default:
+					break;
+				}
+				
+				
+			}
+		
+			@Override
+			public void onDragEnd(DragEndEvent event) {
+	
+				checkPositions(imageBlob.getImageType().name());
+			}
+		});
+		
 		
 		image.addLoadHandler(new LoadHandler() {
 			
@@ -195,7 +249,7 @@ public class CropImage extends MyPage implements IObserver{
 				int displayCenterPanelWidth = displayWidth>20 ? displayWidth- 10 : displayWidth;
 				int displayCenterPanelHeight = displayHeight>20 ? displayHeight - 10 : displayHeight ;
 				
-				switch (imageInsert.getImageType()) {
+				switch (imageBlob.getImageType()) {
 				case MENU:
 //					displayWidth = 220;
 					centerMovePanel.setWidth(displayCenterPanelWidth +"px");
@@ -252,77 +306,7 @@ public class CropImage extends MyPage implements IObserver{
 				PagesController.hideWaitPanel();
 			}
 		});
-		
-		
-		boundaryPanel.add(topPanel);
-		boundaryPanel.add(topHand);
-		boundaryPanel.add(rightPanel);
-		boundaryPanel.add(rightHand);
-		boundaryPanel.add(bottomPanel);
-		boundaryPanel.add(bottomHand);
-		boundaryPanel.add(leftPanel);
-		boundaryPanel.add(leftHand);
-		boundaryPanel.add(centerMovePanel);
-
-		dragController.registerDropController(dropController);		
-		dragController.makeDraggable(rightHand);
-		dragController.makeDraggable(topHand);
-		dragController.makeDraggable(leftHand);
-		dragController.makeDraggable(bottomHand);
-		dragController.makeDraggable(centerMovePanel);
-		
-		
-		dragController.addDragHandler(new DragHandler() {
-		
-		@Override
-		public void onPreviewDragStart(DragStartEvent event)
-				throws VetoDragException {
-			// TODO Auto-generated method stub
-		}
-		
-		@Override
-		public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
-			if(interval > 0) stopInterval(interval);
-			
-		}
-		
-		@Override
-		public void onDragStart(DragStartEvent event) {	
-			Object eventSource = event.getSource();
-			
-			if(! (eventSource instanceof HTML)) return;//dziwne???
-			
-			HTML element = (HTML) eventSource;
-			
-			if(element.getElement().getId().equals(centerMovePanel.getElement().getId())){
-				interval = myOnMoveCenter(element.getElement().getId(),getOffsetWidth(centerMovePanel.getElement().getId()), getOffsetHeight(centerMovePanel.getElement().getId()) );
-				return;
-			}
-			
-			switch (imageBlob.getImageType()) {
-			case LOGO:
-				interval = myOnMoveLogo(element.getElement().getId(), minLogoRatio, maxLogoRatio);
-				break;
-			case PROFILE:
-				interval = myOnMoveProfile(element.getElement().getId(), ratioProfile);
-				break;
-				
-			case MENU:
-				interval = myOnMoveMenu(element.getElement().getId());
-				break;
-			default:
-				break;
-			}
-			
-			
-		}
-		
-		@Override
-		public void onDragEnd(DragEndEvent event) {
-
-			checkPositions(imageBlob.getImageType().name());
-		}
-	});
+	
 	}
 
 	@Override
@@ -882,10 +866,10 @@ public class CropImage extends MyPage implements IObserver{
 
 	private native void stopInterval(int interval)/*-{
 		$wnd.clearInterval(interval);
-		
-		
 	}-*/ ;
-
+	private native void waitHalfSecond()/*-{
+		$wnd.setTimeout(function(){	}, 500);
+	}-*/ ;
 	
 	private native void checkPositions(String isProfile)/*-{
 		

@@ -6,6 +6,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
+import com.veliasystems.menumenu.client.userInterface.LoginScreen;
 import com.veliasystems.menumenu.client.userInterface.Pages;
 
 
@@ -24,13 +25,13 @@ public class MenuMenuMobileWeb implements EntryPoint {
 			if(isMobile()) JQMContext.changePage( new LoadDataScreen(logged) );
 			else {
 				R.isMobile = false;
-				JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoadDataScreen(logged) );
+				JQMContext.changePage( new LoadDataScreen(logged) );
 			}
 		} else {
 			if(isMobile()) JQMContext.changePage( Pages.PAGE_LOGIN_OK );
 			else {
 				R.isMobile = false;
-				JQMContext.changePage( new com.veliasystems.menumenu.client.userInterface.LoginScreen(false) );
+				JQMContext.changePage( new LoginScreen(false) );
 			}
 		}
 	

@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.Element;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.R;
 
 public class PagesController {
 
 	private static Map<Pages, JQMPage> pagesMap = new HashMap<Pages, JQMPage>();
-	public static int contentWidth = 0;
+	public static int contentWidth = getBodyOffsetWidth();
 	/**
 	 * set the page only if local page is null
 	 * @param enumPage
@@ -41,6 +42,10 @@ public class PagesController {
 	public static void hideWaitPanel(){
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
+	
+	private static native int getBodyOffsetWidth()/*-{
+		return $wnd.document.body.offsetWidth;
+	}-*/;
 
 }
 

@@ -26,6 +26,7 @@ import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
+import com.veliasystems.menumenu.client.userInterface.CropImage;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 
@@ -344,16 +345,15 @@ public class RestaurantController {
 	 */
 	public void cropImageApple(long restaurantId, ImageType imageType){
 		
-		final long myRestaurantId = restaurantId;
-		final ImageType myImageType = imageType;
+		
 		
 		Cookies.removeCookie(R.IMAGE_TYPE);
 		
-		blobService.getLastUploadedImage(restaurantId, myImageType, new AsyncCallback<ImageBlob>() {
+		blobService.getLastUploadedImage(restaurantId, imageType, new AsyncCallback<ImageBlob>() {
 			@Override
 			public void onSuccess(ImageBlob result) {
 				if(result == null) Window.alert(Customization.CONNECTION_ERROR);
-				else JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(result), Transition.SLIDE);
+				else JQMContext.changePage(new CropImage(result), Transition.SLIDE);
 				
 			}
 			@Override
