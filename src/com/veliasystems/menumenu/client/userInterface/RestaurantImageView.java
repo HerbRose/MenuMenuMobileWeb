@@ -7,6 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -37,6 +38,7 @@ import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -71,6 +73,7 @@ public class RestaurantImageView extends MyPage {
 	private Label warning = new Label();
 	private Label deleteLabel = new Label(Customization.REMOVEPROFILE);
 	private Label cancel = new Label(Customization.CANCEL);
+	private Label deleteImage = new Label(Customization.DELETE);
 
 	private Image logoImage;
 	private Label nameLabelInfo;
@@ -101,6 +104,7 @@ public class RestaurantImageView extends MyPage {
 	private FlowPanel bossWrapper = new FlowPanel();
 	private FlowPanel addBoardWrap = new FlowPanel();
 	private FlowPanel deletePanel = new FlowPanel();
+	private FlowPanel addFlowPanel = new FlowPanel();
 
 	private Image publishImage;
 	private Image logoEditImage;
@@ -111,6 +115,8 @@ public class RestaurantImageView extends MyPage {
 	private FocusPanel deleteProfile = new FocusPanel();
 	private FocusPanel deleteProfileConfirmed = new FocusPanel();
 	private FocusPanel cancelDeleteProfile = new FocusPanel();
+	private FocusPanel removeBoard = new FocusPanel();
+	private FocusPanel addBoardFromBottom = new FocusPanel();
 	
 	
 
@@ -119,6 +125,13 @@ public class RestaurantImageView extends MyPage {
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	private String osType = getUserAgent();
+
+	
+	private boolean isEdit = false;
+	private boolean isDeleteImage = false;
+	private boolean isDeleteBoard = false;
+	
+	private ImageBlob imageBlobClickedToDelete;
 
 	public RestaurantImageView(Restaurant r, JQMPage back) {
 		super(r.getName());
@@ -131,36 +144,12 @@ public class RestaurantImageView extends MyPage {
 		deletePanel.add(deleteProfileConfirmed);
 		deletePanel.add(cancelDeleteProfile);
 
-		deleteProfileConfirmed.add(new Label(Customization.REMOVEPROFILE));
-		cancelDeleteProfile.add(cancel);
 		
 		deleteProfile.add(deleteLabel);
 		deletePanel.addStyleName("deletePanel");
 		
-		deleteProfile.addClickHandler(new ClickHandler() {
+		setDefaultDeleteBehavior();
 			
-			@Override
-			public void onClick(ClickEvent event) {
-				deletePanel.getElement().getStyle().setHeight(205.00, Unit.PX);
-				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);	
-			}
-		});
-		cancelDeleteProfile.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
-			}
-		});
-		
-		deleteProfileConfirmed.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				restaurantController.deleteRestaurant(restaurant, RestaurantImageView.class.getName());
-			}
-		});
-		
 		getContentPanel().add(deletePanel);
 		deleteProfile.addStyleName("noFocus deleteProfile pointer");
 		
@@ -268,6 +257,116 @@ public class RestaurantImageView extends MyPage {
 
 	}
 
+	private void setDefautDeleteContent(){
+		isDeleteImage = false;
+		isDeleteBoard = false;
+		deleteProfileConfirmed.clear();
+		cancelDeleteProfile.clear();
+		deleteProfileConfirmed.add(new Label(Customization.REMOVEPROFILE));
+		deleteProfileConfirmed.setStyleName("deleteProfileConfirmed");
+		deletePanel.remove(addBoardFromBottom);
+		
+		cancelDeleteProfile.add(cancel);
+	}
+	private void setDefaultDeleteBehavior() {
+		setDefautDeleteContent();
+		deleteProfile.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				deletePanel.getElement().getStyle().setHeight(160.0, Unit.PX);
+				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);	
+			}
+		});
+		cancelDeleteProfile.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {	
+				deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+				isDeleteImage = false;
+				setDefautDeleteContent();
+			}
+		});
+		
+		deleteProfileConfirmed.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+					if(!isDeleteImage && !isDeleteBoard){
+						restaurantController.deleteRestaurant(restaurant, RestaurantImageView.class.getName());
+					}
+					else if(isDeleteImage && !isDeleteBoard){
+						PagesController.showWaitPanel();
+						blobService.deleteBlob(imageBlobClickedToDelete, new AsyncCallback<Boolean>() {
+
+	@Override
+							public void onFailure(Throwable caught) {	
+							}
+							@Override
+							public void onSuccess(Boolean result) {
+								switch(imageBlobClickedToDelete.getImageType()){
+								case MENU:
+									if(restaurant.getMainProfileImageString() != null){
+										if(restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlobClickedToDelete.getBlobKey())){
+											restaurant.setMainMenuImageString("");
+											restaurantController.saveRestaurant(restaurant, false);
+										}
+									}
+										restaurant.getMenuImages().remove(imageBlobClickedToDelete);
+									break;
+								case PROFILE:
+									if(restaurant.getMainProfileImageString() != null){
+										if(restaurant.getMainProfileImageString().equals("/blobServe?blob-key=" + imageBlobClickedToDelete.getBlobKey())){
+											restaurant.setMainProfileImageString("");
+											restaurantController.saveRestaurant(restaurant, false);
+										}
+									}
+										restaurant.getProfileImages().remove(imageBlobClickedToDelete);
+									break;
+								}
+								setDefautDeleteContent();
+								deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+								checkChanges();	
+								PagesController.hideWaitPanel();
+							}
+						
+						});
+					} else if(isDeleteBoard && !isDeleteImage){
+						PagesController.showWaitPanel();
+						blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								
+								restaurant.setMainLogoImageString("");
+								restaurantController.saveRestaurant(restaurant, false);
+								logoImage.setUrl("");
+								addBoardWrap.remove(logoEditImage);
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+							
+							}
+						});
+						
+						PagesController.hideWaitPanel();
+					}
+					
+			}
+		});
+		
+		
+		
+	}
+	
+	
+	private String parseURLtoBlobKey(String url){	
+		String tab[] = url.split("/?");
+		String tab2[] = url.split("=");		
+		return tab2[1];
+	}
+	
 	@Override
 	protected void onPageShow() {
 
@@ -290,7 +389,7 @@ public class RestaurantImageView extends MyPage {
 			publishImageWrapper.addStyleName("publishImage");
 
 			publishLabelWrapper = new FlowPanel();
-			publishLabelWrapper.addStyleName("publishLabelWrapper");
+//			publishLabelWrapper.addStyleName("");
 			
 			publishText = new Label();
 			publishImage = new Image();
@@ -302,7 +401,7 @@ public class RestaurantImageView extends MyPage {
 				}
 			});
 			publish = new FocusPanel();
-			publish.addStyleName("noFocus");
+			publish.addStyleName("publishLabelWrapper noFocus");
 			
 			
 			changeIcons();
@@ -405,8 +504,9 @@ public class RestaurantImageView extends MyPage {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				setDefautDeleteContent();
 				getContentPanel().remove(warning);
-				getContentPanel().remove(deleteProfile);
+				hideDeletePanelForImages();
 				setProperButtons();
 				setValidVisibility();
 				showCamera();
@@ -433,7 +533,6 @@ public class RestaurantImageView extends MyPage {
 					nameLabelInfo.setText(restaurant.getName());
 					addressLabelInfo.setText(restaurant.getAddress());
 					getHeader().setTitle(restaurant.getName());
-					getContentPanel().remove(deleteProfile);
 
 				}
 			}
@@ -460,6 +559,11 @@ public class RestaurantImageView extends MyPage {
 		setValidDataStyle(null, phoneWrapper);
 		setValidDataStyle(null, wwwWrapper);
 		setValidDataStyle(null, bossWrapper);
+//		for (SwipeView swipeView : swipeViews) {
+//			swipeView.setEdit(false);
+//		}
+		hideDeletePanelForImages();
+		isEdit = false;
 	
 	}
 
@@ -686,6 +790,7 @@ public class RestaurantImageView extends MyPage {
 		editPanel.getElement().getStyle().setHeight(410d, Unit.PX);
 		infoContainer.getElement().getStyle().setDisplay(Display.NONE);
 		publishWrapper.getElement().getStyle().setDisplay(Display.NONE);
+		isEdit = true;
 		hideCamera();
 
 	}
@@ -748,12 +853,84 @@ public class RestaurantImageView extends MyPage {
 		formLogoUpload.setStyleName("formLogoUpload", true);
 		formLogoUpload.getElement().getStyle().setDisplay(Display.NONE);
 		
-		boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
-		boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;
-		boolean isAndroid = osType.toLowerCase().indexOf("android")>=0;
-		if (isOSMobile && !isOS6) {
+		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
+		final boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;
+		final boolean isAndroid = osType.toLowerCase().indexOf("android")>=0;
+//		if (isOSMobile && !isOS6) {
+//			
+//			addBoard.addClickHandler(new ClickHandler() {
+//				
+//				@Override
+//				public void onClick(ClickEvent event) {
+//					blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
+//							new AsyncCallback<String>() {
+//								@Override
+//								public void onSuccess(String result) {
+//									String callbackURL = R.HOST_URL + "picupCallback.html" ;
+//									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
+//									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
+//									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
+//	
+//									clickOnInputFile(fileLogoUpload.getElement());
+//	
+//								}
+//	
+//								@Override
+//								public void onFailure(Throwable caught) {
+//	
+//								}
+//							});
+//				}
+//	
+//			});
+//			add(formLogoUpload);
+//		}else if(isAndroid){
+//			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+//			addBoardWrap.add(formLogoUpload);
+//		}else{
+//			
+//			addBoard.addClickHandler(new ClickHandler() {
+//				
+//				@Override
+//				public void onClick(ClickEvent event) {
+//					clickOnInputFile(fileLogoUpload.getElement());
+//					
+//				}
+//			});
+////			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+////			addBoardWrap.add(formLogoUpload);
+//			add(formLogoUpload);
+//		}
+		
 			
 			addBoard.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+				isDeleteBoard = true;
+				deletePanel.getElement().getStyle().setHeight(225.00, Unit.PX);
+				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);
+
+				addBoardFromBottom.clear();
+				addFlowPanel.clear();
+				
+				addFlowPanel.add(new Label(Customization.ADD_BOARD));
+				addBoardFromBottom.add(addFlowPanel);
+				addBoardFromBottom.addStyleName("deletePanelWhiteBackground noFocus pointer");
+				
+				deletePanel.insert(addBoardFromBottom, 0);
+				
+				deleteProfileConfirmed.clear();
+				deleteProfileConfirmed.add(new Label(Customization.REMOVE_BOARD));	
+				deleteProfileConfirmed.addStyleName("deletePanelWhiteBackground");
+				
+				
+				
+			}
+		});
+		
+		if(isOSMobile && !isOS6){
+			addBoardFromBottom.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
@@ -776,25 +953,25 @@ public class RestaurantImageView extends MyPage {
 								}
 							});
 				}
-	
 			});
-			add(formLogoUpload);
+	
 		}else if(isAndroid){
 			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
-			addBoardWrap.add(formLogoUpload);
+			addFlowPanel.insert(fileLogoUpload, 0);
 		}else{
+			addBoardFromBottom.addClickHandler(new ClickHandler() {
 			
-			addBoard.addClickHandler(new ClickHandler() {
-				
 				@Override
 				public void onClick(ClickEvent event) {
 					clickOnInputFile(fileLogoUpload.getElement());
-					
+					formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+					formLogoUpload.getElement().getStyle().setPosition(Position.RELATIVE);
+					addFlowPanel.add(formLogoUpload);
+					add(formLogoUpload);
+					deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+					setDefautDeleteContent();
 				}
 			});
-//			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
-//			addBoardWrap.add(formLogoUpload);
-			add(formLogoUpload);
 		}
 		
 		fileLogoUpload.setVisible(true);
@@ -837,6 +1014,31 @@ public class RestaurantImageView extends MyPage {
 	private void showCamera(){
 		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).removeClassName("hidden");
 		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).removeClassName("hidden");
+	}
+	
+	public void showDeletePanelForImages(ImageBlob imageBlob){
+		imageBlobClickedToDelete = imageBlob;
+		deletePanel.getElement().getStyle().setHeight(160.00, Unit.PX);
+		deletePanel.getElement().getStyle().setBottom(0, Unit.PX);
+		
+		deleteProfileConfirmed.clear();
+		deleteProfileConfirmed.setStyleName("deletePanelWhiteBackground");
+		
+		deleteProfileConfirmed.add(new Label(Customization.DELETE_IMAGE));	
+		isDeleteImage = true;
+	}
+	
+	private void hideDeletePanelForImages(){
+		setDefautDeleteContent();
+		getContentPanel().remove(deleteProfile);
+	}
+	
+	public boolean isEdit() {
+		return isEdit;
+	}
+	
+	public void setEdit(boolean isEdit) {
+		this.isEdit = isEdit;
 	}
 	
 	private native String getUserAgent()/*-{

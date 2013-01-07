@@ -121,7 +121,7 @@ body {
 
 .headerPanel { /* nagłwek dla buttonów i nazwy strony */
 	position: relative;
-	height: 70px;
+	height: 44px;
 	background: url("/img/layout/headerBackgroun.png") repeat-x #818181
 		!important;
 	text-align: center;
@@ -129,7 +129,7 @@ body {
 
 .headerTitle {
 	margin: auto;
-	line-height: 70px;
+/* 	line-height: 70px; */
 	text-align: center;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: normal;
@@ -139,7 +139,7 @@ body {
 
 .headerLeftButton {
 	position: absolute;
-	top: 0px;
+	top: 6px;
 	left: 7px;
 }
 
@@ -151,14 +151,18 @@ body {
 }
 
 .logoPanel img {
-	margin-top: 15px;
+	position: absolute;
+	margin: auto;
+	left: 0px;
+	right: 0px;
+	top: 4px;
 }
 
 .myButton {
 	display: inline-block;
-	min-width: 118px;
+	min-width: 70px;
 	/* 	height: 58px; */
-	line-height: 54px;
+	
 	text-align: center;
 	margin: 10px;
 }
@@ -166,9 +170,9 @@ body {
 .borderButton {
 	border: #656263 solid;
 	border-width: 2px 1px 1px 1px;
-	border-radius: 14px;
-	-moz-border-radius: 14px;
-	-webkit-border-radius: 14px;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
 }
 
 .borderLabel {
@@ -186,22 +190,23 @@ body {
 	color: #fff;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 14px;
 	text-shadow: 0px -2px #000;
 }
 
 .addButton {
-	top: 3px !important;
-	height: 50px;
-	min-width: 55px !important;
+	top: -5px !important;
+	height: 34px;
+	min-width: 34px !important;
+	text-align: right;
 	background: url("img/layout/plus.png") no-repeat;
 }
 
 .saveButton {
-	top: 3px !important;
-	height: 40px !important;
+	top: -3px !important;
+	height: 26px !important;
 	background: url("img/layout/headerButtonBackground.png") !important;
-	line-height: 40px;
+	line-height: 26px !important;
 }
 
 .itemList {
@@ -222,23 +227,31 @@ body {
 .arrowButtonPart {
 	position: absolute;
 	top: 0px;
-	left: 1px;
-	width: 21px;
-	height: 44px;
+	left: 0px;
+	width: 16px;
+	height: 31px;
 	background: url("img/layout/arrowForBackButton.png");
 }
 
 .labelBackButton {
 	position: absolute;
-	left: 22px;
 	display: inline-block;
+	
+	left: 15px;
+	
 	/* 	min-width: 52px; */
-	height: 40px;
-	line-height: 40px;
+	height: inherit;
+
 	border: #656263 solid;
 	border-width: 2px 2px 2px 0px;
-	border-bottom-right-radius: 8px;
-	border-top-right-radius: 8px;
+	
+	border-bottom-right-radius: 7px;
+		-moz-border-bottom-right-radius: 7px;
+		-webkit-border-bottom-right-radius: 7px;
+	border-top-right-radius: 7px;
+		-moz-border-top-right-radius: 7px;
+		-webkit-border-top-right-radius: 7px;
+		
 	background: url("img/layout/backButtonBackground.png");
 	-webkit-box-shadow: -1px 3px 3px -3px #fff !important;
 	box-shadow: -1px 3px 3px -3px #fff !important;
@@ -246,8 +259,10 @@ body {
 
 .mainPanelBackButton {
 	position: absolute;
-	top: 12px;
 	width: 150px;
+	height: 26px;
+	
+	line-height: 26px;
 }
 
 .mainPanelBackButton:ACTIVE .myTextLabel {
@@ -280,12 +295,6 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
-}
-
-.addBoardWrapper,.adminLabel,.publishLabelWrapper,.itemList,.panelForArrow,.addWrapper
-	{
-	height: 45px;
-	line-height: 45px;
 }
 
 /*********************************
@@ -391,11 +400,19 @@ body {
 .selected {
 	background-color: #e2abb2;
 }
+
+.namePanel,.passwordPanel, .addBoardWrapper,.adminLabel,.publishLabelWrapper,.itemList,.panelForArrow,.addWrapper, .headerTitle{
+       height: 44px;
+       line-height: 44px;
+}
+.myButton{
+	line-height: 40px;	
+}
 /* KONIEC - ogulny styl dla listy rozwijanej */
 /* Login screen */
 .namePanel,.passwordPanel {
 	/* panele na label i pole do wprowadzenia tekstu */
-	height: 45px !important;
+/* 	height: 44px !important; */
 	margin: 20px 10px 0px 10px !important;
 	padding: 0px;
 	background: #fff !important;
@@ -426,7 +443,7 @@ body {
 	border-right: solid !important;
 	border-right-width: 2px !important;
 	border-right-color: #c1c1c1 !important;
-	line-height: 45px !important;
+/* 	line-height: 45px !important; */
 	text-align: right !important;
 	color: #8a8b8e !important;
 	font-weight: bold !important;
@@ -449,7 +466,7 @@ body {
 
 .languageCombo { /* 	position: absolute; */ /* 	right: 94px; */
 	/* 	top: 300px; */
-	
+	display: none;
 }
 
 /* KONIEC - Login screen */
@@ -584,10 +601,11 @@ body {
 }
 
 .adminLabel {
-	display: inline-table;
-	float: right;
-	width: 60%;
-	margin-right: 5%;
+	display: block;
+/* 	float: right; */
+/* 	width: 60%; */
+	margin-right: 13px;
+	margin-left: 60px;
 	border: #C1C1C1 2px solid !important;
 	border-radius: 14px !important;
 	-moz-border-radius: 14px !important;
@@ -658,15 +676,20 @@ body {
 
 .publishImage {
 	display: inline-block;
-	margin-left: 5%;
+	float: left;
+	
+	margin-left: 20px;
+	margin-top: -60px;
 }
-
-.publishLabelWrapper {
+.publishImage img{
 	display: inline-block;
-	float: right;
-	width: 60%;
-	margin-right: 5%;
-	margin-left: 15px;
+}
+.publishLabelWrapper {
+	display: block;
+/* 	float: right; */
+/* 	width: 60%; */
+	margin-right: 13px;
+	margin-left: 60px;
 	border: 2px solid #C1C1C1;
 	border-radius: 14px;
 	-moz-border-radius: 14px;
@@ -739,15 +762,15 @@ body {
 }
 
 .deleteProfile {
-	height: 65px;
+	height: 50px;
 	position: relative;
 	background: url("/img/layout/redBackgroundButton.png");
-	border-radius: 20px;
+	border-radius: 13px;
 	margin-left: 10px;
 	margin-right: 10px;
 	margin-top: 90px;
 	margin-bottom: 20px;
-	line-height: 65px;
+	line-height: 50px;
 	font-size: 18px;
 	color: white;
 	font-family: Arial, Helvetica, sans-serif;
@@ -756,9 +779,11 @@ body {
 }
 
 .deletePanel {
-	position: absolute;
+	position: fixed;
+	bottom: 0px;
 	height: 0px;
 	width: 100%;
+	max-width: 840px;
 	z-index: 100;
 	margin-top: 0px;
 	border-top: 2px solid black;
@@ -783,12 +808,12 @@ body {
 }
 
 .cancelDeleteProfile {
-	height: 57px;
+	height: 50px;
 	margin-left: 35px;
 	margin-right: 35px;
-	margin-top: 30px;
+	margin-top: 20px;
 	background: url("/img/layout/blackBackgroundButton.png");
-	line-height: 57px;
+	line-height: 50px;
 	border-radius: 13px;
 	-webkit-box-shadow: 0px 0px 8px 2px black !important;
 	box-shadow: 0px 0px 8px 2px black !important;
@@ -797,17 +822,36 @@ body {
 }
 
 .deleteProfileConfirmed {
-	height: 57px;
+	height: 50px;
 	margin-left: 35px;
 	margin-right: 35px;
-	margin-top: 30px;
+	margin-top: 20px;
 	background: url("/img/layout/redBackgroundButton.png");
-	line-height: 57px;
+	line-height: 50px;
 	border-radius: 13px;
 	-webkit-box-shadow: 0px 0px 8px 2px black !important;
 	box-shadow: 0px 0px 8px 2px black !important;
 	font-size: 18px;
 	color: white;
+}
+
+.deletePanelWhiteBackground {
+	height: 50px;
+	margin-left: 35px;
+	margin-right: 35px;
+	margin-top: 20px;
+	background: url("/img/layout/grayBackgroundButton.png");
+	line-height: 50px;
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 2px black !important;
+	box-shadow: 0px 0px 8px 2px black !important;
+	font-size: 18px !important;
+	color: black;
+	font-weight: bold;
+}
+
+.removeBoard{
+	
 }
 /* KONIEC -  Restaurant Image View*/
 /* LastUploadedImages */
