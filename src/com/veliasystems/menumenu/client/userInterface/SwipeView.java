@@ -62,7 +62,6 @@ public class SwipeView extends FlowPanel {
 	private Restaurant restaurant;
 	private ImageType imageType;
 	private Image cameraImg = new Image("img/layout/plus.png");
-
 	private LoadedPageController loadedPageController;
 
 	private String osType = getUserAgent(); 
@@ -352,11 +351,14 @@ public class SwipeView extends FlowPanel {
 		fillImages();
 	}
 	
+
+	
 	private native String getUserAgent()/*-{
 		return navigator.userAgent;
 	}-*/;
 	
 }
+
 
 class MyComparator implements Comparator<ImageBlob> {
 	public int compare(ImageBlob o1, ImageBlob o2) {

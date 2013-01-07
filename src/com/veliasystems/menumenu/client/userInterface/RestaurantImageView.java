@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
@@ -117,8 +116,7 @@ public class RestaurantImageView extends MyPage {
 	private FocusPanel cancelDeleteProfile = new FocusPanel();
 	private FocusPanel removeBoard = new FocusPanel();
 	private FocusPanel addBoardFromBottom = new FocusPanel();
-	
-	
+
 
 	private FileUpload fileLogoUpload = new FileUpload();
 	private MyUploadForm formLogoUpload;
@@ -126,7 +124,6 @@ public class RestaurantImageView extends MyPage {
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	private String osType = getUserAgent();
 
-	
 	private boolean isEdit = false;
 	private boolean isDeleteImage = false;
 	private boolean isDeleteBoard = false;
@@ -143,16 +140,14 @@ public class RestaurantImageView extends MyPage {
 		
 		deletePanel.add(deleteProfileConfirmed);
 		deletePanel.add(cancelDeleteProfile);
-
 		
 		deleteProfile.add(deleteLabel);
 		deletePanel.addStyleName("deletePanel");
 		
 		setDefaultDeleteBehavior();
-			
+
 		getContentPanel().add(deletePanel);
 		deleteProfile.addStyleName("noFocus deleteProfile pointer");
-		
 		
 		
 		infoContainer = new FlowPanel();
@@ -256,7 +251,7 @@ public class RestaurantImageView extends MyPage {
 		getContentPanel().add(adminPanelWrapper);
 
 	}
-
+	
 	private void setDefautDeleteContent(){
 		isDeleteImage = false;
 		isDeleteBoard = false;
@@ -299,7 +294,7 @@ public class RestaurantImageView extends MyPage {
 						PagesController.showWaitPanel();
 						blobService.deleteBlob(imageBlobClickedToDelete, new AsyncCallback<Boolean>() {
 
-	@Override
+							@Override
 							public void onFailure(Throwable caught) {	
 							}
 							@Override
@@ -761,14 +756,10 @@ public class RestaurantImageView extends MyPage {
 			if(restaurant.getMainLogoImageString() != null){
 				setMainLogoBoard();
 			}
-
-			setData();
-			
+			setData();		
 			editPanel.add(container);
 			editPanel.add(addBoard);
-			
-			
-			
+				
 		}
 		
 		
@@ -846,7 +837,6 @@ public class RestaurantImageView extends MyPage {
 	}
 
 	private void setUpload() {
-
 		formLogoUpload = new MyUploadForm(fileLogoUpload, ImageType.LOGO, restaurant.getId() + "");
 		
 		formLogoUpload.setVisible(false);
@@ -901,12 +891,12 @@ public class RestaurantImageView extends MyPage {
 ////			addBoardWrap.add(formLogoUpload);
 //			add(formLogoUpload);
 //		}
-		
-			
+
 			addBoard.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
+
 				isDeleteBoard = true;
 				deletePanel.getElement().getStyle().setHeight(225.00, Unit.PX);
 				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);
@@ -954,13 +944,13 @@ public class RestaurantImageView extends MyPage {
 							});
 				}
 			});
-	
-		}else if(isAndroid){
+
+		} else if(isAndroid){
 			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
 			addFlowPanel.insert(fileLogoUpload, 0);
-		}else{
+		} else{
 			addBoardFromBottom.addClickHandler(new ClickHandler() {
-			
+				
 				@Override
 				public void onClick(ClickEvent event) {
 					clickOnInputFile(fileLogoUpload.getElement());
@@ -973,7 +963,7 @@ public class RestaurantImageView extends MyPage {
 				}
 			});
 		}
-		
+				
 		fileLogoUpload.setVisible(true);
 		fileLogoUpload.addChangeHandler(new ChangeHandler() {
 

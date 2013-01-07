@@ -128,4 +128,6 @@ public interface BlobService extends RemoteService {
 		 * @return List of all images which were uploaded to server in last 24h
 		 */
 		List<ImageBlob> getLast24hImages();
+		void removeImageBlobByBlobKey(String blobKey);
+
 }

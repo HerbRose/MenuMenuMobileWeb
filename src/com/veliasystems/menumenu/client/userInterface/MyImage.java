@@ -1,15 +1,17 @@
 package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -37,14 +39,18 @@ public class MyImage extends FlowPanel {
 	
 	private HTML detailsContent;
 
-	private boolean mainImage = false;
+	private boolean mainImage = true;
 	private ImageType imageType;
 
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private RestaurantImageView parent;
 	private RestaurantController restaurantController = RestaurantController
 			.getInstance();
+	private boolean isEdit = false;
 
+	
+	private FocusPanel deletePanel;
+	
 	/**
 	 * zdjęcie z pustą tablicą
 	 * 
@@ -58,22 +64,21 @@ public class MyImage extends FlowPanel {
 	 *            - typ zdjecia
 	 */
 	public MyImage(ImagesController imagesController, Image image,
-			RestaurantImageView myParent, ImageType myImageType) {
+		 RestaurantImageView myParent, ImageType myImageType) {
 		this.image = image;
 		imageType = myImageType;
 		image.setStyleName("image");
-		this.parent = myParent;
+		parent = myParent;
 		setStyleName("imagePanel");
 
 		image.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-
-				PagesController.showWaitPanel();
-
-				restaurantController.setEmptyBoard(parent.getRestaurant(),
-						imageType);
+				if(!parent.isEdit()){
+					PagesController.showWaitPanel();
+					restaurantController.setEmptyBoard(parent.getRestaurant(),imageType);
+				}
 
 			}
 		});
@@ -103,6 +108,9 @@ public class MyImage extends FlowPanel {
 		editLabel = new Label(Customization.EDIT.toUpperCase());
 		editLabel.addStyleName("editLabelImage");
 		
+		deletePanel = new FocusPanel();
+		deletePanel.addStyleName("deletePanelImages");
+		
 		
 		url = imageBlob.getImageUrl();
 		parent = myParent;
@@ -114,12 +122,20 @@ public class MyImage extends FlowPanel {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				PagesController.showWaitPanel();
-				restaurantController.setMainImage(imgBlob);
-//				JQMContext.changePage(new Test(imgBlob));
-				getImagesController().selectImage(getMe());
+
+				if(!parent.isEdit()){
+					PagesController.showWaitPanel();
+					restaurantController.setMainImage(imgBlob);
+//					JQMContext.changePage(new Test(imgBlob));
+					getImagesController().selectImage(getMe());
+				}
+				else{
+					parent.showDeletePanelForImages(imgBlob);
+				}
+			
 			}
 		});
+
 
 		String dateTimeFormat = DateTimeFormat.getFormat(
 						DateTimeFormat.PredefinedFormat.MONTH_NUM_DAY).format(
@@ -138,7 +154,8 @@ public class MyImage extends FlowPanel {
 		
 		editPanel.add(editLabel);
 		add(editPanel);
-
+//		add(deletePanel);
+//		parent.add(deletePanel);
 	}
 
 	public MyImage(int emptyImageNumber, ImageType imageType) {
@@ -163,6 +180,14 @@ public class MyImage extends FlowPanel {
 		add(setDetailsPanel(emptyImageNumber + ""));
 		add(image);
 	}
+	
+//	private void hideEditPanel(){
+//		deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+//	}
+//	private void showEditPanel(){
+//		deletePanel.getElement().getStyle().setHeight(205.00, Unit.PX);
+//		deletePanel.getElement().getStyle().setBottom(0, Unit.PX);	
+//	}
 
 	private FlowPanel setDetailsPanel(String details) {
 		detailsPanel = new FlowPanel();
@@ -217,5 +242,11 @@ public class MyImage extends FlowPanel {
 
 	public ImageType getImageType() {
 		return imageType;
+	}
+	public boolean isEdit() {
+		return isEdit;
+	}
+	public void setEdit(boolean isEdit) {
+		this.isEdit = isEdit;
 	}
 }

@@ -381,8 +381,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		return newImageBlob;
 	}
-	
-	private void removeImageBlobByBlobKey(String blobKey){
+	@Override
+	public void removeImageBlobByBlobKey(String blobKey){
 		Query<ImageBlob> blobQuery = dao.ofy().query(ImageBlob.class);
 		if(blobQuery == null) return;
 		ImageBlob imgBlob = blobQuery.filter("blobKey =", blobKey).get();

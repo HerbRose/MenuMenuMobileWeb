@@ -12,7 +12,7 @@ public class Customization {
 	
 	private static Messages translated = GWT.create(Messages.class);
 
-	
+	public static final String DELETE_IMAGE = translated.deleteImage();
 	public static final String CITY = translated.city();
 	public static final String RESTAURANTS = translated.restaurants();  
 	public static final String APPNAME = translated.appname();
@@ -157,6 +157,8 @@ public class Customization {
 	public static final String PROFILE_PUBLISHED = translated.profilePublished();
 	
 	public static final String PROFILE_UNPUBLISHED = translated.profileUnPublished();
+
+	public static final String REMOVE_BOARD = translated.removeBoard();
 };
 	
 	

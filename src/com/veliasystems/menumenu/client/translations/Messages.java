@@ -313,5 +313,9 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Unpublished") 
 	String profileUnPublished();
 	
+	@DefaultStringValue("Delete image") //not translated
+	String deleteImage();
 	
+	@DefaultStringValue("Remove board") //not translated
+	String removeBoard();
 }
