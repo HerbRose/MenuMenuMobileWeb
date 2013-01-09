@@ -226,7 +226,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Login or password is wrong")
 	String wrongLoginaData();
 	
-	@DefaultStringValue("Are yous sure want logout?")
+	@DefaultStringValue("Are you sure want logout?")
 	String doYouWantLogout();
 	
 	@DefaultStringValue("Edit personal data")
@@ -313,9 +313,9 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Unpublished") 
 	String profileUnPublished();
 	
-	@DefaultStringValue("Delete image") //not translated
+	@DefaultStringValue("Delete image") 
 	String deleteImage();
 	
-	@DefaultStringValue("Remove board") //not translated
+	@DefaultStringValue("Remove board") 
 	String removeBoard();
 }
