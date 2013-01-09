@@ -329,7 +329,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		Transform scaleTransform = null;
 		switch (imageBlob.getImageType()) {
 		case PROFILE:
-			scaleTransform = ImagesServiceFactory.makeResize(450, 280);
+			scaleTransform = ImagesServiceFactory.makeResize(450, 260);
 			break;
 		case LOGO:
 			scaleTransform = ImagesServiceFactory.makeResize(220,
