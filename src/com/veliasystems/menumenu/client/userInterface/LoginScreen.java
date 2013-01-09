@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -39,7 +40,10 @@ public class LoginScreen extends MyPage{
 	private FlowPanel buttonPanel = new FlowPanel();
 	private FlowPanel logoPanel = new FlowPanel();
 	
-	
+	private FlowPanel footer = new FlowPanel();
+	private FocusPanel polishFlag;
+	private FocusPanel englishFlag;
+	private FocusPanel frenchFlag;
 	
 	private boolean isWrongData = false;
 
@@ -155,9 +159,63 @@ public class LoginScreen extends MyPage{
 	    getContentPanel().add(languageCombo);
 	    getContentPanel().add(buttonPanel);
 	    getHeader().addImageHeader(logoPanel);
-	    
+	    setFooterWithFlags();
+	}
+	
+	
+	private void setFooterWithFlags(){
+		footer.addStyleName("footerWithFlags");
+		
+		polishFlag = new FocusPanel();
+		polishFlag.setStyleName("noFocus, pointer, polishFlag");
+		
+		frenchFlag = new FocusPanel();
+		frenchFlag.setStyleName("noFocus, pointer, frenchFlag");
+		
+		englishFlag = new FocusPanel();
+		englishFlag.setStyleName("noFocus, pointer, englishFlag");
+		
+		footer.add(polishFlag);
+		footer.add(frenchFlag);
+		footer.add(englishFlag);
+		
+		
+		setFlagActions();
+		
+		getContentPanel().add(footer);
 	}
 
+	
+	private void setFlagActions(){
+		
+		polishFlag.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Cookies.setCookie(R.LANGUAGE, R.POLISH_CODE);
+	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
+			}
+		});
+		
+		frenchFlag.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Cookies.setCookie(R.LANGUAGE, R.FRENCH_CODE);
+	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
+			}
+		});
+		
+		englishFlag.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Cookies.setCookie(R.LANGUAGE, R.ENGLISH_CODE);
+	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
+			}
+		});
+	}
+	
 	@Override
 	protected void onPageShow() {
 		

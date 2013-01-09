@@ -327,25 +327,28 @@ public class RestaurantImageView extends MyPage {
 						
 						});
 					} else if(isDeleteBoard && !isDeleteImage){
+						
+						
+						if(restaurant.getMainLogoImageString().isEmpty() || restaurant.getMainLogoImageString() == null) return;
 						PagesController.showWaitPanel();
 						blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								
-								restaurant.setMainLogoImageString("");
-								restaurantController.saveRestaurant(restaurant, false);
-								logoImage.setUrl("");
-								addBoardWrap.remove(logoEditImage);
+								PagesController.hideWaitPanel();
 							}
 
 							@Override
 							public void onSuccess(Void result) {
-							
+								restaurant.setMainLogoImageString("");
+								restaurantController.saveRestaurant(restaurant, false);
+								logoImage.setUrl("");
+								addBoardWrap.remove(logoEditImage);
+								PagesController.hideWaitPanel();
 							}
 						});
 						
-						PagesController.hideWaitPanel();
+						
 					}
 					
 			}
@@ -914,7 +917,7 @@ public class RestaurantImageView extends MyPage {
 				
 				deleteProfileConfirmed.clear();
 				deleteProfileConfirmed.add(new Label(Customization.REMOVE_BOARD));	
-				deleteProfileConfirmed.addStyleName("deletePanelWhiteBackground");
+				deleteProfileConfirmed.setStyleName("deletePanelWhiteBackground noFocus pointer");
 
 			}
 		});
