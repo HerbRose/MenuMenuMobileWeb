@@ -492,7 +492,7 @@ body {
 .footerWithFlags{
 	width: 100%;
 	max-width: 840px;
-	height: 25px;
+	height: 32px;
 	position: fixed;
 	bottom: 5px;
 }
@@ -510,8 +510,8 @@ body {
 }
 
 .polishFlag, .frenchFlag, .englishFlag{
-	width: 16px;
-	height: 11px;
+	width: 32px;
+	height: 32px;
 	margin-left: 5px;
 	display: inline-block;
 	float: left;
