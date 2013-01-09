@@ -122,7 +122,7 @@ public class RestaurantImageView extends MyPage {
 	private MyUploadForm formLogoUpload;
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
-	private String osType = getUserAgent();
+	private String osType = R.USER_AGENT;
 
 	private boolean isEdit = false;
 	private boolean isDeleteImage = false;
@@ -327,25 +327,28 @@ public class RestaurantImageView extends MyPage {
 						
 						});
 					} else if(isDeleteBoard && !isDeleteImage){
+						
+						
+						if(restaurant.getMainLogoImageString().isEmpty() || restaurant.getMainLogoImageString() == null) return;
 						PagesController.showWaitPanel();
 						blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								
-								restaurant.setMainLogoImageString("");
-								restaurantController.saveRestaurant(restaurant, false);
-								logoImage.setUrl("");
-								addBoardWrap.remove(logoEditImage);
+								PagesController.hideWaitPanel();
 							}
 
 							@Override
 							public void onSuccess(Void result) {
-							
+								restaurant.setMainLogoImageString("");
+								restaurantController.saveRestaurant(restaurant, false);
+								logoImage.setUrl("");
+								addBoardWrap.remove(logoEditImage);
+								PagesController.hideWaitPanel();
 							}
 						});
 						
-						PagesController.hideWaitPanel();
+						
 					}
 					
 			}
@@ -847,51 +850,7 @@ public class RestaurantImageView extends MyPage {
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android")>=0;
-//		if (isOSMobile && !isOS6) {
-//			
-//			addBoard.addClickHandler(new ClickHandler() {
-//				
-//				@Override
-//				public void onClick(ClickEvent event) {
-//					blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
-//							new AsyncCallback<String>() {
-//								@Override
-//								public void onSuccess(String result) {
-//									String callbackURL = R.HOST_URL + "picupCallback.html" ;
-//									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
-//									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
-//									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
-//	
-//									clickOnInputFile(fileLogoUpload.getElement());
-//	
-//								}
-//	
-//								@Override
-//								public void onFailure(Throwable caught) {
-//	
-//								}
-//							});
-//				}
-//	
-//			});
-//			add(formLogoUpload);
-//		}else if(isAndroid){
-//			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
-//			addBoardWrap.add(formLogoUpload);
-//		}else{
-//			
-//			addBoard.addClickHandler(new ClickHandler() {
-//				
-//				@Override
-//				public void onClick(ClickEvent event) {
-//					clickOnInputFile(fileLogoUpload.getElement());
-//					
-//				}
-//			});
-////			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
-////			addBoardWrap.add(formLogoUpload);
-//			add(formLogoUpload);
-//		}
+
 		addFlowPanel.setStyleName("addFlowPanel");
 		addFlowPanel.add(new Label(Customization.ADD_BOARD));
 		addBoard.addClickHandler(new ClickHandler() {
@@ -914,7 +873,7 @@ public class RestaurantImageView extends MyPage {
 				
 				deleteProfileConfirmed.clear();
 				deleteProfileConfirmed.add(new Label(Customization.REMOVE_BOARD));	
-				deleteProfileConfirmed.addStyleName("deletePanelWhiteBackground");
+				deleteProfileConfirmed.setStyleName("deletePanelWhiteBackground noFocus pointer");
 
 			}
 		});
@@ -1032,9 +991,7 @@ public class RestaurantImageView extends MyPage {
 		this.isEdit = isEdit;
 	}
 	
-	private native String getUserAgent()/*-{
-		return navigator.userAgent;
-	}-*/;
+	
 
 	private native void changeVisibility(String className, boolean show)/*-{
 		var elements = 	$wnd.document.getElementsByClassName(className);
