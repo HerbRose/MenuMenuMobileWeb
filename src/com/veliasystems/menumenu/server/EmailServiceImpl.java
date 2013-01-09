@@ -11,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.services.EmailService;
 
 /**
@@ -31,7 +32,7 @@ public class EmailServiceImpl extends RemoteServiceServlet implements
 
 			Message msg = new MimeMessage(session);
 
-			String fromAddr = "mateusz@velia-systems.com";
+			String fromAddr = R.EMAIL_ADDRES;
 			String fromName = "MenuMenu";
 			
 			msg.setFrom(new InternetAddress(fromAddr, fromName));

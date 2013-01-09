@@ -15,6 +15,9 @@ public class R {
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
 	public static final String FIX_IMAGE_QUEUE_NAME = "imageResizeQueue";
 	
+	public static final String EMAIL_ADDRES = "mateusz@velia-systems.com";
+//	public static final String EMAIL_ADDRES = "applisoleil@gmail.com";
+	
 	public final static String UTF8 = "UTF-8";
 	public final static String LOGGED_IN = "loggedIn";
 	public final static String LAST_PAGE = "lastPage";
