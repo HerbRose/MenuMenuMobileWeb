@@ -213,11 +213,9 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		container.add(wwwWrapper);
 		container.add(bossWrapper);
 		
-		
-		
-		  if(userController.getLoggedUser().isAdmin()){
-		    	addAddUserWidget();
-		    }
+
+		addAddUserWidget();
+		   
 
 		addBoard = new FlowPanel();
 		addBoard.addStyleName("addBoardWrapper");
@@ -229,6 +227,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		getContentPanel().add(container);
 		getContentPanel().add(addBoard);
+		
 		getContentPanel().add(addUserMainPanel);
 	}
 	

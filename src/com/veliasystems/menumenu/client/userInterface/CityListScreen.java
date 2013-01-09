@@ -81,7 +81,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	    getHeader().setLeftButton(logoutButton);
 	    getHeader().setRightButton(addButton);
 	    
-	    if(userController.getLoggedUser().isAdmin()){
+//	    if(userController.getLoggedUser().isAdmin()){
 	    	
 	    	adminPanel.removeStyleName("borderButton");
 	    	adminPanel.addStyleName("addButton adminButton");
@@ -113,7 +113,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	    	adminPanelWrapper.add(adminPanel);
 	    	adminPanelWrapper.add(adminLabel);
 	    	getContentPanel().add(adminPanelWrapper);
-	    }  
+	  //  }  
 
 	 
 	}
