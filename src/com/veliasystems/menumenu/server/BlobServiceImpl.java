@@ -232,10 +232,19 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		if (imageBlob == null) {
 			return false;
 		}
-		String blobKeyToDelete = imageBlob.getBlobKey();
-		dao.ofy().delete(imageBlob);
+		if(imageBlob.getBlobKeyOriginalSize() != null && !imageBlob.getBlobKeyOriginalSize().isEmpty()){
+			BlobstoreServiceFactory.getBlobstoreService().delete(
+					new BlobKey(imageBlob.getBlobKeyOriginalSize()));
+		}
 		BlobstoreServiceFactory.getBlobstoreService().delete(
-				new BlobKey(blobKeyToDelete));
+				new BlobKey(imageBlob.getBlobKey()));
+		dao.ofy().delete(imageBlob);
+		
+		
+//		String blobKeyToDelete = imageBlob.getBlobKey();
+//		dao.ofy().delete(imageBlob);
+//		BlobstoreServiceFactory.getBlobstoreService().delete(
+//				new BlobKey(blobKeyToDelete));
 		return true;
 	}
 
@@ -386,7 +395,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		Query<ImageBlob> blobQuery = dao.ofy().query(ImageBlob.class);
 		if(blobQuery == null) return;
 		ImageBlob imgBlob = blobQuery.filter("blobKey =", blobKey).get();
-		dao.ofy().delete(imgBlob);
+		if(imgBlob == null) return;
+		System.out.println("delete blob");
+		deleteBlob(imgBlob);
+		
 	}
 
 	@Override

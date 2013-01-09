@@ -489,6 +489,43 @@ body {
 	display: none;
 }
 
+.footerWithFlags{
+	width: 100%;
+	max-width: 840px;
+	height: 40px;
+	position: fixed;
+	bottom: 15px;
+}
+
+.polishFlag{
+/* 	background: url("/img/layout/pl.png"); */
+	float: left;
+	margin-left: 10px;
+}
+
+.frenchFlag{
+/* 	background: url("/img/layout/fr.png"); */
+	
+}
+
+.englishFlag{
+/* 	background: url("/img/layout/gb.png"); */
+	float: right;
+	margin-right: 10px;
+}
+
+.polishFlag, .frenchFlag, .englishFlag{
+	width: 80px;
+	height: 40px;
+	display: inline-block;
+	text-align: center;
+
+}
+.polishFlag img, .frenchFlag img, .englishFlag img{
+	-webkit-box-shadow: 0px 0px 8px 0px black !important;
+	box-shadow: 0px 0px 8px 0px black !important;
+}
+
 /* KONIEC - Login screen */
 /*
  * Add City Screen
