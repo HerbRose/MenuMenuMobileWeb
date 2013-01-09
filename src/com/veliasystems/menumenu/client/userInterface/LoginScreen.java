@@ -159,7 +159,7 @@ public class LoginScreen extends MyPage{
 	    getContentPanel().add(languageCombo);
 	    getContentPanel().add(buttonPanel);
 	    getHeader().addImageHeader(logoPanel);
-	    setFooterWithFlags();
+	   
 	}
 	
 	
@@ -167,28 +167,18 @@ public class LoginScreen extends MyPage{
 		footer.addStyleName("footerWithFlags");
 		
 		polishFlag = new FocusPanel();
-		polishFlag.setStyleName("noFocus, pointer, polishFlag");
-		
 		frenchFlag = new FocusPanel();
-		frenchFlag.setStyleName("noFocus, pointer, frenchFlag");
-		
 		englishFlag = new FocusPanel();
-		englishFlag.setStyleName("noFocus, pointer, englishFlag");
 		
-		footer.add(polishFlag);
-		footer.add(frenchFlag);
-		footer.add(englishFlag);
+		polishFlag.setStyleName("noFocus pointer polishFlag");
+		frenchFlag.setStyleName("noFocus pointer frenchFlag");
+		englishFlag.setStyleName("noFocus pointer englishFlag");
 		
+		Image plImage = new Image("img/layout/pl.png");
+		Image frImage = new Image("img/layout/fr.png");
+		Image enImage = new Image("img/layout/gb.png");
 		
-		setFlagActions();
-		
-		getContentPanel().add(footer);
-	}
-
-	
-	private void setFlagActions(){
-		
-		polishFlag.addClickHandler(new ClickHandler() {
+		plImage.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -197,7 +187,7 @@ public class LoginScreen extends MyPage{
 			}
 		});
 		
-		frenchFlag.addClickHandler(new ClickHandler() {
+		frImage.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -206,7 +196,7 @@ public class LoginScreen extends MyPage{
 			}
 		});
 		
-		englishFlag.addClickHandler(new ClickHandler() {
+		enImage.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -214,7 +204,21 @@ public class LoginScreen extends MyPage{
 	        	changeLanguage(Cookies.getCookie(R.LANGUAGE));
 			}
 		});
+		
+		polishFlag.add(plImage);
+		frenchFlag.add(frImage);
+		englishFlag.add(enImage);
+		
+		
+		footer.add(polishFlag);
+		footer.add(frenchFlag);
+		footer.add(englishFlag);
+		
+		
+		getContentPanel().add(footer);
 	}
+
+	
 	
 	@Override
 	protected void onPageShow() {
@@ -238,6 +242,8 @@ public class LoginScreen extends MyPage{
 			nameBox.removeStyleName("redShadow");
 	    	passwordBox.removeStyleName("redShadow");	
 		}
+		
+		 setFooterWithFlags();
 		super.onPageShow();
 	}
 	
