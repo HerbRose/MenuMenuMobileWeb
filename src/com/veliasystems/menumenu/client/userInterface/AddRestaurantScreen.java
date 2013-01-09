@@ -3,11 +3,13 @@ package com.veliasystems.menumenu.client.userInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -28,6 +30,8 @@ import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
@@ -80,6 +84,9 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private FlowPanel phoneWrapper = new FlowPanel();
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
+	private FlowPanel addBordWrapper = new FlowPanel();
+	
+	private FlowPanel addBoardPanel = new FlowPanel();
 	
 //	private FlowPanel addUser;
 	private FlowPanel addUserMainPanel;
@@ -87,18 +94,24 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private TextBox addUserTextBox;
 	private FlowPanel addUserTextBoxDiv;
 	
-	private FlowPanel addBoard;
+	private FocusPanel addBoard = new FocusPanel();;
+	private FocusPanel cancelDeleteBoard = new FocusPanel();
+	private FocusPanel removeBoard = new FocusPanel();
+	private FocusPanel addBoardFromBottom = new FocusPanel();
+	
 	private Label addBoardText;
 	
 	
 	private JQMPage pageToDelete = null;
 	
+	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	private void init(boolean isToCity){
 		
 		this.isToCity = isToCity;
 		
 		setButtons();
-
+		
+		addBoardPanel.setStyleName("deletePanel");
 		
 		cityLabel = new Label();
 		cityLabel.setText(Customization.CITYONE + ":");
@@ -112,9 +125,67 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			
 		}
 //		getContentPanel().add(cityListBox);
-		setLabels();
+		
+		cancelDeleteBoard.addStyleName("cancelDeleteProfile noFocus pointer");
+		addBoardFromBottom.addStyleName("deletePanelWhiteBackground noFocus pointer");
+		removeBoard.setStyleName("deletePanelWhiteBackground");
+		
+		addBoardFromBottom.add(new Label(Customization.ADD_BOARD));
+		
+		removeBoard.add(new Label(Customization.REMOVE_BOARD));
+		
+		cancelDeleteBoard.add(new Label(Customization.CANCEL));
+		
+		
+		cancelDeleteBoard.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				hideAddBoardPanel();
+			}
+		});
+		
+		
+		removeBoard.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				PagesController.showWaitPanel();
+				blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+						restaurant.setMainLogoImageString("");
+						restaurantController.saveRestaurant(restaurant, false);
+						//logoImage.setUrl("");
+						//addBoardWrap.remove(logoEditImage);
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+					
+					}
+				});
+				
+				PagesController.hideWaitPanel();
+			}
+		});
+		
+		addBoardPanel.add(addBoardFromBottom);
+		addBoardPanel.add(removeBoard);
+		addBoardPanel.add(cancelDeleteBoard);
+		
+		
+		setLabels();	
 		
 	}	
+	
+	private String parseURLtoBlobKey(String url){	
+		String tab[] = url.split("/?");
+		String tab2[] = url.split("=");		
+		return tab2[1];
+	}
 	
 	private void setLabels(){
 		
@@ -216,21 +287,43 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 
 		addAddUserWidget();
 		   
-
-		addBoard = new FlowPanel();
-		addBoard.addStyleName("addBoardWrapper");
+		//addBoard.addStyleName("addBoardWrapper");
 		
 		addBoardText = new Label(Customization.ADD_BOARD);
 		addBoardText.addStyleName("addBoardLabel");
 		
-		addBoard.add(addBoardText);
+		
+		addBordWrapper.addStyleName("addBoardWrapper");
+		addBordWrapper.add(addBoardText);
+		//addBoard.add(addBoardText);
+		addBoard.add(addBordWrapper);
+		
+		
+		addBoard.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				showAddBoardPanel();
+			}
+		});
 		
 		getContentPanel().add(container);
 		getContentPanel().add(addBoard);
-		
 		getContentPanel().add(addUserMainPanel);
+		getContentPanel().add(addBoardPanel);
 	}
 	
+	
+	private void showAddBoardPanel(){
+		addBoardPanel.getElement().getStyle().setHeight(225.0, Unit.PX);
+		addBoardPanel.getElement().getStyle().setBottom(0, Unit.PX);
+	}
+	
+	private void hideAddBoardPanel(){
+		addBoardPanel.getElement().getStyle().setHeight(0.0, Unit.PX);
+		addBoardPanel.getElement().getStyle().setBottom(0, Unit.PX);
+
+	}
 
 	public void addAddUserWidget(){
 		
