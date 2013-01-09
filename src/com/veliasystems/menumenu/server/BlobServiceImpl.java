@@ -396,7 +396,6 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		if(blobQuery == null) return;
 		ImageBlob imgBlob = blobQuery.filter("blobKey =", blobKey).get();
 		if(imgBlob == null) return;
-		System.out.println("delete blob");
 		deleteBlob(imgBlob);
 		
 	}

@@ -5,16 +5,26 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
@@ -24,17 +34,20 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
 public class AddRestaurantScreen extends MyPage implements IObserver{
 	
@@ -67,10 +80,11 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private Label warning = new Label();
 	
 	private City city;
-	private Restaurant restaurant;
+	private Restaurant restaurant = new Restaurant();;
 	
 	private boolean isToCity;
 	private boolean loaded = false;
+	private boolean isToDeleted = true;
 	
 	
 	private CityController cityController = CityController.getInstance();
@@ -85,7 +99,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
 	private FlowPanel addBordWrapper = new FlowPanel();
-	
+	private FlowPanel addFlowPanel = new FlowPanel();
 	private FlowPanel addBoardPanel = new FlowPanel();
 	
 //	private FlowPanel addUser;
@@ -101,10 +115,18 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	private Label addBoardText;
 	
+	private FileUpload fileLogoUpload = new FileUpload();
+	private MyUploadForm formLogoUpload;
+	private String osType = R.USER_AGENT;
+	
+	private Image image = new Image();
 	
 	private JQMPage pageToDelete = null;
 	
+	private String logoBlobString = "";
+
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
+	
 	private void init(boolean isToCity){
 		
 		this.isToCity = isToCity;
@@ -118,11 +140,9 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		
 		if(!isToCity){
-			addCities(cityController.getCitiesList());
-			
+			addCities(cityController.getCitiesList());	
 		}else{
-//			cityListBox.addItem(city);
-			
+//			cityListBox.addItem(city);		
 		}
 //		getContentPanel().add(cityListBox);
 		
@@ -130,7 +150,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		addBoardFromBottom.addStyleName("deletePanelWhiteBackground noFocus pointer");
 		removeBoard.setStyleName("deletePanelWhiteBackground");
 		
-		addBoardFromBottom.add(new Label(Customization.ADD_BOARD));
+		
+		addFlowPanel.setStyleName("addFlowPanel");
+		addFlowPanel.add(new Label(Customization.ADD_BOARD));
+		addBoardFromBottom.add(addFlowPanel);
 		
 		removeBoard.add(new Label(Customization.REMOVE_BOARD));
 		
@@ -141,6 +164,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				isToDeleted = true;
 				hideAddBoardPanel();
 			}
 		});
@@ -151,32 +175,41 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			@Override
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
-				blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
+				blobService.removeImageBlobByBlobKey(logoBlobString, new AsyncCallback<Void>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
 						
-						restaurant.setMainLogoImageString("");
-						restaurantController.saveRestaurant(restaurant, false);
+						PagesController.hideWaitPanel();
+						Window.alert(Customization.CONNECTION_ERROR);
 						//logoImage.setUrl("");
 						//addBoardWrap.remove(logoEditImage);
 					}
 
 					@Override
 					public void onSuccess(Void result) {
-					
+//						restaurant.setMainLogoImageString("");
+//						restaurantController.saveRestaurant(restaurant, false);
+						hideAddBoardPanel();
+						addBordWrapper.clear();
+						addBordWrapper.getElement().getStyle().clearWidth();
+						addBordWrapper.add(addBoardText);
+						restaurant.setMainLogoImageString("");
+						PagesController.hideWaitPanel();
 					}
 				});
 				
-				PagesController.hideWaitPanel();
+				
 			}
 		});
+		
+		
 		
 		addBoardPanel.add(addBoardFromBottom);
 		addBoardPanel.add(removeBoard);
 		addBoardPanel.add(cancelDeleteBoard);
 		
-		
+		setUpload();
 		setLabels();	
 		
 	}	
@@ -286,13 +319,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 
 		addAddUserWidget();
-		   
-		//addBoard.addStyleName("addBoardWrapper");
 		
 		addBoardText = new Label(Customization.ADD_BOARD);
 		addBoardText.addStyleName("addBoardLabel");
-		
-		
+			
 		addBordWrapper.addStyleName("addBoardWrapper");
 		addBordWrapper.add(addBoardText);
 		//addBoard.add(addBoardText);
@@ -303,6 +333,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				isToDeleted = false;
 				showAddBoardPanel();
 			}
 		});
@@ -364,27 +395,41 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	@Override
 	protected void onPageShow() {	
+		hideAddBoardPanel();
 		RestaurantController.getInstance().setLastOpenPage(this);
+		isToDeleted = true;
 		clearData();		
+		
+		if(!ImagesController.imageUrl.isEmpty()){
+			restaurant.setMainLogoImageString(ImagesController.imageUrl);
+			image.setUrl(ImagesController.imageUrl);
+			
+			addBordWrapper.clear();
+			addBordWrapper.getElement().getStyle().setWidth(220d, Unit.PX);
+			addBordWrapper.add(image);
+			ImagesController.imageUrl = "";
+		}
+		
 		Document.get().getElementById("load").setClassName(R.LOADED);
 	}
 	
 	@Override
 	protected void onPageHide() {
 		super.onPageHide();
-		
-		getElement().removeFromParent();
+		if(isToDeleted){
+			getElement().removeFromParent();
+		}
 	}
 	
 	private void clearData() {
-		nameText.setText("");
-		adressText.setText("");
-		mailRestaurantTextBox.setText("");
-		mailUserTextBox.setText("");
-		nameUserTextBox.setText("");
-		phoneRestaurantTextBox.setText("");
-		phoneUserTextBox.setText("");
-		warning.setText("");
+//		nameText.setText("");
+//		adressText.setText("");
+//		mailRestaurantTextBox.setText("");
+//		mailUserTextBox.setText("");
+//		nameUserTextBox.setText("");
+//		phoneRestaurantTextBox.setText("");
+//		phoneUserTextBox.setText("");
+//		warning.setText("");
 		
 		setValidDataStyle(null, nameText);
 		setValidDataStyle(null, adressText);
@@ -424,7 +469,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			public void onClick(ClickEvent event) {
 				
 				if(validate()){
-					restaurant = new Restaurant();
+					
 					restaurant.setName(nameText.getText());
 					
 					restaurant.setAddress(adressText.getText());			
@@ -606,5 +651,118 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private void setPlaceHolder(Widget element, String placeHolder){
 		element.getElement().setAttribute("placeHolder", placeHolder);
 	}
+
 	
+	private void setUpload() {
+		formLogoUpload = new MyUploadForm(fileLogoUpload, ImageType.LOGO, restaurant.getId() + "");
+		
+		formLogoUpload.setVisible(false);
+		formLogoUpload.setStyleName("formLogoUpload", true);
+		formLogoUpload.getElement().getStyle().setDisplay(Display.NONE);
+		formLogoUpload.setBackPage(this);
+		
+		
+		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
+		final boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;
+		final boolean isAndroid = osType.toLowerCase().indexOf("android")>=0;
+		
+		if(isOSMobile && !isOS6){
+			add(formLogoUpload);
+			addBoardFromBottom.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
+							new AsyncCallback<String>() {
+								@Override
+								public void onSuccess(String result) {
+									String callbackURL = R.HOST_URL + "picupCallback.html" ;
+									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
+									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
+									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
+	
+									clickOnInputFile(fileLogoUpload.getElement());
+	
+								}
+	
+								@Override
+								public void onFailure(Throwable caught) {
+	
+								}
+							});
+				}
+			});
+
+		} else if(isAndroid){
+			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+			addFlowPanel.insert(formLogoUpload, 0);
+		} else{
+			add(formLogoUpload);
+			addBoardFromBottom.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					clickOnInputFile(fileLogoUpload.getElement());
+//					formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+//					formLogoUpload.getElement().getStyle().setPosition(Position.RELATIVE);
+//					addBordWrapper.add(formLogoUpload);
+				}
+			});
+		}
+				
+		fileLogoUpload.setVisible(true);
+		fileLogoUpload.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				PagesController.showWaitPanel();
+				// clickOnInputFile(formPanel.getUploadButton().getElement());
+				blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
+						new AsyncCallback<String>() {
+
+							@Override
+							public void onSuccess(String result) {
+								formLogoUpload.setAction(result);
+								
+								formLogoUpload.submit();
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								PagesController.hideWaitPanel();
+								Window.alert("Problem with upload. Try again");
+
+							}
+						});
+			}
+		});
+		
+		add(addBoard);
+		
+	}
+	
+	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{
+		window.name = "picup";
+	
+		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
+				+ encodeURI(blobStoreUrl)
+				+ "&callbackURL="
+				+ encodeURI(callbackURL)
+				+ "&returnServerResponse=false&isMultiselectForbidden=true&mediaTypesAllowed=image&cancelURL="
+				+ encodeURI(cancelURL)
+				+ "&returnStatus=false&minVersionRequired=2.1&callbackParamType=query";
+	
+		$wnd.Picup2.convertFileInput(fileUpload, {
+			windowName : encodeURI('My Web App'),
+			'purpose' : encodeURI(url)
+		});
+	
+		window.open('', '_self', '');
+		window.close();
+	
+	}-*/;
+	
+	private static native void clickOnInputFile(Element elem) /*-{
+		elem.click();
+	}-*/;
 }

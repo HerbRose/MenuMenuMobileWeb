@@ -43,5 +43,10 @@ public class R {
     public static final String LANGUAGE = "gwtLocale";
     public static final String LOGIN = "Login";
     
+    public static final String USER_AGENT = getUserAgent();
+    
+    private native static String getUserAgent()/*-{
+		return navigator.userAgent;
+	}-*/;
 
 }

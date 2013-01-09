@@ -20,6 +20,8 @@ import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 
 public class ImagesController {
+	
+	public static String imageUrl = "";
 
 	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	

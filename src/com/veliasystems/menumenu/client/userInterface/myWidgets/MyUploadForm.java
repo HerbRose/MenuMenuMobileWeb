@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageType;
 
@@ -13,6 +14,7 @@ public class MyUploadForm extends FormPanel {
 	private FileUpload fileUpload;
 	private long restaurantId = -1;
 	private ImageType imageType = null;
+	private JQMPage backPage = null;
 
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	/**
@@ -51,9 +53,9 @@ public class MyUploadForm extends FormPanel {
 				
 				String blobKey = getBlobKeyFromResult(event.getResults());
 				if( blobKey == null){
-					restaurantController.cropImage(restaurantId, imageType);
+					restaurantController.cropImage(restaurantId, imageType, backPage);
 				}else{
-					restaurantController.cropImage(restaurantId, imageType, blobKey);
+					restaurantController.cropImage(restaurantId, imageType, backPage, blobKey);
 				}
 				
 			}
@@ -96,6 +98,8 @@ public class MyUploadForm extends FormPanel {
 		return null;
 	}
 	
-	 
+	 public void setBackPage(JQMPage backPage) {
+		this.backPage = backPage;
+	}
 
 }

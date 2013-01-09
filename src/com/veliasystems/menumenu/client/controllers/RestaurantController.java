@@ -328,19 +328,19 @@ public class RestaurantController {
 	 * @param imageType - type of image, specified in {@link ImageType}
 	 * @param blobKey - {@link BlobKey} in {@link String} format
 	 */
-	public void cropImage(long restaurantId, ImageType imageType, String blobKey){
+	public void cropImage(long restaurantId, ImageType imageType, JQMPage backPage, String blobKey){
 		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
 			Cookies.removeCookie(R.IMAGE_TYPE);
 		}
 		ImageBlob imageBlob = new ImageBlob(restaurantId+"", blobKey, new Date(), imageType);
-		JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
+		JQMContext.changePage(new CropImage(imageBlob, backPage), Transition.SLIDE);
 	}
 	/**
 	 * Should not be used at all, but if {@link BlobKey} is null this method is called
 	 * @param restaurantId - id of {@link Restaurant}
 	 * @param imageType - type of Image, specified of {@link ImageType}
 	 */
-	public void cropImage(long restaurantId, ImageType imageType){
+	public void cropImage(long restaurantId, ImageType imageType, final JQMPage backPage){
 		
 		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
 			Cookies.removeCookie(R.IMAGE_TYPE);
@@ -351,7 +351,7 @@ public class RestaurantController {
 			public void onSuccess(ImageBlob imageBlob) {
 				log.info("getLastUploadedImage onSuccess: " + imageBlob == null?"null":imageBlob.getImageUrl());
 				if(imageBlob == null) Window.alert(Customization.CONNECTION_ERROR);
-				else JQMContext.changePage(new com.veliasystems.menumenu.client.userInterface.CropImage(imageBlob), Transition.SLIDE);
+				else JQMContext.changePage(new CropImage(imageBlob, backPage), Transition.SLIDE);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -416,6 +416,8 @@ public class RestaurantController {
 		
 		List<ImageBlob> oldImages;
 		
+		if(restaurants.get(restaurantId) == null) return null;
+		
 		switch (imageType) {
 		case LOGO:
 			oldImages = restaurants.get(restaurantId).getLogoImages();
@@ -445,12 +447,14 @@ public class RestaurantController {
 	 * @param oldImageBlob old {@link ImageBlob}
 	 * @param backPage page to back
 	 */
-	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob, final JQMPage backPage) {
+	public void afterCrop(final ImageBlob newImageBlob, ImageBlob oldImageBlob, final JQMPage backPage) {
 		
 		if(newImageBlob == null){
 			Window.alert(Customization.CONNECTION_ERROR);
 			return;
 		}
+		
+		ImagesController.imageUrl = newImageBlob.getImageUrl();
 		
 		List<ImageBlob> imageBlobs = getImagesList(newImageBlob.getImageType(), Long.parseLong(newImageBlob.getRestaurantId()));
 		if(imageBlobs == null){
@@ -464,12 +468,17 @@ public class RestaurantController {
 				
 				@Override
 				public void onSuccess(Restaurant restaurant) {
-					
-					restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+					Long restaurantId = 0l;
+					if(restaurant != null){
+						restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
+						restaurantId = restaurant.getId();
+					}else{
+						restaurantId = Long.parseLong(newImageBlob.getRestaurantId());
+					}
 					if(backPage != null){
 						JQMContext.changePage(backPage);
 					}else{
-						JQMContext.changePage(restMapView.get(restaurant.getId()), Transition.SLIDE);
+						JQMContext.changePage(restMapView.get(restaurantId), Transition.SLIDE);
 					}
 					
 				}
@@ -480,7 +489,7 @@ public class RestaurantController {
 					Window.alert(Customization.CONNECTION_ERROR);
 				}
 			});
-		}else{ //jezeli nie logo to ustawiamy jako glowne
+		}else{ 
 			if(oldImageBlob != null){ // dla pickup'a, usuwanie starego zdjecia (wymagany byl restart po uploudzie wiec na liscie jest zdjecie sprzed cropa)
 				ImageBlob imageBlobToDelete = null;
 				for (ImageBlob imageBlob : imageBlobs) {
