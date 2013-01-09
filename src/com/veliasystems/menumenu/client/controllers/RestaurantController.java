@@ -41,7 +41,10 @@ public class RestaurantController {
 	private List<IObserver> observers = new ArrayList<IObserver>();
 	private static final Logger log = Logger.getLogger(RestaurantController.class.getName());
 	public static Map<Long, RestaurantImageView> restMapView = new HashMap<Long, RestaurantImageView>();
+	
 	private static RestaurantController instance = null ; //instance of controller
+	private UserController userController = UserController.getInstance();
+	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
@@ -201,23 +204,14 @@ public class RestaurantController {
 		PagesController.showWaitPanel();
 		storeService.saveRestaurant(restaurant, new AsyncCallback<Restaurant>() {
 			@Override
-			public void onSuccess(Restaurant result) {
-				if(result.getLogoImages() == null){
-					result.setLogoImages(new ArrayList<ImageBlob>());
-				}
-				if(result.getMenuImages() == null){
-					result.setMenuImages(new ArrayList<ImageBlob>());
-				}
-				if(result.getProfileImages() == null){
-					result.setProfileImages(new ArrayList<ImageBlob>());
-				}	
-				restaurants.put(result.getId(), result); //add/change restaurant in our list
+			public void onSuccess(Restaurant restaurant) {
+				putRestaurantToLocalList(restaurant);
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
 				
 				if(isBack){
 					Window.alert(Customization.RESTAURANTSAVED);
-					JQMContext.changePage(CityController.cityMapView.get(result.getCityId()) , Transition.SLIDE);
+					JQMContext.changePage(CityController.cityMapView.get(restaurant.getCityId()) , Transition.SLIDE);
 					
 				}
 					
@@ -229,6 +223,56 @@ public class RestaurantController {
 		});
 		
 	}
+	
+	public void addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd){
+		PagesController.showWaitPanel();
+		String emailAddingUser = userController.getLoggedUser().getEmail();
+		
+		storeService.addNewRestaurant(restaurant, usersEmailToAdd, emailAddingUser, new AsyncCallback<List<Object>>() {
+			
+			@Override
+			public void onSuccess(List<Object> result) {
+				Restaurant newRestaurant = null;
+				String message = "";
+				for (Object object : result) {
+					if(object != null){
+						if(object instanceof Restaurant){
+							newRestaurant = (Restaurant) object;
+						}else if(object instanceof String){
+							message = (String) object;
+						}
+					}
+				}
+				
+				putRestaurantToLocalList(newRestaurant);
+				PagesController.hideWaitPanel();
+				Window.alert(message);
+				JQMContext.changePage(CityController.cityMapView.get(newRestaurant.getCityId()) , Transition.SLIDE);
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.hideWaitPanel();
+				
+			}
+		});
+	}
+	
+	private void putRestaurantToLocalList(Restaurant restaurant){
+		if(restaurant.getLogoImages() == null){
+			restaurant.setLogoImages(new ArrayList<ImageBlob>());
+		}
+		if(restaurant.getMenuImages() == null){
+			restaurant.setMenuImages(new ArrayList<ImageBlob>());
+		}
+		if(restaurant.getProfileImages() == null){
+			restaurant.setProfileImages(new ArrayList<ImageBlob>());
+		}	
+		restaurants.put(restaurant.getId(), restaurant); //add/change restaurant in our list
+	}
+	
 	/**
 	 * 
 	 * @param restaurant - {@link Restaurant} to delete
@@ -397,10 +441,11 @@ public class RestaurantController {
 	 * Remove (if exist) old {@link ImageBlob} from the image list (list is dependent of ImageTape).<br>
 	 * Add new {@link ImageBlob} to the list (list is dependent of ImageTape).<br>
 	 * If {@link ImageBlob#getImageType()} of <code> newImageBlob</code> is equal to {@link ImageType#LOGO} the image is set as main.
-	 * @param newImageBlob - new {@link ImageBlob}
-	 * @param oldImageBlob - old {@link ImageBlob}
+	 * @param newImageBlob new {@link ImageBlob}
+	 * @param oldImageBlob old {@link ImageBlob}
+	 * @param backPage page to back
 	 */
-	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob) {
+	public void afterCrop(ImageBlob newImageBlob, ImageBlob oldImageBlob, final JQMPage backPage) {
 		
 		if(newImageBlob == null){
 			Window.alert(Customization.CONNECTION_ERROR);
@@ -421,7 +466,11 @@ public class RestaurantController {
 				public void onSuccess(Restaurant restaurant) {
 					
 					restaurants.get(restaurant.getId()).setMainLogoImageString(restaurant.getMainLogoImageString());
-					JQMContext.changePage(restMapView.get(restaurant.getId()), Transition.SLIDE);
+					if(backPage != null){
+						JQMContext.changePage(backPage);
+					}else{
+						JQMContext.changePage(restMapView.get(restaurant.getId()), Transition.SLIDE);
+					}
 					
 				}
 				
@@ -442,7 +491,11 @@ public class RestaurantController {
 				}
 				imageBlobs.remove(imageBlobToDelete);
 			}
-			JQMContext.changePage(restMapView.get(Long.parseLong(newImageBlob.getRestaurantId())), Transition.SLIDE);
+			if(backPage != null){
+				JQMContext.changePage(backPage);
+			}else{
+				JQMContext.changePage(restMapView.get(Long.parseLong(newImageBlob.getRestaurantId())), Transition.SLIDE);
+			}
 		}
 		
 		

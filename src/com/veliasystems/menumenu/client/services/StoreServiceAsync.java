@@ -63,6 +63,9 @@ public interface StoreServiceAsync {
 
 	void saveCity(City city, AsyncCallback<City> callback);
 
+	void addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
+			String emailAddingUser, AsyncCallback<List<Object>> callback);
+
 
 	
 

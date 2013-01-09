@@ -1,11 +1,13 @@
 package com.veliasystems.menumenu.client.userInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -66,6 +68,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private boolean isToCity;
 	private boolean loaded = false;
 	
+	
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
@@ -78,9 +81,11 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	private FlowPanel wwwWrapper = new FlowPanel();
 	private FlowPanel bossWrapper = new FlowPanel();
 	
-	private FocusPanel adminLabel;
-	private FlowPanel adminPanelWrapper;
-	private MyButton adminPanel;
+//	private FlowPanel addUser;
+	private FlowPanel addUserMainPanel;
+	private MyButton addUserImage;
+	private TextBox addUserTextBox;
+	private FlowPanel addUserTextBoxDiv;
 	
 	private FlowPanel addBoard;
 	private Label addBoardText;
@@ -211,48 +216,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		
 		  if(userController.getLoggedUser().isAdmin()){
-		    	
-		    	adminPanel = new MyButton("");
-		    	adminPanel.removeStyleName("borderButton");
-		    	adminPanel.addStyleName("addButton adminButton");
-		    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
-		 	    adminPanel.addClickHandler(new ClickHandler() {
-		 			
-		 			@Override
-		 			public void onClick(ClickEvent event) {
-//		 				PagesController.showWaitPanel();
-//		 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
-		 			}
-		 		});
-		    	adminLabel = new FocusPanel();
-		    	adminLabel.addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-//						PagesController.showWaitPanel();
-//						JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
-					}
-				});
-		    	adminLabel.addStyleName("adminLabel noFocus");
-		    	
-		    	adminLabel.add(new Label(Customization.ADD_USER));
-		 	    
-		 	    
-		    	adminPanelWrapper = new FlowPanel();
-		    	adminPanelWrapper.addStyleName("adminWrapper");
-
-		    	FlowPanel adminButtonDiv = new FlowPanel();
-		    	adminButtonDiv.addStyleName("adminButtonDiv");
-		    	adminButtonDiv.add(adminPanel);
-		    	
-		    	
-		    	FlowPanel adminLabelDiv = new FlowPanel();
-		    	adminLabelDiv.addStyleName("adminLabelDiv");
-		    	adminLabelDiv.add(adminLabel);
-		    	
-		    	adminPanelWrapper.add(adminButtonDiv);
-		    	adminButtonDiv.add(adminLabelDiv);
-		    
+		    	addAddUserWidget();
 		    }
 
 		addBoard = new FlowPanel();
@@ -265,10 +229,32 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		getContentPanel().add(container);
 		getContentPanel().add(addBoard);
-		getContentPanel().add(adminPanelWrapper);
+		getContentPanel().add(addUserMainPanel);
 	}
 	
 
+	public void addAddUserWidget(){
+		
+		addUserMainPanel = new FlowPanel();
+    	addUserMainPanel.addStyleName("plusPanel");
+		
+		addUserImage = new MyButton("");
+    	addUserImage.removeStyleName("borderButton");
+    	addUserImage.addStyleName("addButton adminButton");
+    	addUserImage.getElement().getStyle().setHeight(50, Unit.PX);
+ 	   	
+    	addUserTextBoxDiv = new FlowPanel();
+    	addUserTextBoxDiv.addStyleName("plusPanelRightDiv adminLabel noFocus");
+    	
+    	addUserTextBox = new TextBox();
+    	addUserTextBox.addStyleName("myTextBox noFocus");
+    	setPlaceHolder(addUserTextBox, Customization.ADD_USER);
+
+    	addUserTextBoxDiv.add(addUserTextBox);
+    	addUserMainPanel.add(addUserImage);
+    	addUserMainPanel.add(addUserTextBoxDiv);
+	}
+	
 	public AddRestaurantScreen(City city){
 		super(city.getCity());
 		pageToDelete = this;
@@ -277,8 +263,6 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		init(true);
 	}
 
-	
-	
 	public AddRestaurantScreen() {
 		super(Customization.ADDRESTAURANT);
 		cityController.addObserver(this);
@@ -296,6 +280,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	@Override
 	protected void onPageHide() {
 		super.onPageHide();
+		
 		getElement().removeFromParent();
 	}
 	
@@ -345,6 +330,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				
 				if(validate()){
 					restaurant = new Restaurant();
 					restaurant.setName(nameText.getText());
@@ -362,7 +348,12 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 //					restaurant.setPhoneUser(phoneUserTextBox.getText());
 //					restaurant.setMailUser(mailUserTextBox.getText());
 					restaurant.setNameUser(bossTextBox.getText());
-					restaurantController.saveRestaurant(restaurant, true);
+					List<String> usersEmailToAdd = new ArrayList<String>();
+					if(!addUserTextBox.getText().isEmpty()){ //validation of email is checked in validate() method
+						usersEmailToAdd.add(addUserTextBox.getText());
+					}
+						
+					restaurantController.addNewRestaurant(restaurant, usersEmailToAdd);
 //					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				}	
 			}
@@ -455,6 +446,15 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		}else{
 			setValidDataStyle(null, phoneUserTextBox);
 		}
+		
+		if(!addUserTextBox.getText().isEmpty()){
+			if( !Util.isValidEmail(addUserTextBox.getText()) ){
+				isCorrect = false;
+				setValidDataStyle(false, addUserTextBoxDiv);
+			}else{
+				setValidDataStyle(true, addUserTextBoxDiv);
+			}
+		}
 		return isCorrect;
 	}
 
@@ -509,6 +509,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		for(City city: CityController.getInstance().getCitiesList()){
 //			cityListBox.addItem(city.getCity());
 		}
+	}
+	
+	private void setPlaceHolder(Widget element, String placeHolder){
+		element.getElement().setAttribute("placeHolder", placeHolder);
 	}
 	
 }

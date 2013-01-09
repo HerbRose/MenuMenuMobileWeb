@@ -19,7 +19,7 @@ public interface StoreService extends RemoteService {
 	/**
 	 * 
 	 * @param r - {@link Restaurant} to save in datastore
-	 * @return {@link Restaurant} saved in datastore
+	 * 
 	 */
 	Restaurant saveRestaurant( Restaurant r );
 	/**
@@ -161,4 +161,6 @@ public interface StoreService extends RemoteService {
 	 * @return {@link City} object
 	 */
 	City saveCity(City city);
+	List<Object> addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
+			String emailAddingUser);
 }

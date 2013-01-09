@@ -415,6 +415,7 @@ public class RestaurantImageView extends MyPage {
 				
 				@Override
 				public void onClick(ClickEvent event) {
+					//TODO not save, what if are connection error
 					restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
 					restaurantController.saveRestaurant(restaurant, false);
 					changeIcons();
@@ -440,7 +441,7 @@ public class RestaurantImageView extends MyPage {
 			editPanel.getElement().getStyle().setHeight(0d, Unit.PX);
 			
 		}
-
+		if(deletePanel != null)
 		// setting buttons
 
 		backButton = new BackButton(Customization.BACK);
@@ -450,7 +451,7 @@ public class RestaurantImageView extends MyPage {
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
 
-				JQMContext.changePage(CityController.cityMapView.get(restaurant.getCityId()), Transition.SLIDE);
+				JQMContext.changePage(PagesController.getCityInfoScreenPage(restaurant.getCityId()), Transition.SLIDE);
 			}
 		});
 
@@ -891,9 +892,10 @@ public class RestaurantImageView extends MyPage {
 ////			addBoardWrap.add(formLogoUpload);
 //			add(formLogoUpload);
 //		}
-
-			addBoard.addClickHandler(new ClickHandler() {
-				
+		addFlowPanel.setStyleName("addFlowPanel");
+		addFlowPanel.add(new Label(Customization.ADD_BOARD));
+		addBoard.addClickHandler(new ClickHandler() {
+			
 				@Override
 				public void onClick(ClickEvent event) {
 
@@ -902,9 +904,9 @@ public class RestaurantImageView extends MyPage {
 				deletePanel.getElement().getStyle().setBottom(0, Unit.PX);
 
 				addBoardFromBottom.clear();
-				addFlowPanel.clear();
+				//addFlowPanel.clear();
 				
-				addFlowPanel.add(new Label(Customization.ADD_BOARD));
+				
 				addBoardFromBottom.add(addFlowPanel);
 				addBoardFromBottom.addStyleName("deletePanelWhiteBackground noFocus pointer");
 				
@@ -913,9 +915,7 @@ public class RestaurantImageView extends MyPage {
 				deleteProfileConfirmed.clear();
 				deleteProfileConfirmed.add(new Label(Customization.REMOVE_BOARD));	
 				deleteProfileConfirmed.addStyleName("deletePanelWhiteBackground");
-				
-				
-				
+
 			}
 		});
 		
@@ -947,7 +947,7 @@ public class RestaurantImageView extends MyPage {
 
 		} else if(isAndroid){
 			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
-			addFlowPanel.insert(fileLogoUpload, 0);
+			addFlowPanel.insert(formLogoUpload, 0);
 		} else{
 			addBoardFromBottom.addClickHandler(new ClickHandler() {
 				
@@ -1019,6 +1019,7 @@ public class RestaurantImageView extends MyPage {
 	}
 	
 	private void hideDeletePanelForImages(){
+		deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
 		setDefautDeleteContent();
 		getContentPanel().remove(deleteProfile);
 	}

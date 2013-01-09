@@ -138,6 +138,16 @@
      <url-pattern>/getAllDataServlet</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>PublishRestaurantServlet</servlet-name>
+    <servlet-class>com.veliasystems.menumenu.server.api.mobile.PublishRestaurantServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>PublishRestaurantServlet</servlet-name>
+    <url-pattern>/publishRestaurant</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
      <servlet-name>SetAsMainImage</servlet-name>
      <servlet-class>com.veliasystems.menumenu.server.api.mobile.SetAsMainImage</servlet-class>

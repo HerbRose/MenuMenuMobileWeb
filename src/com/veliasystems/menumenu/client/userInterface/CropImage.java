@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
@@ -41,6 +42,8 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
 
 public class CropImage extends MyPage implements IObserver{
+	
+	private JQMPage backPage = null;
 	
 	private BackButton backButton;
 	private MyButton saveButton;
@@ -68,18 +71,27 @@ public class CropImage extends MyPage implements IObserver{
 	private PickupDragController dragController;
 	private DropController dropController;
 	
-	private double ratioProfile = 450.0/280.0;
+	private double ratioProfile = 450.0/260.0;
 	private double minLogoRatio = 220d/75d;
 	private double maxLogoRatio = 220d/55d;
 	
-	int interval = 0;
+	private int interval = 0;
 	
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 	
+	public CropImage(ImageBlob imageInsert, JQMPage back){
+		super(Customization.CROP);
+		backPage = back;
+		cropImage(imageInsert);
+	}
+	
 	public CropImage(ImageBlob imageInsert) {
 		super(Customization.CROP);
-		
+		cropImage(imageInsert);
+	}
+	
+	private void cropImage(ImageBlob imageInsert) {
 		imageBlob = imageInsert;
 		
 		backButton = new BackButton(Customization.BACK);
@@ -116,7 +128,7 @@ public class CropImage extends MyPage implements IObserver{
 
 					@Override
 					public void onSuccess(Map<String, ImageBlob> result) {
-						restaurantController.afterCrop(result.get("new"), result.get("old"));				
+						restaurantController.afterCrop(result.get("new"), result.get("old"), backPage);				
 					}
 					
 				});	

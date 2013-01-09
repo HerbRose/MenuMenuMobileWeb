@@ -53,6 +53,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 	private DAO dao = new DAO();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
+	private EmailServiceImpl emailService = new EmailServiceImpl();
 //	private BlobstoreService blobstoreService = BlobstoreServiceFactory
 //			.getBlobstoreService();
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
@@ -92,6 +93,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 */
 	public City findCity(Long cityId){
 		return dao.ofy().find(City.class, cityId);
+	}
+	public User findUser(String email){
+		return dao.ofy().find(User.class, email);
 	}
 	public ImageBlob findImageBlob(BlobKey blobKey){
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
@@ -275,6 +279,116 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		dao.ofy().put(restaurants);
+	}
+	
+	@Override
+	public List<Object> addNewRestaurant(Restaurant r, List<String> usersEmailToAdd, String emailAddingUser) {
+		try {
+			getGeocoding(r,false);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		r.setLogoImages(null);
+		r.setMenuImages(null);
+		r.setProfileImages(null);
+		List<Object> returnList = new ArrayList<Object>();//lista zwracana do przeglądarki z restauracją i informacją
+		
+		boolean isJustAccess = false;
+		boolean isAdded = false;
+		
+		if(usersEmailToAdd == null)usersEmailToAdd = new ArrayList<String>();
+		
+		for (String userEmail : usersEmailToAdd) {
+			User user = findUser(userEmail);
+			
+			if(user == null){
+				user = new User(userEmail);
+
+				int i = (int) (Math.random() * 100);
+				
+				user.setPassword(getLoginFromMail(userEmail)+i);
+				if(user.getRestaurantsId() == null){
+					user.setRestaurantsId(new ArrayList<Long>());
+				}
+				user.getRestaurantsId().add(r.getId());
+				user.setAddedByUser(emailAddingUser);
+				sendMailToUserAfterAddingRestaurant(true, user, r.getName());
+				dao.ofy().put(user);
+				isAdded = true;
+			}else{
+//				List<Long> restaurantsId = user.getRestaurantsId();
+//				if(restaurantsId != null){
+//					for (Long restaurantId : restaurantsId) {
+//						if(restaurantId == r.getId()){
+//							isJustAccess = true;
+//							break;
+//						}
+//					}
+//				}
+//				List<Long> citiesId = user.getCitiesId();
+//				if(!isJustAccess && citiesId != null ){
+//					for (Long cityId : citiesId) {
+//						if(cityId == r.getCityId()){
+//							isJustAccess = true;
+//							break;
+//						}
+//					}
+//				}
+//				if(!isJustAccess){ //jeżeli do tej pory nie miał dostępu
+					if(user.getRestaurantsId() == null){
+						user.setRestaurantsId(new ArrayList<Long>());
+					}
+					user.getRestaurantsId().add(r.getId());
+					sendMailToUserAfterAddingRestaurant(false, user, r.getName());
+					dao.ofy().put(user);
+					isAdded = true;
+				}
+				
+//			}
+		}
+		
+		dao.ofy().put(r);
+		String responseMessage = "New restaurant added ";
+		if(isAdded){
+			responseMessage += "\nThe message was sent to added user"; 
+		}
+		
+		
+		returnList.add(r);
+		returnList.add(responseMessage);
+		
+		return returnList;
+	}
+	private void sendMailToUserAfterAddingRestaurant(boolean isNew, User user, String restaurantName){
+		String userName = user.getName();
+		if(userName == null || userName.isEmpty()){
+			userName = getLoginFromMail(user.getEmail());
+		}
+		String subject = "Message from website MenuMenu";
+		String message = "Hello "+userName+". \n\n";
+		
+		if(isNew){
+			message += "This email address has been given during registration process on MenuMenu website.\n\n"+
+					   "Your data needed to login are:\n"+
+					   "\tlogin: "+ user.getEmail()+"\n"+
+					   "\tpassword: "+ user.getPassword()+"\n\n"+
+					   "Remember about changing your password in administration panel.\n\n"+
+					   "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
+					   "Thank you: MenuMenu team.\n\n"+
+					   "This email has been generated automatically. Please do not reply to this email address."; 
+		}else{
+			message += "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
+					   "Thank you: MenuMenu team.\n\n"+
+					   "This email has been generated automatically. Please do not reply to this email address."; 
+		}
+		List<String> toAddress = new ArrayList<String>();
+		toAddress.add(user.getEmail());
+		emailService.sendEmail(toAddress, userName, message, subject);
+	}
+	
+	private String getLoginFromMail(String email){
+		return  ( email.split("@") )[0];
 	}
 	
 	@Override
@@ -977,6 +1091,20 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public City loadCity(Long cityId) {
 		
 		return dao.ofy().find(City.class, cityId);
+	}
+
+	public boolean publishRestaurant(long restaurantId, boolean isPublish) {
+		Restaurant restaurant = dao.ofy().find(Restaurant.class, restaurantId);
+		
+		if(restaurant != null){
+			restaurant.setVisibleForApp(isPublish);
+			dao.ofy().put(restaurant);
+			return true;
+		}else{
+			log.severe("StoreServiceImpl::publishRestaurant(), restaurant (id: "+restaurantId+ ") not found");
+			return false;
+		}
+		
 	}
 	
 }
