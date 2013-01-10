@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.client.userInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.apple.eawt.CocoaComponent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -33,6 +34,8 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -84,12 +87,16 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 	
 	private boolean isToCity;
 	private boolean loaded = false;
+	/**
+	 * when is false, this page will not be removed in onPageHide() method. Needed when user adding board picture to not lose data written by user.
+	 */
 	private boolean isToDeleted = true;
 	
 	
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 	
 	private FlowPanel container;
 	
@@ -388,8 +395,16 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 
 	public AddRestaurantScreen() {
 		super(Customization.ADDRESTAURANT);
+		
 		cityController.addObserver(this);
-		init(false);
+		long cityId = Long.parseLong(cookieController.getCookie(CookieNames.R_CITY_ID));
+		
+		city = cityController.getCity(cityId);
+		if(city == null){
+			Window.alert(Customization.ERROR);
+			return;
+		}
+		init(true);
 	
 	}
 	
@@ -410,26 +425,30 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			ImagesController.imageUrl = "";
 		}
 		
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		PagesController.hideWaitPanel();
 	}
 	
 	@Override
 	protected void onPageHide() {
 		super.onPageHide();
 		if(isToDeleted){
+			setCookiesData(true);
+			
 			getElement().removeFromParent();
 		}
 	}
 	
 	private void clearData() {
-//		nameText.setText("");
-//		adressText.setText("");
-//		mailRestaurantTextBox.setText("");
-//		mailUserTextBox.setText("");
-//		nameUserTextBox.setText("");
-//		phoneRestaurantTextBox.setText("");
-//		phoneUserTextBox.setText("");
-//		warning.setText("");
+		if(cookieController.getCookie(CookieNames.IS_PICUP_USED).equals("true")){
+			nameText.setText(cookieController.getCookie(CookieNames.R_NAME));
+			adressText.setText(cookieController.getCookie(CookieNames.R_ADDRESS));
+			bossTextBox.setText(cookieController.getCookie(CookieNames.R_BOSS_NAME));
+			websiteTextBox.setText(cookieController.getCookie(CookieNames.R_WWW));
+			phoneRestaurantTextBox.setText(cookieController.getCookie(CookieNames.R_PHONE));
+			addUserTextBox.setText(cookieController.getCookie(CookieNames.R_USERS));	
+		}
+		
+		warning.setText("");
 		
 		setValidDataStyle(null, nameText);
 		setValidDataStyle(null, adressText);
@@ -447,13 +466,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-//				if(isToCity){
-//					Document.get().getElementById("load").setClassName(R.LOADING);
-//					JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
-//				}else{
-//					Document.get().getElementById("load").setClassName(R.LOADING);
-//					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_LIST), Transition.SLIDE);
-//				}
+
 				PagesController.showWaitPanel();
 				JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				
@@ -472,18 +485,9 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					
 					restaurant.setName(nameText.getText());
 					
-					restaurant.setAddress(adressText.getText());			
-//					int index = cityListBox.getSelectedIndex();			
-//					restaurant.setCity(cityListBox.getItemText(index));	
-					restaurant.setCity(city.getCity());
-					long cityId = cityController.getCityId(city.getCity());
-					restaurant.setCityId(cityId);
-					//restaurant.setCityId(cityController.)
-//					restaurant.setMailRestaurant(mailRestaurantTextBox.getText());
+					restaurant.setAddress(adressText.getText());
+					restaurant.setCityId(city.getId());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox.getText());
-//					restaurant.setNameUser(nameUserTextBox.getText());
-//					restaurant.setPhoneUser(phoneUserTextBox.getText());
-//					restaurant.setMailUser(mailUserTextBox.getText());
 					restaurant.setNameUser(bossTextBox.getText());
 					List<String> usersEmailToAdd = new ArrayList<String>();
 					if(!addUserTextBox.getText().isEmpty()){ //validation of email is checked in validate() method
@@ -491,7 +495,6 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 					}
 						
 					restaurantController.addNewRestaurant(restaurant, usersEmailToAdd);
-//					JQMContext.changePage(new CityInfoScreen(city), Transition.SLIDE);
 				}	
 			}
 		});
@@ -523,6 +526,11 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		if(nameText.getText().isEmpty() && adressText.getText().isEmpty()){
 			warning.setText(Customization.EMPTYBOTHDATA);
+			setValidDataStyle(false, nameWrapper);
+			setValidDataStyle(false, addressWrapper);
+			isCorrect = false;
+		}else if( isRestaurant(nameText.getText(), adressText.getText(), city.getId()) ){
+			warning.setText(Customization.RESTAURANT_EXIST_ERROR);
 			setValidDataStyle(false, nameWrapper);
 			setValidDataStyle(false, addressWrapper);
 			isCorrect = false;
@@ -588,6 +596,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 			if( !Util.isValidEmail(addUserTextBox.getText()) ){
 				isCorrect = false;
 				setValidDataStyle(false, addUserTextBoxDiv);
+				warning.setText(Customization.WRONG_EMAIL_ADDRESS);
 			}else{
 				setValidDataStyle(true, addUserTextBoxDiv);
 			}
@@ -595,6 +604,20 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		return isCorrect;
 	}
 
+	
+	private boolean isRestaurant(String restaurantName, String restaurantAddress, Long resturantCityId){
+		
+		List<Restaurant> restaurants = restaurantController.getRestaurantsInCity(resturantCityId);
+		
+		for (Restaurant restaurant : restaurants) {
+			if(restaurant.getName().equalsIgnoreCase(restaurantName) && restaurant.getAddress().equalsIgnoreCase(restaurantAddress)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * sets the right shadow around the widget
 	 * @param isCorrect - if <b>true</b> sets green shadow, if <b>false</b> sets red shadow, if <b>null</b> hide all shadows
@@ -677,8 +700,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 								@Override
 								public void onSuccess(String result) {
 									String callbackURL = R.HOST_URL + "picupCallback.html" ;
-									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
-									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
+									cookieController.setCookie(CookieNames.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
+									cookieController.setCookie(CookieNames.RESTAURANT_ID_PICUP, restaurant.getId()+"");
+
+									setCookiesData(false);
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
 	
 									clickOnInputFile(fileLogoUpload.getElement());
@@ -739,6 +764,33 @@ public class AddRestaurantScreen extends MyPage implements IObserver{
 		
 		add(addBoard);
 		
+	}
+	/**
+	 * Save given by user data in browser cookies. Cookies name are set using {@link CookieNames} enum.
+	 * If <code>clear</code> is true the cookies will by removed.
+	 * 
+	 * @param clear if true the cookies will by removed
+	 */
+	private void setCookiesData(boolean clear){
+		if(clear){
+			cookieController.clearCookie(CookieNames.R_ADDRESS);
+			cookieController.clearCookie(CookieNames.R_BOSS_NAME);
+			cookieController.clearCookie(CookieNames.R_NAME);
+			cookieController.clearCookie(CookieNames.R_PHONE);
+			cookieController.clearCookie(CookieNames.R_USERS);
+			cookieController.clearCookie(CookieNames.R_WWW);
+			cookieController.clearCookie(CookieNames.R_CITY_ID);
+			cookieController.clearCookie(CookieNames.IS_PICUP_USED);
+		}else{
+			cookieController.setCookie(CookieNames.R_ADDRESS, adressText.getText());
+			cookieController.setCookie(CookieNames.R_BOSS_NAME, bossTextBox.getText());
+			cookieController.setCookie(CookieNames.R_NAME, nameText.getText());
+			cookieController.setCookie(CookieNames.R_PHONE, phoneRestaurantTextBox.getText());
+			cookieController.setCookie(CookieNames.R_WWW, websiteTextBox.getText());
+			cookieController.setCookie(CookieNames.R_USERS, addUserTextBox.getText());
+			cookieController.setCookie(CookieNames.R_CITY_ID, city.getId()+"");
+			cookieController.setCookie(CookieNames.IS_PICUP_USED, "true");
+		}
 	}
 	
 	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{

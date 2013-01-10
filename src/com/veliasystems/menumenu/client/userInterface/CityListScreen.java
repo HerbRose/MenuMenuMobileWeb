@@ -18,6 +18,8 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -41,6 +43,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private UserController userController = UserController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 	private List<City> cityList;
 
 	private FlowPanel adminPanelWrapper = new FlowPanel();
@@ -156,9 +159,8 @@ public class CityListScreen extends MyPage implements IObserver{
 	protected void onPageShow() {
 		super.onPageShow();
 		restaurantController.setLastOpenPage(this);
-		if(Cookies.getCookie(R.LAST_PAGE) != null){
-			Cookies.removeCookie(R.LAST_PAGE);
-		}
+		
+		cookieController.clearCookie(CookieNames.RESTAURANT_ID);
 		
 		if(userController.getLoggedUser().isAdmin()){
 			getContentPanel().add(adminPanelWrapper);

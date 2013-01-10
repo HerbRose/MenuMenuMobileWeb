@@ -29,6 +29,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -65,8 +67,8 @@ public class SwipeView extends FlowPanel {
 	private LoadedPageController loadedPageController;
 
 	private String osType = getUserAgent(); 
-	private RestaurantController restaurantController = RestaurantController
-			.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 
 	public SwipeView(Restaurant restaurant, ImageType imageType,
 			RestaurantImageView parent) {
@@ -215,8 +217,9 @@ public class SwipeView extends FlowPanel {
 								@Override
 								public void onSuccess(String result) {
 									String callbackURL = R.HOST_URL + "picupCallback.html" ;
-									Cookies.setCookie(R.IMAGE_TYPE_PICUP, imageType.name());
-									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
+									
+									cookieController.setCookie(CookieNames.IMAGE_TYPE_PICUP, imageType.name());
+									cookieController.setCookie(CookieNames.RESTAURANT_ID_PICUP, restaurant.getId()+"");
 									onUploadFormLoaded(fileUpload.getElement(), result, callbackURL, R.HOST_URL);
 	
 									clickOnInputFile(fileUpload.getElement());

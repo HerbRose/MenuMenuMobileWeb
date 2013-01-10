@@ -27,7 +27,7 @@ public class Customization {
 	public static final String RESTAURANTADRESS = translated.restaurantAdress();
 	public static final String RESTAURANTSAVED = translated.restaurantSaved();
 	public static final String SAVERRESTAURANTERROR = translated.saveRestaurantError();
-	public static final String LOADERROR = translated.error();
+
 	public static final String EDIT = translated.edit();
 	public static final String EMPTYBOTHDATA = translated.emptyBothData();
 	public static final String EMPTYNAME = translated.emptyName();
@@ -159,6 +159,10 @@ public class Customization {
 	public static final String PROFILE_UNPUBLISHED = translated.profileUnPublished();
 
 	public static final String REMOVE_BOARD = translated.removeBoard();
+	public static final String WRONG_EMAIL_ADDRESS = translated.wrongEmailAddress();
+
+	public static final String ERROR = translated.error();
+	
 };
 	
 	

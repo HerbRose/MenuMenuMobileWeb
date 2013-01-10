@@ -33,6 +33,8 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -54,8 +56,10 @@ public class RestaurantImageView extends MyPage {
 	private Restaurant restaurant;
 	private boolean loaded = false;
 	private List<SwipeView> swipeViews = new ArrayList<SwipeView>();
+	
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private CityController cityController = CityController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 
 	private MyButton cancelButton = new MyButton(Customization.CANCEL);;
 	private MyButton saveButton = new MyButton(Customization.SAVE);
@@ -888,8 +892,10 @@ public class RestaurantImageView extends MyPage {
 								@Override
 								public void onSuccess(String result) {
 									String callbackURL = R.HOST_URL + "picupCallback.html" ;
-									Cookies.setCookie(R.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
-									Cookies.setCookie(R.LAST_PAGE_PICUP, restaurant.getId()+"");
+									
+									cookieController.setCookie(CookieNames.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
+									cookieController.setCookie(CookieNames.RESTAURANT_ID_PICUP, restaurant.getId()+"");
+									
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
 	
 									clickOnInputFile(fileLogoUpload.getElement());

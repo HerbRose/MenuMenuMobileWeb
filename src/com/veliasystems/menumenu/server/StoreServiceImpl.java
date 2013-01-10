@@ -149,6 +149,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		List<City> cityList = cityQuery.filter("id IN", citiesId).list();	
 		return cityList;	
 	}
+	private ImageBlob loadImageBlob(String imageBlobKeyString) {
+		Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
+		
+		if(imageBlobQuery == null){
+			return null;
+		}
+		return imageBlobQuery.filter("blobKey", imageBlobKeyString).get();
+	}
 	/**
 	 * 
 	 * @param citiesList - List of {@link City}
@@ -294,7 +302,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setProfileImages(null);
 		List<Object> returnList = new ArrayList<Object>();//lista zwracana do przeglądarki z restauracją i informacją
 		
-		boolean isJustAccess = false;
 		boolean isAdded = false;
 		
 		if(usersEmailToAdd == null)usersEmailToAdd = new ArrayList<String>();
@@ -317,35 +324,30 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				dao.ofy().put(user);
 				isAdded = true;
 			}else{
-//				List<Long> restaurantsId = user.getRestaurantsId();
-//				if(restaurantsId != null){
-//					for (Long restaurantId : restaurantsId) {
-//						if(restaurantId == r.getId()){
-//							isJustAccess = true;
-//							break;
-//						}
-//					}
-//				}
-//				List<Long> citiesId = user.getCitiesId();
-//				if(!isJustAccess && citiesId != null ){
-//					for (Long cityId : citiesId) {
-//						if(cityId == r.getCityId()){
-//							isJustAccess = true;
-//							break;
-//						}
-//					}
-//				}
-//				if(!isJustAccess){ //jeżeli do tej pory nie miał dostępu
-					if(user.getRestaurantsId() == null){
-						user.setRestaurantsId(new ArrayList<Long>());
-					}
-					user.getRestaurantsId().add(r.getId());
-					sendMailToUserAfterAddingRestaurant(false, user, r.getName());
-					dao.ofy().put(user);
-					isAdded = true;
+				if(user.getRestaurantsId() == null){
+					user.setRestaurantsId(new ArrayList<Long>());
 				}
+				user.getRestaurantsId().add(r.getId());
+				sendMailToUserAfterAddingRestaurant(false, user, r.getName());
+				dao.ofy().put(user);
+				isAdded = true;
+			}
+		}
+		
+		String mainLogoImageString = r.getMainLogoImageString();
+		if( mainLogoImageString != null && !mainLogoImageString.isEmpty() ){
+			String[] imageBlobStringSplitResult = mainLogoImageString.split("=");
+			if(imageBlobStringSplitResult.length>1){
+				String imageBlobString = imageBlobStringSplitResult[1];
 				
-//			}
+				ImageBlob imageBlob = loadImageBlob(imageBlobString);
+				if(imageBlob != null){
+					imageBlob.setRestaurantId(r.getId()+"");
+					dao.ofy().put(imageBlob);
+				}else{
+					r.setMainLogoImageString("");
+				}
+			}
 		}
 		
 		dao.ofy().put(r);
@@ -360,6 +362,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return returnList;
 	}
+	
+
 	private void sendMailToUserAfterAddingRestaurant(boolean isNew, User user, String restaurantName){
 		String userName = user.getName();
 		if(userName == null || userName.isEmpty()){

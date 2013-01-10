@@ -25,6 +25,7 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.CropImage;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
@@ -44,6 +45,7 @@ public class RestaurantController {
 	
 	private static RestaurantController instance = null ; //instance of controller
 	private UserController userController = UserController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
@@ -247,7 +249,8 @@ public class RestaurantController {
 				putRestaurantToLocalList(newRestaurant);
 				PagesController.hideWaitPanel();
 				Window.alert(message);
-				JQMContext.changePage(CityController.cityMapView.get(newRestaurant.getCityId()) , Transition.SLIDE);
+				
+				JQMContext.changePage( PagesController.getCityInfoScreenPage(newRestaurant.getCityId()) );//CityController.cityMapView.get(newRestaurant.getCityId()) , Transition.SLIDE);
 				
 			}
 			
@@ -329,9 +332,9 @@ public class RestaurantController {
 	 * @param blobKey - {@link BlobKey} in {@link String} format
 	 */
 	public void cropImage(long restaurantId, ImageType imageType, JQMPage backPage, String blobKey){
-		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
-			Cookies.removeCookie(R.IMAGE_TYPE);
-		}
+		
+		cookieController.clearCookie(CookieNames.IMAGE_TYPE);
+		
 		ImageBlob imageBlob = new ImageBlob(restaurantId+"", blobKey, new Date(), imageType);
 		JQMContext.changePage(new CropImage(imageBlob, backPage), Transition.SLIDE);
 	}
@@ -342,9 +345,7 @@ public class RestaurantController {
 	 */
 	public void cropImage(long restaurantId, ImageType imageType, final JQMPage backPage){
 		
-		if(Cookies.getCookie(R.IMAGE_TYPE) != null){
-			Cookies.removeCookie(R.IMAGE_TYPE);
-		}
+		cookieController.clearCookie(CookieNames.IMAGE_TYPE);
 		
 		blobService.getLastUploadedImage(restaurantId, imageType, new AsyncCallback<ImageBlob>() {
 			@Override
@@ -383,21 +384,25 @@ public class RestaurantController {
 //		});
 	}
 	/**
-	 * Crop image on Apple devices
+	 * Crop image on Apple devices which using picup
 	 * @param restaurantId - id of {@link Restaurant}
 	 * @param imageType - type of Image, specified in {@link ImageType}
 	 */
 	public void cropImageApple(long restaurantId, ImageType imageType){
 		
-		
-		
-		Cookies.removeCookie(R.IMAGE_TYPE);
+		cookieController.clearCookie(CookieNames.IMAGE_TYPE);
 		
 		blobService.getLastUploadedImage(restaurantId, imageType, new AsyncCallback<ImageBlob>() {
 			@Override
 			public void onSuccess(ImageBlob result) {
 				if(result == null) Window.alert(Customization.CONNECTION_ERROR);
-				else JQMContext.changePage(new CropImage(result), Transition.SLIDE);
+				else{
+					if(cookieController.getCookie(CookieNames.IS_PICUP_USED).equals("true")){
+						JQMContext.changePage(new CropImage(result, new AddRestaurantScreen()), Transition.SLIDE);
+					}else{
+						JQMContext.changePage(new CropImage(result), Transition.SLIDE);
+					}
+				}
 				
 			}
 			@Override

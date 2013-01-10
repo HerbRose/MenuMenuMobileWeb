@@ -31,7 +31,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 			if(isMobile()) JQMContext.changePage( Pages.PAGE_LOGIN_OK );
 			else {
 				R.isMobile = false;
-				JQMContext.changePage( new LoginScreen(false) );
+				JQMContext.changePage( Pages.PAGE_LOGIN_OK );
 			}
 		}
 	

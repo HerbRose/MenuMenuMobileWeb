@@ -15,6 +15,8 @@ import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -35,6 +37,7 @@ public class LoadDataScreen extends JQMPage {
 	private UserController userController = UserController.getInstance();
 	private CityController cityController = CityController.getInstance();
 	private ImagesController imagesController = ImagesController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 	
 	private String email;
 	
@@ -60,7 +63,7 @@ public class LoadDataScreen extends JQMPage {
 			public void onFailure(Throwable caught) {
 				Window.alert(Customization.CONNECTION_ERROR);
 				Cookies.removeCookie(R.LOADED);
-				Cookies.removeCookie(R.LAST_PAGE);
+				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
 				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
 				
 			}
@@ -70,7 +73,7 @@ public class LoadDataScreen extends JQMPage {
 	
 	public LoadDataScreen(String login, String password) {
 		this.email = login;
-		Document.get().getElementById("load").setClassName(R.LOADING);
+		PagesController.showWaitPanel();
 		storeService.getAllData(login, password, new AsyncCallback<Map<String,Object>>() {
 			
 			@Override
@@ -135,21 +138,25 @@ public class LoadDataScreen extends JQMPage {
 	}
 	
 	private void changePage(){
-		String lastPage = Cookies.getCookie(R.LAST_PAGE);
+		String restaurantIdString = cookieController.getCookie(CookieNames.RESTAURANT_ID);
 		
-		if(lastPage!=null){
+		if(!restaurantIdString.isEmpty()){
 			
-			Long lastPageId;
+			Long restaurantId;
 			
-			lastPageId = Long.parseLong(lastPage);
-			Restaurant lastOpenRestaurant = RestaurantController.getInstance().getRestaurant(lastPageId);
-			if(lastOpenRestaurant == null){
+			restaurantId = Long.parseLong(restaurantIdString);
+			Restaurant lastOpenRestaurant = RestaurantController.getInstance().getRestaurant(restaurantId);
+			
+			if(cookieController.getCookie(CookieNames.IS_PICUP_USED).equals("true")){
+				String imageType = cookieController.getCookie(CookieNames.IMAGE_TYPE);
+				restaurantController.cropImageApple(restaurantId, ImageType.valueOf(imageType));
+			}else if(lastOpenRestaurant == null ){
 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_HOME));
-			}else{
+			}else {
 				RestaurantImageView restaurantView;
 				
-				if(RestaurantController.restMapView.get(lastPageId.longValue())!=null){
-					restaurantView = RestaurantController.restMapView.get(lastPageId);
+				if(RestaurantController.restMapView.get(restaurantId.longValue())!=null){
+					restaurantView = RestaurantController.restMapView.get(restaurantId);
 				}else{
 					restaurantView = new RestaurantImageView(lastOpenRestaurant,PagesController.getPage(Pages.PAGE_HOME));
 					RestaurantController.restMapView.put(lastOpenRestaurant.getId(), restaurantView);
@@ -159,12 +166,12 @@ public class LoadDataScreen extends JQMPage {
 //					restaurantView = RestaurantController.restMapView.get(lastPageId);
 //				}
 //				
-				String imageType = Cookies.getCookie(R.IMAGE_TYPE);
+				String imageType = cookieController.getCookie(CookieNames.IMAGE_TYPE); 
 				
-				if(imageType == null){
+				if(imageType.isEmpty()){
 					JQMContext.changePage(restaurantView, Transition.SLIDE);
 				}else{
-					restaurantController.cropImageApple(lastPageId, ImageType.valueOf(imageType));
+					restaurantController.cropImageApple(restaurantId, ImageType.valueOf(imageType));
 				}
 			}
 		}else{

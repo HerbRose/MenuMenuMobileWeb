@@ -44,7 +44,7 @@ public enum Pages {
 					page = new CityListScreen();
 				break;
 			case PAGE_HOME:
-					page = new HomePageScreen();
+					page = new CityListScreen();// HomePageScreen();
 				break;
 			case PAGE_RESTAURANT_LIST:
 					page = new RestaurantsListScreen();

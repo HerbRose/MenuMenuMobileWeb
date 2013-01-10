@@ -11,6 +11,8 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -28,6 +30,7 @@ public class RestaurantsListScreen extends MyPage implements IObserver {
 
 	private List<Restaurant> restaurants;
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private CookieController cookieController = CookieController.getInstance();
 	
 	public RestaurantsListScreen() {
 		super(Customization.RESTAURANTS);
@@ -101,17 +104,14 @@ public class RestaurantsListScreen extends MyPage implements IObserver {
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		if(Cookies.getCookie(R.LAST_PAGE) != null){
-			Cookies.removeCookie(R.LAST_PAGE);
-		}
 		
 		restaurantController.setLastOpenPage(this);
 	
 		refreshRestaurantList();
 
-		Cookies.removeCookie(R.LAST_PAGE);
+		cookieController.clearCookie(CookieNames.RESTAURANT_ID);
 		
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		PagesController.hideWaitPanel();
 	}
 
 	@Override

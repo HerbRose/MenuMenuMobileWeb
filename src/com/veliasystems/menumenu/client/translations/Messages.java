@@ -318,4 +318,8 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Remove board") 
 	String removeBoard();
+
+	@DefaultStringValue("Given e-mail address is not a valid email address") 
+	String wrongEmailAddress();
+
 }

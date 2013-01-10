@@ -6,12 +6,12 @@
 <script type="text/javascript">
 	function createCookies() {
 // 		console.log(QueryString.www);
-		var imageType = readCookie("imageTypeFromPicup");
-		var lastPage = readCookie("lastPageFromPicup"); 
+		var imageType = readCookie("IMAGE_TYPE_PICUP");
+		var lastPage = readCookie("RESTAURANT_ID_PICUP"); 
 
-		createCookie("imageType", imageType, 1);
+		createCookie("IMAGE_TYPE", imageType, 1);
 		
-		createCookie("lastPage", lastPage, 1);
+		createCookie("RESTAURANT_ID", lastPage, 1);
 		
 		window.setTimeout(refreshPage(),500);
 	
