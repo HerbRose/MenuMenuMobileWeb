@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -37,7 +38,7 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					Label imageType = new Label();
 					Image img = new Image(imageBlob.getImageUrl());
 					Button deleteButton = new Button();
-					
+					final Button pubUnpubButton = new Button();
 					
 					imgWrapper.addStyleName("imgWrapper");
 					nameRestaurant.addStyleName("lastUploadedName");
@@ -45,7 +46,7 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					imageType.addStyleName("lastUploadedName");
 					img.addStyleName("lastUploadedImage");
 					deleteButton.addStyleName("lastUploadedDeleteButton");
-					
+					pubUnpubButton.addStyleName("lastUploadedDeleteButton");
 					String restaurantName = restaurantController.getRestaurantName(Long.parseLong(imageBlob.getRestaurantId()));
 					if(restaurantName == null){
 						continue;
@@ -97,12 +98,33 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 						}
 					});
 					
+					if(restaurant.isVisibleForApp()){
+						pubUnpubButton.setText(Customization.PROFILE_PUBLISHED);
+					}else{
+						pubUnpubButton.setText(Customization.PROFILE_UNPUBLISHED);
+					}
+					
+					pubUnpubButton.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
+							
+							restaurantController.saveRestaurant(restaurant, false);
+							if(restaurant.isVisibleForApp()){
+								pubUnpubButton.setText(Customization.PROFILE_PUBLISHED);
+							}else{
+								pubUnpubButton.setText(Customization.PROFILE_UNPUBLISHED);
+							}
+						}
+					});
+					
 					imgWrapper.add(nameRestaurant);
 					imgWrapper.add(dateUploaded);
 					imgWrapper.add(imageType);
 					imgWrapper.add(img);
 					imgWrapper.add(deleteButton);
-					
+					imgWrapper.add(pubUnpubButton);
 					add(imgWrapper);
 					
 				}
