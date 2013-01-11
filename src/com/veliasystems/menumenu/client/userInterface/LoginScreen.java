@@ -242,8 +242,10 @@ public class LoginScreen extends MyPage{
 			nameBox.removeStyleName("redShadow");
 	    	passwordBox.removeStyleName("redShadow");	
 		}
+		if(footer.getWidgetCount() == 0){
+			setFooterWithFlags();
+		}
 		
-		 setFooterWithFlags();
 		super.onPageShow();
 	}
 	
