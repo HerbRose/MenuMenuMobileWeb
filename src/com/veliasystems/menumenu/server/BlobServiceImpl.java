@@ -268,8 +268,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		BlobstoreServiceFactory.getBlobstoreService().delete(
 				new BlobKey(imageBlob.getBlobKey()));
 		dao.ofy().delete(imageBlob);
-		
-		
+				
 //		String blobKeyToDelete = imageBlob.getBlobKey();
 //		dao.ofy().delete(imageBlob);
 //		BlobstoreServiceFactory.getBlobstoreService().delete(
