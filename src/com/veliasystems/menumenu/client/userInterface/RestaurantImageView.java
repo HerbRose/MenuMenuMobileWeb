@@ -305,21 +305,9 @@ public class RestaurantImageView extends MyPage {
 							public void onSuccess(Boolean result) {
 								switch(imageBlobClickedToDelete.getImageType()){
 								case MENU:
-									if(restaurant.getMainProfileImageString() != null){
-										if(restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlobClickedToDelete.getBlobKey())){
-											restaurant.setMainMenuImageString("");
-											restaurantController.saveRestaurant(restaurant, false);
-										}
-									}
 										restaurant.getMenuImages().remove(imageBlobClickedToDelete);
 									break;
 								case PROFILE:
-									if(restaurant.getMainProfileImageString() != null){
-										if(restaurant.getMainProfileImageString().equals("/blobServe?blob-key=" + imageBlobClickedToDelete.getBlobKey())){
-											restaurant.setMainProfileImageString("");
-											restaurantController.saveRestaurant(restaurant, false);
-										}
-									}
 										restaurant.getProfileImages().remove(imageBlobClickedToDelete);
 									break;
 								}
@@ -337,15 +325,12 @@ public class RestaurantImageView extends MyPage {
 						PagesController.showWaitPanel();
 						blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
 
-							@Override
 							public void onFailure(Throwable caught) {
 								PagesController.hideWaitPanel();
 							}
 
 							@Override
 							public void onSuccess(Void result) {
-								restaurant.setMainLogoImageString("");
-								restaurantController.saveRestaurant(restaurant, false);
 								logoImage.setUrl("");
 								addBoardWrap.remove(logoEditImage);
 								PagesController.hideWaitPanel();
