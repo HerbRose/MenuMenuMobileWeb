@@ -18,6 +18,7 @@ import com.veliasystems.menumenu.client.services.EmailService;
 import com.veliasystems.menumenu.client.services.EmailServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.administration.EditDataPanel;
 /**
  * 
  * Controller to all {@link User} operations
@@ -123,9 +124,8 @@ public class UserController {
 	 * Change user data's 
 	 * @param user - {@link User} object
 	 */
-	public void changeUserData(User user){
-		User userToChange = getLoggedUser();
-		storeService.changeUserData(user, userToChange.getEmail(), new AsyncCallback<User>() {
+	public void changeUserData(User user, String oldPassword, String newPassword){
+		storeService.changeUserData(user, oldPassword, newPassword, new AsyncCallback<User>() {
 
 			@Override
 			public void onFailure(Throwable caught) {	

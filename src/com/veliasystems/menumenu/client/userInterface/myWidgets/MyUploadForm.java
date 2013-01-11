@@ -15,7 +15,7 @@ public class MyUploadForm extends FormPanel {
 	private long restaurantId = -1;
 	private ImageType imageType = null;
 	private JQMPage backPage = null;
-
+	private final String imageMimeType = "image/*";
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	/**
 	 * default settings:
@@ -36,6 +36,7 @@ public class MyUploadForm extends FormPanel {
 		setMethod(FormPanel.METHOD_POST);
 		
 		this.fileUpload = fileUpload;
+		this.fileUpload.getElement().setPropertyString("accept",imageMimeType);
 		mainPanel.add(fileUpload);
 		fileUpload.setName("image");
 		setWidget(mainPanel);

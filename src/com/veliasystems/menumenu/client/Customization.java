@@ -97,7 +97,7 @@ public class Customization {
 	public static final String ADMIN_PANEL = translated.adminPanel();
 
 
-	public static final String WEBSITE_LABEL = translated.websiteLabel();
+	public static final String DISTRICT = translated.district();
 
 
 	public static final String ADD_BOARD = translated.addBoard();
@@ -162,6 +162,10 @@ public class Customization {
 	public static final String WRONG_EMAIL_ADDRESS = translated.wrongEmailAddress();
 
 	public static final String ERROR = translated.error();
+
+	public static final String DATE_CREATED = translated.dateCreated();
+
+	public static final String IMAGE_TYPE = translated.imageType();
 	
 };
 	

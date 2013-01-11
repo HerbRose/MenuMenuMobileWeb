@@ -295,8 +295,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Administration Panel")
 	String adminPanel();
 	
-	@DefaultStringValue("www")
-	String websiteLabel();
+	@DefaultStringValue("District")
+	String district();
 	
 	@DefaultStringValue("Boss name")
 	String bossName();
@@ -321,5 +321,11 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Given e-mail address is not a valid email address") 
 	String wrongEmailAddress();
+	
+	@DefaultStringValue("Date created") 
+	String dateCreated();
+	
+	@DefaultStringValue("Image type") 	
+	String imageType();
 
 }

@@ -846,6 +846,7 @@ public class RestaurantImageView extends MyPage {
 		formLogoUpload.setStyleName("formLogoUpload", true);
 		formLogoUpload.getElement().getStyle().setDisplay(Display.NONE);
 		
+		
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android")>=0;

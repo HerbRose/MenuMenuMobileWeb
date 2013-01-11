@@ -200,7 +200,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 									.getMainProfileImageString()) : "EMPTY");
 					map.put("lat", "" + restaurant.getLat());
 					map.put("lng", "" + restaurant.getLng());
-
+					map.put("phoneRestaurant", restaurant.getPhoneRestaurant());
 					for (ImageBlob imageBlob : imageBlobs) {
 						map.put(imageBlob.getImageType() + "DateCreate",
 								imageBlob.getDateCreated() + "");

@@ -10,10 +10,13 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
@@ -31,21 +34,32 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					
 					final FlowPanel imgWrapper = new FlowPanel();
 					Label nameRestaurant = new Label();
+					Label dateUploaded = new Label();
+					Label imageType = new Label();
 					Image img = new Image(imageBlob.getImageUrl());
 					Button deleteButton = new Button();
-					
+					final Button pubUnpubButton = new Button();
 					
 					imgWrapper.addStyleName("imgWrapper");
 					nameRestaurant.addStyleName("lastUploadedName");
+					dateUploaded.addStyleName("lastUploadedName");
+					imageType.addStyleName("lastUploadedName");
 					img.addStyleName("lastUploadedImage");
 					deleteButton.addStyleName("lastUploadedDeleteButton");
-					
+					pubUnpubButton.addStyleName("lastUploadedDeleteButton");
 					String restaurantName = restaurantController.getRestaurantName(Long.parseLong(imageBlob.getRestaurantId()));
 					if(restaurantName == null){
 						continue;
 					}
-					nameRestaurant.setText(restaurantName);
-			
+					
+					Long restId = Long.valueOf(imageBlob.getRestaurantId());
+					final ImageType imageDeletedType = imageBlob.getImageType();
+					
+					final Restaurant restaurant = restaurantController.getRestaurant(restId);
+					
+					nameRestaurant.setText(Customization.RESTAURANTNAME + ": "+restaurantName);
+					dateUploaded.setText(Customization.DATE_CREATED + ": " +imageBlob.getDateCreated().toString());
+					imageType.setText(Customization.IMAGE_TYPE + ": "+imageBlob.getImageType().name());
 					deleteButton.setText(Customization.DELETE);
 					deleteButton.addClickHandler(new ClickHandler() {
 						
@@ -60,6 +74,19 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 										if(result == true){
 											remove(imgWrapper);
 										}
+										switch (imageDeletedType) {
+										case LOGO:
+											restaurant.setMainLogoImageString("");
+											break;
+										case MENU:
+											restaurant.getMenuImages().remove(imageBlob);
+											break;
+										case PROFILE:
+											restaurant.getProfileImages().remove(imageBlob);
+											break;
+										default:
+											break;
+										}
 										PagesController.hideWaitPanel();
 									}
 									
@@ -71,10 +98,33 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 						}
 					});
 					
+					if(restaurant.isVisibleForApp()){
+						pubUnpubButton.setText(Customization.PROFILE_PUBLISHED);
+					}else{
+						pubUnpubButton.setText(Customization.PROFILE_UNPUBLISHED);
+					}
+					
+					pubUnpubButton.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
+							
+							restaurantController.saveRestaurant(restaurant, false);
+							if(restaurant.isVisibleForApp()){
+								pubUnpubButton.setText(Customization.PROFILE_PUBLISHED);
+							}else{
+								pubUnpubButton.setText(Customization.PROFILE_UNPUBLISHED);
+							}
+						}
+					});
+					
 					imgWrapper.add(nameRestaurant);
+					imgWrapper.add(dateUploaded);
+					imgWrapper.add(imageType);
 					imgWrapper.add(img);
 					imgWrapper.add(deleteButton);
-					
+					imgWrapper.add(pubUnpubButton);
 					add(imgWrapper);
 					
 				}

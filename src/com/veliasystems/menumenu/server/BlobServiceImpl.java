@@ -161,7 +161,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	public List<ImageBlob> getDefaultEmptyMenu() {
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
 		if (imgQuery == null)
-			return null;
+			return new ArrayList<ImageBlob>();
 		return imgQuery.filter("restId =", "0").list();
 	}
 	/**
@@ -359,7 +359,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
 		}catch(ImagesServiceFailureException e){
 			log.log(Level.SEVERE, "\noldImage: "
-					+oldImage 
+					+oldImage.getBlobKey()  
 					+"\n", e);
 			return null;
 		}
