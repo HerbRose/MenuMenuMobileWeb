@@ -145,7 +145,10 @@ public class RestaurantController {
 	 * @return name of  given {@link Restaurant}
 	 */
 	public String getRestaurantName(long id){
-		return restaurants.get(id).getName();
+		
+		Restaurant restaurant = restaurants.get(id);
+		
+		return restaurant == null ? null : restaurants.get(id).getName();
 	}
 	
 	/**

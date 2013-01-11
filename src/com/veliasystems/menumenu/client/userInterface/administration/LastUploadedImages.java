@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -13,7 +12,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.PagesController;
-import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -42,8 +40,11 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					img.addStyleName("lastUploadedImage");
 					deleteButton.addStyleName("lastUploadedDeleteButton");
 					
-					
-					nameRestaurant.setText(restaurantController.getRestaurantName(Long.parseLong(imageBlob.getRestaurantId())));
+					String restaurantName = restaurantController.getRestaurantName(Long.parseLong(imageBlob.getRestaurantId()));
+					if(restaurantName == null){
+						continue;
+					}
+					nameRestaurant.setText(restaurantName);
 			
 					deleteButton.setText(Customization.DELETE);
 					deleteButton.addClickHandler(new ClickHandler() {
@@ -82,7 +83,7 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("fail");
+				//Window.alert("fail");
 			}
 		});	
 	}
