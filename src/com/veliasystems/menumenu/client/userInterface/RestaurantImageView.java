@@ -312,9 +312,11 @@ public class RestaurantImageView extends MyPage {
 											restaurant.getProfileImages().remove(imageBlobClickedToDelete);
 										break;
 									}
+							
 									setDefautDeleteContent();
 									deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
 									checkChanges();	
+									changeVisibility("myImageEditPanel" + restaurant.getId(), true);
 									PagesController.hideWaitPanel();
 								}
 							}
@@ -539,7 +541,6 @@ public class RestaurantImageView extends MyPage {
 
 	private void setValidVisibility() {
 		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
-//		editPanel.getElement().getStyle().setDisplay(Display.NONE);
 		editPanel.getElement().getStyle().setHeight(0d, Unit.PX);
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		infoContainer.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
@@ -549,9 +550,7 @@ public class RestaurantImageView extends MyPage {
 		setValidDataStyle(null, phoneWrapper);
 		setValidDataStyle(null, wwwWrapper);
 		setValidDataStyle(null, bossWrapper);
-//		for (SwipeView swipeView : swipeViews) {
-//			swipeView.setEdit(false);
-//		}
+
 		hideDeletePanelForImages();
 		isEdit = false;
 	

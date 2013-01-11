@@ -359,7 +359,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
 		}catch(ImagesServiceFailureException e){
 			log.log(Level.SEVERE, "\noldImage: "
-					+oldImage 
+					+oldImage.getBlobKey()  
 					+"\n", e);
 			return null;
 		}
