@@ -14,6 +14,8 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
@@ -48,6 +50,12 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					if(restaurantName == null){
 						continue;
 					}
+					
+					Long restId = Long.valueOf(imageBlob.getRestaurantId());
+					final ImageType imageDeletedType = imageBlob.getImageType();
+					
+					final Restaurant restaurant = restaurantController.getRestaurant(restId);
+					
 					nameRestaurant.setText(Customization.RESTAURANTNAME + ": "+restaurantName);
 					dateUploaded.setText(Customization.DATE_CREATED + ": " +imageBlob.getDateCreated().toString());
 					imageType.setText(Customization.IMAGE_TYPE + ": "+imageBlob.getImageType().name());
@@ -64,6 +72,19 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 									public void onSuccess(Boolean result) {
 										if(result == true){
 											remove(imgWrapper);
+										}
+										switch (imageDeletedType) {
+										case LOGO:
+											restaurant.setMainLogoImageString("");
+											break;
+										case MENU:
+											restaurant.getMenuImages().remove(imageBlob);
+											break;
+										case PROFILE:
+											restaurant.getProfileImages().remove(imageBlob);
+											break;
+										default:
+											break;
 										}
 										PagesController.hideWaitPanel();
 									}

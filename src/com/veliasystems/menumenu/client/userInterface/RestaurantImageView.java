@@ -303,18 +303,20 @@ public class RestaurantImageView extends MyPage {
 							}
 							@Override
 							public void onSuccess(Boolean result) {
-								switch(imageBlobClickedToDelete.getImageType()){
-								case MENU:
-										restaurant.getMenuImages().remove(imageBlobClickedToDelete);
-									break;
-								case PROFILE:
-										restaurant.getProfileImages().remove(imageBlobClickedToDelete);
-									break;
+								if(result){
+									switch(imageBlobClickedToDelete.getImageType()){
+									case MENU:
+											restaurant.getMenuImages().remove(imageBlobClickedToDelete);
+										break;
+									case PROFILE:
+											restaurant.getProfileImages().remove(imageBlobClickedToDelete);
+										break;
+									}
+									setDefautDeleteContent();
+									deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+									checkChanges();	
+									PagesController.hideWaitPanel();
 								}
-								setDefautDeleteContent();
-								deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
-								checkChanges();	
-								PagesController.hideWaitPanel();
 							}
 						
 						});
