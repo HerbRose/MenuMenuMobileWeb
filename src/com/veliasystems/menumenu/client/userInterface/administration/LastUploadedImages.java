@@ -31,12 +31,16 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					
 					final FlowPanel imgWrapper = new FlowPanel();
 					Label nameRestaurant = new Label();
+					Label dateUploaded = new Label();
+					Label imageType = new Label();
 					Image img = new Image(imageBlob.getImageUrl());
 					Button deleteButton = new Button();
 					
 					
 					imgWrapper.addStyleName("imgWrapper");
 					nameRestaurant.addStyleName("lastUploadedName");
+					dateUploaded.addStyleName("lastUploadedName");
+					imageType.addStyleName("lastUploadedName");
 					img.addStyleName("lastUploadedImage");
 					deleteButton.addStyleName("lastUploadedDeleteButton");
 					
@@ -44,8 +48,9 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					if(restaurantName == null){
 						continue;
 					}
-					nameRestaurant.setText(restaurantName);
-			
+					nameRestaurant.setText(Customization.RESTAURANTNAME + ": "+restaurantName);
+					dateUploaded.setText(Customization.DATE_CREATED + ": " +imageBlob.getDateCreated().toString());
+					imageType.setText(Customization.IMAGE_TYPE + ": "+imageBlob.getImageType().name());
 					deleteButton.setText(Customization.DELETE);
 					deleteButton.addClickHandler(new ClickHandler() {
 						
@@ -72,6 +77,8 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 					});
 					
 					imgWrapper.add(nameRestaurant);
+					imgWrapper.add(dateUploaded);
+					imgWrapper.add(imageType);
 					imgWrapper.add(img);
 					imgWrapper.add(deleteButton);
 					

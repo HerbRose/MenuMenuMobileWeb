@@ -321,5 +321,11 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Given e-mail address is not a valid email address") 
 	String wrongEmailAddress();
+	
+	@DefaultStringValue("Date created") 
+	String dateCreated();
+	
+	@DefaultStringValue("Image type") 	
+	String imageType();
 
 }
