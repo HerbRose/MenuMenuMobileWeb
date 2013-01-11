@@ -35,6 +35,7 @@ import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -60,6 +61,7 @@ public class RestaurantImageView extends MyPage {
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private CityController cityController = CityController.getInstance();
 	private CookieController cookieController = CookieController.getInstance();
+	private ImagesController imagesController = ImagesController.getInstance();
 
 	private MyButton cancelButton = new MyButton(Customization.CANCEL);;
 	private MyButton saveButton = new MyButton(Customization.SAVE);
@@ -70,7 +72,7 @@ public class RestaurantImageView extends MyPage {
 	private Label nameLabel;
 	private Label adressLabel;
 	private Label phoneRestaurant;
-	private Label websiteLabel;
+	private Label districtLabel;
 	private Label bossLabel;
 	private Label addBoardText;
 	private Label warning = new Label();
@@ -86,7 +88,7 @@ public class RestaurantImageView extends MyPage {
 	private TextBox nameText = new TextBox();
 	private TextBox adressText = new TextBox();
 	private TextBox phoneRestaurantTextBox = new TextBox();
-	private TextBox websiteTextBox = new TextBox();
+	private TextBox districtTextBox = new TextBox();
 	private TextBox bossTextBox = new TextBox();
 
 	private FlowPanel container;
@@ -303,18 +305,22 @@ public class RestaurantImageView extends MyPage {
 							}
 							@Override
 							public void onSuccess(Boolean result) {
-								switch(imageBlobClickedToDelete.getImageType()){
-								case MENU:
-										restaurant.getMenuImages().remove(imageBlobClickedToDelete);
-									break;
-								case PROFILE:
-										restaurant.getProfileImages().remove(imageBlobClickedToDelete);
-									break;
+								if(result){
+									switch(imageBlobClickedToDelete.getImageType()){
+									case MENU:
+											restaurant.getMenuImages().remove(imageBlobClickedToDelete);
+										break;
+									case PROFILE:
+											restaurant.getProfileImages().remove(imageBlobClickedToDelete);
+										break;
+									}
+							
+									setDefautDeleteContent();
+									deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+									checkChanges();	
+									changeVisibility("myImageEditPanel" + restaurant.getId(), true);
+									PagesController.hideWaitPanel();
 								}
-								setDefautDeleteContent();
-								deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
-								checkChanges();	
-								PagesController.hideWaitPanel();
 							}
 						
 						});
@@ -352,6 +358,13 @@ public class RestaurantImageView extends MyPage {
 		String tab[] = url.split("/?");
 		String tab2[] = url.split("=");		
 		return tab2[1];
+	}
+	
+	@Override
+	protected void onPageHide() {
+		super.onPageHide();
+		
+		imagesController.imageUrl="";
 	}
 	
 	@Override
@@ -537,7 +550,6 @@ public class RestaurantImageView extends MyPage {
 
 	private void setValidVisibility() {
 		changeVisibility("myImageEditPanel"+restaurant.getId(), false);
-//		editPanel.getElement().getStyle().setDisplay(Display.NONE);
 		editPanel.getElement().getStyle().setHeight(0d, Unit.PX);
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 		infoContainer.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
@@ -547,9 +559,7 @@ public class RestaurantImageView extends MyPage {
 		setValidDataStyle(null, phoneWrapper);
 		setValidDataStyle(null, wwwWrapper);
 		setValidDataStyle(null, bossWrapper);
-//		for (SwipeView swipeView : swipeViews) {
-//			swipeView.setEdit(false);
-//		}
+
 		hideDeletePanelForImages();
 		isEdit = false;
 	
@@ -688,10 +698,10 @@ public class RestaurantImageView extends MyPage {
 			phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
 			phoneRestaurantTextBox.addStyleName("myTextBox nameBox arialBold");
 
-			websiteLabel = new Label(Customization.WEBSITE_LABEL);
-			websiteLabel.addStyleName("addRestaurantLabel myLabel arialBold");
+			districtLabel = new Label(Customization.DISTRICT);
+			districtLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 
-			websiteTextBox.addStyleName("myTextBox nameBox arialBold");
+			districtTextBox.addStyleName("myTextBox nameBox arialBold");
 
 			bossLabel = new Label(Customization.BOSS_LABEL);
 			bossLabel.addStyleName("addRestaurantLabel myLabel arialBold");
@@ -719,8 +729,8 @@ public class RestaurantImageView extends MyPage {
 			phoneWrapper.add(phoneRestaurant);
 			phoneWrapper.add(phoneRestaurantTextBox);
 
-			wwwWrapper.add(websiteLabel);
-			wwwWrapper.add(websiteTextBox);
+			wwwWrapper.add(districtLabel);
+			wwwWrapper.add(districtTextBox);
 
 			bossWrapper.add(bossLabel);
 			bossWrapper.add(bossTextBox);
@@ -765,7 +775,7 @@ public class RestaurantImageView extends MyPage {
 		nameText.setText(restaurant.getName());
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
-		websiteTextBox.setText("");
+		districtTextBox.setText("");
 		bossTextBox.setText(restaurant.getNameUser());
 		
 		adminPanelWrapper.getElement().getStyle()
