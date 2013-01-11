@@ -95,9 +95,16 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 		
 		List< Map<String,String> > attributes = new ArrayList< Map<String,String>>();
-		ImageBlob emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
+		ImageBlob emptyDefoultMenu;
+		if(blobService.getDefaultEmptyMenu().isEmpty()){
+			emptyDefoultMenu = new ImageBlob();
+		}else{
+			emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
+		}
+		
 		
 		for (Restaurant r : rests) {
+			System.out.println(r.getName());
 			if(r.isVisibleForApp()){
 				
 				List<String> blobkeys = new ArrayList<String>();
@@ -136,8 +143,8 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
 				map.put( "lat", "" + r.getLat());
 				map.put( "lng", "" + r.getLng());
+				map.put("phoneRestaurant", r.getPhoneRestaurant());
 				
-
 				for (ImageBlob imageBlob : imageBlobs) {
 					if(imageBlob != null) map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
 				}
