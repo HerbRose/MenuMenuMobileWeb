@@ -78,6 +78,7 @@ public class MyImage extends FlowPanel {
 				if(!parent.isEdit()){
 					PagesController.showWaitPanel();
 					restaurantController.setEmptyBoard(parent.getRestaurant(),imageType);
+					getImagesController().selectImage(getMe());
 				}
 
 			}

@@ -145,6 +145,9 @@ public class SwipeView extends FlowPanel {
 					imagesController.getDefoultEmptyMenu().getImageUrl()),
 					parent, imageType);
 			scrollerContainer.insert(emptyBoard, 0);
+			if( mainImageUrl.isEmpty() ){
+				imagesController.selectImage(emptyBoard);
+			}
 		}
 	//	wrapper.scrollToRight();
 		

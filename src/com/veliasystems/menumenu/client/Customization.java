@@ -97,7 +97,7 @@ public class Customization {
 	public static final String ADMIN_PANEL = translated.adminPanel();
 
 
-	public static final String WEBSITE_LABEL = translated.websiteLabel();
+	public static final String DISTRICT = translated.district();
 
 
 	public static final String ADD_BOARD = translated.addBoard();

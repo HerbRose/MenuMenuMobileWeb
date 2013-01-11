@@ -70,7 +70,7 @@ public class RestaurantImageView extends MyPage {
 	private Label nameLabel;
 	private Label adressLabel;
 	private Label phoneRestaurant;
-	private Label websiteLabel;
+	private Label districtLabel;
 	private Label bossLabel;
 	private Label addBoardText;
 	private Label warning = new Label();
@@ -86,7 +86,7 @@ public class RestaurantImageView extends MyPage {
 	private TextBox nameText = new TextBox();
 	private TextBox adressText = new TextBox();
 	private TextBox phoneRestaurantTextBox = new TextBox();
-	private TextBox websiteTextBox = new TextBox();
+	private TextBox districtTextBox = new TextBox();
 	private TextBox bossTextBox = new TextBox();
 
 	private FlowPanel container;
@@ -688,10 +688,10 @@ public class RestaurantImageView extends MyPage {
 			phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
 			phoneRestaurantTextBox.addStyleName("myTextBox nameBox arialBold");
 
-			websiteLabel = new Label(Customization.WEBSITE_LABEL);
-			websiteLabel.addStyleName("addRestaurantLabel myLabel arialBold");
+			districtLabel = new Label(Customization.DISTRICT);
+			districtLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 
-			websiteTextBox.addStyleName("myTextBox nameBox arialBold");
+			districtTextBox.addStyleName("myTextBox nameBox arialBold");
 
 			bossLabel = new Label(Customization.BOSS_LABEL);
 			bossLabel.addStyleName("addRestaurantLabel myLabel arialBold");
@@ -719,8 +719,8 @@ public class RestaurantImageView extends MyPage {
 			phoneWrapper.add(phoneRestaurant);
 			phoneWrapper.add(phoneRestaurantTextBox);
 
-			wwwWrapper.add(websiteLabel);
-			wwwWrapper.add(websiteTextBox);
+			wwwWrapper.add(districtLabel);
+			wwwWrapper.add(districtTextBox);
 
 			bossWrapper.add(bossLabel);
 			bossWrapper.add(bossTextBox);
@@ -765,7 +765,7 @@ public class RestaurantImageView extends MyPage {
 		nameText.setText(restaurant.getName());
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
-		websiteTextBox.setText("");
+		districtTextBox.setText("");
 		bossTextBox.setText(restaurant.getNameUser());
 		
 		adminPanelWrapper.getElement().getStyle()
@@ -835,6 +835,7 @@ public class RestaurantImageView extends MyPage {
 		formLogoUpload.setVisible(false);
 		formLogoUpload.setStyleName("formLogoUpload", true);
 		formLogoUpload.getElement().getStyle().setDisplay(Display.NONE);
+		
 		
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isOS6 = osType.toLowerCase().indexOf("os 6")>=0;

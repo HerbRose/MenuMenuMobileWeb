@@ -261,7 +261,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 		mailUser = new Label(Customization.USER_MAIL + ":");
 		mailUserTextBox.setTitle(Customization.USER_MAIL);
 
-		websiteLabel = new Label(Customization.WEBSITE_LABEL);
+		websiteLabel = new Label(Customization.DISTRICT);
 		websiteLabel.addStyleName("addRestaurantLabel myLabel arialBold");
 
 		websiteTextBox.addStyleName("myTextBox nameBox arialBold");
