@@ -104,7 +104,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}
 
 	private void setHeader() {
-		header = new JQMHeader(Customization.ADD_USER);
+		header = new JQMHeader("MenuMenuMobile");
 		header.setFixed(true);
 		add(header);
 	}
