@@ -232,6 +232,35 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		if (imageBlob == null) {
 			return false;
 		}
+		
+		Long restaurantId = Long.valueOf(imageBlob.getRestaurantId());
+	
+		Restaurant restaurant = dao.ofy().find(Restaurant.class, restaurantId);
+		
+		switch (imageBlob.getImageType()) {
+		case MENU:
+			if(restaurant.getMainMenuImageString() != null && restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+				restaurant.setMainMenuImageString("");
+				dao.ofy().put(restaurant);
+			}
+		case PROFILE: 
+			if(restaurant.getMainProfileImageString() != null && restaurant.getMainProfileImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+				restaurant.setMainProfileImageString("");
+				dao.ofy().put(restaurant);
+			}
+			break;
+		case LOGO:
+			if(restaurant.getMainLogoImageString() != null && restaurant.getMainLogoImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+				restaurant.setMainLogoImageString("");
+				dao.ofy().put(restaurant);
+			}
+			break;
+			
+		default:
+			break;
+		}
+		
+		
 		if(imageBlob.getBlobKeyOriginalSize() != null && !imageBlob.getBlobKeyOriginalSize().isEmpty()){
 			BlobstoreServiceFactory.getBlobstoreService().delete(
 					new BlobKey(imageBlob.getBlobKeyOriginalSize()));
@@ -721,19 +750,23 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public List<ImageBlob> getLast24hImages() {
-		//changeTimeToMiliSec();
 		List<ImageBlob> images = new ArrayList<ImageBlob>();
 		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
 		if (imgQuery == null){
+			log.severe("no images found");
 			return images;
 		}
 
-		Calendar today = Calendar.getInstance();
-		today.add(Calendar.DATE, -1);
 		
-		Date yesterday = new Date(today.getTimeInMillis());
+		long oneDayInMiliseconds = 86400000;
+		long today = new Date().getTime();
+		long yesterday = today - oneDayInMiliseconds;
 
-		return imgQuery.filter("timeInMiliSec >", yesterday.getTime()).list();
+		List<ImageBlob> imageBlobs = imgQuery.filter("timeInMiliSec >", yesterday).list();
+		
+//		log.info("imageBlobs.size = " + imageBlobs.size() +", today = " + today + ", yesterday = " + yesterday );
+		
+		return imageBlobs;
 	}
 	
 	/**
