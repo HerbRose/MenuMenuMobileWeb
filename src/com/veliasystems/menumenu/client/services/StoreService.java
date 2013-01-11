@@ -98,7 +98,7 @@ public interface StoreService extends RemoteService {
 	 * @param oldEmail - old email
 	 * @return {@link User} object after change data
 	 */
-	User changeUserData(User user, String oldEmail);
+	User changeUserData(User user, String oldPassword, String newPassword);
 	/**
 	 * 
 	 * @return List of users

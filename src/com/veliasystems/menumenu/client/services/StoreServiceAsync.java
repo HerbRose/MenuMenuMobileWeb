@@ -52,7 +52,7 @@ public interface StoreServiceAsync {
 	void clearBoard(Restaurant restaurant, ImageType imageType,
 			AsyncCallback<Restaurant> asyncCallback);
 
-	void changeUserData(User user, String oldEmail, AsyncCallback<User> callback);
+	void changeUserData(User user, String oldPassword, String newPassword, AsyncCallback<User> callback);
 
 	void removeUser(User user, AsyncCallback<String> callback);
 

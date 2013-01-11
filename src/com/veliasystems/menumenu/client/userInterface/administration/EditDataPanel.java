@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.userInterface.administration;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -83,22 +84,25 @@ public class EditDataPanel extends FlowPanel implements IManager {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (validChangedData()) {
-					User user = new User("tmp");
-
+					User user = new User(userController.getLoggedUser().getEmail());
+					String oldPassword = "";
+					String newPassword = "";
 					if (!editNameBox.getValue().trim().equals(""))
 						user.setName(editNameBox.getValue());
+					
 					if (!editSurnameBox.getValue().trim().equals(""))
 						user.setSurname(editSurnameBox.getValue());
+					
 					if (!repeatPasswordBox.getValue().trim().equals("")) {
-						user.setPassword(repeatPasswordBox.getValue());
-					} else {
-						user.setPassword(userController.getLoggedUser()
-								.getPassword());
-					}
+						oldPassword = inputOldPasswordBox.getValue();
+						newPassword = repeatPasswordBox.getValue();
+					} 
+					
 					if (!phoneNumerBox.getValue().trim().equals(""))
 						user.setPhoneNumber(phoneNumerBox.getValue());
-
-					userController.changeUserData(user);
+					
+					userController.changeUserData(user, oldPassword, newPassword);
+					clearShadows();
 				}
 
 			}
@@ -122,27 +126,31 @@ public class EditDataPanel extends FlowPanel implements IManager {
 	private boolean validChangedData() {
 		boolean isCorrect = false;
 
-		if (userController.isValidPassword(inputOldPasswordBox.getValue()
-				.trim())) {
+
 			if (!editPasswordBox.getValue().trim().equals("")) {
-				if (editPasswordBox.getValue().trim().equals("")
-						|| repeatPasswordBox.getValue().trim().equals("")
-						|| !editPasswordBox.getValue().equals(
-								repeatPasswordBox.getValue())) {
-					editPasswordBox.setStyleName("redShadow", true);
-					repeatPasswordBox.setStyleName("redShadow", true);
-					isCorrect = false;
-				} else {
-					editPasswordBox.setStyleName("greenShadow", true);
-					repeatPasswordBox.setStyleName("greenShadow", true);
-					isCorrect = true;
+
+				if(!inputOldPasswordBox.getValue().isEmpty()){
+				
+					if (editPasswordBox.getValue().trim().equals("")
+							|| repeatPasswordBox.getValue().trim().equals("")
+							|| !editPasswordBox.getValue().equals(repeatPasswordBox.getValue())) {
+						editPasswordBox.setStyleName("redShadow", true);
+						repeatPasswordBox.setStyleName("redShadow", true);
+						isCorrect = false;
+					} else {
+						editPasswordBox.setStyleName("greenShadow", true);
+						repeatPasswordBox.setStyleName("greenShadow", true);
+						isCorrect = true;
+					}
 				}
+				
+				else{
+					inputOldPasswordBox.setStyleName("redShadow", true);
+				}
+				
 			} else {
 				isCorrect = true;
 			}
-		} else {
-			inputOldPasswordBox.setStyleName("redShadow", true);
-		}
 
 		return isCorrect;
 	}
@@ -154,6 +162,17 @@ public class EditDataPanel extends FlowPanel implements IManager {
 		editSurnameBox.setValue(user.getSurname());
 		phoneNumerBox.setValue(user.getPhoneNumber());
 
+	}
+	
+	private void clearShadows(){
+		editPasswordBox.removeStyleName("greenShadow");
+		editPasswordBox.removeStyleName("redShadow");
+		
+		repeatPasswordBox.removeStyleName("greenShadow");
+		repeatPasswordBox.removeStyleName("redShadow");
+		
+		inputOldPasswordBox.removeStyleName("greenShadow");
+		inputOldPasswordBox.removeStyleName("redShadow");
 	}
 
 	@Override

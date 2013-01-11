@@ -955,24 +955,29 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 
 	@Override
-	public User changeUserData(User user, String oldEmail) {
-			
+	public User changeUserData(User user, String oldPassword, String newPassword) {
 		List<User> userList = getUsers();
 		User userToChange = null;
+
 		for (User user2 : userList) {
-			if(user2.getEmail().equals(oldEmail)){
+			if(user2.getEmail().equals(user.getEmail())){
 				userToChange = user2;
 			}
 		}
 		if(userToChange == null){
 			return null;
 		}
-		userToChange.setPassword(user.getPassword());
-		userToChange.setPhoneNumber(user.getPhoneNumber());
+		
 		userToChange.setName(user.getName());
 		userToChange.setSurname(user.getSurname());
+		userToChange.setPhoneNumber(user.getPhoneNumber());
+		
+		if(!newPassword.isEmpty() && oldPassword.equals(userToChange.getPassword())){
+			userToChange.setPassword(newPassword);
+		}
 		
 		dao.ofy().put(userToChange);
+		userToChange.setPassword("");
 		return userToChange;
 	}
 
