@@ -370,8 +370,12 @@ width: 100px;
 	padding: 0px !important;
 }
 
-/* testing only */
+/* CROP */
 
+.boundaryPanel{
+	margin-left: auto;
+	margin-right: auto;
+}
 .mainPanel{
 /* 	width: 239px; */
 	position: relative;
@@ -384,15 +388,15 @@ width: 100px;
 	width: 100%;
 	background-color: #000;
 	opacity: 0.5;
-	
+
 	z-index: 5;
-	
+
 }
 .topHand{
 	position: absolute;
 	top:20%;
 	left: 50%;
-	
+
 	width: 0; 
 	height: 0; 
 	border-right: 15px solid transparent;
@@ -409,14 +413,14 @@ width: 100px;
 /* 	width: 20%; */
 	background-color: #000;
 	opacity: 0.5;
-	
+
 	z-index: 5;
 }
 .rightHand{
 	position: absolute;
 	top:50%;
 	right: 20%;
-	
+
 	width: 0; 
 	height: 0; 
 	border-top: 15px solid transparent;
@@ -432,14 +436,14 @@ width: 100px;
 /* 	width: 20%; */
 	background-color: #000;
 	opacity: 0.5;
-	
+
 	z-index: 5;
 }
 .leftHand{
 	position: absolute;
 	top:50%;
 	left: 20%;
-	
+
 	width: 0; 
 	height: 0; 
 	border-top: 15px solid transparent;
@@ -455,7 +459,7 @@ width: 100px;
 	width: 100%;
 	background-color: #000;
 	opacity: 0.5;
-	
+
 	z-index: 5;
 }
 .bottomHand{
@@ -476,7 +480,7 @@ width: 100px;
 	background-color: rgba(255,255,255,0);
 	opacity: 1;
 	border: 1px solid #000;
-	
+
 	z-index: 10;
 }
 .moveChecked{
@@ -496,4 +500,142 @@ width: 100px;
 	-webkit-transform:rotate(45deg); /* Safari and Chrome */
 	-o-transform:rotate(45deg); /* Opera */
 }
-/* KONIEC testing only */
+
+/* .mainPanel{ */
+/* /* 	width: 239px; */ */
+/* 	position: relative; */
+/* } */
+/* .topPanel{ */
+/* 	position: absolute; */
+/* 	top: 0px; */
+/* 	left: 0px; */
+/* /* 	height: 20%; */ */
+/* 	width: 100%; */
+/* 	background-color: #000; */
+/* 	opacity: 0.5; */
+	
+/* 	z-index: 5; */
+	
+/* } */
+
+/* .topHand, .bottomHand, .rightHand, .leftHand{ */
+/* 	position: absolute; */
+/* /* 	top:20%; */ */
+/* /* 	left: 50%; */ */
+	
+/* 	width: 60px;  */
+/* 	height: 60px;  */
+/* 	border: 1px rgba(255, 255, 255, 0.5);  */
+/* 	background-color: #00F; */
+/* /* 	border-right: 15px solid transparent; */ */
+/* /* 	border-left: 15px solid transparent; */ */
+/* /* 	border-bottom: 15px solid rgba(255, 255, 255, 0.5); */ */
+
+
+/* } */
+/*  #topDrag{ */
+/*  	position: absolute; */
+/*  	top:20%; */
+/* 	left: 50%; */
+	
+/* 	height: 30px; */
+/*  } */
+/* .rightPanel{ */
+/* 	position: absolute; */
+/* 	top: 0px; */
+/* 	right: 0px; */
+/* 	height: 100%; */
+/* /* 	width: 20%; */ */
+/* 	background-color: #000; */
+/* 	opacity: 0.5; */
+	
+/* 	z-index: 5; */
+/* } */
+/* /* .rightHand{ */ */
+/* /* 	position: absolute; */ */
+/* /* 	top:50%; */ */
+/* /* 	right: 20%; */ */
+	
+/* /* 	width: 0;  */ */
+/* /* 	height: 0;  */ */
+/* /* 	border-top: 15px solid transparent; */ */
+/* /* 	border-bottom: 15px solid transparent; */ */
+/* /* 	border-left: 15px solid rgba(255, 255, 255, 0.5); */ */
+
+/* /* } */ */
+/* .leftPanel{ */
+/* 	position: absolute; */
+/* 	top: 0px; */
+/* 	left: 0px; */
+/* 	height: 100%; */
+/* /* 	width: 20%; */ */
+/* 	background-color: #000; */
+/* 	opacity: 0.5; */
+	
+/* 	z-index: 5; */
+/* } */
+/* /* .leftHand{ */ */
+/* /* 	position: absolute; */ */
+/* /* 	top:50%; */ */
+/* /* 	left: 20%; */ */
+	
+/* /* 	width: 0;  */ */
+/* /* 	height: 0;  */ */
+/* /* 	border-top: 15px solid transparent; */ */
+/* /* 	border-bottom: 15px solid transparent; */ */
+/* /* 	border-right: 15px solid rgba(255, 255, 255, 0.5); */ */
+
+/* /* } */ */
+/* .bottomPanel{ */
+/* 	position: absolute; */
+/* 	bottom: 0px; */
+/* 	left: 0px; */
+/* /* 	height: 20%; */ */
+/* 	width: 100%; */
+/* 	background-color: #000; */
+/* 	opacity: 0.5; */
+	
+/* 	z-index: 5; */
+/* } */
+/* /* .bottomHand{ */ */
+/* /* 	position: absolute; */ */
+/* /* 	bottom:20%; */ */
+/* /* 	left: 50%; */ */
+
+/* /* 	width: 0;  */ */
+/* /* 	height: 0;  */ */
+/* /* 	border-right: 15px solid transparent; */ */
+/* /* 	border-left: 15px solid transparent; */ */
+/* /* 	border-top: 15px solid rgba(255, 255, 255, 0.5); */ */
+
+/* /* } */ */
+/* .centerMovePanel{ */
+/* 	position: absolute; */
+/* 	bottom: 0px; */
+/* 	background-color: rgba(255,255,255,0); */
+/* 	opacity: 1; */
+/* 	border: 1px solid #000; */
+	
+/* 	z-index: 10; */
+/* } */
+/* .moveChecked{ */
+/* 	background-color: rgba(255,255,255,0.0); */
+/* /* 	border: 1px dashed #00F5FF; */ */
+/* } */
+/* .cropArrow{ */
+/* 	z-index: 12; */
+/* } */
+/* .cropPanel{ */
+/* 	z-index: 12; */
+/* } */
+/* .moveElementHidden{ */
+/* 	display: none; */
+/* } */
+/* .rotation90left{ */
+/* /* 	transform:rotate(45deg); */ */
+/* /* 	-ms-transform:rotate(45deg); IE 9 */ */
+/* /* 	-moz-transform:rotate(45deg); Firefox */ */
+/* /* 	-webkit-transform:rotate(45deg); Safari and Chrome */ */
+/* /* 	-o-transform:rotate(45deg); Opera */ */
+/* } */
+/*CROP*/

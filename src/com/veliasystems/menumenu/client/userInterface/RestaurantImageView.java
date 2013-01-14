@@ -364,7 +364,7 @@ public class RestaurantImageView extends MyPage {
 	protected void onPageHide() {
 		super.onPageHide();
 		
-		imagesController.imageUrl="";
+		
 	}
 	
 	@Override
