@@ -102,7 +102,6 @@ public class LoadDataScreen extends JQMPage {
 	private void setData(Map<String, Object> data){
 		List<Restaurant> restaurants = (List<Restaurant>) data.get("Restaurants") ;
 		Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
-		
 		for (Restaurant restaurant : restaurants) {
 			restaurantsFromServer.put(restaurant.getId(), restaurant);
 		}
