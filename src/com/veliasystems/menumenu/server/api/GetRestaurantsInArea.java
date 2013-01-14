@@ -96,7 +96,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 		} catch (NumberFormatException e) {
 			resp.getWriter().println("latitude and lon... must be a number");
 			resp.getWriter().println(e.getMessage());
-			System.out.println(e.getMessage());
+			log.severe(e.getMessage());
 			resp.flushBuffer();
 			return;
 		}

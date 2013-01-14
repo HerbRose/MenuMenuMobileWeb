@@ -104,7 +104,6 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 		
 		for (Restaurant r : rests) {
-			System.out.println(r.getName());
 			if(r.isVisibleForApp()){
 				
 				List<String> blobkeys = new ArrayList<String>();
