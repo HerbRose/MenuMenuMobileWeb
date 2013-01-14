@@ -658,15 +658,16 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		List<ImageBlob> imageBlobList;
 		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
-		if(restaurantQuery == null) return null;
-		restaurantsList= restaurantQuery.filter("cityId=", cityId).list();
-		for (Restaurant restaurant : restaurantsList) {
-			Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
-			if(imageBlobQuery!=null){
-					 imageBlobList = imageBlobQuery.filter("restId=", restaurant.getId()).list();
-					 for (ImageBlob imageBlob : imageBlobQuery) {
-							BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
-					 }
+		if(restaurantQuery != null){
+			restaurantsList= restaurantQuery.filter("cityId=", cityId).list();
+			for (Restaurant restaurant : restaurantsList) {
+				Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
+				if(imageBlobQuery!=null){
+						 imageBlobList = imageBlobQuery.filter("restId=", restaurant.getId()).list();
+						 for (ImageBlob imageBlob : imageBlobQuery) {
+								BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
+						 }
+				}
 			}
 		}
 		
