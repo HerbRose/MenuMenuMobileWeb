@@ -127,7 +127,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<City> cityQuery = dao.ofy().query(City.class);
 		if(cityQuery == null) return null;
 		List<City> listCities = cityQuery.filter("id IN", tmpList).list();
-		if(listCities == null) return null;
+		if(listCities == null) return new ArrayList<City>();
 		return listCities;
 		
 	}
@@ -146,7 +146,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}	
 		Query<City> cityQuery = dao.ofy().query(City.class);
 		if(cityQuery == null) return null;
-		List<City> cityList = cityQuery.filter("id IN", citiesId).list();	
+		List<City> cityList = cityQuery.filter("id IN", citiesId).list();
+		if(cityList == null) return new ArrayList<City>();
 		return cityList;	
 	}
 	private ImageBlob loadImageBlob(String imageBlobKeyString) {
@@ -588,7 +589,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restQuery == null) return null;
 		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
 		if(listRestaurant == null) return new ArrayList<Restaurant>();
-		System.out.println("Size of list restaurant found by gae: " + listRestaurant.size());
 		return getImageLists(listRestaurant);
 		 
 	}
@@ -600,10 +600,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
 		List<City> cityList = dao.ofy().query(City.class).list();
-		System.out.println("Get images lists " + restaurants.size());
 		
 		for ( Restaurant r : restaurants ) {
-			System.out.println("restaurant name " + r.getName());
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
 			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
@@ -664,15 +662,16 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		List<ImageBlob> imageBlobList;
 		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
-		if(restaurantQuery == null) return null;
-		restaurantsList= restaurantQuery.filter("cityId=", cityId).list();
-		for (Restaurant restaurant : restaurantsList) {
-			Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
-			if(imageBlobQuery!=null){
-					 imageBlobList = imageBlobQuery.filter("restId=", restaurant.getId()).list();
-					 for (ImageBlob imageBlob : imageBlobQuery) {
-							BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
-					 }
+		if(restaurantQuery != null){
+			restaurantsList= restaurantQuery.filter("cityId =", cityId).list();
+			for (Restaurant restaurant : restaurantsList) {
+				Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
+				if(imageBlobQuery!=null){
+						 imageBlobList = imageBlobQuery.filter("restId =", restaurant.getId()).list();
+						 for (ImageBlob imageBlob : imageBlobQuery) {
+								BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
+						 }
+				}
 			}
 		}
 		
