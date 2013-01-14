@@ -148,9 +148,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(cityQuery == null) return null;
 		List<City> cityList = cityQuery.filter("id IN", citiesId).list();
 		if(cityList == null) return new ArrayList<City>();
-		for (City city : cityList) {
-			System.out.println("City list: " + city.getCity());
-		}
 		return cityList;	
 	}
 	private ImageBlob loadImageBlob(String imageBlobKeyString) {
@@ -583,16 +580,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private List<Restaurant> loadRestaurantsForUser(User user){
 		
 		List<Long> tmpList = user.getRestaurantsId();
-		
-		for (Long long1 : tmpList) {
-			System.out.println(long1 + "");
-		}
-		
+
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if(restQuery == null) return null;
 		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
 		if(listRestaurant == null) return new ArrayList<Restaurant>();
-		System.out.println("Size of list restaurant found by gae: " + listRestaurant.size());
 		return getImageLists(listRestaurant);
 		 
 	}
@@ -604,10 +596,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
 		List<City> cityList = dao.ofy().query(City.class).list();
-		System.out.println("Get images lists " + restaurants.size());
 		
 		for ( Restaurant r : restaurants ) {
-			System.out.println("restaurant name " + r.getName());
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
 			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
