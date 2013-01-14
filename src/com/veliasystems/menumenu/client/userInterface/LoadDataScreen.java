@@ -102,6 +102,7 @@ public class LoadDataScreen extends JQMPage {
 	private void setData(Map<String, Object> data){
 		List<Restaurant> restaurants = (List<Restaurant>) data.get("Restaurants") ;
 		Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
+		consoleLog("Size : " + restaurants.size());
 		for (Restaurant restaurant : restaurants) {
 			restaurantsFromServer.put(restaurant.getId(), restaurant);
 		}
@@ -130,6 +131,10 @@ public class LoadDataScreen extends JQMPage {
 		cityController.setCities(citiesFromServer);
 		imagesController.setDefoultEmptyMenuImageBlobMap(defoultEmptyProfilImageBlobMap);
 	}
+	
+	private static native void consoleLog(String message)/*-{
+		console.log(message);
+	}-*/;
 	
 	@Override
 	protected void onPageShow() {

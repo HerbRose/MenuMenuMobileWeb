@@ -590,7 +590,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(listRestaurant == null) return new ArrayList<Restaurant>();
 		System.out.println("Size of list restaurant found by gae: " + listRestaurant.size());
 		return getImageLists(listRestaurant);
-		
+		 
 	}
 	/**
 	 * 
@@ -600,9 +600,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
 		
 		List<City> cityList = dao.ofy().query(City.class).list();
+		System.out.println("Get images lists " + restaurants.size());
 		
 		for ( Restaurant r : restaurants ) {
-			
+			System.out.println("restaurant name " + r.getName());
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
 			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
