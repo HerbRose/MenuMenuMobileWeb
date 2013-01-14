@@ -580,11 +580,15 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		List<Long> tmpList = user.getRestaurantsId();
 		
+		for (Long long1 : tmpList) {
+			System.out.println(long1 + "");
+		}
+		
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if(restQuery == null) return null;
 		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
-		if(listRestaurant == null) return null;
-		
+		if(listRestaurant == null) return new ArrayList<Restaurant>();
+		System.out.println("Size of list restaurant found by gae: " + listRestaurant.size());
 		return getImageLists(listRestaurant);
 		
 	}
