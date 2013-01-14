@@ -327,5 +327,8 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Image type") 	
 	String imageType();
+	
+	@DefaultStringValue("Visibility for tests") 	//not translated yets
+	String visibilityForTests();
 
 }

@@ -162,7 +162,7 @@ public class Restaurant implements Serializable {
 	 * @param lng - {@link String}
 	 */
 	public void setLng(String lng) {
-		setLatitude(Double.valueOf(lng));
+		setLongitude(Double.valueOf(lng));
 		this.lng = lng;
 	}
 	/**
@@ -177,7 +177,7 @@ public class Restaurant implements Serializable {
 	 * @param lat - {@link String}
 	 */
 	public void setLat(String lat) {
-		setLongitude(Double.valueOf(lat));
+		setLatitude(Double.valueOf(lat));
 		this.lat = lat;
 	}
 

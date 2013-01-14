@@ -17,7 +17,12 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
-
+/**
+ * 
+ * @author velia-systems
+ * if parameter <code>production</code> is not specified or is empty or is not set to false then servlet returns productions cities
+ *
+ */
 public class GetCitiesServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 2566472678914274709L;
@@ -47,12 +52,19 @@ public class GetCitiesServlet extends HttpServlet {
 			resp.getWriter().print(jsonp + "(");
 		}
 		
+		String isProductionString = req.getParameter("production");
+		
+		boolean isProduction = true;
+			
+		if (isProductionString!=null && isProductionString.equalsIgnoreCase("false")) {
+				isProduction = false;
+		}
 		
 		List< Map<String,String> > attributes = new ArrayList< Map<String,String>>();
 		
 		
 		for (City city : cities) {
-			if( city.isVisable()){
+			if( city.isVisable(isProduction)){
 				Map<String,String> cityPair = new HashMap<String,String>();
 				cityPair.put( "name", city.getCity());
 				cityPair.put( "id", "" + city.getId());

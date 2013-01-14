@@ -82,14 +82,21 @@ public class GetRestaurantsInArea extends HttpServlet {
 			return;
 		}
 		
+		String isProductionString = req.getParameter("production");
 		
-//		List<Restaurant> restaurantList = storeService.loadRestaurants();
+		boolean isProduction = true;
+			
+		if (isProductionString!=null && isProductionString.equalsIgnoreCase("false")) {
+				isProduction = false;
+		}
+		
+
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
-//
+
 		double latDevice;
 		double lonDevice;
-//
+
 		try {
 			latDevice = Double.parseDouble(latDeviceString); // Double.valueOf(latDeviceString);
 			lonDevice = Double.parseDouble(lonDeviceString);// Double.valueOf(lonDeviceString);
@@ -101,11 +108,22 @@ public class GetRestaurantsInArea extends HttpServlet {
 			return;
 		}
 		
-		List<Restaurant> restaurantList = storeService.getRestaurantsInArea(latDevice);
+		List<Restaurant> restaurantListAll = storeService.getRestaurantsInArea(latDevice, lonDevice);
+		List<Restaurant> restaurantList = new ArrayList<Restaurant>();
+		
+		for (Restaurant restaurant : restaurantListAll) {
+			if(restaurant.getLatitude() != 0 && restaurant.getLongitude() != 0){
+				
+				boolean tmp = isVisible(restaurant.getCityId(), isProduction);
 	
+				if( tmp && restaurant.isVisibleForApp()){
+					restaurantList.add(restaurant);
+				}
+			}
+			
+		}
 
-		long distance = 1;
-
+	
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
 
@@ -127,25 +145,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 		List<Map<String, String>> attributes = new ArrayList<Map<String, String>>();
 
 		for (Restaurant restaurant : restaurantList) {
-
-			String restLatString = restaurant.getLat();
-			String restLonString = restaurant.getLng();
-			double restLat = 0;
-			double restLon = 0;
-			boolean isPosition = false;
-
-			if (restLatString != null && restLonString != null
-					&& !restLatString.equals("") && !restLonString.equals("")) {
-				try {
-					restLat = Double.parseDouble(restLatString); // Double.valueOf(latDeviceString);
-					restLon = Double.parseDouble(restLonString);// Double.valueOf(lonDeviceString);
-					isPosition = true;
-				} catch (NumberFormatException e) {
-
-				}
-			}
-			if (!restaurant.isVisibleForApp()) {
-				if(isPosition && distFrom(latDevice, lonDevice, restLat, restLon) <= distance){
+			
 					Map<String, String> map = new HashMap<String, String>();
 
 					List<String> blobkeys = new ArrayList<String>();
@@ -207,9 +207,9 @@ public class GetRestaurantsInArea extends HttpServlet {
 					}
 					attributes.add(map);
 				}
+		
+			cityMap.clear();
 
-			}
-		}
 
 		resp.getWriter().print(gson.toJson(attributes));
 		if (jsonp != null) {
@@ -219,20 +219,33 @@ public class GetRestaurantsInArea extends HttpServlet {
 
 	}
 
-	private Map<Long, String> cityMap = new HashMap<Long, String>();
+	private Map<Long, City> cityMap = new HashMap<Long, City>();
 	
-	private String getCityName(Long cityId){
+	private String getCityName(long cityId){
 		
 		if(cityMap.containsKey(cityId)){
-			return cityMap.get(cityId);
+			return cityMap.get(cityId).getCity();
 		}else{
 			City city = storeService.loadCity(cityId);
 			if(city == null) return "";
 			
-			cityMap.put(city.getId(), city.getCity());
-			return cityMap.get(cityId);
+			cityMap.put(city.getId(), city);
+			return cityMap.get(cityId).getCity();
 		}
 		
+	}
+	
+	private boolean isVisible(long cityId, boolean isProduction){
+		
+		if(cityMap.containsKey(cityId)){
+			return cityMap.get(cityId).isVisable(isProduction);
+		}else{
+			City city = storeService.loadCity(cityId);
+			if(city == null) return false;
+			
+			cityMap.put(city.getId(), city);
+			return cityMap.get(cityId).isVisable(isProduction);
+		}
 	}
 	
 	private String addHostToUrl(String url) {
@@ -271,7 +284,6 @@ public class GetRestaurantsInArea extends HttpServlet {
 				* Math.cos(Math.toRadians(lat2));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double dist = earthRadius * c;
-
 		return dist;
 	}
 

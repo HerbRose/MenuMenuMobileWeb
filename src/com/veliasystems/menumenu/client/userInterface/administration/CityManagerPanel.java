@@ -138,19 +138,33 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		nameTextBox.setText(city.getCity());
 		
 		Label visabilityLabel = new Label(Customization.VISIBILITY);
-		final Button isVisable = new Button("");
-		setVisabilityText(city.isVisable(), isVisable, city.getId());
+		final Button isVisibleForProduction = new Button("");
+		setVisabilityText(true, city.isVisable(true), isVisibleForProduction, city.getId());
 		//isVisable.setValue(city.isVisable());
 		
-		isVisable.getElement().setId("isVisable"+city.getId());
-		isVisable.addClickHandler(new ClickHandler() {
+		isVisibleForProduction.getElement().setId("isVisable"+city.getId());
+		isVisibleForProduction.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				setVisabilityText(!cities.get(cities.indexOf(city)).isVisable(), isVisable, city.getId());
+				setVisabilityText(true, !cities.get(cities.indexOf(city)).isVisable(true), isVisibleForProduction, city.getId());
 				
 			}
 		});
+		
+		Label visiblityForTestLabel = new Label(Customization.VISIBILITY_FOR_TESTS);
+		final Button isVisibleForTests = new Button("");
+		setVisabilityText(false, city.isVisable(false), isVisibleForTests, city.getId());
+		
+		isVisibleForTests.getElement().setId("isVisibleForTests" + city.getId());
+		isVisibleForTests.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				setVisabilityText(false, !cities.get(cities.indexOf(city)).isVisable(false), isVisibleForTests, city.getId());
+			}
+		});
+		
 		
 		Button deleteButton = new Button(Customization.DELETE);
 		deleteButton.addClickHandler(new ClickHandler() {
@@ -180,7 +194,9 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		namePanel.add(nameLabel);
 		namePanel.add(nameTextBox);
 		visabilityPanel.add(visabilityLabel);
-		visabilityPanel.add(isVisable);
+		visabilityPanel.add(isVisibleForProduction);
+		visabilityPanel.add(visiblityForTestLabel);
+		visabilityPanel.add(isVisibleForTests);
 		buttonsPanel.add(saveButton);
 		buttonsPanel.add(deleteButton);
 		
@@ -190,21 +206,41 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		
 		showCityTable(cityDetails, null, false);
 	}
-	private void setVisabilityText(boolean isVisable, Button button, Long cityId){
+	private void setVisabilityText(boolean isVisableForProduction, boolean isVisible, Button button, Long cityId){
 		
 		if(button == null) return;
 		
-		if(isVisable){
+		if(isVisible){
 			button.setText(Customization.VISIBLE);
 			
 		}else{
 			button.setText(Customization.HIDDEN);
 		}
+		
 	
-		button.setStyleName("greenText", isVisable);
-		button.setStyleName("redText", !isVisable);
+		
+//		if(isVisibleForTests){
+//			button.setText(Customization.VISIBLE);
+//			
+//		}else{
+//			button.setText(Customization.HIDDEN);
+//		}
+		
+	
+		button.setStyleName("greenText", isVisible);
+		button.setStyleName("redText", !isVisible);
+		
+		
+		
 		for (City city : cities) {
-			if(city.getId() == cityId) city.setVisable(isVisable);
+			if(city.getId() == cityId){
+				if(isVisableForProduction) {
+					city.setVisable(isVisible, city.isVisable(false));
+				}
+				else{
+					city.setVisable(city.isVisable(true), isVisible);
+				}
+			}
 		}
 	}
 	private void fillCitiesList(){

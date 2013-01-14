@@ -15,8 +15,14 @@ public class City implements Serializable{
 
 	@Id private Long id;
 	private String city;
-
+	/**
+	 * visible for production
+	 */
 	private boolean isVisable = false;
+	/**
+	 * visible for test flight or android tests
+	 */
+	private boolean isVisibleForTests = false;
 	
 
 	 {
@@ -75,15 +81,19 @@ public class City implements Serializable{
 	 * Set visibility for mobile application. If <code>isVisable</code> is set to true the city will be visible for mobile application
 	 * @param isVisable - if <code>true</code> city will be visible for mobile application
 	 */
-	public void setVisable(boolean isVisable) {
-		this.isVisable = isVisable;
+	public void setVisable(boolean isVisableForProducion, boolean isVisableForTests) {
+		this.isVisibleForTests = isVisableForTests;
+		isVisable = isVisableForProducion;
 	}
 	
 	/**
-	 * Check if city is visible for mobile application
+	 * Check if city is visible for mobile application 
+	 * @param isProduction if true the return isVisible for production application value, else return value for tests applications
 	 * @return <code>true</code> if is visible
 	 */
-	public boolean isVisable() {
-		return isVisable;
+	public boolean isVisable(boolean isProduction) {
+		if(isProduction) return isVisable;
+		else return isVisibleForTests;
 	}
+	
 }

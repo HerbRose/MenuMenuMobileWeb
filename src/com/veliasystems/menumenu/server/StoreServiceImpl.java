@@ -1092,7 +1092,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param latitude - latitude of device 
 	 * @return List of {@link Restaurant} in range of 1km in latitude from device
 	 */
-	public List<Restaurant> getRestaurantsInArea(double latitude){
+	public List<Restaurant> getRestaurantsInArea(double latitude, double longitude){
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		
 		double R = 6371;  // earth radius in km
@@ -1100,24 +1100,34 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		double radius = 1; // km
 
 	
-		double y1 = latitude + Math.toDegrees(radius/R);
+		double y1 = latitude + 0.01;//Math.toDegrees(radius/R);
 
-		double y2 = latitude - Math.toDegrees(radius/R);
+		double y2 = latitude - 0.01; //Math.toDegrees(radius/R);
 		
 		
 		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
 		
 		if(restaurantQuery == null) return restaurantsList;
 		updatePositions();
-		
-			
-		
-		
+	
 		restaurantsList = restaurantQuery.filter("latitude >=", y2).filter("latitude <=", y1).list();
-		return restaurantsList;
+		
+		double x1 = longitude + 0.1;
+		double x2 = longitude - 0.1;
+		
+		List<Restaurant> restaurantsListFinal = new ArrayList<Restaurant>();
+		for (Restaurant restaurant : restaurantsList) {
+			if(restaurant.getLongitude() >= x2 && restaurant.getLongitude() <= x1){
+				restaurantsListFinal.add(restaurant);
+			}
+		}
+		
+		return restaurantsListFinal;
 		
 	}
 	
+	
+
 	/**
 	 * @deprecated
 	 * Method to update fields in datastore, from latitude and longitude in String to new double fields
