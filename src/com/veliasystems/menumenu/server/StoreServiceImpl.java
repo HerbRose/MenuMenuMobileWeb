@@ -827,12 +827,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			allData.put("Cities", loadCitiesEntity());
 			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		}
-		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
+		else if(user.getRestaurantsId() != null && (user.getCitiesId() == null || user.getCitiesId().isEmpty())){
 			List<Restaurant> tmp = loadRestaurantsForUser(user);
 			allData.put("Restaurants", tmp);	
 			allData.put("Cities", loadCitiesByRestaurant(tmp));
 			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
+		}else if(user.getCitiesId() != null && (user.getRestaurantsId() == null || user.getRestaurantsId().isEmpty())){
 			List<City> tmp = loadCitiesForUser(user);
 			allData.put("Cities", tmp);
 			allData.put("Restaurants", loadRestaurantsByCities(tmp));
