@@ -968,15 +968,41 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			return null;
 		}
 		
+		
+		
+		List<String> toAddress = new ArrayList<String>();
+		toAddress.add(userToChange.getEmail());
+		String userName = getLoginFromMail(userToChange.getEmail());
+		String subject = "Message from website MenuMenu";
+		String message = "Hello "+userName+". \n\n";
+		
+		
+		
+		
+		if(!newPassword.isEmpty() && !oldPassword.equals(userToChange.getPassword())){
+			message += "\n\n Given old password was incorect, all data will not be changed";
+			return null;
+		} else if(!newPassword.isEmpty() && oldPassword.equals(userToChange.getPassword())){
+			userToChange.setPassword(newPassword);
+			message += "\n\n Your password has been changed";
+			message += "\n\n Your new password is: " + userToChange.getPassword();
+			
+		} else if(newPassword.isEmpty()){
+			message += "\n\n Your personal data have been changed: ";
+			message +="\n\n name: " + user.getName();
+			message +="\n\n  surname: " + user.getSurname();
+			message +="\n\n phone number: " + user.getPhoneNumber();
+		}
+		
 		userToChange.setName(user.getName());
 		userToChange.setSurname(user.getSurname());
 		userToChange.setPhoneNumber(user.getPhoneNumber());
 		
-		if(!newPassword.isEmpty() && oldPassword.equals(userToChange.getPassword())){
-			userToChange.setPassword(newPassword);
-		}
 		
 		dao.ofy().put(userToChange);
+		emailService.sendEmail(toAddress, userName, message, subject);
+		
+		
 		userToChange.setPassword("");
 		return userToChange;
 	}

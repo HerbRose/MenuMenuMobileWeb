@@ -134,11 +134,11 @@ public class UserController {
 			@Override
 			public void onSuccess(User result) {
 				if(result == null){
-					
+					Window.alert("bad login or user not found");
 				}else{
 					String login = result.getEmail();
 					users.put(login, result);					
-					Window.alert(Customization.CHANGE_OK);
+					Window.alert(Customization.EMAIL_SEND);
 				}
 			}
 		});

@@ -123,6 +123,7 @@ public class AddAgentPanel extends FlowPanel implements IManager {
 				if (validData()) {
 					User agent = new User(inputEmailAgent.getValue().trim());
 					agent.setPassword(passwordAgent.getValue().trim());
+					agent.setAgent(true);
 					List<Long> cityId = new ArrayList<Long>();
 					for (String cityName : addedCities) {
 						for (City city : cityController.getCitiesList()) {

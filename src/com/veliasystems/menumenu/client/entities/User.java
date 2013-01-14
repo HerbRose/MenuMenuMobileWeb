@@ -35,6 +35,8 @@ public class User implements Serializable {
 	private String surname;
 	private String password;
 	private boolean isAdmin = false;
+	private boolean isAgent = false;
+	private boolean isRestaurator = false;
 	
 	private List<Long> restaurantsId = null;
 	private List<Long> citiesId = null;
@@ -213,6 +215,20 @@ public class User implements Serializable {
 	 */
 	public String getEmail() {
 		return email;
+	}
+	
+	public boolean isAgent() {
+		return isAgent;
+	}
+	public void setAgent(boolean isAgent) {
+		this.isAgent = isAgent;
+	}
+	
+	public boolean isRestaurator() {
+		return isRestaurator;
+	}
+	public void setRestaurator(boolean isRestaurator) {
+		this.isRestaurator = isRestaurator;
 	}
 	
 }
