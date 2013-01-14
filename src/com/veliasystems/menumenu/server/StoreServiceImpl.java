@@ -1109,7 +1109,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
 		
 		if(restaurantQuery == null) return restaurantsList;
-		updatePositions();
+//		updatePositions();
 	
 		restaurantsList = restaurantQuery.filter("latitude >=", y2).filter("latitude <=", y1).list();
 		
@@ -1129,23 +1129,23 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	
 
-	/**
-	 * @deprecated
-	 * Method to update fields in datastore, from latitude and longitude in String to new double fields
-	 */
-	private void updatePositions(){
-		Query<Restaurant> rest = dao.ofy().query(Restaurant.class);
-		
-		for (Restaurant restaurant : rest.list()) {
-			if(restaurant.getLat() != null && restaurant.getLng() != null){
-				restaurant.setLatitude(Double.valueOf(restaurant.getLat()));
-				restaurant.setLongitude(Double.valueOf(restaurant.getLng()));
-				dao.ofy().put(restaurant);
-			}
-			
-		}
-		
-	}
+//	/**
+//	 * @deprecated
+//	 * Method to update fields in datastore, from latitude and longitude in String to new double fields
+//	 */
+//	private void updatePositions(){
+//		Query<Restaurant> rest = dao.ofy().query(Restaurant.class);
+//		
+//		for (Restaurant restaurant : rest.list()) {
+//			if(restaurant.getLat() != null && restaurant.getLng() != null){
+//				restaurant.setLatitude(Double.valueOf(restaurant.getLat()));
+//				restaurant.setLongitude(Double.valueOf(restaurant.getLng()));
+//				dao.ofy().put(restaurant);
+//			}
+//			
+//		}
+//		
+//	}
 
 	public City loadCity(Long cityId) {
 		
