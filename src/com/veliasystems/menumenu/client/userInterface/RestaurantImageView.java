@@ -363,6 +363,13 @@ public class RestaurantImageView extends MyPage {
 	}
 	
 	@Override
+	protected void onPageHide() {
+		super.onPageHide();
+		
+		
+	}
+	
+	@Override
 	protected void onPageShow() {
 
 		if (!loaded) {

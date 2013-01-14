@@ -280,4 +280,19 @@ public class UserController {
 	}
 	
 	
+	public boolean isUserType(UserType userType){
+		switch (userType) {
+		case ADMIN:
+			return getLoggedUser().isAdmin();
+		case AGENT:
+			return getLoggedUser().isAgent();
+		case RESTAURATOR:
+			return getLoggedUser().isRestaurator();
+		}
+		
+		return false;
+	}
+	
+	
+	
 }
