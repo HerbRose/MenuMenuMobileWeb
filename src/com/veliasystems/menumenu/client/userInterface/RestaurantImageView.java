@@ -15,7 +15,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -35,10 +34,13 @@ import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.controllers.UserController;
+import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -60,6 +62,8 @@ public class RestaurantImageView extends MyPage {
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private CityController cityController = CityController.getInstance();
 	private CookieController cookieController = CookieController.getInstance();
+	private UserController userController = UserController.getInstance();
+	private ImagesController imagesController = ImagesController.getInstance();
 
 	private MyButton cancelButton = new MyButton(Customization.CANCEL);;
 	private MyButton saveButton = new MyButton(Customization.SAVE);
@@ -362,10 +366,14 @@ public class RestaurantImageView extends MyPage {
 	protected void onPageShow() {
 
 		if (!loaded) {
-			SwipeView swipeView = new SwipeView(restaurant, ImageType.PROFILE,
-					this);
-			swipeViews.add(swipeView);
-			addToContent(swipeView);
+			SwipeView swipeView;
+			
+			if(userController.isUserType(UserType.ADMIN) || userController.isUserType(UserType.AGENT)){
+				swipeView = new SwipeView(restaurant, ImageType.PROFILE,
+				this);
+				swipeViews.add(swipeView);
+				addToContent(swipeView);
+			}
 
 			swipeView = new SwipeView(restaurant, ImageType.MENU, this);
 			swipeViews.add(swipeView);
@@ -949,12 +957,18 @@ public class RestaurantImageView extends MyPage {
 
 	
 	private void hideCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).addClassName("hidden");
+		if(userController.isUserType(UserType.ADMIN) || userController.isUserType(UserType.AGENT)){
+			Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).addClassName("hidden");
+		}
+		
 		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).addClassName("hidden");
 	}
 	
 	private void showCamera(){
-		Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).removeClassName("hidden");
+		if(userController.isUserType(UserType.ADMIN) || userController.isUserType(UserType.AGENT)){
+			Document.get().getElementById(ImageType.PROFILE.name()+restaurant.getId()).removeClassName("hidden");
+		}
+		
 		Document.get().getElementById(ImageType.MENU.name()+restaurant.getId()).removeClassName("hidden");
 	}
 	
