@@ -144,6 +144,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 							.getValue().trim());
 					restaurator.setPassword(passwordRestaurator.getValue()
 							.trim());
+					restaurator.setRestaurator(true);
 					restaurator.setRestaurantsId(restaurantsIdList);
 					addUser(restaurator);
 				}
