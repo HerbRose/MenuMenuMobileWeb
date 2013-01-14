@@ -768,25 +768,25 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return imageBlobs;
 	}
 	
-	/**
-	 * @deprecated
-	 */
-	private void changeTimeToMiliSec(){
-		List<ImageBlob> images = new ArrayList<ImageBlob>();
-		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
-		if (imgQuery == null){
-			return;
-		}
-		
-		images = imgQuery.list();
-		
-		for (ImageBlob imageBlob : images) {
-			
-			imageBlob.setDateCreated(imageBlob.getDateCreated());
-			dao.ofy().put(imageBlob);
-		}
-		
-	}
+//	/**
+//	 * @deprecated
+//	 */
+//	private void changeTimeToMiliSec(){
+//		List<ImageBlob> images = new ArrayList<ImageBlob>();
+//		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+//		if (imgQuery == null){
+//			return;
+//		}
+//		
+//		images = imgQuery.list();
+//		
+//		for (ImageBlob imageBlob : images) {
+//			
+//			imageBlob.setDateCreated(imageBlob.getDateCreated());
+//			dao.ofy().put(imageBlob);
+//		}
+//		
+//	}
 	
 }
 
