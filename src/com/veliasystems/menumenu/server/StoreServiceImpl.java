@@ -845,6 +845,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		for (User user1 : usersList) {
 			user1.setPassword("");
 		}
+		fixUserFlags();
 		allData.put("Users", usersList);
 		return allData;
 		
@@ -889,8 +890,23 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		for (User user1 : usersList) {
 			user1.setPassword("");
 		}
+		fixUserFlags();
 		allData.put("Users", usersList);
 		return allData;
+		
+	}
+	
+	private void fixUserFlags(){
+		List<User> userList = getUsers();
+		for (User user : userList) {
+			if(user.getRestaurantsId() != null && user.getCitiesId() == null){
+				user.setRestaurator(true);
+			}
+			if(user.getCitiesId() != null && user.getRestaurantsId() == null){
+				user.setAgent(true);
+			}
+			dao.ofy().put(user);
+		}
 		
 	}
 	
