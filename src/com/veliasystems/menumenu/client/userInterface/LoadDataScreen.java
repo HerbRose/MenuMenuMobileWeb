@@ -105,7 +105,6 @@ public class LoadDataScreen extends JQMPage {
 		for (Restaurant restaurant : restaurants) {
 			restaurantsFromServer.put(restaurant.getId(), restaurant);
 		}
-		
 		List<City> cities = (List<City>) data.get("Cities") ;
 		Map<Long, City> citiesFromServer = new HashMap<Long, City>();
 		for (City city : cities) {
@@ -123,12 +122,13 @@ public class LoadDataScreen extends JQMPage {
 		}
 		
 		
-		
 		userController.setUsers(usersFromServer);
+		
 		userController.setUserType(email);
 		restaurantController.setRestaurants(restaurantsFromServer);
 		cityController.setCities(citiesFromServer);
 		imagesController.setDefoultEmptyMenuImageBlobMap(defoultEmptyProfilImageBlobMap);
+
 	}
 	
 	private static native void consoleLog(String message)/*-{

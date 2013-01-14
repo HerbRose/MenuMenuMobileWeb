@@ -197,6 +197,10 @@ public class UserController {
 		for (String userLogin : key) {
 			if(userLogin.equalsIgnoreCase(login)) logUser = users.get(userLogin);
 		}
+		if(logUser == null){
+			
+			return;
+		}
 		loggedUser = logUser.getEmail();
 		if(logUser.isAdmin()) userType = UserType.ADMIN;
 		else if(logUser.getCitiesId() != null) userType = UserType.AGENT;
@@ -294,5 +298,7 @@ public class UserController {
 	}
 	
 	
-	
+	private static native void consoleLog(String message)/*-{
+		console.log(message);
+	}-*/;
 }
