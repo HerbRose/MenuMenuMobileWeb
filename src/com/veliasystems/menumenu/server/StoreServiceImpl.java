@@ -127,7 +127,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<City> cityQuery = dao.ofy().query(City.class);
 		if(cityQuery == null) return null;
 		List<City> listCities = cityQuery.filter("id IN", tmpList).list();
-		if(listCities == null) return null;
+		if(listCities == null) return new ArrayList<City>();
 		return listCities;
 		
 	}
@@ -146,7 +146,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}	
 		Query<City> cityQuery = dao.ofy().query(City.class);
 		if(cityQuery == null) return null;
-		List<City> cityList = cityQuery.filter("id IN", citiesId).list();	
+		List<City> cityList = cityQuery.filter("id IN", citiesId).list();
+		if(cityList == null) return new ArrayList<City>();
+		for (City city : cityList) {
+			System.out.println("City list: " + city.getCity());
+		}
 		return cityList;	
 	}
 	private ImageBlob loadImageBlob(String imageBlobKeyString) {
