@@ -7,11 +7,17 @@ public class MyListItem extends FocusPanel {
 
 	private String value = "";
 	private String text = "";
-	private int order = -1;
+	private long order = -1;
 	
 	private Label textLabel = new Label();
 	
 	public MyListItem() {
+		add(textLabel);
+		setStyleName("pointer", true);
+	}
+	
+	public MyListItem(String text) {
+		textLabel.setText(text);
 		add(textLabel);
 		setStyleName("pointer", true);
 	}
@@ -22,10 +28,10 @@ public class MyListItem extends FocusPanel {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	public void setOrder(int order) {
+	public void setOrder(long order) {
 		this.order = order;
 	}
-	public int getOrder() {
+	public long getOrder() {
 		return order;
 	}
 	public String getText() {

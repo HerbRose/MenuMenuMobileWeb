@@ -1,9 +1,12 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -18,48 +21,69 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.veliasystems.menumenu.client.R;
 
 
-public class MyListCombo extends FlowPanel {
+public class MyListCombo extends FocusPanel {
 
 	private ScrollPanel scrollPanel = new ScrollPanel();
 	private FocusPanel panelForArrow = new FocusPanel();
+	
+	private FlowPanel mainPanel = new FlowPanel();
 	private FlowPanel arrows = new FlowPanel();
 	private FlowPanel whiteArrow = new FlowPanel();
 	private FlowPanel blackArrow = new FlowPanel();
-	private Map<Integer, MyListItem> listItems = new HashMap<Integer, MyListItem>();
+	private FlowPanel expandedPanel = new FlowPanel();
+	
+	private Map<Long, MyListItem> listItems = new HashMap<Long, MyListItem>();
 	private Label textLabel = new Label();
-	private FlowPanel expandedPanel = new FlowPanel();	
-	private int selectedItem = -1;
+	
+	private long selectedItem = -1;
 	private boolean showPanel = false;
 	
-	public MyListCombo() {
-		setStyleName("listCombo borderLabel noFocus", true);
+	public MyListCombo(boolean isArrow) {
+		
+		Date date = new Date();
+		scrollPanel.getElement().setId("id" + date.getTime());
+		
+		addOnClick(scrollPanel.getElement().getId());
+		
+		setStyleName("listCombo noFocus", true);
 
-		panelForArrow.setStyleName("panelForArrow borderLabel noFocus pointer", true);
+		if(isArrow){
+			panelForArrow.setStyleName("panelForArrow borderLabel noFocus pointer", true);
+			panelForArrow.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					showExpandetPanel();
+				}
+			});
 		
-		panelForArrow.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				showExpandetPanel();
-			}
-		});
-		
-		whiteArrow.setStyleName("whiteArrow noFocus", true);
-		blackArrow.setStyleName("blackArrow noFocus", true);
-	
+			whiteArrow.setStyleName("whiteArrow noFocus", true);
+			blackArrow.setStyleName("blackArrow noFocus", true);
+		}else{
+			addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					showExpandetPanel();
+				}
+			});
+		}
 		expandedPanel.setStyleName("expandedPanel noFocus", true);
 		
 		scrollPanel.add(expandedPanel);
-		scrollPanel.setStyleName("listComboScrollPanel hidden", true);
+		scrollPanel.setStyleName("listComboScrollPanel hideListComboScrollPanel", true);
 		
-		textLabel.setStyleName("comboListLabel comboListItemLabel", true);
+//		textLabel.setStyleName("comboListLabel comboListItemLabel", true);
 		
-		arrows.add(blackArrow);
-		arrows.add(whiteArrow);
-		panelForArrow.add(arrows);
-		add(panelForArrow);
-		add(textLabel);
-		add(scrollPanel);
+		if(isArrow){
+			arrows.add(blackArrow);
+			arrows.add(whiteArrow);
+			panelForArrow.add(arrows);
+			mainPanel.add(panelForArrow);
+		}
+		mainPanel.add(textLabel);
+		mainPanel.add(scrollPanel);
+		add(mainPanel);
 	}
 
 	/**
@@ -68,7 +92,7 @@ public class MyListCombo extends FlowPanel {
 	 * @param newItem - item to add
 	 * @param order - none duplicate number in list (use isOrderUse() to check). 
 	 */
-	public void addListItem(final MyListItem newItem, int order){
+	public void addListItem(final MyListItem newItem, long order){
 		if(order<0) return;
 		newItem.setStyleName("myListComboItem noFocus");
 		newItem.setOrder(order);
@@ -92,7 +116,7 @@ public class MyListCombo extends FlowPanel {
 		return listItems.containsKey(order);
 	}
 	
-	private void itemController(int orderToSelect){
+	private void itemController(long orderToSelect){
 		MyListItem panel = null;
 		if(selectedItem >= 0){
 			panel = listItems.get(selectedItem);
@@ -123,13 +147,34 @@ public class MyListCombo extends FlowPanel {
 	 */
 	private void showExpandetPanel(){
 		showPanel = !showPanel;
-		scrollPanel.setStyleName("hidden", !showPanel);
+		scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
+		showTouchGetter(showPanel);
 	}
-	public void selectItem(int order){
-		MyListItem item = listItems.get(order);
-		if(item != null){
+	public void selectItem(long order){
+//		MyListItem item = listItems.get(order);
+//		if(item != null){
 			itemController(order);
-		}
+//		}
 	}
 
+	private void showTouchGetter(boolean isShow){
+		if(isShow) {
+			Document.get().getElementById("touchGetter").setClassName(R.SHOW);
+		}else{
+			Document.get().getElementById("touchGetter").setClassName(R.HIDE);
+		}
+	}
+	
+	private native void addOnClick(String scrollPanel)/*-{
+		
+		var element=$wnd.document.getElementById('touchGetter');
+		
+		if( element.attachEvent ){
+		   element.attachEvent('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'');
+		  
+		} else {
+		   element.setAttribute('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'' ); 
+		  
+		}
+	}-*/;
 }

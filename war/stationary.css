@@ -290,7 +290,7 @@ body {
 	cursor: pointer;
 }
 
-.arialBold {
+.arialBold, .restaurantInfoPanelLeftCelContainer *, .restaurantInfoPanelRightCellContainer * {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: #797979;
@@ -318,7 +318,9 @@ body {
     margin: 0px !important;
     
 }
-.plusPanel, .plusPanelLeftDiv, .namePanel, .passwordPanel, .addBoardWrapper, .adminLabel, .publishLabelWrapper, .itemList, .panelForArrow, .addWrapper, .headerTitle, .f{
+.plusPanel, .plusPanelLeftDiv, .namePanel, .passwordPanel, .addBoardWrapper, .adminLabel,
+.publishLabelWrapper, .itemList, .panelForArrow, .addWrapper, .headerTitle, .f,
+.myListComboItem, .comboListItemLabel{
        height: 44px;
        line-height: 44px;
 }
@@ -350,13 +352,9 @@ body {
  */
 .listCombo {
 	position: relative;
-	/* 	width: 400px; */
-	width: 80%;
-	margin-left: 10%;
-	margin-top: 20px;
-	height: 47px;
-	background: url("/img/layout/listComboBackground.png") repeat-X #eee;
-	text-align: right;
+	height: 44px;
+/* 	background: url("/img/layout/listComboBackground.png") repeat-X #eee; */
+	text-align: left;
 }
 
 .panelForArrow {
@@ -390,26 +388,32 @@ body {
 .listComboScrollPanel {
 	position: absolute !important;
 	top: 15px;
-	z-index: 1;
-	width: 83%;
-	height: 95px;
-	background: url("/img/layout/comboListExpandedBackground.png") repeat-X
-		#f5f5f5;
-	-webkit-box-shadow: -6px 5px 12px -3px #000 !important;
+	z-index: 101;
+	width: 100%;
+	max-height: 140px;
+	background: url("/img/layout/comboListExpandedBackground.png") repeat-X #f5f5f5;
+		-webkit-box-shadow: -6px 5px 12px -3px #000 !important;
 	box-shadow: -6px 5px 12px -3px #000 !important;
+	
+	transition: max-height 0.5s;
+		-moz-transition: max-height 0.5s;
+		-webkit-transition: max-height 0.5s;
+		-o-transition: max-height 0.5s;
 }
-
+.hideListComboScrollPanel{
+	max-height: 0px !important;
+}
 .expandedPanel {
 	
 }
 
 .myListComboItem {
 	width: 100%;
-	height: 28px;
+/* 	height: 28px; */
 }
 
 .comboListItemLabel {
-	line-height: 30px;
+/* 	line-height: 30px; */
 	margin-right: 10px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
@@ -542,7 +546,6 @@ body {
 .containerPanelAddRestaurant {
 	margin: 20px 10px 130px 10px !important;
 	border-radius: 20px;
-	margin-top: 10px;
 	border: #c1c1c1 2px solid !important;
 	background: white;
 }
@@ -969,3 +972,48 @@ body {
 	
 }
 /* KONIEC -  MyImage*/
+/* MyRestaurantInfoPanel */
+.restaurantInfoPanel{
+	position: relative;
+}
+
+.restaurantInfoPanelRow{
+	position: relative;
+	display: list-item;
+	
+	height: 44px;
+	
+    line-height: 44px;
+    list-style: none;
+	
+	border-top: #C1C1C1 2px solid;
+	
+}
+.restaurantInfoPanelRow:FIRST-CHILD{
+	border-top: none;;
+}
+.restaurantInfoPanelLeftCelContainer, .restaurantInfoPanelRightCellContainer{
+	
+	padding: 0px 0px 0px 10px;
+	
+	height: 44px;
+    line-height: 44px;
+	text-align: left;
+	color: #79797A;
+	
+}
+
+.restaurantInfoPanelLeftCelContainer{
+	float: left;
+	clear: left;
+	
+	
+}
+.restaurantInfoPanelRightCellContainer{
+	position: relative;
+	border-left: #C1C1C1 2px solid ;
+}
+/* KONIEC MyRestaurantInfoPanel*/
+
+
+

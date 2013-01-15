@@ -33,7 +33,7 @@ public class LoginScreen extends MyPage{
 	private Label nameLabel = new Label(Customization.LOGIN);
 	private Label passwordLabel = new Label(Customization.PASSWORD);
 	private Label wrongData;
-	private MyListCombo languageCombo = new MyListCombo();
+	private MyListCombo languageCombo = new MyListCombo(true);
 	
 	private FlowPanel namePanel = new FlowPanel();
 	private FlowPanel passwordPanel = new FlowPanel();

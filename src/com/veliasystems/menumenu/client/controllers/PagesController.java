@@ -72,6 +72,5 @@ public class PagesController {
 	private static native int getBodyOffsetWidth()/*-{
 		return $wnd.document.body.offsetWidth;
 	}-*/;
-
 }
 

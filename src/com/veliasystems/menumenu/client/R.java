@@ -20,11 +20,10 @@ public class R {
 	
 	public final static String UTF8 = "UTF-8";
 	public final static String LOGGED_IN = "loggedIn";
-//	public static final String LAST_PAGE_PICUP = "lastPageFromPicup";
-//	public static final String IMAGE_TYPE_PICUP = "imageTypeFromPicup";
-//	public static final String IMAGE_TYPE = "imageType";
 	public static final String LOADING = "loading";
 	public static final String LOADED = "loaded";
+	public static final String SHOW = "show";
+	public static final String HIDE = "hide";
 	
 	// languages
     public static final String ARABIC_NAME = "Arabic";

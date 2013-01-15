@@ -41,6 +41,7 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -48,7 +49,9 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
 public class RestaurantImageView extends MyPage {
@@ -70,10 +73,12 @@ public class RestaurantImageView extends MyPage {
 	private BackButton backButton;
 	private MyButton editButton;
 	private MyButton adminPanel;
-
+	private MyRestaurantInfoPanel container;
+	private MyListCombo citiesListCombo = new MyListCombo(false);
+	
 	private Label nameLabel;
 	private Label adressLabel;
-	private Label phoneRestaurant;
+	private Label phoneRestaurantLabel;
 	private Label districtLabel;
 	private Label bossLabel;
 	private Label addBoardText;
@@ -92,8 +97,6 @@ public class RestaurantImageView extends MyPage {
 	private TextBox phoneRestaurantTextBox = new TextBox();
 	private TextBox districtTextBox = new TextBox();
 	private TextBox bossTextBox = new TextBox();
-
-	private FlowPanel container;
 
 	private FlowPanel infoContainer = new FlowPanel();;
 	private FlowPanel logoImageWrapper = new FlowPanel();;
@@ -124,7 +127,6 @@ public class RestaurantImageView extends MyPage {
 	private FocusPanel cancelDeleteProfile = new FocusPanel();
 	private FocusPanel removeBoard = new FocusPanel();
 	private FocusPanel addBoardFromBottom = new FocusPanel();
-
 
 	private FileUpload fileLogoUpload = new FileUpload();
 	private MyUploadForm formLogoUpload;
@@ -679,75 +681,40 @@ public class RestaurantImageView extends MyPage {
 	private void setEditable(){
 
 		if (container == null) {
-			container = new FlowPanel();
-			container.addStyleName("containerPanelAddRestaurant");
+			
+			container = new MyRestaurantInfoPanel();
+			container.setWidth( getBodyOffsetWidth(getElement())-20 );
+			container.setStyleName("containerPanelAddRestaurant", true);
+			//container.addStyleName("containerPanelAddRestaurant");
 
-			nameLabel = new Label();
-			nameLabel.addStyleName("addRestaurantLabel myLabel arialBold ");
-			nameLabel.setText(Customization.RESTAURANTNAME + ":");
+			nameLabel = new Label(Customization.RESTAURANTNAME + ":");
+			adressLabel = new Label(Customization.RESTAURANTADRESS + ":");
+			phoneRestaurantLabel = new Label(Customization.RESTAURANT_PHONE + ":");
+			districtLabel = new Label(Customization.DISTRICT + ":");
+			bossLabel = new Label(Customization.BOSS_LABEL + ":");
 
 			nameText.setTitle(Customization.RESTAURANTNAME);
-			nameText.addStyleName("myTextBox nameBox arialBold");//addRestaurantInput
-			
-
-			adressLabel = new Label();
-			adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-			adressLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-
 			adressText.setTitle(Customization.RESTAURANTADRESS);
-			adressText.addStyleName("myTextBox nameBox arialBold");
-
-			phoneRestaurant = new Label();
-			phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
-			phoneRestaurant.addStyleName("addRestaurantLabel myLabel arialBold");
-
 			phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
-			phoneRestaurantTextBox.addStyleName("myTextBox nameBox arialBold");
-
-			districtLabel = new Label(Customization.DISTRICT);
-			districtLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-
-			districtTextBox.addStyleName("myTextBox nameBox arialBold");
-
-			bossLabel = new Label(Customization.BOSS_LABEL);
-			bossLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-
-			bossTextBox.addStyleName("myTextBox nameBox arialBold");
-
+			bossTextBox.setTitle(Customization.BOSS_LABEL);
 			
-			nameWrapper.addStyleName("namePanel addWrapper");
+			nameText.addStyleName("myTextBox nameBox");//addRestaurantInput
+			adressText.addStyleName("myTextBox nameBox");
+			phoneRestaurantTextBox.addStyleName("myTextBox nameBox");
+			bossTextBox.addStyleName("myTextBox nameBox");
 			
-			addressWrapper.addStyleName("namePanel addWrapper");
+			for (City city : cityController.getCitiesList()) {
+				citiesListCombo.addListItem(citiesListCombo.getNewItem(city.getCity()), city.getId());
+			}
 			
-			phoneWrapper.addStyleName("namePanel addWrapper");
+			citiesListCombo.selectItem(restaurant.getCityId());
 			
-			wwwWrapper.addStyleName("namePanel addWrapper");
-			
-			bossWrapper.addStyleName("namePanel addWrapper");
+			container.addItem(nameLabel, nameText);
+			container.addItem(adressLabel, adressText);
+			container.addItem(phoneRestaurantLabel, phoneRestaurantTextBox);
+			container.addItem(districtLabel, citiesListCombo);
+			container.addItem(bossLabel, bossTextBox);
 
-			
-			nameWrapper.add(nameLabel);
-			nameWrapper.add(nameText);
-
-			addressWrapper.add(adressLabel);
-			addressWrapper.add(adressText);
-	
-			phoneWrapper.add(phoneRestaurant);
-			phoneWrapper.add(phoneRestaurantTextBox);
-
-			wwwWrapper.add(districtLabel);
-			wwwWrapper.add(districtTextBox);
-
-			bossWrapper.add(bossLabel);
-			bossWrapper.add(bossTextBox);
-
-			container.add(nameWrapper);
-			container.add(addressWrapper);
-			container.add(phoneWrapper);
-			container.add(wwwWrapper);
-			container.add(bossWrapper);
-
-			
 			addBoardWrap.addStyleName("addBoardWrap");
 			
 			addBoard = new FocusPanel();
@@ -770,7 +737,7 @@ public class RestaurantImageView extends MyPage {
 			editPanel.add(addBoard);
 				
 		}
-		
+		container.setWidth( getBodyOffsetWidth(getElement())-20 );
 		
 		getContentPanel().add(deleteProfile);
 		
@@ -1041,6 +1008,8 @@ public class RestaurantImageView extends MyPage {
 		elem.click();
 	}-*/;
 	
-
+	private static native int getBodyOffsetWidth(Element element)/*-{
+		return element.offsetWidth;
+	}-*/;
 
 }
