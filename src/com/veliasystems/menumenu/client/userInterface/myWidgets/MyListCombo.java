@@ -7,14 +7,40 @@ import java.util.Map;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.veliasystems.menumenu.client.R;
 
-
+/**
+ * 
+ * Implements of drop-down list on web page.
+ * For full functionality on each <code>.html</code> page a <code>div</code> element is required with id parameter sets to: <code>touchGetter</code> and class name
+ * sets to: <code>hide</code>. <br> <br>
+ * 
+ * <code><strong> &lt;div id="touchGetter" class="hide">&lt;/div> </strong></code>
+ * 
+ * <br> <br>
+ * And styles on <code>.css</code> file have to by sets on:<br><br>
+ * for <code>touchGetter</code> id: <br><code>
+ *	position: fixed;  <br>
+ *	width: 100%;  <br>
+ *	height: 100%;  <br>
+ *	filter:alpha(opacity=0);  <br>
+ *	opacity: 0;  <br>
+ *	-moz-opacity: 0;  <br>
+ *	z-index: 100;  <br><br>
+ * </code>
+ * for <code>hide</code> class: <br><code>
+ * display: none;<br><br>
+ * </code>
+ * and is also required <code>show</code> class with parameters: <br><br><code>
+ * display: block; <br>
+ * </code>
+ * @author velia-systems
+ * @version 0.1 alpha
+ */
 public class MyListCombo extends FocusPanel {
 
 	private ScrollPanel scrollPanel = new ScrollPanel();
