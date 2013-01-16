@@ -170,6 +170,12 @@ public class Customization {
 	public static final String VISIBILITY_FOR_TESTS = translated.visibilityForTests();
 
 	public static final String DISTRICT_IMAGE = translated.districtImage();
+
+	public static final String USER_NOT_ALLOWED = translated.userNotAllowed();
+	
+	public static final String USER_DONT_EXIST = translated.userNonExist();
+	
+	public static final String RESTAURANT_EXIST_IN_OTHER_CITY = translated.restaurantExist();
 	
 };
 	

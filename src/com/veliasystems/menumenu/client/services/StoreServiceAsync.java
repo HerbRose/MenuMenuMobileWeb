@@ -1,10 +1,10 @@
 package com.veliasystems.menumenu.client.services;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -14,7 +14,7 @@ import com.veliasystems.menumenu.client.entities.User;
 
 public interface StoreServiceAsync {
 	
-	void saveRestaurant( String userEmail , Restaurant r, long oldCityId, long newCityId, AsyncCallback<Map<String, Object>> callback);
+	void saveRestaurant( String userEmail , Restaurant r, long oldCityId, long newCityId, AsyncCallback<ResponseSaveWrapper> callback);
 
 	void loadRestaurants(AsyncCallback<List<Restaurant>> callback);
 	void loadRestaurants(String city, AsyncCallback<List<Restaurant>> callback);

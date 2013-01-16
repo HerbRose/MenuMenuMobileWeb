@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -232,8 +231,8 @@ public class RestaurantController {
 	public void saveRestaurant(String userEmail, Restaurant r, long oldCityId, long newCityId){
 		
 		PagesController.showWaitPanel();
-		
-		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId, new AsyncCallback<Map<String, Object>>() {
+
+		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId, new AsyncCallback<ResponseSaveWrapper>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -243,13 +242,25 @@ public class RestaurantController {
 			}
 
 			@Override
-			public void onSuccess(Map<String, Object> result) {
-				putRestaurantToLocalList((Restaurant) result.get(R.RESTAURANT_RESULT_FOR_MAP));
-				Window.alert(result.get(R.ERROR_CODES_RESULT_FOR_MAP).toString());
+			public void onSuccess(ResponseSaveWrapper result) {
+				if(result.getErrorCodes().size() >0){
+					String msg = "";
+					for (int i : result.getErrorCodes()) {
+						msg += ErrorCodes.getError(i) + "\n\n";
+					}
+					
+					Window.alert(msg);
+				}
+				if(result.getRestaurant() != null){
+					putRestaurantToLocalList(result.getRestaurant());
+				}
+				
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
 			}
 		});
+		
+		
 		
 	}
 	
@@ -303,7 +314,7 @@ public class RestaurantController {
 		
 //		Restaurant newRestaurant = restaurants.get(restaurant);
 		if(restaurants.get(restaurant.getId()) != null){
-		restaurants.get(restaurant.getId()).setCityId(restaurant.getCityId());
+			restaurants.get(restaurant.getId()).setCityId(restaurant.getCityId());
 		}
 		else{
 			restaurants.put(restaurant.getId(), restaurant); //add/change restaurant in our list

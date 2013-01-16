@@ -34,6 +34,7 @@ import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -54,7 +55,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
-public class RestaurantImageView extends MyPage {
+public class RestaurantImageView extends MyPage implements IObserver {
 
 	private VerticalPanel scrollerDiv;
 
@@ -297,9 +298,11 @@ public class RestaurantImageView extends MyPage {
 					setProperButtons();
 					setValidVisibility();
 					showCamera();
-					nameLabelInfo.setText(restaurant.getName());
-					addressLabelInfo.setText(restaurant.getAddress());
-					getHeader().setTitle(restaurant.getName());
+					
+//					nameLabelInfo.setText(restaurant.getName());
+//					addressLabelInfo.setText(restaurant.getAddress());
+					
+//					getHeader().setTitle(restaurant.getName());
 
 				}
 			}
@@ -590,15 +593,15 @@ public class RestaurantImageView extends MyPage {
 		warning.setText("");
 		getContentPanel().add(warning);
 		if (!nameText.getText().isEmpty() && !adressText.getText().isEmpty()) {
-			if (restaurantExist()) {
-				setValidDataStyle(false, nameWrapper);
-				setValidDataStyle(false, addressWrapper);
-				warning.setText(Customization.RESTAURANT_EXIST_ERROR);
-				return false;
-			} else {
-				setValidDataStyle(true, nameWrapper);
-				setValidDataStyle(true, addressWrapper);
-			}
+//			if (restaurantExist()) {
+//				setValidDataStyle(false, nameWrapper);
+//				setValidDataStyle(false, addressWrapper);
+//				warning.setText(Customization.RESTAURANT_EXIST_ERROR);
+//				return false;
+//			} else {
+//				setValidDataStyle(true, nameWrapper);
+//				setValidDataStyle(true, addressWrapper);
+//			}
 		}
 
 		boolean isCorrect = true;
@@ -1023,5 +1026,12 @@ public class RestaurantImageView extends MyPage {
 	private static native int getBodyOffsetWidth(Element element)/*-{
 		return element.offsetWidth;
 	}-*/;
+
+	@Override
+	public void onChange() {
+		nameLabelInfo.setText(restaurant.getName());
+		addressLabelInfo.setText(restaurant.getAddress());
+		getHeader().setTitle(restaurant.getName());
+	}
 
 }

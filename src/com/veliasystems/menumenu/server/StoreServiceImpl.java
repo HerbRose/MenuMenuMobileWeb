@@ -39,6 +39,7 @@ import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.ErrorCodes;
+import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -398,15 +399,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public Map<String, Object> saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId) {
+	public ResponseSaveWrapper saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId) {
 		
+		ResponseSaveWrapper returnObject = new ResponseSaveWrapper();
 		List<Integer> errorCodes = new ArrayList<Integer>();
-		
-		Map<String, Object> returnMap = new HashMap<String, Object>();
-		
+		Map<String, ResponseSaveWrapper> returnMap = new HashMap<String, ResponseSaveWrapper>();
 		List<User> usersList = getUsers();
-		
 		User foundUser = null;
+		
+		
+		
+		boolean isOk = true;
 		
 		for (User user : usersList) {
 			if(user.getEmail().equalsIgnoreCase(userEmail)) foundUser = user;
@@ -414,24 +417,34 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		if(foundUser == null ){
 			errorCodes.add(ErrorCodes.USER_DONT_EXIST);
+			isOk = false;
 		}else{
-//			if(!foundUser.isAdmin() && !foundUser.getRestaurantsId().contains(r.getId())){
-//				errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);
-//			}
 			if(!foundUser.isAdmin()){
 				if(foundUser.isAgent()){
+					if(foundUser.getCitiesId() != null){
+						if(!checkIfAgentIsPermitted(foundUser,oldCityId, newCityId)){
+							errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);
+							isOk = false;
+						}
+					} else{
+						errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);	
+						isOk = false;
+					}
 					
 				}else if(foundUser.isRestaurator()){
 					if(foundUser.getRestaurantsId()!= null){						
 						if(!foundUser.getRestaurantsId().contains(r.getId())){
-							errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);		
+							errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);
+							isOk = false;
 						}
 					}
 					else{
-						errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);					
+						errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);	
+						isOk = false;
 					}
 				}else{
 					errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);
+					isOk = false;
 				}
 			}
 		}
@@ -443,23 +456,73 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		r.setLogoImages(null);
-		r.setMenuImages(null);
-		r.setProfileImages(null);
+		
 		
 		if(oldCityId != newCityId){
 			if(checkIfRestaurantExistInOtherCity(r,newCityId)){
+				r.setCityId(oldCityId);
 				errorCodes.add(ErrorCodes.RESTAURANT_EXIST_IN_OTHER_CITY);
+				isOk = false;
 			}else{
-				r.setCityId(newCityId);
-				dao.ofy().put(r);
+				r.setCityId(newCityId);		
+			}
+		}else{
+			if(!checkIfRestaurantExistInOtherCity(r, r.getCityId())){
+				r.setCityId(newCityId);	
+			}else{
+				Restaurant rest = getBackOldRestaurant(r.getId());
+				returnObject.setRestaurant(rest);
+				errorCodes.add(ErrorCodes.RESTAURANT_EXIST_IN_THIS_CITY);
+				isOk = false;
 			}
 		}
-//		r.setCityId(getCityId(r.getCity()));
-		returnMap.put(R.ERROR_CODES_RESULT_FOR_MAP, errorCodes);
-		returnMap.put(R.RESTAURANT_RESULT_FOR_MAP, r);
-		return returnMap;
-//		System.out.println("saved succes: " + r.getName());
+		
+		
+		
+		if(isOk){
+			r.setLogoImages(null);
+			r.setMenuImages(null);
+			r.setProfileImages(null);
+			
+			dao.ofy().put(r);
+			returnObject.setRestaurant(r);
+		}
+
+		returnObject.setErrorCodes(errorCodes);
+		
+		return returnObject;
+	}
+	
+	private Restaurant getBackOldRestaurant(long id){
+		return dao.ofy().find(Restaurant.class,id);
+	}
+	
+	private boolean checkIfRestaurantExistInOtherCity(Restaurant r, long newCityId){
+		boolean exist = false;
+		
+		r.setCityId(newCityId);
+		
+		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
+		if(restaurantQuery == null) return true;
+		
+		List<Restaurant> restaurantList = restaurantQuery.list();
+		
+		for (Restaurant restaurant : restaurantList) {
+			if(restaurant.equals(r)) exist = true;
+		}
+		
+		return exist;
+	}
+	
+	private boolean checkIfAgentIsPermitted(User foundUser,long oldCityId, long newCityId){
+		boolean permitted = false;
+		
+		
+		if(foundUser.getCitiesId().contains(oldCityId) && foundUser.getCitiesId().contains(newCityId)){
+			permitted = true;
+		}
+	
+		return permitted;
 	}
 	
 	@Override
@@ -483,22 +546,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 
 
-	private boolean checkIfRestaurantExistInOtherCity(Restaurant r, long newCityId){
-		boolean exist = false;
-		
-		r.setCityId(newCityId);
-		
-		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
-		if(restaurantQuery == null) exist = true;
-		
-		List<Restaurant> restaurantList = restaurantQuery.list();
-		
-		for (Restaurant restaurant : restaurantList) {
-			if(restaurant.equals(r)) exist = true;
-		}
-		
-		return exist;
-	}
+	
 	
 //	private Long getCityId(String city){
 //		
