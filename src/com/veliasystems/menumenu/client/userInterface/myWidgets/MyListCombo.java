@@ -30,7 +30,6 @@ public class MyListCombo extends FocusPanel {
 	private Label textLabel = new Label();
 	
 	private long selectedItem = -1;
-	private boolean showPanel = false;
 	
 	public MyListCombo(boolean isArrow) {
 		
@@ -148,16 +147,14 @@ public class MyListCombo extends FocusPanel {
 	 * show or hide expanded panel
 	 */
 	private void showExpandetPanel(){
+		boolean showPanel = Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0;
 		showPanel = !showPanel;
 		scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 		showTouchGetter(showPanel);
 		addOnClick(scrollPanel.getElement().getId());
 	}
 	public void selectItem(long order){
-//		MyListItem item = listItems.get(order);
-//		if(item != null){
-			itemController(order);
-//		}
+		itemController(order);
 	}
 
 	private void showTouchGetter(boolean isShow){
