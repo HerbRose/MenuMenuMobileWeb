@@ -532,7 +532,9 @@ public class RestaurantImageView extends MyPage {
 					restaurant.setAddress(adressText.getText());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox
 							.getText());
+					restaurant.setCityId(cityController.getCity(citiesListCombo.getSelectedItem()).getId());
 					restaurant.setNameUser(bossTextBox.getText());
+					
 					PagesController.showWaitPanel();
 					RestaurantController.getInstance().saveRestaurant(
 							restaurant, false);

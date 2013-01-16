@@ -156,7 +156,7 @@ public class LoginScreen extends MyPage{
 	    
 	    getContentPanel().add(namePanel);
 	    getContentPanel().add(passwordPanel);
-	    getContentPanel().add(languageCombo);
+	    //getContentPanel().add(languageCombo);
 	    getContentPanel().add(buttonPanel);
 	    getHeader().addImageHeader(logoPanel);
 	   

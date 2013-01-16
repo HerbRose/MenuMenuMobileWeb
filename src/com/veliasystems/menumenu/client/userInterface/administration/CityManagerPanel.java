@@ -125,12 +125,21 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	private void fillCityDetails(FlowPanel cityDetails, final City city){
 		
 		cityDetails.clear();
+		
+		
 		FlowPanel namePanel = new FlowPanel();
 		namePanel.setStyleName("namePanel", true);
+		
 		FlowPanel visabilityPanel = new FlowPanel();
 		visabilityPanel.setStyleName("visabilityPanel", true);
+		
 		FlowPanel buttonsPanel = new FlowPanel();
 		buttonsPanel.setStyleName("buttonsPanel", true);
+		
+		FlowPanel imagePanel = new FlowPanel();
+		imagePanel.setStyleName("imagesPanel", true);
+		
+		
 		
 		Label nameLabel = new Label(Customization.CITY_NAME);
 		final TextBox nameTextBox = new TextBox();
@@ -166,6 +175,15 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		});
 		
 		
+		
+		Label districtImageLabel = new Label(Customization.DISTRICT_IMAGE);
+		Image districtImage = new Image();
+		if(!city.getDistrictImageURL().isEmpty()){
+			districtImage.setUrl(city.getDistrictImageURL());
+		}
+		
+		
+		
 		Button deleteButton = new Button(Customization.DELETE);
 		deleteButton.addClickHandler(new ClickHandler() {
 			
@@ -191,17 +209,31 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 				}
 			}
 		});
+		
+		
+		
+		
+		
+		
 		namePanel.add(nameLabel);
 		namePanel.add(nameTextBox);
+		
+		
 		visabilityPanel.add(visabilityLabel);
 		visabilityPanel.add(isVisibleForProduction);
 		visabilityPanel.add(visiblityForTestLabel);
 		visabilityPanel.add(isVisibleForTests);
+		
+		imagePanel.add(districtImageLabel);
+		imagePanel.add(districtImage);
+		
+		
 		buttonsPanel.add(saveButton);
 		buttonsPanel.add(deleteButton);
 		
 		cityDetails.add(namePanel);
 		cityDetails.add(visabilityPanel);
+		cityDetails.add(imagePanel);
 		cityDetails.add(buttonsPanel);
 		
 		showCityTable(cityDetails, null, false);
@@ -217,16 +249,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 			button.setText(Customization.HIDDEN);
 		}
 		
-	
 		
-//		if(isVisibleForTests){
-//			button.setText(Customization.VISIBLE);
-//			
-//		}else{
-//			button.setText(Customization.HIDDEN);
-//		}
-		
-	
 		button.setStyleName("greenText", isVisible);
 		button.setStyleName("redText", !isVisible);
 		
@@ -250,8 +273,8 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	public void showCityTable( Widget widget, ToggleButton arrowToggleButton, boolean isVisable) {
 		
 		if(isVisable){
-			int width = getHeight(widget.getElement().getId()); 
-			widget.setHeight(width+"px");
+			int height = getHeight(widget.getElement().getId()); 
+			widget.setHeight(height+20+ "px");
 		}else{
 			widget.setHeight("0px");
 		}

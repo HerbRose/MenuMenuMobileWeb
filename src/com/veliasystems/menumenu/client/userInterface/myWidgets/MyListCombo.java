@@ -2,21 +2,15 @@ package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.veliasystems.menumenu.client.R;
 
@@ -43,7 +37,8 @@ public class MyListCombo extends FocusPanel {
 		Date date = new Date();
 		scrollPanel.getElement().setId("id" + date.getTime());
 		
-		addOnClick(scrollPanel.getElement().getId());
+//		addOnClick(scrollPanel.getElement().getId());
+	
 		
 		setStyleName("listCombo noFocus", true);
 
@@ -130,6 +125,7 @@ public class MyListCombo extends FocusPanel {
 			selectedItem = orderToSelect;
 			textLabel.setText(panel.getText());
 		}else selectedItem = -1;
+		
 	}
 	
 	private void selectPanel(FocusPanel panel, boolean select){
@@ -142,6 +138,12 @@ public class MyListCombo extends FocusPanel {
 		panel.setText(text);
 		return panel;
 	}
+	
+	
+	public long getSelectedItem() {
+		return selectedItem;
+	}
+	
 	/**
 	 * show or hide expanded panel
 	 */
@@ -149,6 +151,7 @@ public class MyListCombo extends FocusPanel {
 		showPanel = !showPanel;
 		scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 		showTouchGetter(showPanel);
+		addOnClick(scrollPanel.getElement().getId());
 	}
 	public void selectItem(long order){
 //		MyListItem item = listItems.get(order);

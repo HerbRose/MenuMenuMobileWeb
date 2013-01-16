@@ -361,12 +361,12 @@ width: 100px;
 	background-color: #fff;
 	
 }
-.namePanel, .visabilityPanel, .buttonsPanel{
+.namePanel, .visabilityPanel, .buttonsPanel, .imagesPanel{
 	padding: 10px;
 	border-bottom: 1px solid;
 	text-align: justify;
 }
-.namePanel *, .visabilityPanel *, .buttonsPanel *{
+.namePanel *, .visabilityPanel *, .buttonsPanel *, .imagesPanel *{
 	display: inline;
 	border: none !important;
 	padding-right: 100px !important;

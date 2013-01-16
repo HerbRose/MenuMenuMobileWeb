@@ -15,6 +15,9 @@ public class City implements Serializable{
 
 	@Id private Long id;
 	private String city;
+	
+	private String districtImageURL = "";
+	
 	/**
 	 * visible for production
 	 */
@@ -94,6 +97,15 @@ public class City implements Serializable{
 	public boolean isVisable(boolean isProduction) {
 		if(isProduction) return isVisable;
 		else return isVisibleForTests;
+	}
+	
+	
+	public void setDistrictImageURL(String districtImageURL) {
+		this.districtImageURL = districtImageURL;
+	}
+	
+	public String getDistrictImageURL() {
+		return districtImageURL;
 	}
 	
 }

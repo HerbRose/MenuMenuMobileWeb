@@ -228,6 +228,7 @@ public class RestaurantController {
 		});
 		
 	}
+
 	
 	public void addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd){
 		PagesController.showWaitPanel();

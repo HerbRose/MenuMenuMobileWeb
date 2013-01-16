@@ -168,6 +168,8 @@ public class Customization {
 	public static final String IMAGE_TYPE = translated.imageType();
 	
 	public static final String VISIBILITY_FOR_TESTS = translated.visibilityForTests();
+
+	public static final String DISTRICT_IMAGE = translated.districtImage();
 	
 };
 	
