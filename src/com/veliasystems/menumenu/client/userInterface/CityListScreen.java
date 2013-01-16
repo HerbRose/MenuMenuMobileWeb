@@ -94,7 +94,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	 			@Override
 	 			public void onClick(ClickEvent event) {
 	 				Document.get().getElementById("load").setClassName(R.LOADING);
-	 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+	 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_ADMINISTRATION), Transition.SLIDE);	
 	 			}
 	 		});
 	    	adminLabel.addClickHandler(new ClickHandler() {
@@ -102,7 +102,7 @@ public class CityListScreen extends MyPage implements IObserver{
 				@Override
 				public void onClick(ClickEvent event) {
 					Document.get().getElementById("load").setClassName(R.LOADING);
-					JQMContext.changePage(PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER), Transition.SLIDE);	
+					JQMContext.changePage(PagesController.getPage(Pages.PAGE_ADMINISTRATION), Transition.SLIDE);	
 				}
 			});
 	    	adminLabel.addStyleName("adminLabel noFocus");

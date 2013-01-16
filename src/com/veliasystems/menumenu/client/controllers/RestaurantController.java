@@ -45,6 +45,7 @@ public class RestaurantController {
 	private static RestaurantController instance = null ; //instance of controller
 	private UserController userController = UserController.getInstance();
 	private CookieController cookieController = CookieController.getInstance();
+//	private CityController cityController = CityController.getInstance();
 	
 	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
@@ -506,6 +507,28 @@ public class RestaurantController {
 		}
 		
 		ImagesController.imageUrl = newImageBlob.getImageUrl();
+		switch (newImageBlob.getImageType()) {
+		case CITY:
+			afterCityImageCrop(newImageBlob, backPage);
+			break;
+		case EMPTY_MENU:
+			//TODO
+			break;
+		default:
+			afterRestaurantImageCrop(newImageBlob, oldImageBlob, backPage);
+			break;
+		}
+		
+		
+		
+	}
+	private void afterCityImageCrop(final ImageBlob newImageBlob, final JQMPage backPage){
+		
+		CityController.getInstance().getCity(Long.parseLong(newImageBlob.getRestaurantId())).setDistrictImageURL(newImageBlob.getImageUrl());
+		JQMContext.changePage(PagesController.getPage(Pages.PAGE_ADMINISTRATION), Transition.SLIDE);
+	}
+	
+	private void afterRestaurantImageCrop(final ImageBlob newImageBlob, ImageBlob oldImageBlob, final JQMPage backPage){
 		
 		List<ImageBlob> imageBlobs = getImagesList(newImageBlob.getImageType(), Long.parseLong(newImageBlob.getRestaurantId()));
 		if(imageBlobs == null){
@@ -557,8 +580,6 @@ public class RestaurantController {
 				JQMContext.changePage(restMapView.get(Long.parseLong(newImageBlob.getRestaurantId())), Transition.SLIDE);
 			}
 		}
-		
-		
 	}
 	/**
 	 * 

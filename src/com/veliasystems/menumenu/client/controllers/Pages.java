@@ -1,10 +1,9 @@
 package com.veliasystems.menumenu.client.controllers;
 
+
 import com.sksamuel.jqm4gwt.JQMPage;
-import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.userInterface.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
-import com.veliasystems.menumenu.client.userInterface.HomePageScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsListScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsManagerScreen;
 
@@ -28,15 +27,20 @@ public enum Pages {
 	PAGE_RESTAURANT_LIST,
 	PAGE_HOME,
 	PAGE_ADD_RESTAURANT,
-	PAGE_RESTAURANT_MANAGER;
+	/**
+	 * @deprecated
+	 * use {@link Pages#PAGE_ADMINISTRATION}
+	 */
+	PAGE_RESTAURANT_MANAGER,
+	PAGE_ADMINISTRATION;
 	
 	
 	/**
-	 * set the page only if local page is null
+	 *
 	 * @param enumPage
 	 * @return added page or null
 	 */
-	public static JQMPage setMyPage(Pages enumPage) {
+	public static JQMPage getMyPage(Pages enumPage) {
 		 
 		JQMPage page ;
 			switch (enumPage) {
@@ -53,6 +57,9 @@ public enum Pages {
 					page = new AddRestaurantScreen();	
 				break;
 			case PAGE_RESTAURANT_MANAGER:
+					page = new RestaurantsManagerScreen();
+				break;
+			case PAGE_ADMINISTRATION:
 					page = new RestaurantsManagerScreen();
 				break;
 			default:

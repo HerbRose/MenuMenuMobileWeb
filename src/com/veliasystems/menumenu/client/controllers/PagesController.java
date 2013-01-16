@@ -26,7 +26,7 @@ public class PagesController {
 			return pagesMap.get(enumPage);
 		}else{
 			
-			JQMPage newPage = Pages.setMyPage(enumPage);
+			JQMPage newPage = Pages.getMyPage(enumPage);
 			if(newPage != null){
 				pagesMap.put(enumPage, newPage);
 				return newPage;

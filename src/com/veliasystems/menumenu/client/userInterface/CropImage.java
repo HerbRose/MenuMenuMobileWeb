@@ -79,6 +79,7 @@ public class CropImage extends MyPage implements IObserver{
 	private int interval = 0;
 
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private ImagesController imagesController = ImagesController.getInstance();
 	private BlobServiceAsync blobService = GWT.create(BlobService.class); 
 
 	public CropImage(ImageBlob imageInsert, JQMPage back){
@@ -101,7 +102,12 @@ public class CropImage extends MyPage implements IObserver{
 			@Override
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
-				JQMContext.changePage(RestaurantController.restMapView.get(Long.parseLong(imageBlob.getRestaurantId())), Transition.SLIDE);
+				imagesController.deleteImage(imageBlob);
+				if(backPage != null){
+					JQMContext.changePage(backPage, Transition.SLIDE);
+				}else{
+					JQMContext.changePage(RestaurantController.restMapView.get(Long.parseLong(imageBlob.getRestaurantId())), Transition.SLIDE);
+				}
 			}
 		});
 
@@ -125,6 +131,7 @@ public class CropImage extends MyPage implements IObserver{
 					@Override
 					public void onFailure(Throwable caught) {
 						PagesController.hideWaitPanel();
+						Window.alert(Customization.CONNECTION_ERROR);
 					}
 
 					@Override

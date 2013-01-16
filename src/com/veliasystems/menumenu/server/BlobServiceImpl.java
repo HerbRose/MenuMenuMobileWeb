@@ -46,6 +46,7 @@ import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -234,30 +235,40 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 		
 		Long restaurantId = Long.valueOf(imageBlob.getRestaurantId());
-	
-		Restaurant restaurant = dao.ofy().find(Restaurant.class, restaurantId);
+		Restaurant restaurant;
+		City city;
 		
 		switch (imageBlob.getImageType()) {
-		case MENU:
-			if(restaurant.getMainMenuImageString() != null && restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
-				restaurant.setMainMenuImageString("");
-				dao.ofy().put(restaurant);
-			}
-		case PROFILE: 
-			if(restaurant.getMainProfileImageString() != null && restaurant.getMainProfileImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
-				restaurant.setMainProfileImageString("");
-				dao.ofy().put(restaurant);
-			}
-			break;
-		case LOGO:
-			if(restaurant.getMainLogoImageString() != null && restaurant.getMainLogoImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
-				restaurant.setMainLogoImageString("");
-				dao.ofy().put(restaurant);
-			}
-			break;
-			
-		default:
-			break;
+			case MENU:
+				restaurant = dao.ofy().find(Restaurant.class, restaurantId);
+				if(restaurant!= null && restaurant.getMainMenuImageString() != null && restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+					restaurant.setMainMenuImageString("");
+					dao.ofy().put(restaurant);
+				}
+				break;
+			case PROFILE: 
+				restaurant = dao.ofy().find(Restaurant.class, restaurantId);
+				if(restaurant!= null && restaurant.getMainProfileImageString() != null && restaurant.getMainProfileImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+					restaurant.setMainProfileImageString("");
+					dao.ofy().put(restaurant);
+				}
+				break;
+			case LOGO:
+				restaurant = dao.ofy().find(Restaurant.class, restaurantId);
+				if(restaurant!= null && restaurant.getMainLogoImageString() != null && restaurant.getMainLogoImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+					restaurant.setMainLogoImageString("");
+					dao.ofy().put(restaurant);
+				}
+				break;
+			case CITY:
+				city = dao.ofy().find(City.class, restaurantId);
+				if( city!= null && city.getDistrictImageURL() != null && city.getDistrictImageURL().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
+					city.setDistrictImageURL("");
+					dao.ofy().put(city);
+				}
+				break;
+			default:
+				break;
 		}
 		
 		
@@ -376,12 +387,16 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			scaleTransform = ImagesServiceFactory.makeResize(220,
 					4000);//newImage.getHeight());
 			break;
+		case CITY:
+			scaleTransform = ImagesServiceFactory.makeResize(220,
+					4000);//newImage.getHeight());
+			break;
 		default:
 			log.severe("Unknow image type: " + imageBlob.getImageType());
+			return null;
 		}
 
-		Image scaleImage = imagesService.applyTransform(scaleTransform,
-				newImage, inputSettings, outputSettings);
+		Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, inputSettings, outputSettings);
 		
 		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
 		
@@ -434,8 +449,17 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
 		
+		ImageBlob newImageBlob = cropImage(imageBlob, leftX, topY, rightX, bottomY, "imageCrop.jpg");
+		
+		if(newImageBlob == null){
+			throw new NullPointerException();
+		}
+		
 		mapToReturn.put("old", imageBlob);
-		mapToReturn.put("new", cropImage(imageBlob, leftX, topY, rightX, bottomY, "imageCrop.jpg") );
+		mapToReturn.put("new", newImageBlob);
+		
+		
+		
 		return mapToReturn;
 	}
 	

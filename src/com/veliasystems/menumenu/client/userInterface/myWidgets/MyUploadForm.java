@@ -1,13 +1,22 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.services.BlobService;
+import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 
 public class MyUploadForm extends FormPanel {
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -17,6 +26,7 @@ public class MyUploadForm extends FormPanel {
 	private JQMPage backPage = null;
 	private final String imageMimeType = "image/*";
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private final BlobServiceAsync blobService = GWT.create(BlobService.class);
 	/**
 	 * default settings:
 	 * <ul>
@@ -102,5 +112,36 @@ public class MyUploadForm extends FormPanel {
 	 public void setBackPage(JQMPage backPage) {
 		this.backPage = backPage;
 	}
+	
+	public FileUpload getFileUpload() {
+		return fileUpload;
+	}
+	 
+	public void setChangeHandler(){
+		 fileUpload.addChangeHandler(new ChangeHandler() {
+
+				@Override
+				public void onChange(ChangeEvent event) {
+					PagesController.showWaitPanel();
+					// clickOnInputFile(formPanel.getUploadButton().getElement());
+					blobService.getBlobStoreUrl(restaurantId+"", imageType,
+							new AsyncCallback<String>() {
+
+								@Override
+								public void onSuccess(String result) {
+									setAction(result);
+									submit();
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									PagesController.hideWaitPanel();
+									Window.alert("Problem with upload. Try again");
+
+								}
+							});
+				}
+			});
+	 }
 
 }

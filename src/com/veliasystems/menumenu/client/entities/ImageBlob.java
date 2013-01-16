@@ -23,6 +23,13 @@ public class ImageBlob implements Serializable {
 	@Id private String id;
 	/**
 	 * Restaurant's id (converted to {@link String} ) that is assigned to this {@link ImageBlob}
+	 * if <code>restId</code> is sets on:
+	 * <ul>
+	 * 	<li style="list-style: none"><strong>1</strong> - it's selected default empty profile</li>
+	 *  <li style="list-style: none"><strong>2</strong> - it's not selected default empty profile</li>
+	 *  <li style="list-style: none"><strong>else</strong>- it's {@link City} or {@link Restaurant} id</li>
+	 * </ul>
+	 * 
 	 */
 	private String restId;
 	
@@ -68,7 +75,7 @@ public class ImageBlob implements Serializable {
 
     /**
      * Create new {@link ImageBlob} 
-     * @param restId - Restaurant's id (converted to {@link String} ) that is assigned to this {@link ImageBlob}
+     * @param restId - Restaurant's (or Citie's) id (converted to {@link String} ) that is assigned to this {@link ImageBlob}
      * @param blobKey - the image blobKey (converted to {@link String}) 
      * @param dateCreated - date of creation of image
      * @param imageType - the {@link ImageType} of image

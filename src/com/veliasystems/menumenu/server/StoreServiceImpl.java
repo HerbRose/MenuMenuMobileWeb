@@ -56,8 +56,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private DAO dao = new DAO();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private EmailServiceImpl emailService = new EmailServiceImpl();
-//	private BlobstoreService blobstoreService = BlobstoreServiceFactory
-//			.getBlobstoreService();
+
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
 	
 	@Override

@@ -21,6 +21,10 @@ public enum ImageType {
 	/**
 	 * photo of restaurant's empty menu list 
 	 */
-	EMPTY_MENU;
+	EMPTY_MENU,
+	/**
+	 * photo of city
+	 */
+	CITY;
 	
 }

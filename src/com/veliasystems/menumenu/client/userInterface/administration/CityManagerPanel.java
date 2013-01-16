@@ -5,10 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -17,9 +24,15 @@ import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
 public class CityManagerPanel extends FlowPanel implements IManager {
 
@@ -32,12 +45,16 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	//pola do edycji miast
 	private List<City> cities = new ArrayList<City>();
 	private Map<Long, FlowPanel> citiesPanels = new HashMap<Long, FlowPanel>();
+
 	//KONIEC - pola do edycji miast
 	
 	//Kontrolery
 	private CityController cityController = CityController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	
 	//KONIEC - Kontrolery
+
+	private String osType = getUserAgent(); 
 	
 	public CityManagerPanel() {
 		
@@ -173,17 +190,9 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 				setVisabilityText(false, !cities.get(cities.indexOf(city)).isVisable(false), isVisibleForTests, city.getId());
 			}
 		});
-		
-		
-		
+
 		Label districtImageLabel = new Label(Customization.DISTRICT_IMAGE);
-		Image districtImage = new Image();
-		if(!city.getDistrictImageURL().isEmpty()){
-			districtImage.setUrl(city.getDistrictImageURL());
-		}
-		
-		
-		
+
 		Button deleteButton = new Button(Customization.DELETE);
 		deleteButton.addClickHandler(new ClickHandler() {
 			
@@ -209,12 +218,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 				}
 			}
 		});
-		
-		
-		
-		
-		
-		
+
 		namePanel.add(nameLabel);
 		namePanel.add(nameTextBox);
 		
@@ -225,9 +229,15 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 		visabilityPanel.add(isVisibleForTests);
 		
 		imagePanel.add(districtImageLabel);
-		imagePanel.add(districtImage);
-		
-		
+		MyUploadForm myUploadForm = createUpload(city.getId());
+		if(!city.getDistrictImageURL().isEmpty()){
+			myUploadForm.getElement().getStyle().setDisplay(Display.NONE);
+			add(myUploadForm);
+			imagePanel.add(createImage(city.getDistrictImageURL(), myUploadForm.getFileUpload() ) );
+			
+		}else{
+			imagePanel.add(myUploadForm);
+		}
 		buttonsPanel.add(saveButton);
 		buttonsPanel.add(deleteButton);
 		
@@ -356,19 +366,46 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	}
 
 	
+	private MyUploadForm createUpload(long cityId) {
+		FileUpload fileUpload= new FileUpload();
+		MyUploadForm formPanel= new MyUploadForm(fileUpload, ImageType.CITY, cityId+"");
+		formPanel.setBackPage(PagesController.getPage(Pages.PAGE_ADMINISTRATION));
+		formPanel.setChangeHandler();
+		return formPanel;
+	}
+	
+	private Image createImage(String imageUrl, final FileUpload fileUpload){
+		Image districtImage = new Image();
+		districtImage.setUrl(imageUrl);
+
+		districtImage.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clickOnInputFile(fileUpload.getElement());
+				
+			}
+		});
+		return districtImage;
+	}
+
 	private native int getHeight(String elementId)/*-{
 		
 		var children = $wnd.document.getElementById(elementId).childNodes;
 		var length = children.length;
-		console.log(children);
 		var height = 0;
 		for( i=0; i<=length-1; i++ ){
 			height+= children[i].offsetHeight;
-			console.log(height);
 		}
 		
 		return height;
 	}-*/;
 	
+	private native String getUserAgent()/*-{
+		return navigator.userAgent;
+	}-*/;
 	
+	private static native void clickOnInputFile(Element elem) /*-{
+		elem.click();
+	}-*/;
 }

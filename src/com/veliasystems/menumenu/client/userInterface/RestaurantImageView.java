@@ -188,7 +188,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
 				JQMContext.changePage(
-						PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER),
+						PagesController.getPage(Pages.PAGE_ADMINISTRATION),
 						Transition.SLIDE);
 			}
 		});
@@ -199,7 +199,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
 				JQMContext.changePage(
-						PagesController.getPage(Pages.PAGE_RESTAURANT_MANAGER),
+						PagesController.getPage(Pages.PAGE_ADMINISTRATION),
 						Transition.SLIDE);
 			}
 		});
@@ -763,7 +763,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		nameText.setText(restaurant.getName());
 		adressText.setText(restaurant.getAddress());
 		phoneRestaurantTextBox.setText(restaurant.getPhoneRestaurant());
-		districtTextBox.setText("");
 		bossTextBox.setText(restaurant.getNameUser());
 		
 		adminPanelWrapper.getElement().getStyle()
@@ -986,7 +985,17 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	public void setEdit(boolean isEdit) {
 		this.isEdit = isEdit;
 	}
+
+	@Override
+	public void onChange() {
+		nameLabelInfo.setText(restaurant.getName());
+		addressLabelInfo.setText(restaurant.getAddress());
+		getHeader().setTitle(restaurant.getName());
+	}
 	
+	private void setEditData(){
+		
+	}
 	
 
 	private native void changeVisibility(String className, boolean show)/*-{
@@ -1027,11 +1036,5 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		return element.offsetWidth;
 	}-*/;
 
-	@Override
-	public void onChange() {
-		nameLabelInfo.setText(restaurant.getName());
-		addressLabelInfo.setText(restaurant.getAddress());
-		getHeader().setTitle(restaurant.getName());
-	}
 
 }

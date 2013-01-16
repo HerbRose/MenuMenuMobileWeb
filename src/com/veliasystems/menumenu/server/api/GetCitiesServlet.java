@@ -68,6 +68,7 @@ public class GetCitiesServlet extends HttpServlet {
 				Map<String,String> cityPair = new HashMap<String,String>();
 				cityPair.put( "name", city.getCity());
 				cityPair.put( "id", "" + city.getId());
+				cityPair.put("districtImageURL", city.getDistrictImageURL());
 				attributes.add(cityPair);
 			}
 		}

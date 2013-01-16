@@ -202,4 +202,21 @@ public class ImagesController {
 	public List<ImageBlob> getDefoultEmptyMenuImageBlobList() {
 		return defoultEmptyMenuImageBlobList;
 	}
+	
+	public void deleteImage(ImageBlob imageBlob){
+		
+		blobService.deleteBlob(imageBlob, new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable caught) {	
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+			}
+			@Override
+			public void onSuccess(Boolean result) {
+				 
+			}
+		
+		});
+	}
 }
