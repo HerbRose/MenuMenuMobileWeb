@@ -229,6 +229,29 @@ public class RestaurantController {
 		
 	}
 
+	public void saveRestaurant(String userEmail, Restaurant r, long oldCityId, long newCityId){
+		
+		PagesController.showWaitPanel();
+		
+		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId, new AsyncCallback<Map<String, Object>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+	
+			}
+
+			@Override
+			public void onSuccess(Map<String, Object> result) {
+				putRestaurantToLocalList((Restaurant) result.get(R.RESTAURANT_RESULT_FOR_MAP));
+				Window.alert(result.get(R.ERROR_CODES_RESULT_FOR_MAP).toString());
+				PagesController.hideWaitPanel();
+				notifyAllObservers();
+			}
+		});
+		
+	}
 	
 	public void addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd){
 		PagesController.showWaitPanel();
@@ -276,8 +299,16 @@ public class RestaurantController {
 		}
 		if(restaurant.getProfileImages() == null){
 			restaurant.setProfileImages(new ArrayList<ImageBlob>());
-		}	
-		restaurants.put(restaurant.getId(), restaurant); //add/change restaurant in our list
+		}
+		
+//		Restaurant newRestaurant = restaurants.get(restaurant);
+		if(restaurants.get(restaurant.getId()) != null){
+		restaurants.get(restaurant.getId()).setCityId(restaurant.getCityId());
+		}
+		else{
+			restaurants.put(restaurant.getId(), restaurant); //add/change restaurant in our list
+		}
+//		
 	}
 	
 	/**

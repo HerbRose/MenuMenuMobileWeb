@@ -376,7 +376,7 @@ public class Restaurant implements Serializable {
 		
 		Restaurant r = (Restaurant) obj;
 		
-		if(this.getName().equalsIgnoreCase(r.getName()) && this.getCity().equalsIgnoreCase(r.getCity())){
+		if(this.getName().equalsIgnoreCase(r.getName()) && this.getAddress().equalsIgnoreCase(r.getAddress()) && this.getCityId() == (r.getCityId())){
 			return true;
 		}
 		

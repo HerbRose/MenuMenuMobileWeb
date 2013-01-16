@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.services;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import com.veliasystems.menumenu.client.entities.User;
 
 public interface StoreServiceAsync {
 	
-	void saveRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
+	void saveRestaurant( String userEmail , Restaurant r, long oldCityId, long newCityId, AsyncCallback<Map<String, Object>> callback);
 
 	void loadRestaurants(AsyncCallback<List<Restaurant>> callback);
 	void loadRestaurants(String city, AsyncCallback<List<Restaurant>> callback);
@@ -65,6 +66,8 @@ public interface StoreServiceAsync {
 
 	void addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
 			String emailAddingUser, AsyncCallback<List<Object>> callback);
+
+	void saveRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
 
 
 	

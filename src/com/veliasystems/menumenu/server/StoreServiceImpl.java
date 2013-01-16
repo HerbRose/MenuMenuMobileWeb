@@ -38,6 +38,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.ErrorCodes;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -397,7 +398,44 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public Restaurant saveRestaurant(Restaurant r) {
+	public Map<String, Object> saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId) {
+		
+		List<Integer> errorCodes = new ArrayList<Integer>();
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		List<User> usersList = getUsers();
+		
+		User foundUser = null;
+		
+		for (User user : usersList) {
+			if(user.getEmail().equalsIgnoreCase(userEmail)) foundUser = user;
+		}
+		
+		if(foundUser == null ){
+			errorCodes.add(ErrorCodes.USER_DONT_EXIST);
+		}else{
+//			if(!foundUser.isAdmin() && !foundUser.getRestaurantsId().contains(r.getId())){
+//				errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);
+//			}
+			if(!foundUser.isAdmin()){
+				if(foundUser.isAgent()){
+					
+				}else if(foundUser.isRestaurator()){
+					if(foundUser.getRestaurantsId()!= null){						
+						if(!foundUser.getRestaurantsId().contains(r.getId())){
+							errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);		
+						}
+					}
+					else{
+						errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);					
+					}
+				}else{
+					errorCodes.add(ErrorCodes.USER_NOT_ALLOWED);
+				}
+			}
+		}
+		
 		try {
 			getGeocoding(r,false);
 //			System.out.println( "AFTER GEOCODING: " +  r.toString() );
@@ -408,12 +446,59 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setLogoImages(null);
 		r.setMenuImages(null);
 		r.setProfileImages(null);
+		
+		if(oldCityId != newCityId){
+			if(checkIfRestaurantExistInOtherCity(r,newCityId)){
+				errorCodes.add(ErrorCodes.RESTAURANT_EXIST_IN_OTHER_CITY);
+			}else{
+				r.setCityId(newCityId);
+				dao.ofy().put(r);
+			}
+		}
 //		r.setCityId(getCityId(r.getCity()));
-		dao.ofy().put(r);
-		return r;
+		returnMap.put(R.ERROR_CODES_RESULT_FOR_MAP, errorCodes);
+		returnMap.put(R.RESTAURANT_RESULT_FOR_MAP, r);
+		return returnMap;
 //		System.out.println("saved succes: " + r.getName());
 	}
+	
+	@Override
+	public Restaurant saveRestaurant(Restaurant r) {
+			try {
+				getGeocoding(r,false);
+				// System.out.println( "AFTER GEOCODING: " + r.toString() );
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			r.setLogoImages(null);
+			r.setMenuImages(null);
+			r.setProfileImages(null);
+			// r.setCityId(getCityId(r.getCity()));
+			dao.ofy().put(r);
+			return r;
+			// System.out.println("saved succes: " + r.getName());
+	}
 
+
+
+	private boolean checkIfRestaurantExistInOtherCity(Restaurant r, long newCityId){
+		boolean exist = false;
+		
+		r.setCityId(newCityId);
+		
+		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
+		if(restaurantQuery == null) exist = true;
+		
+		List<Restaurant> restaurantList = restaurantQuery.list();
+		
+		for (Restaurant restaurant : restaurantList) {
+			if(restaurant.equals(r)) exist = true;
+		}
+		
+		return exist;
+	}
 	
 //	private Long getCityId(String city){
 //		

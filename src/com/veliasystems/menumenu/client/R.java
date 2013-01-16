@@ -41,6 +41,12 @@ public class R {
     public static final String LANGUAGE = "gwtLocale";
     public static final String LOGIN = "Login";
     
+    
+    // results from server side
+    
+    public static final String ERROR_CODES_RESULT_FOR_MAP = "ErrorCodes";
+    public static final String RESTAURANT_RESULT_FOR_MAP ="Restaurant";
+    
     public static final String USER_AGENT = getUserAgent();
     
     private native static String getUserAgent()/*-{

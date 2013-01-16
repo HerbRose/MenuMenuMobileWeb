@@ -143,7 +143,7 @@ public class RestaurantImageView extends MyPage {
 	public RestaurantImageView(Restaurant r, JQMPage back) {
 		super(r.getName());
 		
-		this.restaurant = r;
+		this.restaurant = restaurantController.getRestaurant(r.getId());
 		
 		deleteProfileConfirmed.addStyleName("deleteProfileConfirmed noFocus pointer");
 		cancelDeleteProfile.addStyleName("cancelDeleteProfile noFocus pointer");
@@ -259,6 +259,51 @@ public class RestaurantImageView extends MyPage {
 		getContentPanel().add(infoContainer);
 		getContentPanel().add(swipeContainer);
 		getContentPanel().add(adminPanelWrapper);
+		
+		
+		cancelButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				setDefautDeleteContent();
+				getContentPanel().remove(warning);
+				hideDeletePanelForImages();
+				setProperButtons();
+				setValidVisibility();
+				showCamera();
+			}
+		});
+		
+		saveButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (validate()) {
+					restaurant.setName(nameText.getText());
+					restaurant.setAddress(adressText.getText());
+					restaurant.setPhoneRestaurant(phoneRestaurantTextBox
+							.getText());
+					
+					//restaurant.setCityId(cityController.getCity(citiesListCombo.getSelectedItem()).getId());
+					restaurant.setNameUser(bossTextBox.getText());
+					
+					
+					RestaurantController.getInstance().saveRestaurant(UserController.getInstance().getLoggedUser().getEmail(), restaurant, restaurant.getCityId(), cityController.getCity(citiesListCombo.getSelectedItem()).getId());
+					
+//					RestaurantController.getInstance().saveRestaurant(
+//							restaurant, false);
+					
+					
+					setProperButtons();
+					setValidVisibility();
+					showCamera();
+					nameLabelInfo.setText(restaurant.getName());
+					addressLabelInfo.setText(restaurant.getAddress());
+					getHeader().setTitle(restaurant.getName());
+
+				}
+			}
+		});
 
 	}
 	
@@ -373,7 +418,7 @@ public class RestaurantImageView extends MyPage {
 	
 	@Override
 	protected void onPageShow() {
-
+		
 		if (!loaded) {
 			SwipeView swipeView;
 			
@@ -509,45 +554,10 @@ public class RestaurantImageView extends MyPage {
 
 	private void changeButtons() {
 		cancelButton.setStyleName("saveButton leftButton", true);
-		cancelButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				setDefautDeleteContent();
-				getContentPanel().remove(warning);
-				hideDeletePanelForImages();
-				setProperButtons();
-				setValidVisibility();
-				showCamera();
-			}
-		});
+		
 
 		saveButton.setStyleName("rightButton saveButton", true);
-		saveButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (validate()) {
-					restaurant.setName(nameText.getText());
-					restaurant.setAddress(adressText.getText());
-					restaurant.setPhoneRestaurant(phoneRestaurantTextBox
-							.getText());
-					restaurant.setCityId(cityController.getCity(citiesListCombo.getSelectedItem()).getId());
-					restaurant.setNameUser(bossTextBox.getText());
-					
-					PagesController.showWaitPanel();
-					RestaurantController.getInstance().saveRestaurant(
-							restaurant, false);
-					setProperButtons();
-					setValidVisibility();
-					showCamera();
-					nameLabelInfo.setText(restaurant.getName());
-					addressLabelInfo.setText(restaurant.getAddress());
-					getHeader().setTitle(restaurant.getName());
-
-				}
-			}
-		});
+	
 
 		getHeader().setLeftButton(cancelButton);
 		getHeader().setRightButton(saveButton);

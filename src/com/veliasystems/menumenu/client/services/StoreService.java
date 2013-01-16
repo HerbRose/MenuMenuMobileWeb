@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.services;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,9 @@ public interface StoreService extends RemoteService {
 	 * @param r - {@link Restaurant} to save in datastore
 	 * 
 	 */
-	Restaurant saveRestaurant( Restaurant r );
+	Map<String, Object> saveRestaurant(String userEmail ,Restaurant r, long oldCityId, long newCityId );
+	
+	Restaurant saveRestaurant(Restaurant r);
 	/**
 	 * 
 	 * @return List of all {@link City} in datastore
