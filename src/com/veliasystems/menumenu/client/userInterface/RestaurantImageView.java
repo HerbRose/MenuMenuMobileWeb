@@ -1036,5 +1036,11 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		return element.offsetWidth;
 	}-*/;
 
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

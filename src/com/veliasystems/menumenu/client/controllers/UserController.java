@@ -297,8 +297,41 @@ public class UserController {
 		return false;
 	}
 	
+	public void setAs(UserType admin, Boolean is, User user) {
+		PagesController.showWaitPanel();
+		switch (admin) {
+			case ADMIN:
+				user.setAdmin(is);
+				break;
+			case AGENT:
+				user.setAgent(is);
+				break;
+			case RESTAURATOR:
+				user.setRestaurator(is);
+				break;
+			default:
+				break;
+		}
+		
+		storeService.saveUser(user, new AsyncCallback<User>() {
+			
+			@Override
+			public void onSuccess(User user) {
+				users.remove(user.getEmail());
+				users.put(user.getEmail(), user);
+				PagesController.hideWaitPanel();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+			}
+		});
+	}
 	
 	private static native void consoleLog(String message)/*-{
 		console.log(message);
 	}-*/;
+	
 }

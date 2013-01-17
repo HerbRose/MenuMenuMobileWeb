@@ -122,6 +122,12 @@ public class RestaurantsListScreen extends MyPage implements IObserver {
 		getContentPanel().clear();
 		addRestaurants(restaurantController.getRestaurantsList());	
 	}
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

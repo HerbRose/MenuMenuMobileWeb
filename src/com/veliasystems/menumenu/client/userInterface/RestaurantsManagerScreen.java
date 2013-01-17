@@ -41,7 +41,7 @@ import com.veliasystems.menumenu.client.userInterface.administration.EditDataPan
 import com.veliasystems.menumenu.client.userInterface.administration.EmailPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.IManager;
 import com.veliasystems.menumenu.client.userInterface.administration.LastUploadedImages;
-import com.veliasystems.menumenu.client.userInterface.administration.RemoveUsersPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.EditUsersPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 
 public class RestaurantsManagerScreen extends JQMPage implements
@@ -356,7 +356,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private FlowPanel setEditDataPanel() {
 		editDataPanel = new EditDataPanel();
 		panelList.put(panelCount++, editDataPanel);
-		tabBar.addTab(Customization.EDIT_DATA);
+		tabBar.addTab(editDataPanel.getName());
 		return (FlowPanel) editDataPanel;
 	}
 	
@@ -365,9 +365,9 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	 * @return instance of RemoveUsersPanel projected onto FlowPanel
 	 */
 	private FlowPanel setRemoveUsersPanel(){
-		removeUsersPanel = new RemoveUsersPanel();
+		removeUsersPanel = new EditUsersPanel();
 		panelList.put(panelCount++, removeUsersPanel);
-		tabBar.addTab(Customization.REMOVE_USERS);
+		tabBar.addTab(removeUsersPanel.getName());
 		return (FlowPanel) removeUsersPanel;
 	}
 
@@ -431,10 +431,13 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	 * @param panel - panel to show
 	 */
 	private void showPanel(IManager panel) {
-		Set<Integer> panelKeys = panelList.keySet();
+//		Set<Integer> panelKeys = panelList.keySet();
 
-		for (Integer key : panelKeys) {
-			panelList.get(key).show(false);
+//		for (Integer key : panelKeys) {
+//			panelList.get(key).show(false);
+//		}
+		if(currentlyDisplayedPanel != null){
+			currentlyDisplayedPanel.show(false);
 		}
 		if(panel!=null){
 			panel.clearData();
@@ -445,6 +448,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	/**
 	 * clear all tabs data
+	 * @deprecated
 	 */
 	private void clearScreenData() {
 
@@ -546,5 +550,11 @@ public class RestaurantsManagerScreen extends JQMPage implements
 		if(currentlyDisplayedPanel != null){
 			currentlyDisplayedPanel.clearData();
 		}
+	}
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
 	}
 }

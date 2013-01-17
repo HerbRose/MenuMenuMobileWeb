@@ -26,6 +26,7 @@ public class LastUploadedImages extends FlowPanel implements IManager{
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
 	public LastUploadedImages() {
+		show(false);
 		blobService.getLast24hImages(new AsyncCallback<List<ImageBlob>>() {
 			
 			@Override

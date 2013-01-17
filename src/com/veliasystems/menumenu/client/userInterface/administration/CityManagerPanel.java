@@ -27,6 +27,7 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -34,7 +35,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
-public class CityManagerPanel extends FlowPanel implements IManager {
+public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 
 	//pola do copiowania danych pomiedzy miastami
 	private TextBox cityIdFrom;
@@ -57,44 +58,44 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	private String osType = getUserAgent(); 
 	
 	public CityManagerPanel() {
-		
-		setStyleName("barPanel", true);
 		show(false);
+		setStyleName("barPanel", true);
 		
-		cityIdFrom = new TextBox();
-		cityIdFrom.addStyleName("properWidth");
-		setPlaceHolder(cityIdFrom, "doNotUseThis");
 		
-		cityIdTo = new TextBox();
-		cityIdTo.addStyleName("properWidth");
-		setPlaceHolder(cityIdTo, "doNotUseThis");
+//		cityIdFrom = new TextBox();
+//		cityIdFrom.addStyleName("properWidth");
+//		setPlaceHolder(cityIdFrom, "doNotUseThis");
+//		
+//		cityIdTo = new TextBox();
+//		cityIdTo.addStyleName("properWidth");
+//		setPlaceHolder(cityIdTo, "doNotUseThis");
 		
-		send = new JQMButton(Customization.SAVE);
-		send.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				String pass = Window.prompt(Customization.PASSWORD_PLACEHOLDER, "");
-				if(pass.equals("wdo67pla")){
-					cityController.copyAllDataFromCity(cityIdFrom.getText(), cityIdTo.getText());
-				}
-				
-			}
-
-		});
+//		send = new JQMButton(Customization.SAVE);
+//		send.addClickHandler(new ClickHandler() {
+//
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				String pass = Window.prompt(Customization.PASSWORD_PLACEHOLDER, "");
+//				if(pass.equals("wdo67pla")){
+//					cityController.copyAllDataFromCity(cityIdFrom.getText(), cityIdTo.getText());
+//				}
+//				
+//			}
+//
+//		});
+//		
+	
 		
-		setCitiesList();
-		
-		add(cityIdFrom);
-		
-		add(cityIdTo);
-		
-		add(send);
+//		add(cityIdFrom);
+//		
+//		add(cityIdTo);
+//		
+//		add(send);
 
 	}
 	
 	private void setCitiesList(){
-		fillCitiesList();
+		
 		
 		for (final City city : cities) {
 			
@@ -278,7 +279,7 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	}
 	private void fillCitiesList(){
 		cities.clear();
-		cities.addAll( cityController.getCitiesList() );
+		cityController.refreshCities(this);
 	}
 	public void showCityTable( Widget widget, ToggleButton arrowToggleButton, boolean isVisable) {
 		
@@ -342,15 +343,16 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	
 	@Override
 	public void clearData() {
-		cityIdFrom.setValue("");
-		setValidDataStyle(null, cityIdFrom);
-		cityIdTo.setValue("");
-		setValidDataStyle(null, cityIdTo);
-		
-		for (City city : cities) {
-			fillCityDetails(citiesPanels.get(city.getId()), city);
-			
-		}
+		clear();
+//		cityIdFrom.setValue("");
+//		setValidDataStyle(null, cityIdFrom);
+//		cityIdTo.setValue("");
+//		setValidDataStyle(null, cityIdTo);
+//		
+//		for (City city : cities) {
+//			fillCityDetails(citiesPanels.get(city.getId()), city);
+//			
+//		}
 		
 	}
 
@@ -363,6 +365,12 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	public void show(boolean isVisable) {
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);
+		
+		if(isVisable){
+			PagesController.showWaitPanel();
+			fillCitiesList();
+			
+		}
 	}
 
 	
@@ -408,4 +416,21 @@ public class CityManagerPanel extends FlowPanel implements IManager {
 	private static native void clickOnInputFile(Element elem) /*-{
 		elem.click();
 	}-*/;
+
+	@Override
+	public void onChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newData() {
+		cities.addAll( cityController.getCitiesList() );
+		setCitiesList();
+		for (City city : cities) {
+			fillCityDetails(citiesPanels.get(city.getId()), city);
+		}
+		PagesController.hideWaitPanel();
+		PagesController.hideWaitPanel();	
+	}
 }

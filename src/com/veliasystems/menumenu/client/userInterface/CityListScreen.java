@@ -184,4 +184,10 @@ public class CityListScreen extends MyPage implements IObserver{
 		$wnd.console.log(element);
 		return element.offsetWidth;
 	}-*/;
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
 }

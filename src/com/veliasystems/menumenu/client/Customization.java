@@ -176,6 +176,8 @@ public class Customization {
 	public static final String USER_DONT_EXIST = translated.userNonExist();
 	
 	public static final String RESTAURANT_EXIST_IN_OTHER_CITY = translated.restaurantExist();
+
+	public static final String USERS = translated.users();
 	
 };
 	

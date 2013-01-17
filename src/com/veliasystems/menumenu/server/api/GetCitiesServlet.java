@@ -65,10 +65,14 @@ public class GetCitiesServlet extends HttpServlet {
 		
 		for (City city : cities) {
 			if( city.isVisable(isProduction)){
+				String cityImage = "";
+				if( city.getDistrictImageURL() != null && !city.getDistrictImageURL().isEmpty()){
+					cityImage = city.getDistrictImageURL();
+				}
 				Map<String,String> cityPair = new HashMap<String,String>();
 				cityPair.put( "name", city.getCity());
 				cityPair.put( "id", "" + city.getId());
-				cityPair.put("districtImageURL", city.getDistrictImageURL());
+				cityPair.put("districtImageURL", cityImage.isEmpty()?"":addHostToUrl( city.getDistrictImageURL()) );
 				attributes.add(cityPair);
 			}
 		}
@@ -90,4 +94,22 @@ public class GetCitiesServlet extends HttpServlet {
 		super.doPost(req, resp);
 	}
 	
+	private String addHostToUrl( String url ) {
+		if (url.startsWith("http://")) return url;
+		return getHostName() + url;
+	}
+	
+	public static final String getHostName() {
+    	String hostUrl; 
+        String environment = System.getProperty("com.google.appengine.runtime.environment");
+        if (environment.equalsIgnoreCase("Production")) {
+            String applicationId = System.getProperty("com.google.appengine.application.id");
+            String version = System.getProperty("com.google.appengine.application.version");
+            //hostUrl = "http://"+version+"."+applicationId+".appspot.com/";
+            hostUrl = "http://"+applicationId+".appspot.com/"; // without version
+        } else {
+            hostUrl = "http://localhost:8888";
+        }
+        return hostUrl;
+    }
 }

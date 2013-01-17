@@ -184,4 +184,10 @@ public class DefaultEmptyMenuPanel extends FlowPanel implements IManager, IObser
 		refresh();
 	}
 
+	@Override
+	public void newData() {
+		
+		
+	}
+
 }

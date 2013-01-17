@@ -388,8 +388,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 					4000);//newImage.getHeight());
 			break;
 		case CITY:
-			scaleTransform = ImagesServiceFactory.makeResize(220,
-					4000);//newImage.getHeight());
+			scaleTransform = ImagesServiceFactory.makeResize(246,290);//newImage.getHeight());
 			break;
 		default:
 			log.severe("Unknow image type: " + imageBlob.getImageType());

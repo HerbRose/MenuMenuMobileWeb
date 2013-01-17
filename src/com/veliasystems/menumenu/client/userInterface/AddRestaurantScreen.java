@@ -834,4 +834,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	private static native void clickOnInputFile(Element elem) /*-{
 																elem.click();
 																}-*/;
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -343,4 +343,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Other restaurant with th same address and name exist in chosen address")
 	String restaurantExist();
 
+	@DefaultStringValue("Users")
+	String users();
+
 }

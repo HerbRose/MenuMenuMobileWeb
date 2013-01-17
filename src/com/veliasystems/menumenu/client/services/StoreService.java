@@ -166,4 +166,8 @@ public interface StoreService extends RemoteService {
 	City saveCity(City city);
 	List<Object> addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
 			String emailAddingUser);
+
+	List<City> getCitiesForUser(String email);
+
+	User saveUser(User user);
 }

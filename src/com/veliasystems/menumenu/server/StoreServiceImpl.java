@@ -121,15 +121,67 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param user - Logged {@link User}
 	 * @return List of {@link City} available for the {@link User}
 	 */
-	private List<City> loadCitiesForUser(User user){
+	private List<City> loadCities(User user){
 		
-		List<Long> tmpList = user.getCitiesId();
+//		List<Long> tmpList = user.getCitiesId();
+//		
+//		Query<City> cityQuery = dao.ofy().query(City.class);
+//		if(cityQuery == null) return null;
+//		List<City> listCities = cityQuery.filter("id IN", tmpList).list();
+//		if(listCities == null) return new ArrayList<City>();
+//		return listCities;
 		
+		if( user == null ){
+			return new ArrayList<City>();
+		}
+		Set<City> listCities = new HashSet<City>();
+		if( user.isAdmin() ){
+			return new ArrayList<City>(loadCitiesEntity());
+		}
+		if( user.isAgent() ){ // is not necessary but just in case
+			List<Long> citiesIdList = user.getCitiesId();
+			if(citiesIdList!=null && !citiesIdList.isEmpty()){
+				listCities.addAll(loadCities(citiesIdList));
+			}
+		}
+		if( user.isRestaurator() ){// is not necessary but just in case
+			List<Long> restaurantsIdListFromUser = user.getRestaurantsId();
+			if(restaurantsIdListFromUser!=null && !restaurantsIdListFromUser.isEmpty()){
+				List<City> restaurantsCities = loadCitiesByRestaurant(loadRestaurants(restaurantsIdListFromUser));
+				listCities.addAll(restaurantsCities);
+			}
+		}
+		return new ArrayList<City>(listCities);
+		
+	}
+	private List<Restaurant> loadRestaurants(List<Long> restaurantsId){
+		if(restaurantsId == null || restaurantsId.isEmpty()) return new ArrayList<Restaurant>();
+		
+		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
+		
+		if(restaurantQuery == null ) return new ArrayList<Restaurant>();
+		
+		List<Restaurant> restaurantsList = restaurantQuery.filter("id IN", restaurantsId).list();
+		if(restaurantsList == null || restaurantsList.isEmpty()) return new ArrayList<Restaurant>();
+		return restaurantsList;
+	}
+	
+	private List<City> loadCities(List<Long> cityIdsList){
 		Query<City> cityQuery = dao.ofy().query(City.class);
-		if(cityQuery == null) return null;
-		List<City> listCities = cityQuery.filter("id IN", tmpList).list();
-		if(listCities == null) return new ArrayList<City>();
-		return listCities;
+		if(cityQuery == null) return new ArrayList<City>();
+		return cityQuery.filter("id IN", cityIdsList).list();
+	}
+	
+	/**
+	 * 
+	 * @param email - the {@link User#email}
+	 * @return List of {@link City} available for the {@link User}
+	 */
+	@Override
+	public List<City> getCitiesForUser(String email){
+		
+		User user = findUser(email);
+		return loadCities(user);
 		
 	}
 	/**
@@ -141,12 +193,16 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * <strong>Method used to getting data for user</strong>
 	 */
 	private List<City> loadCitiesByRestaurant(List<Restaurant> restList){
+		if(restList == null || restList.isEmpty()) return new ArrayList<City>();
+		
 		Set<Long> citiesId = new HashSet<Long>();		
 		for (Restaurant restaurant : restList) {
 			citiesId.add(restaurant.getCityId());
-		}	
+		}
+		if(citiesId.isEmpty()) return new ArrayList<City>(); //strange
+		
 		Query<City> cityQuery = dao.ofy().query(City.class);
-		if(cityQuery == null) return null;
+		if(cityQuery == null) return new ArrayList<City>();
 		List<City> cityList = cityQuery.filter("id IN", citiesId).list();
 		if(cityList == null) return new ArrayList<City>();
 		return cityList;	
@@ -177,6 +233,25 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		//System.out.println("StoreServiceImpl::loadRestaurantsByCities(List<City> citiesList). restaurantsId.size()= " + restaurantsId.size());
 		List<Restaurant> restList = restQuery.filter("cityId in", restaurantsId).list();
 		return getImageLists(restList);
+	} 
+	/**
+	 * 
+	 * @param citiesId list of {@link City#id}
+	 * @return list of {@link Restaurant} or empty list
+	 */
+	private List<Restaurant> loadRestaurantsByCitiesId(List<Long> citiesId){
+		
+		if(citiesId == null || citiesId.isEmpty()) return new ArrayList<Restaurant>();
+		
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if(restQuery == null) return new ArrayList<Restaurant>();
+		
+		List<Restaurant> restaurantList = restQuery.filter("cityId in", citiesId).list();
+		
+		if(restaurantList == null || restaurantList.isEmpty()){
+			return new ArrayList<Restaurant>();
+		}
+		return getImageLists(restaurantList);
 	} 
 	
 	@Override
@@ -322,6 +397,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				}
 				user.getRestaurantsId().add(r.getId());
 				user.setAddedByUser(emailAddingUser);
+				user.setRestaurator(true);
 				sendMailToUserAfterAddingRestaurant(true, user, r.getName());
 				dao.ofy().put(user);
 				isAdded = true;
@@ -330,6 +406,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 					user.setRestaurantsId(new ArrayList<Long>());
 				}
 				user.getRestaurantsId().add(r.getId());
+				user.setRestaurator(true);
 				sendMailToUserAfterAddingRestaurant(false, user, r.getName());
 				dao.ofy().put(user);
 				isAdded = true;
@@ -403,16 +480,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		ResponseSaveWrapper returnObject = new ResponseSaveWrapper();
 		List<Integer> errorCodes = new ArrayList<Integer>();
 		Map<String, ResponseSaveWrapper> returnMap = new HashMap<String, ResponseSaveWrapper>();
-		List<User> usersList = getUsers();
-		User foundUser = null;
 		
-		
+		User foundUser = findUser(userEmail);
 		
 		boolean isOk = true;
-		
-		for (User user : usersList) {
-			if(user.getEmail().equalsIgnoreCase(userEmail)) foundUser = user;
-		}
 		
 		if(foundUser == null ){
 			errorCodes.add(ErrorCodes.USER_DONT_EXIST);
@@ -709,15 +780,36 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param user - logged {@link User}
 	 * @return List of {@link Restaurant} for {@link User}
 	 */
-	private List<Restaurant> loadRestaurantsForUser(User user){
+	private List<Restaurant> loadRestaurants(User user){
 		
-		List<Long> tmpList = user.getRestaurantsId();
-
-		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
-		if(restQuery == null) return null;
-		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
-		if(listRestaurant == null) return new ArrayList<Restaurant>();
-		return getImageLists(listRestaurant);
+		if(user == null) return new ArrayList<Restaurant>();
+		Set<Restaurant> restaurantsSet = new HashSet<Restaurant>();
+		
+		if(user.isAdmin()){
+			return loadRestaurants();
+		}
+		if(user.isAgent()){
+			List<Long> citiesId = user.getCitiesId();
+			
+			if(citiesId != null && !citiesId.isEmpty()){
+				restaurantsSet.addAll(loadRestaurantsByCitiesId(citiesId));
+			}
+		}
+		if(user.isRestaurator()){
+			List<Long> restaurantsId = user.getRestaurantsId();
+			if(restaurantsId != null && !restaurantsId.isEmpty()){
+				restaurantsSet.addAll(loadRestaurants(restaurantsId));
+			}
+		}
+		
+		return new ArrayList<Restaurant>(restaurantsSet);
+//		List<Long> tmpList = user.getRestaurantsId();
+//
+//		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+//		if(restQuery == null) return null;
+//		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
+//		if(listRestaurant == null) return new ArrayList<Restaurant>();
+//		return getImageLists(listRestaurant);
 		 
 	}
 	/**
@@ -726,8 +818,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @return List of {@link Restaurant} with images
 	 */
 	private List<Restaurant> getImageLists( List<Restaurant> restaurants ) {
-		
-		List<City> cityList = dao.ofy().query(City.class).list();
+//		
+//		List<City> cityList = dao.ofy().query(City.class).list();
 		
 		for ( Restaurant r : restaurants ) {
 			List<ImageBlob> images = blobService.getAllImages(r);
@@ -923,7 +1015,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return city;
 	}
-	
+	@Override
+	public User saveUser(User user){
+		dao.ofy().put(user);
+		return user;
+	}
 //	/**
 //	 * filling field cityId in Restaurant.java. Comparing restaurant.getCity() with city.getCity(), if equals cityId in restaurant is filling by cityId 
 //	 * 
@@ -954,24 +1050,26 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		Map<String, Object> allData = new HashMap<String, Object>();
 
-		if(user.isAdmin()){
-			allData.put("Restaurants", loadRestaurants());
-			allData.put("Cities", loadCitiesEntity());
-			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
-		}
-		else if(user.getRestaurantsId() != null && (user.getCitiesId() == null || user.getCitiesId().isEmpty())){
-			List<Restaurant> tmp = loadRestaurantsForUser(user);
-			allData.put("Restaurants", tmp);	
-			allData.put("Cities", loadCitiesByRestaurant(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-		}else if(user.getCitiesId() != null && (user.getRestaurantsId() == null || user.getRestaurantsId().isEmpty())){
-			List<City> tmp = loadCitiesForUser(user);
-			allData.put("Cities", tmp);
-			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-		}
+//		if(user.isAdmin()){
+//			allData.put("Restaurants", loadRestaurants());
+//			allData.put("Cities", loadCitiesEntity());
+//			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
+//		}
+//		else if(user.getRestaurantsId() != null && (user.getCitiesId() == null || user.getCitiesId().isEmpty())){
+//			List<Restaurant> tmp = loadRestaurants(user);
+//			allData.put("Restaurants", tmp);	
+//			allData.put("Cities", loadCitiesByRestaurant(tmp));
+//			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
+//		}else if(user.getCitiesId() != null && (user.getRestaurantsId() == null || user.getRestaurantsId().isEmpty())){
+//			List<City> tmp = loadCities(user);
+//			allData.put("Cities", tmp);
+//			allData.put("Restaurants", loadRestaurantsByCities(tmp));
+//			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
+//		}
 
-		
+		allData.put("Restaurants", loadRestaurants(user));
+		allData.put("Cities", loadCities(user));
+		allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		
 		List<User> usersList = getUsers();
 		for (User user1 : usersList) {
@@ -1001,22 +1099,26 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(user == null) return null;
 		Map<String, Object> allData = new HashMap<String, Object>();
 		
-		if(user.isAdmin()){
-			allData.put("Restaurants", loadRestaurants());
-			allData.put("Cities", loadCitiesEntity());
-			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
-		}
-		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
-			List<Restaurant> tmp = loadRestaurantsForUser(user);
-			allData.put("Restaurants", tmp);	
-			allData.put("Cities", loadCitiesByRestaurant(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
-			List<City> tmp = loadCitiesForUser(user);
-			allData.put("Cities", tmp);
-			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-		}
+//		if(user.isAdmin()){
+//			allData.put("Restaurants", loadRestaurants());
+//			allData.put("Cities", loadCitiesEntity());
+//			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
+//		}
+//		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
+//			List<Restaurant> tmp = loadRestaurants(user);
+//			allData.put("Restaurants", tmp);	
+//			allData.put("Cities", loadCitiesByRestaurant(tmp));
+//			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
+//		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
+//			List<City> tmp = loadCities(user);
+//			allData.put("Cities", tmp);
+//			allData.put("Restaurants", loadRestaurantsByCities(tmp));
+//			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
+//		}
+		
+		allData.put("Restaurants", loadRestaurants(user));
+		allData.put("Cities", loadCities(user));
+		allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		List<User> usersList = getUsers();
 		for (User user1 : usersList) {
 			user1.setPassword("");

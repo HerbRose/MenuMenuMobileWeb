@@ -23,7 +23,7 @@ import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
  * @author mateusz
  * Controller to all cities operations
  */
-public class CityController {
+public class CityController{
 
 	private List<IObserver> observers = new ArrayList<IObserver>();
 	public static Map<Long, CityInfoScreen> cityMapView = new HashMap<Long, CityInfoScreen>();
@@ -239,5 +239,38 @@ public class CityController {
 		});
 		
 	}
+
+	public void refreshCities(final IObserver observer) {
+		PagesController.showWaitPanel();
+		
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
+			
+			@Override
+			public void onSuccess(List<City> citiesList) {
+				refreshCities(citiesList);
+				notifyObserver(observer);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.CONNECTION_ERROR);
+			}
+		});
+	}
 	
+	private void notifyObserver(IObserver observer){
+		if(observer != null){
+			observer.newData();
+		}else{
+			PagesController.hideWaitPanel();
+		}
+	}
+	
+	private void refreshCities(List<City> citiesList) {
+		cities.clear();
+		for (City city : citiesList) {
+			cities.put(city.getId(), city);
+		}
+	}
 }

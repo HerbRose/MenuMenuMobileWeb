@@ -72,9 +72,10 @@ public class CropImage extends MyPage implements IObserver{
 	private PickupDragController dragController;
 	private DropController dropController;
 
-	private double ratioProfile = 450.0/260.0;
-	private double minLogoRatio = 220d/75d;
-	private double maxLogoRatio = 220d/55d;
+	private final double ratioProfile = 450.0/260.0;
+	private final double ratioCity = 246d/290d;
+	private final double minLogoRatio = 220d/75d;
+	private final double maxLogoRatio = 220d/55d;
 
 	private int interval = 0;
 
@@ -240,11 +241,14 @@ public class CropImage extends MyPage implements IObserver{
 					interval = myOnMoveLogo(element.getElement().getId(), minLogoRatio, maxLogoRatio);
 					break;
 				case PROFILE:
-					interval = myOnMoveProfile(element.getElement().getId(), ratioProfile);
+					interval = myOnMoveConstantRatio(element.getElement().getId(), ratioProfile);
 					break;
 
 				case MENU:
 					interval = myOnMoveMenu(element.getElement().getId());
+					break;
+				case CITY:
+					interval = myOnMoveConstantRatio(element.getElement().getId(), ratioCity);
 					break;
 				default:
 					break;
@@ -272,34 +276,47 @@ public class CropImage extends MyPage implements IObserver{
 				int displayCenterPanelHeight = displayHeight;// > 20 ? displayHeight - 10 : displayHeight;
 
 				switch (imageBlob.getImageType()) {
-				case MENU:
-//					centerMovePanel.setWidth(displayCenterPanelWidth + "px");
-//					centerMovePanel.setHeight(displayCenterPanelHeight + "px");
-					break;
-				case LOGO:
-					
-					if (displayCenterPanelWidth / displayCenterPanelHeight < minLogoRatio) {
-						displayCenterPanelHeight = (int) (displayCenterPanelWidth / minLogoRatio);
-					} else if (displayCenterPanelWidth / displayCenterPanelHeight > maxLogoRatio) {
-						displayCenterPanelWidth = (int) (displayCenterPanelHeight * minLogoRatio);
-//						displayCenterPanelHeight = (int) (displayCenterPanelWidth / maxLogoRatio);
-					}
-//					centerMovePanel.setWidth(displayCenterPanelWidth + "px");
-//					centerMovePanel.setHeight(displayCenterPanelHeight + "px");
-					break;
-				case PROFILE:
-					
-					if(displayCenterPanelWidth/displayCenterPanelHeight > ratioProfile){
-						displayCenterPanelWidth = (int) (displayCenterPanelHeight*ratioProfile);
-					}else{
-						displayCenterPanelHeight = (int) (displayCenterPanelWidth/ratioProfile);
-					}
-					
-//					centerMovePanel.setWidth(displayCenterPanelWidth + "px");
-//					centerMovePanel.setHeight(displayCenterPanelHeight + "px");
-					
-					leftHand.getElement().getStyle().setDisplay(Display.NONE);
-					rightHand.getElement().getStyle().setDisplay(Display.NONE);
+					case MENU:
+	//					centerMovePanel.setWidth(displayCenterPanelWidth + "px");
+	//					centerMovePanel.setHeight(displayCenterPanelHeight + "px");
+						break;
+					case LOGO:
+						
+						if (displayCenterPanelWidth / displayCenterPanelHeight < minLogoRatio) {
+							displayCenterPanelHeight = (int) (displayCenterPanelWidth / minLogoRatio);
+						} else if (displayCenterPanelWidth / displayCenterPanelHeight > maxLogoRatio) {
+							displayCenterPanelWidth = (int) (displayCenterPanelHeight * minLogoRatio);
+	//						displayCenterPanelHeight = (int) (displayCenterPanelWidth / maxLogoRatio);
+						}
+	//					centerMovePanel.setWidth(displayCenterPanelWidth + "px");
+	//					centerMovePanel.setHeight(displayCenterPanelHeight + "px");
+						break;
+					case PROFILE:
+						
+						if(displayCenterPanelWidth/displayCenterPanelHeight > ratioProfile){
+							displayCenterPanelWidth = (int) (displayCenterPanelHeight*ratioProfile);
+						}else{
+							displayCenterPanelHeight = (int) (displayCenterPanelWidth/ratioProfile);
+						}
+						
+	//					centerMovePanel.setWidth(displayCenterPanelWidth + "px");
+	//					centerMovePanel.setHeight(displayCenterPanelHeight + "px");
+						
+						leftHand.getElement().getStyle().setDisplay(Display.NONE);
+						rightHand.getElement().getStyle().setDisplay(Display.NONE);
+						break;
+					case CITY:
+
+						if(displayCenterPanelWidth/displayCenterPanelHeight > ratioCity){
+							displayCenterPanelWidth = (int) (displayCenterPanelHeight*ratioCity);
+						}else{
+							displayCenterPanelHeight = (int) (displayCenterPanelWidth/ratioCity);
+						}
+						
+						leftHand.getElement().getStyle().setDisplay(Display.NONE);
+						rightHand.getElement().getStyle().setDisplay(Display.NONE);
+						break;
+						
 				}
 
 				centerMovePanel.setWidth(displayCenterPanelWidth-2 + "px"); //-2 because of borders
@@ -582,7 +599,7 @@ public class CropImage extends MyPage implements IObserver{
 		
 	}-*/;
 
-	private native int myOnMoveProfile( String elementId, double ratio )/*-{
+	private native int myOnMoveConstantRatio( String elementId, double ratio )/*-{
 		var element = $wnd.document.getElementById(elementId);
 	
 		if(element === "undefined") return -1;
@@ -928,7 +945,7 @@ public class CropImage extends MyPage implements IObserver{
 		//$wnd.console.log(centerPanel.style.top);
 		
 		//USTAWIANIE STRZALEK
-		if(isProfile.indexOf("PROFILE") >= 0){ //w profilowym strzalki sa narozne
+		if(isProfile.indexOf("PROFILE") >= 0 || isProfile.indexOf("CITY") >= 0){ //w profilowym strzalki sa narozne
 			$wnd.document.getElementById("moveTopHand").className = "topHand cropArrow rotation90left";
 			$wnd.document.getElementById("moveBottomHand").className = "bottomHand cropArrow rotation90left";
 			
@@ -993,6 +1010,12 @@ public class CropImage extends MyPage implements IObserver{
 		
 		return parseInt(width);
 	}-*/;
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
 

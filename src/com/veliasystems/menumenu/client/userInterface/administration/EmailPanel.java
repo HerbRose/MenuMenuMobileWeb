@@ -230,6 +230,12 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 	public void onChange() {
 		clearData();	
 	}
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 
