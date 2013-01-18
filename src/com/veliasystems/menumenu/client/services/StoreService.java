@@ -71,7 +71,7 @@ public interface StoreService extends RemoteService {
 	 * @param cityName - name of {@link City}
 	 * @return {@link City} object
 	 */
-	City addCity(String cityName);
+	City addCity(String cityName, String country);
 	/**
 	 * 
 	 * @param id - {@link Restaurant} id

@@ -102,12 +102,10 @@ public class CityController{
 	 * 
 	 * @param cityName - name of {@link City}
 	 */
-	public void saveCity(String cityName){
+	public void saveCity(final String cityName, final String country){
 		
-		log.info("Saving city: " + cityName);
-		
-		final String cityNameToSave = cityName;
-		storeService.addCity(cityNameToSave, new AsyncCallback<City>() {
+	
+		storeService.addCity(cityName, country, new AsyncCallback<City>() {
 			@Override
 			public void onSuccess(City result) {
 				if(result != null){

@@ -1,8 +1,10 @@
 package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -16,7 +18,9 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 public class AddCity extends MyPage{
 
@@ -25,18 +29,18 @@ public class AddCity extends MyPage{
 	private Label warningLabel = new Label();
 	private BackButton backButton;
 	private MyButton saveButton;
-	private FlowPanel wrapper;
+	//private FlowPanel wrapper;
+	private MyListCombo countryListCombo;
+	
+	private MyRestaurantInfoPanel container;
 	
 	private CityController cityController = CityController.getInstance();
-	
-	private boolean loaded = false;
 	
 	public AddCity(){
 		super(Customization.ADD_CITY);
 		
-		nameCity = new TextBox();
-		nameCity.setStyleName("addCity");
-		
+	
+	
 		backButton = new BackButton(Customization.BACK);
 		backButton.addClickHandler(new ClickHandler() {
 			
@@ -54,26 +58,46 @@ public class AddCity extends MyPage{
 			@Override
 			public void onClick(ClickEvent event) {
 				if(validate()){
-					CityController.getInstance().saveCity(nameCity.getText());
+					String country = "";
+					if(countryListCombo.getSelectedItem() == 1) country = "Poland";
+					if(countryListCombo.getSelectedItem() == 2) country = "France";
+					CityController.getInstance().saveCity(nameCity.getText(), country);
 				}			
 			}
 		});
+		container = new MyRestaurantInfoPanel();
 		
-		wrapper = new FlowPanel();
-		wrapper.setStyleName("addCityWrapper");
-		wrapper.add(nameCity);
+		container.setStyleName("containerPanelAddRestaurant", true);
+		
+		Label cityName = new Label(Customization.NAME);
+		nameCity = new TextBox();
+		nameCity.addStyleName("myTextBox nameBox");
+		
+		Label countryLabel = new Label(Customization.COUNTRY);
+		countryListCombo = new MyListCombo(false);
+		
+		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.POLAND), 1);
+		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.FRANCE), 2);
+		
+		
+		countryListCombo.selectItem(1);
+		
+		
+		container.addItem(cityName, nameCity);
+		container.addItem(countryLabel, countryListCombo);
+			
+		add(container);
 		
 		
 		getHeader().setLeftButton(backButton);
 		getHeader().setRightButton(saveButton);
-		getContentPanel().add(wrapper);
-		
 	}
 	
 	@Override
 	protected void onPageShow() {
 		warningLabel.setText("");		
 		nameCity.setText("");
+		container.setWidth( getBodyOffsetWidth(getElement())-20 );
 		PagesController.hideWaitPanel();
 	}
 
@@ -111,9 +135,11 @@ public class AddCity extends MyPage{
 	}
 	
 	private void showWarning( String worning){
-		remove(warningLabel);
-		warningLabel.setText(worning);
-		warningLabel.setStyleName("warning");
-		wrapper.add(warningLabel);
+		Window.alert(worning);
 	}
+	
+	
+	private static native int getBodyOffsetWidth(Element element)/*-{
+		return element.offsetWidth;
+	}-*/;
 }

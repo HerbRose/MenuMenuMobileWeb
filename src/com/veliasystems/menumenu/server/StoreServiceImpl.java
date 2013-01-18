@@ -995,7 +995,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 
 	@Override
-	public City addCity(String cityName) {
+	public City addCity(String cityName, String country) {
 		List<City> list = loadCitiesEntity();
 		for (City city : list) {
 			if(city.getCity().equalsIgnoreCase(cityName)) {
@@ -1004,6 +1004,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		City c = new City();
 		c.setCity(cityName);
+		c.setCountry(country);
 		dao.ofy().put(c);
 		return c;
 	}

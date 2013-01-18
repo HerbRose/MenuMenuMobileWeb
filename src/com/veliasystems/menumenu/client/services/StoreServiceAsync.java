@@ -11,12 +11,13 @@ import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 
-
 public interface StoreServiceAsync {
-	
-	void saveRestaurant( String userEmail , Restaurant r, long oldCityId, long newCityId, AsyncCallback<ResponseSaveWrapper> callback);
+
+	void saveRestaurant(String userEmail, Restaurant r, long oldCityId,
+			long newCityId, AsyncCallback<ResponseSaveWrapper> callback);
 
 	void loadRestaurants(AsyncCallback<List<Restaurant>> callback);
+
 	void loadRestaurants(String city, AsyncCallback<List<Restaurant>> callback);
 
 	void loadCities(AsyncCallback<List<String>> callback);
@@ -31,13 +32,15 @@ public interface StoreServiceAsync {
 
 	void uploadRestaurants(String JSON, AsyncCallback<String> callback);
 
-	void addCity(String cityName, AsyncCallback<City> callback);
+	void addCity(String cityName, String country, AsyncCallback<City> callback);
 
 	void loadRestaurant(Long id, AsyncCallback<Restaurant> callback);
 
 	void loadCitiesEntity(AsyncCallback<List<City>> callback);
 
-	void getAllData(String login, String password,AsyncCallback<Map<String, Object>> callback);
+	void getAllData(String login, String password,
+			AsyncCallback<Map<String, Object>> callback);
+
 	void getAllData(String login, AsyncCallback<Map<String, Object>> callback);
 
 	void addUser(User user, AsyncCallback<Void> callback);
@@ -53,7 +56,8 @@ public interface StoreServiceAsync {
 	void clearBoard(Restaurant restaurant, ImageType imageType,
 			AsyncCallback<Restaurant> asyncCallback);
 
-	void changeUserData(User user, String oldPassword, String newPassword, AsyncCallback<User> callback);
+	void changeUserData(User user, String oldPassword, String newPassword,
+			AsyncCallback<User> callback);
 
 	void removeUser(User user, AsyncCallback<String> callback);
 
@@ -72,6 +76,5 @@ public interface StoreServiceAsync {
 	void getCitiesForUser(String email, AsyncCallback<List<City>> callback);
 
 	void saveUser(User user, AsyncCallback<User> callback);
-
 
 }

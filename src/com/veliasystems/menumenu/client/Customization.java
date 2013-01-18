@@ -179,6 +179,14 @@ public class Customization {
 
 	public static final String USERS = translated.users();
 	
+	
+	public static final String POLAND = translated.poland();
+	
+	public static final String FRANCE = translated.france();
+	
+	public static final String COUNTRY = translated.country();
+	
+	public static final String NAME = translated.name();
 };
 	
 	

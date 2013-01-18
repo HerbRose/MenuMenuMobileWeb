@@ -27,6 +27,7 @@ public class City implements Serializable{
 	 */
 	private boolean isVisibleForTests = false;
 	
+	private String country = "";
 
 	 {
 			id = ((long) (Math.random() * 999999999));
@@ -106,6 +107,13 @@ public class City implements Serializable{
 	
 	public String getDistrictImageURL() {
 		return districtImageURL;
+	}
+	
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public String getCountry() {
+		return country;
 	}
 	
 }

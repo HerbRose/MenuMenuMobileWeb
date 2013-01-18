@@ -334,16 +334,27 @@ public interface Messages extends Constants {
 	@DefaultStringValue("District image")  //not translated yet
 	String districtImage();
 	
-	@DefaultStringValue("User is not allowed to edit this restaurant")
+	@DefaultStringValue("User is not allowed to edit this restaurant") //not translated yet
 	String userNotAllowed();
 	
-	@DefaultStringValue("User does not exist")
+	@DefaultStringValue("User does not exist") //not translated yet
 	String userNonExist();
 	
-	@DefaultStringValue("Other restaurant with th same address and name exist in chosen address")
+	@DefaultStringValue("Other restaurant with th same address and name exist in chosen address") //not translated yet
 	String restaurantExist();
 
-	@DefaultStringValue("Users")
+	@DefaultStringValue("Users") //not translated yet
 	String users();
+	
+	@DefaultStringValue("Poland") //not translated yet
+	String poland();
+	
+	@DefaultStringValue("France") //not translated yet
+	String france();
 
+	@DefaultStringValue("Country") //not translated yet
+	String country();
+	
+	@DefaultStringValue("Name") //not translated yet
+	String name();
 }
