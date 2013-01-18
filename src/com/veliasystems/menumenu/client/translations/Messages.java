@@ -357,4 +357,13 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Name") //not translated yet
 	String name();
+	
+	@DefaultStringValue("Do you want to download mobile application?") //not translated yet
+	String getMobileApp();
+	
+	@DefaultStringValue("No thanks") //not translated yet
+	String noThanks();
+	
+	@DefaultStringValue("Download app") //not translated yet
+	String getApp();
 }

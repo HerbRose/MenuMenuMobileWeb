@@ -187,6 +187,12 @@ public class Customization {
 	public static final String COUNTRY = translated.country();
 	
 	public static final String NAME = translated.name();
+	
+	public static final String GET_MOBILE_APP = translated.getMobileApp();
+	
+	public static final String NO_THANKS = translated.noThanks();
+	
+	public static final String GET_APP = translated.getApp();
 };
 	
 	
