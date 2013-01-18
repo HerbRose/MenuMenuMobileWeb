@@ -37,6 +37,9 @@ public class ImagesController {
 	private MyImage selectedImage = null;
 	private MyImage selectedFlowPanel = null;
 	
+	
+	private List<ImageBlob> lastUplaodedImages = new ArrayList<ImageBlob>();
+	
 	private ImagesController() {
 	}
 	/**
@@ -219,4 +222,38 @@ public class ImagesController {
 		
 		});
 	}
+	
+	
+	public void getLast24hUploadedImages(final IObserver iObserver){
+		PagesController.showWaitPanel();
+		
+		
+		blobService.getLast24hImages(new AsyncCallback<List<ImageBlob>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+				
+				PagesController.hideWaitPanel();	
+			}
+
+			@Override
+			public void onSuccess(List<ImageBlob> result) {
+				lastUplaodedImages.clear();
+				lastUplaodedImages.addAll(result);
+				notifyObserver(iObserver);
+			}
+		});
+		
+	}
+	
+	
+	private void notifyObserver(IObserver iObserver){
+		iObserver.newData();
+	}
+	
+	public List<ImageBlob> getLastUplaodedImages() {
+		return lastUplaodedImages;
+	}
+	
 }
