@@ -789,7 +789,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		List<ImageBlob> imageBlobList = new ArrayList<ImageBlob>();
 		
 		for (ImageBlob imageBlob : imageBlobs) {
-			if(imageBlob.getImageType() != ImageType.CITY) imageBlobList.add(imageBlob);
+			if(imageBlob.getImageType() != ImageType.CITY || imageBlob.getImageType() != ImageType.EMPTY_MENU) imageBlobList.add(imageBlob);
 		}
 		
 //		log.info("imageBlobs.size = " + imageBlobs.size() +", today = " + today + ", yesterday = " + yesterday );
