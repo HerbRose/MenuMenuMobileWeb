@@ -52,8 +52,8 @@ public class AddCity extends MyPage implements IObserver{
 			public void onClick(ClickEvent event) {
 				if(validate()){
 					String country = "";
-					if(countryListCombo.getSelectedItem() == 1) country = "Poland";
-					if(countryListCombo.getSelectedItem() == 2) country = "France";
+					if(countryListCombo.getSelectedOrder() == 1) country = "Poland";
+					if(countryListCombo.getSelectedOrder() == 2) country = "France";
 					City city = new City();
 					city.setCity(nameCity.getText());
 					city.setCountry(country);

@@ -1,7 +1,9 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
@@ -9,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.veliasystems.menumenu.client.R;
@@ -44,20 +47,21 @@ import com.veliasystems.menumenu.client.R;
 public class MyListCombo extends FocusPanel {
 
 	private ScrollPanel scrollPanel = new ScrollPanel();
-	private FocusPanel panelForArrow = new FocusPanel();
 	
 	private FlowPanel mainPanel = new FlowPanel();
-	private FlowPanel arrows = new FlowPanel();
-	private FlowPanel whiteArrow = new FlowPanel();
-	private FlowPanel blackArrow = new FlowPanel();
 	private FlowPanel expandedPanel = new FlowPanel();
 	
 	private Map<Long, MyListItem> listItems = new HashMap<Long, MyListItem>();
+	private List<Long> checkedList = new ArrayList<Long>();
 	private Label textLabel = new Label();
 	
 	private long selectedItem = -1;
 	
-	public MyListCombo(boolean isArrow) {
+	private boolean isCheck = false;
+	
+	public MyListCombo(boolean isChecked) {
+		
+		isCheck = isChecked;
 		
 		Date date = new Date();
 		scrollPanel.getElement().setId("id" + date.getTime());
@@ -67,19 +71,7 @@ public class MyListCombo extends FocusPanel {
 		
 		setStyleName("listCombo noFocus", true);
 
-		if(isArrow){
-			panelForArrow.setStyleName("panelForArrow borderLabel noFocus pointer", true);
-			panelForArrow.addClickHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					showExpandetPanel();
-				}
-			});
 		
-			whiteArrow.setStyleName("whiteArrow noFocus", true);
-			blackArrow.setStyleName("blackArrow noFocus", true);
-		}else{
 			addClickHandler(new ClickHandler() {
 				
 				@Override
@@ -87,7 +79,7 @@ public class MyListCombo extends FocusPanel {
 					showExpandetPanel();
 				}
 			});
-		}
+	
 		expandedPanel.setStyleName("expandedPanel noFocus", true);
 		
 		scrollPanel.add(expandedPanel);
@@ -95,12 +87,7 @@ public class MyListCombo extends FocusPanel {
 		
 //		textLabel.setStyleName("comboListLabel comboListItemLabel", true);
 		
-		if(isArrow){
-			arrows.add(blackArrow);
-			arrows.add(whiteArrow);
-			panelForArrow.add(arrows);
-			mainPanel.add(panelForArrow);
-		}
+		
 		mainPanel.add(textLabel);
 		mainPanel.add(scrollPanel);
 		add(mainPanel);
@@ -121,6 +108,12 @@ public class MyListCombo extends FocusPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				itemController(newItem.getOrder());
+				if(checkedList.contains(newItem.getOrder())){
+					checkedList.remove(newItem.getOrder());
+				}else{
+					checkedList.add(newItem.getOrder());
+				}
+				newItem.check();
 			}
 		});
 		listItems.put(order, newItem);
@@ -164,10 +157,22 @@ public class MyListCombo extends FocusPanel {
 		return panel;
 	}
 	
+	public MyListItem getNewCheckBoxItem( String text){
+		MyListItem panel = new MyListItem(true,text);
+		panel.getTextLabel().setStyleName("comboListItemLabel");
+		panel.setText(text);
+		return panel;
+	}
 	
-	public long getSelectedItem() {
+	public long getSelectedOrder() {
 		return selectedItem;
 	}
+	
+	
+	public List<Long> getCheckedList() {
+		return checkedList;
+	}
+	
 	
 	/**
 	 * show or hide expanded panel
@@ -175,14 +180,17 @@ public class MyListCombo extends FocusPanel {
 	private void showExpandetPanel(){
 		boolean showPanel = Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0;
 		showPanel = !showPanel;
-		scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
-		showTouchGetter(showPanel);
+		if(isCheck && showPanel){
+			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
+			showTouchGetter(showPanel);
+		}
+		
 		addOnClick(scrollPanel.getElement().getId());
 	}
 	public void selectItem(long order){
 		itemController(order);
 	}
-
+	
 	private void showTouchGetter(boolean isShow){
 		if(isShow) {
 			Document.get().getElementById("touchGetter").setClassName(R.SHOW);

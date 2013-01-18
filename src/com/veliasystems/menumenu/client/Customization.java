@@ -193,6 +193,10 @@ public class Customization {
 	public static final String NO_THANKS = translated.noThanks();
 	
 	public static final String GET_APP = translated.getApp();
+	
+	public static final String CHOSEN = translated.chosen();
+	
+	public static final String CHOOSE = translated.choose();
 };
 	
 	

@@ -366,4 +366,10 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Download app") //not translated yet
 	String getApp();
+	
+	@DefaultStringValue("Chosen") //not translated yet
+	String chosen();
+	
+	@DefaultStringValue("Choose") //not translated yet
+	String choose();
 }

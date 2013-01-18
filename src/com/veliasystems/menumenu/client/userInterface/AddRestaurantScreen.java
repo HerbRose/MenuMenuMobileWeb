@@ -753,7 +753,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 			cookieController.setCookie(CookieNames.R_NAME, nameText.getText());
 			cookieController.setCookie(CookieNames.R_ADDRESS, adressText.getText());
 			cookieController.setCookie(CookieNames.R_PHONE, phoneRestaurantTextBox.getText());
-			cookieController.setCookie(CookieNames.R_CITY_ID, citiesListCombo.getSelectedItem()+"");
+			cookieController.setCookie(CookieNames.R_CITY_ID, citiesListCombo.getSelectedOrder()+"");
 			cookieController.setCookie(CookieNames.R_BOSS_NAME, bossTextBox.getText());
 			cookieController.setCookie(CookieNames.R_USERS, addUserTextBox.getText());
 			

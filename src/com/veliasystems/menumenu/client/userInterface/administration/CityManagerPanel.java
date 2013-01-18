@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
@@ -169,7 +170,7 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		MyRestaurantInfoPanel cityInfoPanel = new MyRestaurantInfoPanel();
 		cityInfoPanel.setStyleName("containerPanelAddRestaurant", true);
 		cityInfoPanel.setWidth(JS.getElementOffsetWidth(getParent().getElement())-20 );
-		
+
 		
 		Label nameLabel = new Label(Customization.CITY_NAME);
 		final TextBox nameTextBox = new TextBox();
@@ -233,6 +234,8 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 					Window.alert(Customization.WRONG_DATA_ERROR);
 				}
 			}
+
+			
 		});
 
 		Label countryLabel = new Label(Customization.COUNTRY);
@@ -284,9 +287,9 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			cityInfoPanel.addItem(districtImageLabel,  myUploadForm);
 //			imagePanel.add(myUploadForm);
 		}
-		
+
 		cityInfoPanel.addItem(saveButton, deleteButton);
-		
+
 		cityDetails.add(cityInfoPanel);
 //		buttonsPanel.add(saveButton);
 //		buttonsPanel.add(deleteButton);

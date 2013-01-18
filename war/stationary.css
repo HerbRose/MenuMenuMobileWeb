@@ -296,8 +296,15 @@ body {
 	color: #797979;
 }
 
-/* panel z plusem po lewej stronie i labelką po prawej
-*/
+.backgroundNone{
+	background: none !important;
+}
+.borderNone{
+	border: none !important;
+}
+/* 
+ * panel z plusem po lewej stronie i labelką po prawej
+ */
 .plusPanel{
 	position: relative;
 	margin-bottom: 10px;
@@ -433,7 +440,11 @@ body {
 .myButton{
 	line-height: 40px;	
 }
-
+.checkBoxImage{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
 /* KONIEC - ogulny styl dla listy rozwijanej */
 
 /* Welcome mobile page */

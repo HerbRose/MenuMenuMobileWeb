@@ -25,6 +25,7 @@ import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
+import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
@@ -65,27 +66,32 @@ public class CityListScreen extends MyPage implements IObserver{
 			}
 		});
 		
-		addButton = new  MyButton("");
-		addButton.removeStyleName("borderButton");
-		addButton.setStyleName("rightButton addButton", true);
-		addButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				Document.get().getElementById("load").setClassName(R.LOADING);
-				JQMContext.changePage(new AddCity(), Transition.SLIDE);
-			}
-		});
+		if(!userController.isUserType(UserType.RESTAURATOR)){
+			addButton = new  MyButton("");
+			addButton.removeStyleName("borderButton");
+			addButton.setStyleName("rightButton addButton", true);
+			addButton.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					Document.get().getElementById("load").setClassName(R.LOADING);
+					JQMContext.changePage(new AddCity(), Transition.SLIDE);
+				}
+			});
+		}
+		
 
 		
 	    cityList = CityController.getInstance().getCitiesList();
 	    addCities(cityList);
 	    	       
 	    getHeader().setLeftButton(logoutButton);
-	    getHeader().setRightButton(addButton);
 	    
-//	    if(userController.getLoggedUser().isAdmin()){
-	    	
+	    if(!userController.isUserType(UserType.RESTAURATOR)){
+	    	getHeader().setRightButton(addButton);
+	    }
+	    
+  	
 	    	adminPanel.removeStyleName("borderButton");
 	    	adminPanel.addStyleName("addButton adminButton");
 	    	adminPanel.getElement().getStyle().setHeight(50, Unit.PX);

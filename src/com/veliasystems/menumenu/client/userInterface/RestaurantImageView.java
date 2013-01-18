@@ -290,7 +290,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 					restaurant.setNameUser(bossTextBox.getText());
 					
 					
-					RestaurantController.getInstance().saveRestaurant(UserController.getInstance().getLoggedUser().getEmail(), restaurant, restaurant.getCityId(), cityController.getCity(citiesListCombo.getSelectedItem()).getId());
+					RestaurantController.getInstance().saveRestaurant(UserController.getInstance().getLoggedUser().getEmail(), restaurant, restaurant.getCityId(), cityController.getCity(citiesListCombo.getSelectedOrder()).getId());
 					
 //					RestaurantController.getInstance().saveRestaurant(
 //							restaurant, false);
