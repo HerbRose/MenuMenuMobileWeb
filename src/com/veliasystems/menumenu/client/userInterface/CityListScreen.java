@@ -187,7 +187,6 @@ public class CityListScreen extends MyPage implements IObserver{
 
 	@Override
 	public void newData() {
-		// TODO Auto-generated method stub
-		
+		refreshCityList();
 	}
 }

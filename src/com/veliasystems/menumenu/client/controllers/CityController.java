@@ -180,8 +180,6 @@ public class CityController{
 				PagesController.hideWaitPanel();
 			}
 		});
-		
-		
 	}
 	
 	/**
@@ -213,24 +211,43 @@ public class CityController{
 	 * save edited {@link City}
 	 * @param city - {@link City} to save
 	 */
-	public void saveCity(City city) {
+	public void saveCity(final IObserver iObserver, City city, final boolean isBack) {
 		if(city == null) return;
 		
 		PagesController.showWaitPanel();
-		storeService.saveCity(city, new AsyncCallback<City>() {
+		storeService.saveCity(city, new AsyncCallback<ResponseSaveCityWrapper>() {
 			
 			@Override
-			public void onSuccess(City editedCity) {
-				cities.get(editedCity.getId()).setCity(editedCity.getCity());
-				cities.get(editedCity.getId()).setVisable(editedCity.isVisable(true), editedCity.isVisable(false));
-				notifyAllObservers();
-				PagesController.hideWaitPanel();
-				Window.alert(Customization.OK);
+			public void onSuccess(ResponseSaveCityWrapper response) {
+//				cities.get(editedCity.getId()).setCity(editedCity.getCity());
+//				cities.get(editedCity.getId()).setVisable(editedCity.isVisable(true), editedCity.isVisable(false));
+//				notifyAllObservers();
+//				PagesController.hideWaitPanel();
+//				Window.alert(Customization.OK);
+				if(response.getErrorCodes().isEmpty()){
+					City city = response.getCity();
+					cities.put(city.getId(), city);
+//					cities.get(city.getId()).setCity(city.getCity());
+//					cities.get(city.getId()).setVisable(city.isVisable(true), city.isVisable(false));
+					notifyAllObservers();
+					notifyObserver(iObserver);
+					if(isBack){
+						History.back();
+					}
+					PagesController.hideWaitPanel();
+					Window.alert(Customization.OK);
+				}else{
+					String msg = "";
+						for (int i : response.getErrorCodes()) {
+							msg += ErrorCodes.getError(i) + "\n\n";
+						}
+					PagesController.hideWaitPanel();
+					Window.alert(msg);
+				}
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-
 				PagesController.hideWaitPanel();
 				Window.alert(Customization.CONNECTION_ERROR);
 			}
