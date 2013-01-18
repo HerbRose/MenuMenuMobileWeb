@@ -372,4 +372,10 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Choose") //not translated yet
 	String choose();
+	
+	@DefaultStringValue("Password and repeated password are not the same") //not translated yet
+	String wrongPasswords();
+	
+	@DefaultStringValue("Empty list with restaurants") //not translated yet
+	String emptyList();
 }

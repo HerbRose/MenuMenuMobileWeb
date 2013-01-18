@@ -197,6 +197,10 @@ public class Customization {
 	public static final String CHOSEN = translated.chosen();
 	
 	public static final String CHOOSE = translated.choose();
+	
+	public static final String WRONG_PASSWORDS =  translated.wrongPasswords();
+	
+	public static final String EMPTY_LIST = translated.emptyList();
 };
 	
 	

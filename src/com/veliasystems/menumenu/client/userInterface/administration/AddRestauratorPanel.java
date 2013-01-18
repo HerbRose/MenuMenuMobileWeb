@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -118,11 +119,13 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 
 	private boolean validData() {
 		boolean isCorrect = false;
-		if (userController.isUserInStor(inputEmailRestaurator.getValue()
-				.trim())
+		
+		String msg = "";
+		
+		if (userController.isUserInStor(inputEmailRestaurator.getValue().trim())
 				|| inputEmailRestaurator.getValue().trim().equals("")
 				|| !Util.isValidEmail(inputEmailRestaurator.getValue())) {
-			setValidDataStyle(false, inputEmailRestaurator);
+			msg += Customization.WRONG_EMAIL_ADDRESS + "\n";
 		} else {
 			setValidDataStyle(true, inputEmailRestaurator);
 			isCorrect = true;
@@ -131,14 +134,19 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 				|| passwordRestaurator2.getValue().trim().equals("")
 				|| !passwordRestaurator.getValue().equals(
 						passwordRestaurator2.getValue())) {
-			setValidDataStyle(false, passwordRestaurator);
-			setValidDataStyle(false, passwordRestaurator2);
+			msg += Customization.WRONG_PASSWORDS + "\n";
 			isCorrect = false;
 		} else {
 			setValidDataStyle(true, passwordRestaurator);
 			setValidDataStyle(true, passwordRestaurator2);
 		}
-
+		if(restaurantListCombo.getCheckedList().isEmpty()){
+			msg += Customization.EMPTY_LIST;
+			isCorrect = false;
+		}
+		if(!msg.isEmpty()){
+			Window.alert(msg);
+		}
 		return isCorrect;
 	}
 
