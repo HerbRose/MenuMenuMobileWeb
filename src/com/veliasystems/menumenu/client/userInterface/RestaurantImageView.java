@@ -29,6 +29,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
@@ -395,16 +396,11 @@ public class RestaurantImageView extends MyPage implements IObserver {
 							}
 						});
 						
-						
-					}
-					
+					}	
 			}
 		});
-		
-		
-		
+
 	}
-	
 	
 	private String parseURLtoBlobKey(String url){	
 		String tab[] = url.split("/?");
@@ -416,7 +412,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	protected void onPageHide() {
 		super.onPageHide();
 		
-		
+		ImagesController.imageUrl="";
 	}
 	
 	@Override
@@ -698,7 +694,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		if (container == null) {
 			
 			container = new MyRestaurantInfoPanel();
-			container.setWidth( getBodyOffsetWidth(getElement())-20 );
+			container.setWidth( JS.getElementOffsetWidth(getElement())-20 );
 			container.setStyleName("containerPanelAddRestaurant", true);
 			//container.addStyleName("containerPanelAddRestaurant");
 
@@ -752,7 +748,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 			editPanel.add(addBoard);
 				
 		}
-		container.setWidth( getBodyOffsetWidth(getElement())-20 );
+		container.setWidth( JS.getElementOffsetWidth(getElement())-20 );
 		
 		getContentPanel().add(deleteProfile);
 		
@@ -881,7 +877,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 									
 									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
 	
-									clickOnInputFile(fileLogoUpload.getElement());
+									JS.clickOnInputFile(fileLogoUpload.getElement());
 	
 								}
 	
@@ -901,7 +897,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					clickOnInputFile(fileLogoUpload.getElement());
+					JS.clickOnInputFile(fileLogoUpload.getElement());
 					formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
 					formLogoUpload.getElement().getStyle().setPosition(Position.RELATIVE);
 					addFlowPanel.add(formLogoUpload);
@@ -1026,14 +1022,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		window.open('', '_self', '');
 		window.close();
 
-	}-*/;
-
-	private static native void clickOnInputFile(Element elem) /*-{
-		elem.click();
-	}-*/;
-	
-	private static native int getBodyOffsetWidth(Element element)/*-{
-		return element.offsetWidth;
 	}-*/;
 
 	@Override

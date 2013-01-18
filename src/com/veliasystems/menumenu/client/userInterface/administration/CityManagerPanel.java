@@ -57,6 +57,7 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 
 	private String osType = getUserAgent(); 
 	
+
 	public CityManagerPanel() {
 		show(false);
 		setStyleName("barPanel", true);
@@ -96,7 +97,7 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	
 	private void setCitiesList(){
 		
-		
+		clear();
 		for (final City city : cities) {
 			
 			FlowPanel cityDetails = new FlowPanel(); //div na detale miasta
@@ -343,7 +344,9 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	
 	@Override
 	public void clearData() {
-		clear();
+		fillCitiesList();
+//		newData();
+//		clear();
 //		cityIdFrom.setValue("");
 //		setValidDataStyle(null, cityIdFrom);
 //		cityIdTo.setValue("");
@@ -425,12 +428,12 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 
 	@Override
 	public void newData() {
+		cities.clear();
 		cities.addAll( cityController.getCitiesList() );
 		setCitiesList();
 		for (City city : cities) {
 			fillCityDetails(citiesPanels.get(city.getId()), city);
 		}
-		PagesController.hideWaitPanel();
 		PagesController.hideWaitPanel();	
 	}
 }

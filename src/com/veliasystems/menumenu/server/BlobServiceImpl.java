@@ -73,10 +73,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	
 	@Override
 	public String getBlobStoreUrl(String restId, ImageType imageType) {
-		String url = BlobstoreServiceFactory.getBlobstoreService()
-				.createUploadUrl(
-						"/blobUpload?restId=" + restId + "&imageType="
-								+ imageType.name());
+		String url = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blobUpload?restId=" + restId + "&imageType="+ imageType.name());
 		return url;
 	}
 
@@ -310,8 +307,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * @return ImageBlob which contains all informations about new image, like blobkey etc.
 	 * 
 	 */
-	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY,
-			double rightX, double bottomY, String newName) {
+	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String newName) {
 
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
@@ -411,6 +407,22 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			newImageBlob.setHeight(scaleImage.getHeight());
 			newImageBlob.setBlobKeyOriginalSize(imageBlob2.getBlobKeyOriginalSize());
 			dao.ofy().put(newImageBlob);
+			
+			if(newImageBlob.getImageType() == ImageType.CITY){
+				String cityIdString = newImageBlob.getRestaurantId(); //in this case restaurantId is a cityId
+				
+				try {
+					long cityId = Long.parseLong(cityIdString);
+					City city = dao.ofy().find(City.class, cityId );
+					if(city != null){
+						city.setDistrictImageURL(newImageBlob.getImageUrl());
+						dao.ofy().put(city);
+					}
+				} catch (NumberFormatException e) {
+					log.severe("NumberFormatException when try find city to add image for this city");
+				}
+				
+			}
 			
 			//remove old image and image's data
 			BlobstoreServiceFactory.getBlobstoreService().delete(

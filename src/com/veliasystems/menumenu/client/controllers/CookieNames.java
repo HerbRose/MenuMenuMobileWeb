@@ -34,7 +34,7 @@ public enum CookieNames {
 	 */
 	R_USERS,
 	/**
-	 * The city id required to save when picup is using 
+	 * The city id required to save when picup is using (this is selected city Id)
 	 */
 	R_CITY_ID,
 	// END - new restaurant data
