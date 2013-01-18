@@ -1018,8 +1018,12 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		Query<City> cityQuery = dao.ofy().query(City.class);
 		
+		List<City> cityList = new ArrayList<City>();
+		
 		if(cityQuery != null){
-			for (City cityInDatastore : cityQuery.list()) {
+			cityList = cityQuery.list();
+			cityList.remove(city);
+			for (City cityInDatastore : cityList) {
 				if(cityInDatastore.equals(city)){
 					isOk = false;
 					errorCodes.add(ErrorCodes.CITY_ALREADY_EXIST);
