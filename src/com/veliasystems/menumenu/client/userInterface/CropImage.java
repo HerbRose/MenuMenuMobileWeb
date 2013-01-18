@@ -372,7 +372,7 @@ public class CropImage extends MyPage implements IObserver{
 	@Override
 	protected void onPageHide() {
 		super.onPageHide();
-		ImagesController.imageUrl="";
+		
 		getElement().removeFromParent();
 	}
 

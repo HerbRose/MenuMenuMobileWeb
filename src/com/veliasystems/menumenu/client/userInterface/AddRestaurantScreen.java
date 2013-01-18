@@ -24,6 +24,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CityController;
@@ -41,7 +42,9 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
 public class AddRestaurantScreen extends MyPage implements IObserver {
@@ -53,13 +56,14 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	private Label cityLabel;
 	private Label adressLabel;
 	private Label mailRestaurant;
-	private Label phoneRestaurant;
+	private Label phoneRestaurantLabel;
 	private Label mailUser;
 	private Label phoneUser;
 	private Label nameUser;
 	private Label websiteLabel;
 	private Label bossLabel;
-
+	private Label districtLabel;
+	
 	private TextBox nameText = new TextBox();
 	private TextBox adressText = new TextBox();
 	private TextBox mailRestaurantTextBox = new TextBox();
@@ -67,8 +71,10 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	private TextBox mailUserTextBox = new TextBox();
 	private TextBox phoneUserTextBox = new TextBox();
 	private TextBox nameUserTextBox = new TextBox();
-	private TextBox websiteTextBox = new TextBox();
+//	private TextBox websiteTextBox = new TextBox();
 	private TextBox bossTextBox = new TextBox();
+	
+	private MyListCombo citiesListCombo = new MyListCombo(false);
 
 	// private ListBox cityListBox = new ListBox();
 	private Label warning = new Label();
@@ -90,7 +96,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	private UserController userController = UserController.getInstance();
 	private CookieController cookieController = CookieController.getInstance();
 
-	private FlowPanel container;
+	private MyRestaurantInfoPanel container;
 
 	private FlowPanel nameWrapper = new FlowPanel();
 	private FlowPanel addressWrapper = new FlowPanel();
@@ -218,89 +224,38 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 
 	private void setLabels() {
 
-		container = new FlowPanel();
+		container = new MyRestaurantInfoPanel();
+		
 		container.addStyleName("containerPanelAddRestaurant");
 
-		nameLabel = new Label();
-		nameLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-		nameLabel.setText(Customization.RESTAURANTNAME + ":");
+		
+		nameLabel = new Label(Customization.RESTAURANTNAME + ":");
+		adressLabel = new Label(Customization.RESTAURANTADRESS + ":");
+		phoneRestaurantLabel = new Label(Customization.RESTAURANT_PHONE + ":");
+		districtLabel = new Label(Customization.DISTRICT + ":");
+		bossLabel = new Label(Customization.BOSS_LABEL + ":");
 
 		nameText.setTitle(Customization.RESTAURANTNAME);
-		nameText.addStyleName("myTextBox nameBox arialBold");
-
-		adressLabel = new Label();
-		adressLabel.setText(Customization.RESTAURANTADRESS + ":");
-		adressLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-
 		adressText.setTitle(Customization.RESTAURANTADRESS);
-		adressText.addStyleName("myTextBox nameBox arialBold");
-
-		mailRestaurant = new Label();
-		mailRestaurant.setText(Customization.RESTAURANT_MAIL + ":");
-		mailRestaurant.addStyleName("addRestaurantLabel myLabel arialBold");
-
-		mailRestaurantTextBox.setTitle(Customization.RESTAURANT_MAIL);
-
-		phoneRestaurant = new Label();
-		phoneRestaurant.setText(Customization.RESTAURANT_PHONE + ":");
-		phoneRestaurant.addStyleName("addRestaurantLabel myLabel arialBold");
-
 		phoneRestaurantTextBox.setTitle(Customization.RESTAURANT_PHONE);
-		phoneRestaurantTextBox.addStyleName("myTextBox nameBox arialBold");
-
-		nameUser = new Label();
-		nameUser.setText(Customization.USER_NAME + ":");
-
-		nameUserTextBox.setTitle(Customization.USER_NAME);
-
-		phoneUser = new Label();
-		phoneUser.setText(Customization.USER_PHONE + ":");
-
-		phoneUserTextBox.setTitle(Customization.USER_PHONE);
-
-		mailUser = new Label(Customization.USER_MAIL + ":");
-		mailUserTextBox.setTitle(Customization.USER_MAIL);
-
-		websiteLabel = new Label(Customization.DISTRICT);
-		websiteLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-
-		websiteTextBox.addStyleName("myTextBox nameBox arialBold");
-
-		bossLabel = new Label(Customization.BOSS_LABEL);
-		bossLabel.addStyleName("addRestaurantLabel myLabel arialBold");
-
-		bossTextBox.addStyleName("myTextBox nameBox arialBold");
-
-		nameWrapper.addStyleName("addWrapper");
-
-		addressWrapper.addStyleName("addWrapper");
-
-		phoneWrapper.addStyleName("addWrapper");
-
-		wwwWrapper.addStyleName("addWrapper");
-
-		bossWrapper.addStyleName("addWrapper");
-
-		nameWrapper.add(nameLabel);
-		nameWrapper.add(nameText);
-
-		addressWrapper.add(adressLabel);
-		addressWrapper.add(adressText);
-
-		phoneWrapper.add(phoneRestaurant);
-		phoneWrapper.add(phoneRestaurantTextBox);
-
-		wwwWrapper.add(websiteLabel);
-		wwwWrapper.add(websiteTextBox);
-
-		bossWrapper.add(bossLabel);
-		bossWrapper.add(bossTextBox);
-
-		container.add(nameWrapper);
-		container.add(addressWrapper);
-		container.add(phoneWrapper);
-		container.add(wwwWrapper);
-		container.add(bossWrapper);
+		bossTextBox.setTitle(Customization.BOSS_LABEL);
+		
+		nameText.addStyleName("myTextBox nameBox");//addRestaurantInput
+		adressText.addStyleName("myTextBox nameBox");
+		phoneRestaurantTextBox.addStyleName("myTextBox nameBox");
+		bossTextBox.addStyleName("myTextBox nameBox");
+		
+		for (City city : cityController.getCitiesList()) {
+			citiesListCombo.addListItem(citiesListCombo.getNewItem(city.getCity()), city.getId());
+		}
+		
+		citiesListCombo.selectItem(city.getId());
+		
+		container.addItem(nameLabel, nameText);
+		container.addItem(adressLabel, adressText);
+		container.addItem(phoneRestaurantLabel, phoneRestaurantTextBox);
+		container.addItem(districtLabel, citiesListCombo);
+		container.addItem(bossLabel, bossTextBox);
 
 		addAddUserWidget();
 
@@ -388,6 +343,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	protected void onPageShow() {
 		hideAddBoardPanel();
 		RestaurantController.getInstance().setLastOpenPage(this);
+		container.setWidth( JS.getElementOffsetWidth(getElement())-20 );
 		isToDeleted = true;
 		clearData();
 
@@ -415,19 +371,20 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	}
 
 	private void clearData() {
-		if (cookieController.getCookie(CookieNames.IS_PICUP_USED)
-				.equals("true")) {
+		if (cookieController.getCookie(CookieNames.IS_PICUP_USED).equals("true")) {
 			nameText.setText(cookieController.getCookie(CookieNames.R_NAME));
-			adressText.setText(cookieController
-					.getCookie(CookieNames.R_ADDRESS));
-			bossTextBox.setText(cookieController
-					.getCookie(CookieNames.R_BOSS_NAME));
-			websiteTextBox.setText(cookieController
-					.getCookie(CookieNames.R_WWW));
-			phoneRestaurantTextBox.setText(cookieController
-					.getCookie(CookieNames.R_PHONE));
-			addUserTextBox.setText(cookieController
-					.getCookie(CookieNames.R_USERS));
+			adressText.setText(cookieController.getCookie(CookieNames.R_ADDRESS));
+			bossTextBox.setText(cookieController.getCookie(CookieNames.R_BOSS_NAME));
+			phoneRestaurantTextBox.setText(cookieController.getCookie(CookieNames.R_PHONE));
+			addUserTextBox.setText(cookieController.getCookie(CookieNames.R_USERS));
+			long selectedCityId;
+			try {
+				selectedCityId = Long.parseLong(cookieController.getCookie(CookieNames.R_CITY_ID));
+				citiesListCombo.selectItem(selectedCityId);
+			} catch (Exception e) {
+				citiesListCombo.selectItem(city.getId());
+			}
+			
 		}
 
 		warning.setText("");
@@ -783,28 +740,23 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 	 */
 	private void setCookiesData(boolean clear) {
 		if (clear) {
-			cookieController.clearCookie(CookieNames.R_ADDRESS);
-			cookieController.clearCookie(CookieNames.R_BOSS_NAME);
 			cookieController.clearCookie(CookieNames.R_NAME);
+			cookieController.clearCookie(CookieNames.R_ADDRESS);
 			cookieController.clearCookie(CookieNames.R_PHONE);
-			cookieController.clearCookie(CookieNames.R_USERS);
-			cookieController.clearCookie(CookieNames.R_WWW);
 			cookieController.clearCookie(CookieNames.R_CITY_ID);
+			cookieController.clearCookie(CookieNames.R_BOSS_NAME);
+			cookieController.clearCookie(CookieNames.R_USERS);
+
+			
 			cookieController.clearCookie(CookieNames.IS_PICUP_USED);
 		} else {
-			cookieController.setCookie(CookieNames.R_ADDRESS,
-					adressText.getText());
-			cookieController.setCookie(CookieNames.R_BOSS_NAME,
-					bossTextBox.getText());
 			cookieController.setCookie(CookieNames.R_NAME, nameText.getText());
-			cookieController.setCookie(CookieNames.R_PHONE,
-					phoneRestaurantTextBox.getText());
-			cookieController.setCookie(CookieNames.R_WWW,
-					websiteTextBox.getText());
-			cookieController.setCookie(CookieNames.R_USERS,
-					addUserTextBox.getText());
-			cookieController
-					.setCookie(CookieNames.R_CITY_ID, city.getId() + "");
+			cookieController.setCookie(CookieNames.R_ADDRESS, adressText.getText());
+			cookieController.setCookie(CookieNames.R_PHONE, phoneRestaurantTextBox.getText());
+			cookieController.setCookie(CookieNames.R_CITY_ID, citiesListCombo.getSelectedItem()+"");
+			cookieController.setCookie(CookieNames.R_BOSS_NAME, bossTextBox.getText());
+			cookieController.setCookie(CookieNames.R_USERS, addUserTextBox.getText());
+			
 			cookieController.setCookie(CookieNames.IS_PICUP_USED, "true");
 		}
 	}

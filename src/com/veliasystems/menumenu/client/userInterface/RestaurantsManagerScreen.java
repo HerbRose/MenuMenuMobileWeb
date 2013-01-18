@@ -28,6 +28,7 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
@@ -67,8 +68,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	private UserController userController = UserController.getInstance();
 	private CityController cityController = CityController.getInstance();
-	private RestaurantController restaurantController = RestaurantController
-			.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 
 	private List<IManager> panelsList = new ArrayList<IManager>();
 
@@ -452,9 +452,9 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	 */
 	private void clearScreenData() {
 
-		for (Integer key : panelList.keySet()) {
-			panelList.get(key).clearData();
-		}
+//		for (Integer key : panelList.keySet()) {
+//			panelList.get(key).clearData();
+//		}
 		checkArrows();
 	}
 
@@ -490,8 +490,12 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	@Override
 	protected void onPageShow() {
-		showPanel(null);
-
+		//showPanel(null);
+		
+		if(currentlyDisplayedPanel != null){
+			currentlyDisplayedPanel.clearData();
+		}
+		
 		pageToBack = restaurantController.getLastOpenPage();
 		restaurantController.setLastOpenPage(this);
 		if (pageToBack instanceof RestaurantImageView) {
@@ -503,22 +507,22 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			}
 		}
 
-		Set<Integer> panelKeys = panelList.keySet();
-		int maxSize = 0;
-		for (Integer key : panelKeys) {
-			Widget widget = (Widget) panelList.get(key);
-			if (maxSize < widget.getElement().getClientHeight()) {
-				maxSize = widget.getElement().getClientHeight();
-			}
-		}
+//		Set<Integer> panelKeys = panelList.keySet();
+//		int maxSize = 0;
+//		for (Integer key : panelKeys) {
+//			Widget widget = (Widget) panelList.get(key);
+//			if (maxSize < widget.getElement().getClientHeight()) {
+//				maxSize = widget.getElement().getClientHeight();
+//			}
+//		}
 
-		clearScreenData();
+//		clearScreenData();
 
-		if (maxSize > getElement().getClientHeight()) {
-			maxSize += 300;
-			// getElement().setAttribute("style", "min-height:" + maxSize+"px");
-			setHeight(maxSize + "px");
-		}
+//		if (maxSize > getElement().getClientHeight()) {
+//			maxSize += 300;
+//			// getElement().setAttribute("style", "min-height:" + maxSize+"px");
+//			setHeight(maxSize + "px");
+//		}
 
 		if (!loaded) {
 			backButton = new JQMButton("", pageToBack, Transition.SLIDE);
@@ -533,13 +537,14 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			header.add(backButton);
 			loaded = true;
 		}
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		
 
-		if (panelList != null && !panelList.isEmpty()) {
-			tabBar.selectTab(whichPanelShow);
-			showPanel( panelList.get(whichPanelShow));
-		}
-		restaurantController.setLastOpenPage(this);
+//		if (panelList != null && !panelList.isEmpty()) {
+//			tabBar.selectTab(whichPanelShow);
+//			showPanel( panelList.get(whichPanelShow));
+//		}
+//		restaurantController.setLastOpenPage(this);
+		PagesController.hideWaitPanel();
 	}
 	
 
@@ -547,9 +552,9 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	public void onChange() {
 		//clearScreenData();
 		
-		if(currentlyDisplayedPanel != null){
-			currentlyDisplayedPanel.clearData();
-		}
+//		if(currentlyDisplayedPanel != null){
+//			currentlyDisplayedPanel.clearData();
+//		}
 	}
 
 	@Override
