@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.veliasystems.menumenu.client.controllers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -66,7 +67,7 @@ public interface StoreServiceAsync {
 
 	void deleteRestaurants(long cityId, AsyncCallback<Long> callback);
 
-	void saveCity(City city, AsyncCallback<City> callback);
+	void saveCity(City city, AsyncCallback<ResponseSaveCityWrapper> callback);
 
 	void addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
 			String emailAddingUser, AsyncCallback<List<Object>> callback);

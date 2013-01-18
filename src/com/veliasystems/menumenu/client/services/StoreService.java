@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.veliasystems.menumenu.client.controllers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -163,7 +164,7 @@ public interface StoreService extends RemoteService {
 	 * @param city - {@link City} Object
 	 * @return {@link City} object
 	 */
-	City saveCity(City city);
+	ResponseSaveCityWrapper saveCity(City city);
 	List<Object> addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
 			String emailAddingUser);
 

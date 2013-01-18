@@ -1,6 +1,5 @@
 package com.veliasystems.menumenu.client.userInterface;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -10,8 +9,8 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
-import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.entities.City;
@@ -21,7 +20,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
-public class AddCity extends MyPage{
+public class AddCity extends MyPage implements IObserver{
 
 	private TextBox nameCity;
 	private BackButton backButton;
@@ -55,7 +54,11 @@ public class AddCity extends MyPage{
 					String country = "";
 					if(countryListCombo.getSelectedItem() == 1) country = "Poland";
 					if(countryListCombo.getSelectedItem() == 2) country = "France";
-					CityController.getInstance().saveCity(nameCity.getText(), country);
+					City city = new City();
+					city.setCity(nameCity.getText());
+					city.setCountry(country);
+					
+					CityController.getInstance().saveCity(getMe(),city, true);
 				}			
 			}
 		});
@@ -98,12 +101,7 @@ public class AddCity extends MyPage{
 	private boolean validate(){
 		String matcher =".*[^-]-.*[^-]";
 		if(nameCity.getText().matches(matcher)) {
-			if(!cityExist(nameCity.getText())){
-				return true;
-			}else{
-				showWarning(Customization.CITY_EXIST_ERROR);
-				return false;
-			}
+			return true;
 		}
 		showWarning(Customization.WRONG_CITY_NAME);
 		return false;
@@ -129,5 +127,21 @@ public class AddCity extends MyPage{
 	
 	private void showWarning( String worning){
 		Window.alert(worning);
+	}
+
+	@Override
+	public void onChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private AddCity getMe(){
+		return this;
 	}
 }

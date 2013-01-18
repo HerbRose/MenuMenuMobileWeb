@@ -39,6 +39,7 @@ import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.ErrorCodes;
+import com.veliasystems.menumenu.client.controllers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -1010,11 +1011,31 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public City saveCity( City city){
+	public ResponseSaveCityWrapper saveCity( City city){
+		ResponseSaveCityWrapper responseSaveWrapper = new ResponseSaveCityWrapper();
+		List<Integer> errorCodes = new ArrayList<Integer>();
+		boolean isOk = true;
 		
-		dao.ofy().put(city);
+		Query<City> cityQuery = dao.ofy().query(City.class);
 		
-		return city;
+		if(cityQuery != null){
+			for (City cityInDatastore : cityQuery.list()) {
+				if(cityInDatastore.equals(city)){
+					isOk = false;
+					errorCodes.add(ErrorCodes.CITY_ALREADY_EXIST);
+				}
+			}
+		}else{
+			isOk = true; //there is empty list with cities, so add first one
+		}
+		if(isOk){
+			dao.ofy().put(city);		
+		}
+		
+		responseSaveWrapper.setCity(city);
+		responseSaveWrapper.setErrorCodes(errorCodes);
+		
+		return responseSaveWrapper;
 	}
 	@Override
 	public User saveUser(User user){

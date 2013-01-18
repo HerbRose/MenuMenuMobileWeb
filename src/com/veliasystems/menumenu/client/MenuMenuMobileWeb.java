@@ -8,16 +8,21 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
 import com.veliasystems.menumenu.client.userInterface.LoginScreen;
 import com.veliasystems.menumenu.client.userInterface.Pages;
+import com.veliasystems.menumenu.client.userInterface.WelcomeMobilePage;
 
 
 public class MenuMenuMobileWeb implements EntryPoint {
 
 	public static boolean loggedIn = false;
-	
+	private String osType = R.USER_AGENT;
 	
 	public void onModuleLoad() {
 		
 		String logged = Cookies.getCookie(R.LOGGED_IN);
+		
+		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0
+				|| osType.toLowerCase().indexOf("iphone") >= 0;
+		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;
 		
 		if (logged != null && !logged.equals("null")) loggedIn = true; //it's weird, but it seems to be working
 		
@@ -28,7 +33,9 @@ public class MenuMenuMobileWeb implements EntryPoint {
 				JQMContext.changePage( new LoadDataScreen(logged) );
 			}
 		} else {
-			if(isMobile()) JQMContext.changePage( Pages.PAGE_LOGIN_OK );
+			if(isOSMobile || isAndroid) {
+				JQMContext.changePage( new WelcomeMobilePage());
+			}
 			else {
 				R.isMobile = false;
 				JQMContext.changePage( Pages.PAGE_LOGIN_OK );
