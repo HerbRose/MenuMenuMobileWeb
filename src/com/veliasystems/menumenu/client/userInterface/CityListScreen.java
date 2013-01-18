@@ -66,7 +66,7 @@ public class CityListScreen extends MyPage implements IObserver{
 			}
 		});
 		
-		if(!userController.isUserType(UserType.RESTAURATOR)){
+		if(userController.isUserType(UserType.ADMIN) || userController.isUserType(UserType.AGENT)){
 			addButton = new  MyButton("");
 			addButton.removeStyleName("borderButton");
 			addButton.setStyleName("rightButton addButton", true);
