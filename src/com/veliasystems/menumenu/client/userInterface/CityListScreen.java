@@ -70,6 +70,9 @@ public class CityListScreen extends MyPage implements IObserver{
 			addButton = new  MyButton("");
 			addButton.removeStyleName("borderButton");
 			addButton.setStyleName("rightButton addButton", true);
+			
+			getHeader().setRightButton(addButton);
+
 			addButton.addClickHandler(new ClickHandler() {
 				
 				@Override
@@ -86,10 +89,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	    addCities(cityList);
 	    	       
 	    getHeader().setLeftButton(logoutButton);
-	    
-	    if(!userController.isUserType(UserType.RESTAURATOR)){
-	    	getHeader().setRightButton(addButton);
-	    }
+	  
 	    
   	
 	    	adminPanel.removeStyleName("borderButton");
