@@ -576,7 +576,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restaurantQuery == null) return true;
 		
 		List<Restaurant> restaurantList = restaurantQuery.list();
-		
+		restaurantList.remove(r);
 		for (Restaurant restaurant : restaurantList) {
 			if(restaurant.equals(r)) exist = true;
 		}

@@ -786,9 +786,15 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		List<ImageBlob> imageBlobs = imgQuery.filter("timeInMiliSec >", yesterday).list();
 		
+		List<ImageBlob> imageBlobList = new ArrayList<ImageBlob>();
+		
+		for (ImageBlob imageBlob : imageBlobs) {
+			if(imageBlob.getImageType() != ImageType.CITY) imageBlobList.add(imageBlob);
+		}
+		
 //		log.info("imageBlobs.size = " + imageBlobs.size() +", today = " + today + ", yesterday = " + yesterday );
 		
-		return imageBlobs;
+		return imageBlobList;
 	}
 	
 //	/**
