@@ -296,8 +296,15 @@ body {
 	color: #797979;
 }
 
-/* panel z plusem po lewej stronie i labelką po prawej
-*/
+.backgroundNone{
+	background: none !important;
+}
+.borderNone{
+	border: none !important;
+}
+/* 
+ * panel z plusem po lewej stronie i labelką po prawej
+ */
 .plusPanel{
 	position: relative;
 	margin-bottom: 10px;
@@ -434,6 +441,51 @@ body {
 	line-height: 40px;	
 }
 /* KONIEC - ogulny styl dla listy rozwijanej */
+
+/* Welcome mobile page */
+
+.mobileNotification{
+	min-height: 100px;
+	margin: 20px;
+	padding: 20px;
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 0px black !important;
+	box-shadow: 0px 0px 8px 0px black !important;
+}
+.messageMobile{
+	font-size: 18px;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.noThanksPanel, .getApp{
+	max-width: 200px;
+	margin: auto;
+	height: 50px;
+	line-height: 50px;
+	margin-top: 20px;
+}
+
+.getApp{
+	
+	background: url("/img/layout/blackBackgroundButton.png");
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 2px black !important;
+	box-shadow: 0px 0px 8px 2px black !important;
+	font-size: 18px;
+	color: white;
+}
+.noThanksPanel{
+	
+	background: url("/img/layout/redBackgroundButton.png");
+	line-height: 50px;
+	border-radius: 13px;
+	-webkit-box-shadow: 0px 0px 8px 2px black !important;
+	box-shadow: 0px 0px 8px 2px black !important;
+	font-size: 18px;
+	color: white;
+}
+/* KONIEC Welcome mobile page */
+
 /* Login screen */
 .namePanel,.passwordPanel {
 	/* panele na label i pole do wprowadzenia tekstu */
