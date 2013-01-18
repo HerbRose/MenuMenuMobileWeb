@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.httpclient.methods.GetMethod;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
@@ -12,6 +14,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -33,6 +37,9 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyInfoPanelRow;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
 public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
@@ -146,23 +153,28 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		cityDetails.clear();
 		
 		
-		FlowPanel namePanel = new FlowPanel();
-		namePanel.setStyleName("namePanel", true);
 		
-		FlowPanel visabilityPanel = new FlowPanel();
-		visabilityPanel.setStyleName("visabilityPanel", true);
+//		FlowPanel namePanel = new FlowPanel();
+//		namePanel.setStyleName("namePanel", true);
 		
-		FlowPanel buttonsPanel = new FlowPanel();
-		buttonsPanel.setStyleName("buttonsPanel", true);
+//		FlowPanel visabilityPanel = new FlowPanel();
+//		visabilityPanel.setStyleName("visabilityPanel", true);
+//		
+//		FlowPanel buttonsPanel = new FlowPanel();
+//		buttonsPanel.setStyleName("buttonsPanel", true);
+//		
+//		FlowPanel imagePanel = new FlowPanel();
+//		imagePanel.setStyleName("imagesPanel", true);
 		
-		FlowPanel imagePanel = new FlowPanel();
-		imagePanel.setStyleName("imagesPanel", true);
-		
+		MyRestaurantInfoPanel cityInfoPanel = new MyRestaurantInfoPanel();
+		cityInfoPanel.setStyleName("containerPanelAddRestaurant", true);
+		cityInfoPanel.setWidth(JS.getElementOffsetWidth(getParent().getElement())-20 );
 		
 		
 		Label nameLabel = new Label(Customization.CITY_NAME);
 		final TextBox nameTextBox = new TextBox();
 		nameTextBox.getElement().setId("nameTextBox"+city.getId());
+		nameTextBox.addStyleName("myTextBox nameBox");
 		nameTextBox.setText(city.getCity());
 		
 		Label visabilityLabel = new Label(Customization.VISIBILITY);
@@ -170,6 +182,7 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		setVisabilityText(true, city.isVisable(true), isVisibleForProduction, city.getId());
 		//isVisable.setValue(city.isVisable());
 		
+		isVisibleForProduction.setStyleName("backgroundNone borderNone", true);
 		isVisibleForProduction.getElement().setId("isVisable"+city.getId());
 		isVisibleForProduction.addClickHandler(new ClickHandler() {
 			
@@ -184,6 +197,7 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		final Button isVisibleForTests = new Button("");
 		setVisabilityText(false, city.isVisable(false), isVisibleForTests, city.getId());
 		
+		isVisibleForTests.setStyleName("backgroundNone borderNone", true);
 		isVisibleForTests.getElement().setId("isVisibleForTests" + city.getId());
 		isVisibleForTests.addClickHandler(new ClickHandler() {
 			
@@ -214,39 +228,73 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			public void onClick(ClickEvent event) {
 				city.setCity(nameTextBox.getText());
 				if(validData(city)){
-					cityController.saveCity(city);
+					cityController.saveCity(getMe(), city, false);
 				}else{
 					Window.alert(Customization.WRONG_DATA_ERROR);
 				}
 			}
 		});
 
-		namePanel.add(nameLabel);
-		namePanel.add(nameTextBox);
+		Label countryLabel = new Label(Customization.COUNTRY);
+		MyListCombo	countryListCombo = new MyListCombo(false);
+		
+		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.POLAND), 1);
+		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.FRANCE), 2);
 		
 		
-		visabilityPanel.add(visabilityLabel);
-		visabilityPanel.add(isVisibleForProduction);
-		visabilityPanel.add(visiblityForTestLabel);
-		visabilityPanel.add(isVisibleForTests);
+		countryListCombo.selectItem(1);
 		
-		imagePanel.add(districtImageLabel);
-		MyUploadForm myUploadForm = createUpload(city.getId());
+//		namePanel.add(nameLabel);
+//		namePanel.add(nameTextBox);
+//		
+//		
+//		visabilityPanel.add(visabilityLabel);
+//		visabilityPanel.add(isVisibleForProduction);
+//		visabilityPanel.add(visiblityForTestLabel);
+//		visabilityPanel.add(isVisibleForTests);
+		
+//		imagePanel.add(districtImageLabel);
+		
+		
+		
+		final MyUploadForm myUploadForm = createUpload(city.getId());
+		
+		cityInfoPanel.addItem(nameLabel, nameTextBox);
+		cityInfoPanel.addItem(visabilityLabel, isVisibleForProduction);
+		cityInfoPanel.addItem(visiblityForTestLabel, isVisibleForTests);
+		cityInfoPanel.addItem(countryLabel, countryListCombo);
 		if(!city.getDistrictImageURL().isEmpty()){
 			myUploadForm.getElement().getStyle().setDisplay(Display.NONE);
 			add(myUploadForm);
-			imagePanel.add(createImage(city.getDistrictImageURL(), myUploadForm.getFileUpload() ) );
+			
+			final Image image = createImage(city.getDistrictImageURL(), myUploadForm.getFileUpload() );
+			final MyInfoPanelRow imageRow = cityInfoPanel.addItem(districtImageLabel, image);
+			image.addLoadHandler(new LoadHandler() {
+				
+				@Override
+				public void onLoad(LoadEvent event) {
+					imageRow.setHeight(image.getHeight() + 20);
+				}
+			});
+			
+			
+//			imagePanel.add(createImage(city.getDistrictImageURL(), myUploadForm.getFileUpload() ) );
 			
 		}else{
-			imagePanel.add(myUploadForm);
+			cityInfoPanel.addItem(districtImageLabel,  myUploadForm);
+//			imagePanel.add(myUploadForm);
 		}
-		buttonsPanel.add(saveButton);
-		buttonsPanel.add(deleteButton);
 		
-		cityDetails.add(namePanel);
-		cityDetails.add(visabilityPanel);
-		cityDetails.add(imagePanel);
-		cityDetails.add(buttonsPanel);
+		cityInfoPanel.addItem(saveButton, deleteButton);
+		
+		cityDetails.add(cityInfoPanel);
+//		buttonsPanel.add(saveButton);
+//		buttonsPanel.add(deleteButton);
+//		
+//		cityDetails.add(namePanel);
+//		cityDetails.add(visabilityPanel);
+//		cityDetails.add(imagePanel);
+//		cityDetails.add(buttonsPanel);
 		
 		showCityTable(cityDetails, null, false);
 	}
@@ -435,5 +483,9 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			fillCityDetails(citiesPanels.get(city.getId()), city);
 		}
 		PagesController.hideWaitPanel();	
+	}
+	
+	private IObserver getMe() {
+		return this;
 	}
 }
