@@ -4,30 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.Widget;
-import com.sksamuel.jqm4gwt.DataIcon;
-import com.sksamuel.jqm4gwt.IconPos;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
-import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
@@ -39,18 +35,25 @@ import com.veliasystems.menumenu.client.userInterface.administration.AddRestaura
 import com.veliasystems.menumenu.client.userInterface.administration.CityManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.DefaultEmptyMenuPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.EditDataPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.EditUsersPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.EmailPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.IManager;
 import com.veliasystems.menumenu.client.userInterface.administration.LastUploadedImages;
-import com.veliasystems.menumenu.client.userInterface.administration.EditUsersPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
-public class RestaurantsManagerScreen extends JQMPage implements
+public class RestaurantsManagerScreen extends MyPage implements
 		HasClickHandlers, IObserver {
 
-	private JQMHeader header;
-	private JQMButton backButton;
+	
+	
+	
+//	private JQMHeader header;
+//	private JQMButton backButton;
 	private JQMPage pageToBack;
+	
+	private BackButton backButton;
 	// private JQMFooter footer;
 
 	private TabBar tabBar;
@@ -95,19 +98,34 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	private int widthOfTabBarPanel;
 
 	public RestaurantsManagerScreen() {
+		
+		super(Customization.ADD_CITY);
+
+		backButton = new BackButton(Customization.BACK);
+		backButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				PagesController.showWaitPanel();
+				JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
+			}
+		});
+		
+		getHeader().setLeftButton(backButton);
+		
 		userController.addObserver(this);
 		restaurantController.addObserver(this);
 		cityController.addObserver(this);
 		userType = userController.getUserType();
-		setHeader();
+//		setHeader();
 		setContent();
 	}
 
-	private void setHeader() {
-		header = new JQMHeader("MenuMenuMobile");
-		header.setFixed(true);
-		add(header);
-	}
+//	private void setHeader() {
+//		header = new JQMHeader("MenuMenuMobile");
+//		header.setFixed(true);
+//		add(header);
+//	}
 
 	private void setContent() {
 
@@ -169,7 +187,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 						marginLeft = 0;
 					} else {
 						marginLeft += tabBarPanelWidth
-								+ getWidth(rightArrow.getElement().getId());
+								+ JS.getWidth(rightArrow.getElement().getId()); //getWidth(rightArrow.getElement().getId());
 					}
 				} else {
 					if (tabWidth - tabBarPanelWidth - Math.abs(marginLeft) < tabBarPanelWidth) {
@@ -210,7 +228,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 				if (Math.abs(marginLeft) + tabBarPanelWidth > tabWidth)
 					marginLeft = tabBarPanelWidth - tabWidth
-							- getWidth(rightArrow.getElement().getId());
+							- JS.getWidth(rightArrow.getElement().getId());//getWidth(rightArrow.getElement().getId());
 				moveLeft(marginLeft, tabBar.getElement().getId());
 				checkArrows();
 
@@ -220,8 +238,8 @@ public class RestaurantsManagerScreen extends JQMPage implements
 	}
 
 	private void checkArrows() {
-		tabBarPanelWidth = getWidth(tabBarPanel.getElement().getId());// Window.getClientWidth();		
-		tabWidth = getWidth(tabBar.getElement().getId());
+		tabBarPanelWidth = JS.getWidth(tabBarPanel.getElement().getId()); // getWidth(tabBarPanel.getElement().getId());// Window.getClientWidth();		
+		tabWidth = JS.getWidth(tabBar.getElement().getId()); //getWidth(tabBar.getElement().getId());
 		if (tabBarPanelWidth < tabWidth) {
 			rightArrow.setStyleName("hide", false);
 			rightArrow.setStyleName("show", true);
@@ -235,7 +253,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 			if (marginLeft < 0
 					&& tabBarPanelWidth + Math.abs(marginLeft)
-							- getWidth(rightArrow.getElement().getId()) >= tabWidth) {
+							- JS.getWidth(rightArrow.getElement().getId()) >= tabWidth) { //getWidth(rightArrow.getElement().getId()) >= tabWidth) {
 				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
 				rightArrow.setStyleName("hide", true);
 				rightArrow.setStyleName("show", false);
@@ -246,7 +264,7 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			}
 			if (marginLeft < 0
 					&& tabBarPanelWidth + Math.abs(marginLeft)
-							- getWidth(rightArrow.getElement().getId()) < tabWidth) {
+							- JS.getWidth(rightArrow.getElement().getId()) < tabWidth) {//getWidth(rightArrow.getElement().getId()) < tabWidth) {
 				addStyleToElement(divForTabBarPanel, "margin-left: 30px;");
 				leftArrow.setStyleName("hide", false);
 				leftArrow.setStyleName("show", true);
@@ -256,8 +274,8 @@ public class RestaurantsManagerScreen extends JQMPage implements
 			}
 		}
 
-		int leftArrowWidth = getWidth(leftArrow.getElement().getId());// leftArrow.getWidth();
-		int rightArrowWidth = getWidth(rightArrow.getElement().getId());// rightArrow.getWidth();
+		int leftArrowWidth = JS.getWidth(leftArrow.getElement().getId()); //getWidth(leftArrow.getElement().getId());// leftArrow.getWidth();
+		int rightArrowWidth = JS.getWidth(rightArrow.getElement().getId()); //getWidth(rightArrow.getElement().getId());// rightArrow.getWidth();
 		widthOfTabBarPanel = tabBarPanelWidth - leftArrowWidth
 				- rightArrowWidth;
 
@@ -274,9 +292,9 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	}
 
-	private native int getWidth(String elementId)/*-{
-		return $wnd.document.getElementById(elementId).offsetWidth;
-	}-*/;
+//	private native int getWidth(String elementId)/*-{
+//		return $wnd.document.getElementById(elementId).offsetWidth;
+//	}-*/;
 
 	private native void moveLeft(int left, String elementId)/*-{
 		var element = $wnd.document.getElementById(elementId);
@@ -525,17 +543,18 @@ public class RestaurantsManagerScreen extends JQMPage implements
 //		}
 
 		if (!loaded) {
-			backButton = new JQMButton("", pageToBack, Transition.SLIDE);
-			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"
-					+ Customization.BACK
-					+ "</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";
-			backButton.setIcon(DataIcon.LEFT);
-			backButton.setIconPos(IconPos.LEFT);
-			backButton.getElement().setInnerHTML(span);
-			backButton
-					.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
-			header.add(backButton);
+//			backButton = new JQMButton("", pageToBack, Transition.SLIDE);
+//			String span = "<span class=\"ui-btn-inner ui-btn-corner-all\"><span class=\"ui-btn-text\" style=\"color: #fff\">"
+//					+ Customization.BACK
+//					+ "</span><span class=\"ui-icon ui-icon-arrow-l ui-icon-shadow\"></span></span>";
+//			backButton.setIcon(DataIcon.LEFT);
+//			backButton.setIconPos(IconPos.LEFT);
+//			backButton.getElement().setInnerHTML(span);
+//			backButton
+//					.setStyleName("ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-down-a ui-btn-up-a ui-btn-up-undefined");
+//			header.add(backButton);
 			loaded = true;
+			checkArrows();
 		}
 		
 
@@ -559,6 +578,12 @@ public class RestaurantsManagerScreen extends JQMPage implements
 
 	@Override
 	public void newData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fireEvent(GwtEvent<?> event) {
 		// TODO Auto-generated method stub
 		
 	}

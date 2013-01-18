@@ -280,7 +280,7 @@
 .barPanel{
 	margin-top: 20px;
 	
-	position: absolute;
+/* 	position: absolute; */
 	z-index: 0;
 
 }
@@ -350,12 +350,12 @@ width: 100px;
 }
 
 .greenText{
-	font-weight: bold;
-	color: #070;
+	font-weight: bold !important;
+	color: #070 !important;
 }
 .redText{
-	font-weight: bold;
-	color: #f00;
+	font-weight: bold !important;
+	color: #f00 !important;
 }
 .cityTableDiv{
 	background-color: #fff;
