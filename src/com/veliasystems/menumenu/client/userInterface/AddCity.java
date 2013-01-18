@@ -1,16 +1,15 @@
 package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -24,12 +23,9 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfo
 
 public class AddCity extends MyPage{
 
-
 	private TextBox nameCity;
-	private Label warningLabel = new Label();
 	private BackButton backButton;
 	private MyButton saveButton;
-	//private FlowPanel wrapper;
 	private MyListCombo countryListCombo;
 	
 	private MyRestaurantInfoPanel container;
@@ -38,15 +34,13 @@ public class AddCity extends MyPage{
 	
 	public AddCity(){
 		super(Customization.ADD_CITY);
-		
-	
-	
+
 		backButton = new BackButton(Customization.BACK);
 		backButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				Document.get().getElementById("load").setClassName(R.LOADING);
+				PagesController.showWaitPanel();
 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
 			}
 		});
@@ -95,9 +89,8 @@ public class AddCity extends MyPage{
 	
 	@Override
 	protected void onPageShow() {
-		warningLabel.setText("");		
 		nameCity.setText("");
-		container.setWidth( getBodyOffsetWidth(getElement())-20 );
+		container.setWidth( JS.getElementOffsetWidth(getElement())-20 );
 		PagesController.hideWaitPanel();
 	}
 
@@ -137,9 +130,4 @@ public class AddCity extends MyPage{
 	private void showWarning( String worning){
 		Window.alert(worning);
 	}
-	
-	
-	private static native int getBodyOffsetWidth(Element element)/*-{
-		return element.offsetWidth;
-	}-*/;
 }
