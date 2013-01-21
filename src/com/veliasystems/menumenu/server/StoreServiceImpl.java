@@ -440,9 +440,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				int i = (int) (Math.random() * 100);
 				
 				user.setPassword(getLoginFromMail(userEmail)+i);
-				if(user.getRestaurantsId() == null){
-					user.setRestaurantsId(new ArrayList<Long>());
-				}
+				
+				user.setRestaurantsId(new ArrayList<Long>());
+				
 				user.getRestaurantsId().add(r.getId());
 				user.setAddedByUser(emailAddingUser);
 				user.setRestaurator(true);
@@ -463,6 +463,27 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return isAdded;
 	}
 
+	
+	private void sendMailToNewUser(User user){
+		String userName = user.getName();
+		if(userName == null || userName.isEmpty()){
+			userName = getLoginFromMail(user.getEmail());
+		}
+		String subject = "Message from website MenuMenu";
+		String message = "Hello "+userName+". \n\n";
+		
+		message += "This email address has been given during registration process on MenuMenu website.\n\n"+
+				   "Your data needed to login are:\n"+
+				   "\tlogin: "+ user.getEmail()+"\n"+
+				   "\tpassword: "+ user.getPassword()+"\n\n"+
+				   "Remember about changing your password in administration panel.\n\n"+
+				   "Thank you: MenuMenu team.\n\n"+
+				   "This email has been generated automatically. Please do not reply to this email address."; 
+		List<String> toAddress = new ArrayList<String>();
+		toAddress.add(user.getEmail());
+		emailService.sendEmail(toAddress, userName, message, subject);
+		
+	}
 	private void sendMailToUserAfterAddingRestaurant(boolean isNew, User user, String restaurantName){
 		String userName = user.getName();
 		if(userName == null || userName.isEmpty()){
@@ -1180,9 +1201,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		
 //	}
 	
+	/**
+	 * adding new user
+	 */
 	@Override
 	public void addUser(User user){
+		
+		int i = (int) (Math.random() * 100);
+		user.setPassword(getLoginFromMail(user.getEmail())+i);
+		
 		dao.ofy().put(user);
+		sendMailToNewUser(user);
 	}
 	
 	@Override
