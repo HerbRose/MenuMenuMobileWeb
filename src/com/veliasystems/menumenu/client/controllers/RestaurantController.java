@@ -229,11 +229,11 @@ public class RestaurantController {
 		
 	}
 
-	public void saveRestaurant(String userEmail, Restaurant r, long oldCityId, long newCityId){
+	public void saveRestaurant(String userEmail, Restaurant r, long oldCityId, long newCityId, List<String> userEmailToAdd){
 		
 		PagesController.showWaitPanel();
 
-		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId, new AsyncCallback<ResponseSaveWrapper>() {
+		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId,userEmailToAdd, new AsyncCallback<ResponseSaveWrapper>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

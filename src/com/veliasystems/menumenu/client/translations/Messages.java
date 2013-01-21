@@ -378,4 +378,7 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Empty list with restaurants") //not translated yet
 	String emptyList();
+	
+	@DefaultStringValue("Invalid phone number") //not translated yet
+	String wrongPhoneNumber();
 }

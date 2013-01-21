@@ -201,6 +201,8 @@ public class Customization {
 	public static final String WRONG_PASSWORDS =  translated.wrongPasswords();
 	
 	public static final String EMPTY_LIST = translated.emptyList();
+	
+	public static final String WRONG_PHONE_NUMBER = translated.wrongPhoneNumber();
 };
 	
 	

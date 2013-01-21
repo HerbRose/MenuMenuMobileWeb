@@ -38,7 +38,6 @@ import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.LoadedPageController;
-import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
@@ -74,7 +73,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	private MyButton saveButton = new MyButton(Customization.SAVE);
 	private BackButton backButton;
 	private MyButton editButton;
-	private MyButton adminPanel;
 	private MyRestaurantInfoPanel container;
 	private MyListCombo citiesListCombo = new MyListCombo(false);
 	
@@ -84,7 +82,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	private Label districtLabel;
 	private Label bossLabel;
 	private Label addBoardText;
-	private Label warning = new Label();
 	private Label deleteLabel = new Label(Customization.REMOVEPROFILE);
 	private Label cancel = new Label(Customization.CANCEL);
 	private Label deleteImage = new Label(Customization.DELETE);
@@ -117,6 +114,12 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	private FlowPanel addBoardWrap = new FlowPanel();
 	private FlowPanel deletePanel = new FlowPanel();
 	private FlowPanel addFlowPanel = new FlowPanel();
+	
+
+	private MyButton addUserImage;
+	private TextBox addUserTextBox;
+	private FlowPanel addUserTextBoxDiv;
+	
 
 	private Image publishImage;
 	private Image logoEditImage;
@@ -177,55 +180,26 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		editPanel.addStyleName("editPanel");
 
 		adminPanelWrapper = new FlowPanel();
-		adminPanelWrapper.addStyleName("adminWrapper");
+		adminPanelWrapper.addStyleName("plusPanel");
 
-		adminPanel = new MyButton("");
-		adminPanel.removeStyleName("borderButton");
-		adminPanel.addStyleName("addButton adminButton");
-		adminPanel.getElement().getStyle().setHeight(50, Unit.PX);
-		adminPanel.addClickHandler(new ClickHandler() {
+		
+		addUserImage = new MyButton("");
+		addUserImage.removeStyleName("borderButton");
+		addUserImage.addStyleName("addButton adminButton");
+		addUserImage.getElement().getStyle().setHeight(50, Unit.PX);
 
-			@Override
-			public void onClick(ClickEvent event) {
-				PagesController.showWaitPanel();
-				JQMContext.changePage(
-						PagesController.getPage(Pages.PAGE_ADMINISTRATION),
-						Transition.SLIDE);
-			}
-		});
-		adminLabel = new FocusPanel();
-		adminLabel.addClickHandler(new ClickHandler() {
+		addUserTextBoxDiv = new FlowPanel();
+		addUserTextBoxDiv.addStyleName("plusPanelRightDiv adminLabel noFocus");
 
-			@Override
-			public void onClick(ClickEvent event) {
-				PagesController.showWaitPanel();
-				JQMContext.changePage(
-						PagesController.getPage(Pages.PAGE_ADMINISTRATION),
-						Transition.SLIDE);
-			}
-		});
+		addUserTextBox = new TextBox();
+		addUserTextBox.addStyleName("myTextBox noFocus");
+		setPlaceHolder(addUserTextBox, Customization.ADD_USER);
+
+		addUserTextBoxDiv.add(addUserTextBox);
+		adminPanelWrapper.add(addUserImage);
+		adminPanelWrapper.add(addUserTextBoxDiv);
 		
 		
-		adminLabel.addStyleName("adminLabel noFocus");
-
-		adminLabel.add(new Label(Customization.ADD_USER));
-
-		adminPanelWrapper = new FlowPanel();
-		adminPanelWrapper.addStyleName("adminWrapper");
-		
-		
-		
-		FlowPanel adminButtonDiv = new FlowPanel();
-		adminButtonDiv.addStyleName("adminButtonDiv");
-		adminButtonDiv.add(adminPanel);
-
-		FlowPanel adminLabelDiv = new FlowPanel();
-		adminLabelDiv.addStyleName("adminLabelDiv");
-		adminLabelDiv.add(adminLabel);
-
-		adminPanelWrapper.add(adminButtonDiv);
-		adminButtonDiv.add(adminLabelDiv);
-
 		logoImage = new Image();
 		if (restaurant.getMainLogoImageString() != null) {
 			logoImage.setUrl(restaurant.getMainLogoImageString());
@@ -241,6 +215,8 @@ public class RestaurantImageView extends MyPage implements IObserver {
 				logoImage.getElement().getStyle().setHeight(60, Unit.PX);
 			}
 		});
+		
+		
 		adminPanelWrapper.getElement().getStyle().setDisplay(Display.NONE);
 
 		nameLabelInfo = new Label(restaurant.getName());
@@ -260,6 +236,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		getContentPanel().add(editPanel);
 		getContentPanel().add(infoContainer);
 		getContentPanel().add(swipeContainer);
+		
 		getContentPanel().add(adminPanelWrapper);
 		
 		
@@ -268,7 +245,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 			@Override
 			public void onClick(ClickEvent event) {
 				setDefautDeleteContent();
-				getContentPanel().remove(warning);
 				hideDeletePanelForImages();
 				setProperButtons();
 				setValidVisibility();
@@ -285,25 +261,18 @@ public class RestaurantImageView extends MyPage implements IObserver {
 					restaurant.setAddress(adressText.getText());
 					restaurant.setPhoneRestaurant(phoneRestaurantTextBox
 							.getText());
-					
-					//restaurant.setCityId(cityController.getCity(citiesListCombo.getSelectedItem()).getId());
 					restaurant.setNameUser(bossTextBox.getText());
 					
+					List<String> usersEmailToAdd = new ArrayList<String>();
+					if (!addUserTextBox.getText().isEmpty()) { // validation of email is checked in validate() method
+						usersEmailToAdd.add(addUserTextBox.getText());
+					}
 					
-					RestaurantController.getInstance().saveRestaurant(UserController.getInstance().getLoggedUser().getEmail(), restaurant, restaurant.getCityId(), cityController.getCity(citiesListCombo.getSelectedOrder()).getId());
-					
-//					RestaurantController.getInstance().saveRestaurant(
-//							restaurant, false);
-					
-					
+					RestaurantController.getInstance().saveRestaurant(UserController.getInstance().getLoggedUser().getEmail(), restaurant, restaurant.getCityId(), cityController.getCity(citiesListCombo.getSelectedOrder()).getId(),usersEmailToAdd);		
 					setProperButtons();
 					setValidVisibility();
 					showCamera();
-					
-//					nameLabelInfo.setText(restaurant.getName());
-//					addressLabelInfo.setText(restaurant.getAddress());
-					
-//					getHeader().setTitle(restaurant.getName());
+				
 
 				}
 			}
@@ -479,8 +448,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 				}
 			});
 			
-			
-			
+	
 			publishImageWrapper.add(publishImage);
 
 			publishLabelWrapper.add(publishText);
@@ -585,39 +553,24 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	}
 
 	private boolean validate() {
-		warning.setStyleName("warning");
-		warning.setText("");
-		getContentPanel().add(warning);
-		if (!nameText.getText().isEmpty() && !adressText.getText().isEmpty()) {
-//			if (restaurantExist()) {
-//				setValidDataStyle(false, nameWrapper);
-//				setValidDataStyle(false, addressWrapper);
-//				warning.setText(Customization.RESTAURANT_EXIST_ERROR);
-//				return false;
-//			} else {
-//				setValidDataStyle(true, nameWrapper);
-//				setValidDataStyle(true, addressWrapper);
-//			}
-		}
-
+	
 		boolean isCorrect = true;
-
+		String msg = "";
 		if (nameText.getText().isEmpty() && adressText.getText().isEmpty()) {
-			warning.setText(Customization.EMPTYBOTHDATA);
+			msg += Customization.EMPTYBOTHDATA + "\n";
 			setValidDataStyle(false, nameWrapper);
 			setValidDataStyle(false, addressWrapper);
 			isCorrect = false;
 		} else {
 			if (nameText.getText().isEmpty()) {
-				warning.setText(Customization.EMPTYNAME);
+				msg += Customization.EMPTYNAME + "\n";
 				setValidDataStyle(false, nameWrapper);
 				isCorrect = false;
 			} else {
 				setValidDataStyle(true, nameWrapper);
 			}
 			if (adressText.getText().isEmpty()) {
-				warning.setText(warning.getText() + " \n"
-						+ Customization.EMPTYADRESS);
+				msg += Customization.EMPTYADRESS + "\n";
 				setValidDataStyle(false, addressWrapper);
 				isCorrect = false;
 			} else {
@@ -626,6 +579,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		}
 		if (!phoneRestaurantTextBox.getText().isEmpty()) {
 			if (!Util.isValidPhoneNumber(phoneRestaurantTextBox.getText())) {
+				msg +=Customization.WRONG_PHONE_NUMBER + "\n";
 				setValidDataStyle(false, phoneWrapper);
 				isCorrect = false;
 			} else {
@@ -633,6 +587,19 @@ public class RestaurantImageView extends MyPage implements IObserver {
 			}
 		} else {
 			setValidDataStyle(null, phoneWrapper);
+		}
+		
+		if (!addUserTextBox.getText().isEmpty()) {
+			if (!Util.isValidEmail(addUserTextBox.getText())) {
+				msg += Customization.WRONG_EMAIL_ADDRESS + "\n";
+				isCorrect = false;
+				setValidDataStyle(false, addUserTextBoxDiv);
+			} else {
+				setValidDataStyle(true, addUserTextBoxDiv);
+			}
+		}
+		if(!msg.isEmpty()){
+			Window.alert(msg);
 		}
 		return isCorrect;
 	}
@@ -651,42 +618,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		}
 		widget.setStyleName(correct, isCorrect);
 		widget.setStyleName(unCorrect, !isCorrect);
-	}
-
-	private boolean restaurantExist() {
-
-		String cityName = cityController.getCity(restaurant.getCityId()).getCity();
-		List<Restaurant> restaurants = restaurantController
-				.getRestaurantsInCity(restaurant.getCityId());
-
-		for (Restaurant restaurant : restaurants) {
-			String restaurationName = restaurant.getName().replaceAll(" ", "");
-			String restaurantAddress = restaurant.getAddress().replaceAll(" ",
-					"");
-
-			if (restaurationName.equalsIgnoreCase(nameText.getText()
-					.replaceAll(" ", ""))
-					&& restaurantAddress.equalsIgnoreCase(adressText.getText()
-							.replace(" ", ""))) {
-				if (nameText
-						.getText()
-						.replaceAll(" ", "")
-						.equalsIgnoreCase(
-								this.restaurant.getName().replace(" ", ""))
-						&& adressText
-								.getText()
-								.replace(" ", "")
-								.equalsIgnoreCase(
-										this.restaurant.getAddress().replace(
-												" ", ""))) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	private void setEditable(){
@@ -993,6 +924,9 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		
 	}
 	
+	private void setPlaceHolder(Widget element, String placeHolder) {
+		element.getElement().setAttribute("placeHolder", placeHolder);
+	}
 
 	private native void changeVisibility(String className, boolean show)/*-{
 		var elements = 	$wnd.document.getElementsByClassName(className);

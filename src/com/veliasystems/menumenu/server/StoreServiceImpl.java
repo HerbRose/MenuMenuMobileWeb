@@ -380,9 +380,43 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		r.setProfileImages(null);
 		List<Object> returnList = new ArrayList<Object>();//lista zwracana do przeglądarki z restauracją i informacją
 		
-		boolean isAdded = false;
-		
+
 		if(usersEmailToAdd == null)usersEmailToAdd = new ArrayList<String>();
+		
+		boolean isAdded = addUsersToRestaurant(usersEmailToAdd, r, emailAddingUser);
+		
+		String mainLogoImageString = r.getMainLogoImageString();
+		
+		if( mainLogoImageString != null && !mainLogoImageString.isEmpty() ){
+			String[] imageBlobStringSplitResult = mainLogoImageString.split("=");
+			if(imageBlobStringSplitResult.length>1){
+				String imageBlobString = imageBlobStringSplitResult[1];
+				
+				ImageBlob imageBlob = loadImageBlob(imageBlobString);
+				if(imageBlob != null){
+					imageBlob.setRestaurantId(r.getId()+"");
+					dao.ofy().put(imageBlob);
+				}else{
+					r.setMainLogoImageString("");
+				}
+			}
+		}
+		
+		dao.ofy().put(r);
+		String responseMessage = "New restaurant added ";
+		if(isAdded){
+			responseMessage += "\nThe message was sent to added user"; 
+		}
+		
+		
+		returnList.add(r);
+		returnList.add(responseMessage);
+		
+		return returnList;
+	}
+	
+	private boolean  addUsersToRestaurant(List<String> usersEmailToAdd, Restaurant r, String emailAddingUser){
+		boolean isAdded = false;
 		
 		for (String userEmail : usersEmailToAdd) {
 			User user = findUser(userEmail);
@@ -413,36 +447,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				isAdded = true;
 			}
 		}
-		
-		String mainLogoImageString = r.getMainLogoImageString();
-		if( mainLogoImageString != null && !mainLogoImageString.isEmpty() ){
-			String[] imageBlobStringSplitResult = mainLogoImageString.split("=");
-			if(imageBlobStringSplitResult.length>1){
-				String imageBlobString = imageBlobStringSplitResult[1];
-				
-				ImageBlob imageBlob = loadImageBlob(imageBlobString);
-				if(imageBlob != null){
-					imageBlob.setRestaurantId(r.getId()+"");
-					dao.ofy().put(imageBlob);
-				}else{
-					r.setMainLogoImageString("");
-				}
-			}
-		}
-		
-		dao.ofy().put(r);
-		String responseMessage = "New restaurant added ";
-		if(isAdded){
-			responseMessage += "\nThe message was sent to added user"; 
-		}
-		
-		
-		returnList.add(r);
-		returnList.add(responseMessage);
-		
-		return returnList;
+		return isAdded;
 	}
-	
 
 	private void sendMailToUserAfterAddingRestaurant(boolean isNew, User user, String restaurantName){
 		String userName = user.getName();
@@ -476,11 +482,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public ResponseSaveWrapper saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId) {
+	public ResponseSaveWrapper saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId, List<String> usersToAdd) {
 		
 		ResponseSaveWrapper returnObject = new ResponseSaveWrapper();
 		List<Integer> errorCodes = new ArrayList<Integer>();
-		Map<String, ResponseSaveWrapper> returnMap = new HashMap<String, ResponseSaveWrapper>();
 		
 		User foundUser = findUser(userEmail);
 		
@@ -554,8 +559,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setLogoImages(null);
 			r.setMenuImages(null);
 			r.setProfileImages(null);
-			
 			dao.ofy().put(r);
+			if(usersToAdd != null) {
+				addUsersToRestaurant(usersToAdd, r, userEmail);
+			}
 			returnObject.setRestaurant(r);
 		}
 

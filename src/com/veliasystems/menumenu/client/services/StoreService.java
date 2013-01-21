@@ -23,7 +23,7 @@ public interface StoreService extends RemoteService {
 	 * @param r - {@link Restaurant} to save in datastore
 	 * 
 	 */
-	ResponseSaveWrapper saveRestaurant(String userEmail ,Restaurant r, long oldCityId, long newCityId );
+	ResponseSaveWrapper saveRestaurant(String userEmail ,Restaurant r, long oldCityId, long newCityId, List<String> usersToAdd );
 	
 	Restaurant saveRestaurant(Restaurant r);
 	/**

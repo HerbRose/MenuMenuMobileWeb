@@ -15,7 +15,7 @@ import com.veliasystems.menumenu.client.entities.User;
 public interface StoreServiceAsync {
 
 	void saveRestaurant(String userEmail, Restaurant r, long oldCityId,
-			long newCityId, AsyncCallback<ResponseSaveWrapper> callback);
+			long newCityId,List<String> usersToAdd, AsyncCallback<ResponseSaveWrapper> callback);
 
 	void loadRestaurants(AsyncCallback<List<Restaurant>> callback);
 
