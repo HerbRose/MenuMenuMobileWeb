@@ -7,42 +7,51 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.Util;
+import com.veliasystems.menumenu.client.controllers.CityController;
+import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
+import com.veliasystems.menumenu.client.controllers.UserType;
+import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
-public class AddRestauratorPanel extends FlowPanel implements IManager {
+public class AddRestauratorPanel extends FlowPanel implements IManager, IObserver {
 
 	
 	private Label mailLabel;
-	private Label passwordLabe;
-	private Label repeatPasswordLabe;
-	private PasswordTextBox passwordRestaurator;
-	private PasswordTextBox passwordRestaurator2;
-	private TextBox inputEmailRestaurator;
+	private Label roleLabel;
+	private Label restaurantChosenLabel; 
+	private Label citiesChosenLabel; 
+	
+	private TextBox inputEmailRestaurator = new TextBox();
 
-	private JQMButton saveRestauratorButton;
+	private JQMButton saveUserButton;
 		
 	private RestaurantController restaurantController = RestaurantController.getInstance();
+	private CityController cityController = CityController.getInstance();
 	private UserController userController = UserController.getInstance();
-
 	
-	
+	private MyListCombo roleListCombo = new MyListCombo(true);
 	private MyListCombo restaurantListCombo = new MyListCombo(true);
+	private MyListCombo citiesListCombo = new MyListCombo(true);
 	
-	private MyRestaurantInfoPanel container;
+	private MyRestaurantInfoPanel container = new MyRestaurantInfoPanel();;
 
+	/**
+	 * status of synchronize data, if 0 - no new data, if 1 one ne data (city or restaurant), if 2 all required data synchronized 
+	 */
+	private int synchronizeStatus = 0;
+	
 	public AddRestauratorPanel() {
 		
 		
@@ -50,65 +59,60 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 		show(false);
 		
 		mailLabel = new Label(Customization.INPUT_EMAIL);
-		passwordLabe = new Label(Customization.INPUT_PASSWORD);
-		repeatPasswordLabe = new Label(Customization.REPEAT_PASSWORD);
-		
-		passwordRestaurator = new PasswordTextBox();
-		passwordRestaurator.addStyleName("myTextBox nameBox");
-		passwordRestaurator.getElement().setAttribute("placeHolder",
-				Customization.PASSWORD_PLACEHOLDER);
-		passwordRestaurator2 = new PasswordTextBox();
-		passwordRestaurator2.addStyleName("myTextBox nameBox");
-		passwordRestaurator2.getElement().setAttribute("placeHolder",
-				Customization.REPEAT_PASSWORD_PLACEHOLDER);
-		inputEmailRestaurator = new TextBox();
+		roleLabel = new Label(Customization.USER_ROLE);
+		citiesChosenLabel = new Label(Customization.CHOOSE_CITIES);
+		restaurantChosenLabel = new Label(Customization.CHOOSE_RESTAURANTS);
+
 		inputEmailRestaurator.addStyleName("myTextBox nameBox");
-		inputEmailRestaurator.getElement().setAttribute("placeHolder",
-				Customization.EMAIL_PLACEHOLDER);
+		inputEmailRestaurator.getElement().setAttribute("placeHolder", Customization.EMAIL_PLACEHOLDER);	
 		
-		
-		
-		saveRestauratorButton = new JQMButton(Customization.SAVE);
-		saveRestauratorButton.addClickHandler(new ClickHandler() {
+		saveUserButton = new JQMButton(Customization.SAVE);
+		saveUserButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				if (validData()) {
-					User restaurator = new User(inputEmailRestaurator
-							.getValue().trim());
-					restaurator.setPassword(passwordRestaurator.getValue()
-							.trim());
-					restaurator.setRestaurator(true);
-					restaurator.setRestaurantsId(restaurantListCombo.getCheckedList());
-					addUser(restaurator);
+					User newUser = new User(inputEmailRestaurator.getValue().trim());
+					
+					if(roleListCombo.getCheckedList().isEmpty()){
+						newUser.setRestaurator(true);
+					}else{
+						
+						for (Long userType : roleListCombo.getCheckedList()) {
+							if(userType == (long) UserType.ADMIN.userTypeValue()){
+								newUser.setAdmin(true);
+							}
+							if(userType == (long) UserType.AGENT.userTypeValue()){
+								newUser.setAgent(true);
+							}
+							if(userType == (long) UserType.RESTAURATOR.userTypeValue()){
+								newUser.setRestaurator(true);
+							}
+						}
+					}
+					if(!citiesListCombo.getCheckedList().isEmpty()){
+						newUser.setCitiesId(citiesListCombo.getCheckedList());
+						newUser.setAgent(true);
+					}
+					if(restaurantListCombo.getCheckedList().isEmpty()){
+						newUser.setRestaurantsId(restaurantListCombo.getCheckedList());
+						newUser.setRestaurator(true);
+					}
+					
+					newUser.setAddedByUser(userController.getLoggedUser().getEmail());
+					addUser(newUser);
 				}
 			}
 		});
 
-		container = new MyRestaurantInfoPanel();
 		container.setStyleName("containerPanelAddRestaurant", true);
-		
-		
-		Label chosenLabel = new Label(Customization.CHOSEN);
-		List<Restaurant> restaurantList = restaurantController.getRestaurantsList();
-		
-
-		for (Restaurant item : restaurantList) {
-			String nameToDisplay = item.getName() + " " + item.getAddress();
-			restaurantListCombo.addListItem(restaurantListCombo.getNewCheckBoxItem(nameToDisplay), item.getId());
-			
-		}
-
 
 		container.addItem(mailLabel, inputEmailRestaurator);
-		container.addItem(passwordLabe, passwordRestaurator);
-		container.addItem(repeatPasswordLabe, passwordRestaurator2);
-
-		
-		container.addItem(chosenLabel, restaurantListCombo);
-		
+		container.addItem(roleLabel, roleListCombo);
+		container.addItem(restaurantChosenLabel, restaurantListCombo);
+		container.addItem(citiesChosenLabel, citiesListCombo);	
 	
-		container.add(saveRestauratorButton);
+		container.add(saveUserButton);
 		
 		add(container);
 	}
@@ -122,28 +126,13 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 		
 		String msg = "";
 		
-		if (userController.isUserInStor(inputEmailRestaurator.getValue().trim())
-				|| inputEmailRestaurator.getValue().trim().equals("")
+		if ( inputEmailRestaurator.getValue().trim().equals("")
 				|| !Util.isValidEmail(inputEmailRestaurator.getValue())) {
 			msg += Customization.WRONG_EMAIL_ADDRESS + "\n";
 		} else {
-			setValidDataStyle(true, inputEmailRestaurator);
 			isCorrect = true;
 		}
-		if (passwordRestaurator.getValue().trim().equals("")
-				|| passwordRestaurator2.getValue().trim().equals("")
-				|| !passwordRestaurator.getValue().equals(
-						passwordRestaurator2.getValue())) {
-			msg += Customization.WRONG_PASSWORDS + "\n";
-			isCorrect = false;
-		} else {
-			setValidDataStyle(true, passwordRestaurator);
-			setValidDataStyle(true, passwordRestaurator2);
-		}
-		if(restaurantListCombo.getCheckedList().isEmpty()){
-			msg += Customization.EMPTY_LIST;
-			isCorrect = false;
-		}
+
 		if(!msg.isEmpty()){
 			Window.alert(msg);
 		}
@@ -173,27 +162,70 @@ public class AddRestauratorPanel extends FlowPanel implements IManager {
 	@Override
 	public void clearData() {
 		inputEmailRestaurator.setValue("");
-        passwordRestaurator.setValue("");
-        passwordRestaurator2.setValue("");
 
         setValidDataStyle(null, inputEmailRestaurator);
-		setValidDataStyle(null, passwordRestaurator);
-		setValidDataStyle(null, passwordRestaurator2);
-        
-      
 	}
 
 	@Override
 	public String getName() {
-		return Customization.ADD_RESTAURATOR;
+		return Customization.ADD_USER;
 	}
 
 	@Override
 	public void show(boolean isVisable) {
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);
+		synchronizeStatus = 0;
 		if(isVisable){
 			container.setWidth( JS.getElementOffsetWidth(getParent().getElement())-40 );
+			
+			cityController.refreshCities(this);
+			restaurantController.refreshRestaurants(this);
+			
+		}
+	}
+
+	@Override
+	public void onChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newData() {
+		synchronizeStatus++;
+		if(synchronizeStatus >= 2){
+			
+			User user = userController.getLoggedUser();
+			
+			roleListCombo.clear();
+			restaurantListCombo.clear();
+			citiesListCombo.clear();
+			
+			if(user.isAdmin()){
+				roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
+				roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
+				roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
+			}else{
+				roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
+				roleListCombo.selectItem(UserType.RESTAURATOR.userTypeValue());
+				
+			}
+			
+			
+			List<Restaurant> restaurantList = restaurantController.getRestaurantsList();
+			for (Restaurant item : restaurantList) {
+				String nameToDisplay = item.getName() + " " + item.getAddress();
+				restaurantListCombo.addListItem(restaurantListCombo.getNewCheckBoxItem(nameToDisplay), item.getId());
+				
+			}
+			if(user.isAdmin()){
+				List<City> citiesList = cityController.getCitiesList();
+				for (City city : citiesList) {
+					citiesListCombo.addListItem(citiesListCombo.getNewCheckBoxItem(city.getCity()), city.getId());
+				}
+			}
+			PagesController.hideWaitPanel();
 		}
 	}
 

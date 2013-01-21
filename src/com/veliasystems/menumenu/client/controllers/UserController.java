@@ -115,7 +115,7 @@ public class UserController {
 			public void onFailure(Throwable caught) {
 				log.warning(caught.getMessage()); 
 				PagesController.hideWaitPanel();
-				Window.alert("Connection error. Please try again later");
+				Window.alert(Customization.CONNECTION_ERROR);
 				
 			}
 		});

@@ -194,7 +194,8 @@ public class Customization {
 	
 	public static final String GET_APP = translated.getApp();
 	
-	public static final String CHOSEN = translated.chosen();
+	public static final String CHOOSE_RESTAURANTS = translated.chooseRestaurants();
+	public static final String CHOOSE_CITIES = translated.chooseCities();
 	
 	public static final String CHOOSE = translated.choose();
 	
@@ -203,6 +204,8 @@ public class Customization {
 	public static final String EMPTY_LIST = translated.emptyList();
 	
 	public static final String WRONG_PHONE_NUMBER = translated.wrongPhoneNumber();
+
+	public static final String USER_ROLE = translated.userRole();
 };
 	
 	
