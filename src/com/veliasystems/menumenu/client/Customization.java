@@ -194,7 +194,8 @@ public class Customization {
 	
 	public static final String GET_APP = translated.getApp();
 	
-	public static final String CHOSEN = translated.chosen();
+	public static final String CHOOSE_RESTAURANTS = translated.chooseRestaurants();
+	public static final String CHOOSE_CITIES = translated.chooseCities();
 	
 	public static final String CHOOSE = translated.choose();
 	
@@ -203,9 +204,16 @@ public class Customization {
 	public static final String EMPTY_LIST = translated.emptyList();
 	
 	public static final String WRONG_PHONE_NUMBER = translated.wrongPhoneNumber();
-};
+
+	public static final String USER_ROLE = translated.userRole();
 	
+	public static final String ROLE = translated.role();
 	
-  
+	public static final String EMPTY_TYPE = translated.emptyType();
+	
+	public static final String EMPTY_CITY_LIST = translated.emptyCityList();
+	
+	public static final String EMPTY_RESTAURANT_LIST = translated.emptyRestaurantList();
+}
   
   

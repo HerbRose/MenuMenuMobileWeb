@@ -34,7 +34,6 @@ public class UserController {
 	private Map<String, User> users = new HashMap<String, User>();
 	private UserType userType;
 	private String loggedUser;
-	
 	private UserController() {
 	}
 	/**
@@ -51,15 +50,36 @@ public class UserController {
 	 * get all {@link User}'s list
 	 * @return List of {@link User}'s
 	 */
-	public List<User> getUserList(){
+	
+	public List<User> getUserList() {
 		List<User> userList = new ArrayList<User>();
+        
+        Set<String> usersEmailSet = users.keySet();
+        
+        for (String email : usersEmailSet) {
+                userList.add(users.get(email));
+        }
+        return userList;
+	}
+	
+	public void getUsersFromServer(final IObserver iObserver){
+		PagesController.showWaitPanel();
+		storeService.getUsers(new AsyncCallback<List<User>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
 		
-		Set<String> usersEmailSet = users.keySet();
-		
-		for (String email : usersEmailSet) {
-			userList.add(users.get(email));
-		}
-		return userList;
+			}
+
+			@Override
+			public void onSuccess(List<User> result) {
+				users.clear();
+				for (User user : result) {
+					users.put(user.getEmail(), user);
+				}
+				iObserver.newData();
+			}
+		});
 	}
 	/**
 	 * 
@@ -115,7 +135,7 @@ public class UserController {
 			public void onFailure(Throwable caught) {
 				log.warning(caught.getMessage()); 
 				PagesController.hideWaitPanel();
-				Window.alert("Connection error. Please try again later");
+				Window.alert(Customization.CONNECTION_ERROR);
 				
 			}
 		});
@@ -148,19 +168,19 @@ public class UserController {
 	 * @param password - {@link User} password
 	 * @return true if valid, else false
 	 */
-	public boolean isValidPassword(String password){
-		boolean isCorrect = false;
-		
-		List<User> userList = getUserList();
-		String login = Cookies.getCookie(R.LOGIN);
-		for (User user : userList) {
-			if(user.getEmail().equals(login)){
-				if(user.getPassword().equals(password)) isCorrect = true;
-			}
-		}
-		
-		return isCorrect;
-	}
+//	public boolean isValidPassword(String password){
+//		boolean isCorrect = false;
+//		
+//		List<User> userList = getUserList();
+//		String login = Cookies.getCookie(R.LOGIN);
+//		for (User user : userList) {
+//			if(user.getEmail().equals(login)){
+//				if(user.getPassword().equals(password)) isCorrect = true;
+//			}
+//		}
+//		
+//		return isCorrect;
+//	}
 	/**
 	 * 
 	 * @param users - Map of {@link User}'s as values, email's as keys
@@ -264,7 +284,7 @@ public class UserController {
 	 * Remove {@link User} from server
 	 * @param user - email of user
 	 */
-	public void removeUser(String user){
+	public void removeUser(String user, final IObserver iObserver){
 		
 		PagesController.showWaitPanel();
 		storeService.removeUser(users.get(user), new AsyncCallback<String>() {
@@ -277,7 +297,7 @@ public class UserController {
 			@Override
 			public void onSuccess(String email) {
 				if(!email.equalsIgnoreCase("null")) users.remove(email);
-				notifyAllObservers();
+				notifyObserver(iObserver, false);
 				PagesController.hideWaitPanel();
 			}
 		});
@@ -297,38 +317,30 @@ public class UserController {
 		return false;
 	}
 	
-	public void setAs(UserType admin, Boolean is, User user) {
+	
+	public void saveUser(User user){
 		PagesController.showWaitPanel();
-		switch (admin) {
-			case ADMIN:
-				user.setAdmin(is);
-				break;
-			case AGENT:
-				user.setAgent(is);
-				break;
-			case RESTAURATOR:
-				user.setRestaurator(is);
-				break;
-			default:
-				break;
-		}
-		
 		storeService.saveUser(user, new AsyncCallback<User>() {
-			
-			@Override
-			public void onSuccess(User user) {
-				users.remove(user.getEmail());
-				users.put(user.getEmail(), user);
-				PagesController.hideWaitPanel();
-			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+				Window.alert(Customization.ERROR);	
+			}
+
+			@Override
+			public void onSuccess(User result) {
+				PagesController.hideWaitPanel();
+				Window.alert(Customization.OK);
 			}
 		});
 	}
+	
+	private void notifyObserver(IObserver iObserver, boolean isNewData){
+		if(isNewData) iObserver.newData();
+		else iObserver.onChange();
+	}
+	
 	
 	private static native void consoleLog(String message)/*-{
 		console.log(message);

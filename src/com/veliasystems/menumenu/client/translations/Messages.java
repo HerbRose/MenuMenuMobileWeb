@@ -367,8 +367,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Download app") //not translated yet
 	String getApp();
 	
-	@DefaultStringValue("Chosen") //not translated yet
-	String chosen();
+	@DefaultStringValue("Choose restaurants") 
+	String chooseRestaurants();
 	
 	@DefaultStringValue("Choose") //not translated yet
 	String choose();
@@ -381,4 +381,22 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Invalid phone number") //not translated yet
 	String wrongPhoneNumber();
+		
+	@DefaultStringValue("Role") //not translated yet
+	String role();
+	
+	@DefaultStringValue("Empty user type") //not translated yet
+	String emptyType();
+	
+	@DefaultStringValue("Empty city list") //not translated yet
+	String emptyCityList();
+	
+	@DefaultStringValue("Empty restaurant list") //not translated yet
+	String emptyRestaurantList();
+
+	@DefaultStringValue("User role")
+	String userRole();
+
+	@DefaultStringValue("Choose cities")
+	String chooseCities();
 }
