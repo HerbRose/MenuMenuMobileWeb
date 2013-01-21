@@ -9,9 +9,9 @@ import java.util.Map;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.veliasystems.menumenu.client.R;
@@ -57,6 +57,9 @@ public class MyListCombo extends FocusPanel {
 	
 	private long selectedItem = -1;
 	
+	/**
+	 * if with checkbox
+	 */
 	private boolean isCheck = false;
 	
 	public MyListCombo(boolean isChecked) {
@@ -108,12 +111,7 @@ public class MyListCombo extends FocusPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				itemController(newItem.getOrder());
-				if(checkedList.contains(newItem.getOrder())){
-					checkedList.remove(newItem.getOrder());
-				}else{
-					checkedList.add(newItem.getOrder());
-				}
-				newItem.check();
+				
 			}
 		});
 		listItems.put(order, newItem);
@@ -131,12 +129,15 @@ public class MyListCombo extends FocusPanel {
 	
 	private void itemController(long orderToSelect){
 		MyListItem panel = null;
-		if(selectedItem >= 0){
-			panel = listItems.get(selectedItem);
+		if(!isCheck){
+			if(selectedItem >= 0){
+				panel = listItems.get(selectedItem);
+			}
+			if(panel != null){
+				selectPanel(panel, false);
+			}
 		}
-		if(panel != null){
-			selectPanel(panel, false);
-		}
+		
 		panel=listItems.get(orderToSelect);
 		if(panel != null){
 			selectPanel(panel, true);
@@ -147,10 +148,18 @@ public class MyListCombo extends FocusPanel {
 	}
 	
 	private void selectPanel(MyListItem panel, boolean select){
+	
 		if(isCheck){
+			if(checkedList.contains(panel.getOrder())){
+				checkedList.remove(panel.getOrder());
+			}else{
+				checkedList.add(panel.getOrder());
+			}
 			panel.check();
+		}else{
+			panel.setStyleName("selected", select);
 		}
-		panel.setStyleName("selected", select);
+		
 	}
 	
 	public MyListItem getNewItem(String text){
@@ -196,9 +205,6 @@ public class MyListCombo extends FocusPanel {
 	}
 	public void selectItem(long order){
 		itemController(order);
-		if(isCheck){
-			checkedList.add(order);
-		}
 	}
 	
 	private void showTouchGetter(boolean isShow){

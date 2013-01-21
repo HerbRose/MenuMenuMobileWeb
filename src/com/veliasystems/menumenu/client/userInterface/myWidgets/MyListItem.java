@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -13,7 +14,7 @@ public class MyListItem extends FocusPanel {
 	private long order = -1;
 	
 	private FlowPanel myListItem;
-	private boolean isChecked;
+	private boolean isChecked = false;
 	private Label textLabel = new Label();
 	
 	private Image checkBoxImage;
