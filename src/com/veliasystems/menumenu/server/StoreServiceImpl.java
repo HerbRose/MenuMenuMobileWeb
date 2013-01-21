@@ -175,7 +175,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	/**
 	 * 
-	 * @param email - the {@link User#email}
+	 * @param email the {@link User#email}
 	 * @return List of {@link City} available for the {@link User}
 	 */
 	@Override
@@ -185,6 +185,19 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return loadCities(user);
 		
 	}
+	
+	/**
+	 * 
+	 * @param email the {@link User#email}
+	 * @return List of {@link Restaurant} available for the {@link User}
+	 */
+	@Override
+	public List<Restaurant> getRestaurantsForUser(String email){
+		
+		User user = findUser(email);
+		return loadRestaurants(user);
+		
+	}	
 	/**
 	 * 
 	 * @param restList - List of {@link Restaurant} 
@@ -811,14 +824,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		return new ArrayList<Restaurant>(restaurantsSet);
-//		List<Long> tmpList = user.getRestaurantsId();
-//
-//		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
-//		if(restQuery == null) return null;
-//		List<Restaurant> listRestaurant = restQuery.filter("id IN", tmpList).list();
-//		if(listRestaurant == null) return new ArrayList<Restaurant>();
-//		return getImageLists(listRestaurant);
-		 
 	}
 	/**
 	 * 
