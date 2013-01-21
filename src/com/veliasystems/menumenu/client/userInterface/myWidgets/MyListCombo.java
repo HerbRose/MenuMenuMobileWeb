@@ -167,7 +167,9 @@ public class MyListCombo extends FocusPanel {
 	public long getSelectedOrder() {
 		return selectedItem;
 	}
-	
+	public MyListItem getSelectedItem(){
+		return listItems.get(selectedItem);
+	}
 	
 	public List<Long> getCheckedList() {
 		return checkedList;
@@ -183,8 +185,10 @@ public class MyListCombo extends FocusPanel {
 		if(isCheck && showPanel){
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 			showTouchGetter(showPanel);
+		}else if(!isCheck){
+			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
+			showTouchGetter(showPanel);
 		}
-		
 		addOnClick(scrollPanel.getElement().getId());
 	}
 	public void selectItem(long order){

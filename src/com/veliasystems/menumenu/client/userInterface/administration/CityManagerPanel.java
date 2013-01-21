@@ -5,19 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.methods.GetMethod;
-
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -29,9 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
-import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
-import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -69,38 +61,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	public CityManagerPanel() {
 		show(false);
 		setStyleName("barPanel", true);
-		
-		
-//		cityIdFrom = new TextBox();
-//		cityIdFrom.addStyleName("properWidth");
-//		setPlaceHolder(cityIdFrom, "doNotUseThis");
-//		
-//		cityIdTo = new TextBox();
-//		cityIdTo.addStyleName("properWidth");
-//		setPlaceHolder(cityIdTo, "doNotUseThis");
-		
-//		send = new JQMButton(Customization.SAVE);
-//		send.addClickHandler(new ClickHandler() {
-//
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				String pass = Window.prompt(Customization.PASSWORD_PLACEHOLDER, "");
-//				if(pass.equals("wdo67pla")){
-//					cityController.copyAllDataFromCity(cityIdFrom.getText(), cityIdTo.getText());
-//				}
-//				
-//			}
-//
-//		});
-//		
-	
-		
-//		add(cityIdFrom);
-//		
-//		add(cityIdTo);
-//		
-//		add(send);
-
 	}
 	
 	private void setCitiesList(){
@@ -152,20 +112,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	private void fillCityDetails(FlowPanel cityDetails, final City city){
 		
 		cityDetails.clear();
-		
-		
-		
-//		FlowPanel namePanel = new FlowPanel();
-//		namePanel.setStyleName("namePanel", true);
-		
-//		FlowPanel visabilityPanel = new FlowPanel();
-//		visabilityPanel.setStyleName("visabilityPanel", true);
-//		
-//		FlowPanel buttonsPanel = new FlowPanel();
-//		buttonsPanel.setStyleName("buttonsPanel", true);
-//		
-//		FlowPanel imagePanel = new FlowPanel();
-//		imagePanel.setStyleName("imagesPanel", true);
 		
 		MyRestaurantInfoPanel cityInfoPanel = new MyRestaurantInfoPanel();
 		cityInfoPanel.setStyleName("containerPanelAddRestaurant", true);
@@ -221,12 +167,13 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 				
 			}
 		});
-		
+		final MyListCombo countryListCombo = new MyListCombo(false);
 		Button saveButton = new Button(Customization.SAVE);
 		saveButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				city.setCountry(countryListCombo.getSelectedItem().getText());
 				city.setCity(nameTextBox.getText());
 				if(validData(city)){
 					cityController.saveCity(getMe(), city, false);
@@ -235,31 +182,20 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 				}
 			}
 
-			
 		});
 
 		Label countryLabel = new Label(Customization.COUNTRY);
-		MyListCombo	countryListCombo = new MyListCombo(false);
 		
 		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.POLAND), 1);
 		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.FRANCE), 2);
 		
 		
-		countryListCombo.selectItem(1);
-		
-//		namePanel.add(nameLabel);
-//		namePanel.add(nameTextBox);
-//		
-//		
-//		visabilityPanel.add(visabilityLabel);
-//		visabilityPanel.add(isVisibleForProduction);
-//		visabilityPanel.add(visiblityForTestLabel);
-//		visabilityPanel.add(isVisibleForTests);
-		
-//		imagePanel.add(districtImageLabel);
-		
-		
-		
+		if(city.getCountry().equals(Customization.POLAND)){
+			countryListCombo.selectItem(1);
+		}else if(city.getCountry().equals(Customization.FRANCE)){
+			countryListCombo.selectItem(2);
+		}
+
 		final MyUploadForm myUploadForm = createUpload(city.getId());
 		
 		cityInfoPanel.addItem(nameLabel, nameTextBox);
@@ -280,25 +216,13 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 				}
 			});
 			
-			
-//			imagePanel.add(createImage(city.getDistrictImageURL(), myUploadForm.getFileUpload() ) );
-			
 		}else{
 			cityInfoPanel.addItem(districtImageLabel,  myUploadForm);
-//			imagePanel.add(myUploadForm);
 		}
 
 		cityInfoPanel.addItem(saveButton, deleteButton);
 
 		cityDetails.add(cityInfoPanel);
-//		buttonsPanel.add(saveButton);
-//		buttonsPanel.add(deleteButton);
-//		
-//		cityDetails.add(namePanel);
-//		cityDetails.add(visabilityPanel);
-//		cityDetails.add(imagePanel);
-//		cityDetails.add(buttonsPanel);
-		
 		showCityTable(cityDetails, null, false);
 	}
 	private void setVisabilityText(boolean isVisableForProduction, boolean isVisible, Button button, Long cityId){
@@ -396,18 +320,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	@Override
 	public void clearData() {
 		fillCitiesList();
-//		newData();
-//		clear();
-//		cityIdFrom.setValue("");
-//		setValidDataStyle(null, cityIdFrom);
-//		cityIdTo.setValue("");
-//		setValidDataStyle(null, cityIdTo);
-//		
-//		for (City city : cities) {
-//			fillCityDetails(citiesPanels.get(city.getId()), city);
-//			
-//		}
-		
 	}
 
 	@Override
@@ -474,7 +386,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	@Override
 	public void onChange() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

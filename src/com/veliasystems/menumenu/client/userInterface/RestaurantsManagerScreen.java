@@ -99,7 +99,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 
 	public RestaurantsManagerScreen() {
 		
-		super(Customization.ADD_CITY);
+		super(Customization.ADMIN_PANEL);
 
 		backButton = new BackButton(Customization.BACK);
 		backButton.addClickHandler(new ClickHandler() {
