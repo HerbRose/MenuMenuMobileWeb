@@ -70,8 +70,7 @@ public class MyListCombo extends FocusPanel {
 		scrollPanel.getElement().setId("id" + date.getTime());
 		
 //		addOnClick(scrollPanel.getElement().getId());
-	
-		
+
 		setStyleName("listCombo noFocus", true);
 
 		
@@ -142,7 +141,7 @@ public class MyListCombo extends FocusPanel {
 		if(panel != null){
 			selectPanel(panel, true);
 			selectedItem = orderToSelect;
-			textLabel.setText(panel.getText());
+			
 		}else selectedItem = -1;
 		
 	}
@@ -152,12 +151,21 @@ public class MyListCombo extends FocusPanel {
 		if(isCheck){
 			if(checkedList.contains(panel.getOrder())){
 				checkedList.remove(panel.getOrder());
+				if(panel.getText().equals(textLabel.getText())){
+					if(checkedList.isEmpty()){
+						textLabel.setText("");
+					}else{
+						textLabel.setText(listItems.get(checkedList.get(0)).getText());
+					}
+				}
 			}else{
 				checkedList.add(panel.getOrder());
+				textLabel.setText(panel.getText());
 			}
 			panel.check();
 		}else{
 			panel.setStyleName("selected", select);
+			textLabel.setText(panel.getText());
 		}
 		
 	}
@@ -187,6 +195,13 @@ public class MyListCombo extends FocusPanel {
 		return checkedList;
 	}
 	
+	public void clear(){
+		listItems.clear();
+		checkedList.clear();
+		textLabel.setText("");
+		expandedPanel.clear();
+		
+	}
 	
 	/**
 	 * show or hide expanded panel
