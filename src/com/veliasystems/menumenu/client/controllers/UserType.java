@@ -23,4 +23,12 @@ public enum UserType {
 	UserType( int userTypeValue) {
 		this.userTypeValue = userTypeValue;
 	}
+	
+	@Override
+	/**
+	 * return name().toLowerCase();
+	 */
+	public String toString() {
+		return name().toLowerCase();
+	}
 }
