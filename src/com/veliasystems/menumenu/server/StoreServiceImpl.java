@@ -1074,6 +1074,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return responseSaveWrapper;
 	}
+	
+	/**
+	 * saving existing user 
+	 * do not check if exist or is correct data
+	 */
 	@Override
 	public User saveUser(User user){
 		dao.ofy().put(user);
