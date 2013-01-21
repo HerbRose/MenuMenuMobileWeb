@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
 
 /**
@@ -65,9 +67,23 @@ public class MyListCombo extends FocusPanel {
 	public MyListCombo(boolean isChecked) {
 		
 		isCheck = isChecked;
+		String id = "";
+		boolean isContinue = true;
+		while(isContinue){
+			Date date = new Date();
+			id="id" + date.getTime();
+			Element element = JS.getElement(id);
+			
+			JS.consolLog(element+"");
+			if(element == null){
+				isContinue = false;
+			}
+			
+		}
 		
-		Date date = new Date();
-		scrollPanel.getElement().setId("id" + date.getTime());
+		
+		
+		scrollPanel.getElement().setId(id);
 		
 //		addOnClick(scrollPanel.getElement().getId());
 

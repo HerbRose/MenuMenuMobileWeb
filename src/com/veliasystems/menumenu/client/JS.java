@@ -9,13 +9,18 @@ public class JS {
 	}-*/;
 
 	public static native int getElementOffsetWidth(Element element)/*-{
-		$wnd.console.log(element);
-		$wnd.console.log(element.offsetWidth);
 		return element.offsetWidth;
 	}-*/;
 	
 	public static native int getWidth(String elementId)/*-{
-		$wnd.console.log(elementId);
 		return $wnd.document.getElementById(elementId).offsetWidth;
+	}-*/;
+	
+	public static native Element getElement(String elementId)/*-{	
+		return $wnd.document.getElementById(elementId);
+	}-*/;
+	
+	public static native void consolLog(String elementId)/*-{
+		$wnd.console.log(elementId);
 	}-*/;
 }
