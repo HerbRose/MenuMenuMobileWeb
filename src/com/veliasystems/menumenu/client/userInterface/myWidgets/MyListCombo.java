@@ -146,7 +146,10 @@ public class MyListCombo extends FocusPanel {
 		
 	}
 	
-	private void selectPanel(FocusPanel panel, boolean select){
+	private void selectPanel(MyListItem panel, boolean select){
+		if(isCheck){
+			panel.check();
+		}
 		panel.setStyleName("selected", select);
 	}
 	
@@ -193,6 +196,9 @@ public class MyListCombo extends FocusPanel {
 	}
 	public void selectItem(long order){
 		itemController(order);
+		if(isCheck){
+			checkedList.add(order);
+		}
 	}
 	
 	private void showTouchGetter(boolean isShow){
