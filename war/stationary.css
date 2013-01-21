@@ -106,7 +106,7 @@ body {
 	max-width: 100% !important;
 	margin: 0px !important;
 	padding: 0px !important;
-	overflow: hidden;
+	overflow: visible;
 }
 
 .myHeader {
@@ -210,7 +210,7 @@ body {
 }
 
 .itemList {
-	width: 100%;
+/* 	width: 100%; */
 	padding-left: 16px;
 	border-bottom: 2px solid #b6b6b6;
 	background-color: #FeFeFe;

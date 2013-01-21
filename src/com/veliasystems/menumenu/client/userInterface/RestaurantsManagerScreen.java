@@ -79,8 +79,8 @@ public class RestaurantsManagerScreen extends MyPage implements
 	private Integer panelCount = 0;
 
 	// panele pokazywane po kliknięciu na zakładkę (np. addAdmin)
-	private IManager adminPanel;
-	private IManager agentPanel;
+//	private IManager adminPanel;
+//	private IManager agentPanel;
 	private IManager restauratorPanel;
 	private IManager restaurantsManagerPanel;
 	private IManager emailPanel;
@@ -117,15 +117,9 @@ public class RestaurantsManagerScreen extends MyPage implements
 		restaurantController.addObserver(this);
 		cityController.addObserver(this);
 		userType = userController.getUserType();
-//		setHeader();
 		setContent();
 	}
 
-//	private void setHeader() {
-//		header = new JQMHeader("MenuMenuMobile");
-//		header.setFixed(true);
-//		add(header);
-//	}
 
 	private void setContent() {
 
@@ -308,8 +302,8 @@ public class RestaurantsManagerScreen extends MyPage implements
 	 * adding panels for the administrator
 	 */
 	private void setAdminPanels() {
-		add(setAdminPanel());
-		add(setAgentPanel());
+//		add(setAdminPanel());
+//		add(setAgentPanel());
 		add(setRestauratorPanel());
 		add(setRestaurantsManagerTab());
 		add(setEmailTab());
@@ -332,25 +326,25 @@ public class RestaurantsManagerScreen extends MyPage implements
 	 * create a administrator tab
 	 * @return instance of AddAdminPanel() projected onto FlowPanel
 	 */
-	private FlowPanel setAdminPanel() {
-		adminPanel = new AddAdminPanel();
-		panelList.put(panelCount++, adminPanel);
-		tabBar.addTab(adminPanel.getName());
-
-		return (FlowPanel) adminPanel;
-	}
+//	private FlowPanel setAdminPanel() {
+//		adminPanel = new AddAdminPanel();
+//		panelList.put(panelCount++, adminPanel);
+//		tabBar.addTab(adminPanel.getName());
+//
+//		return (FlowPanel) adminPanel;
+//	}
 
 	/**
 	 * create a agent tab
 	 * @return instance of AddAgentPanel() projected onto FlowPanel
 	 */
-	private FlowPanel setAgentPanel() {
-		agentPanel = new AddAgentPanel();
-		panelList.put(panelCount++, agentPanel);
-		tabBar.addTab(agentPanel.getName());
-
-		return (FlowPanel) agentPanel;
-	}
+//	private FlowPanel setAgentPanel() {
+//		agentPanel = new AddAgentPanel();
+//		panelList.put(panelCount++, agentPanel);
+//		tabBar.addTab(agentPanel.getName());
+//
+//		return (FlowPanel) agentPanel;
+//	}
 
 	/**
 	 * create a restorer tab

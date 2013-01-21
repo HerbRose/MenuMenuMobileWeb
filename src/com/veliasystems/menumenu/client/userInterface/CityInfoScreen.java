@@ -51,15 +51,15 @@ public class CityInfoScreen extends MyPage{
 		});
 		
 		for(Restaurant item: list){
-			final RestaurantImageView restaurantView;
-			if(RestaurantController.restMapView.containsKey(item.getId())){
-				restaurantView = RestaurantController.restMapView.get(item.getId());
-			}
-			else{
-				restaurantView = new RestaurantImageView(item, this);
-				RestaurantController.restMapView.put(item.getId(), restaurantView);
-			}
-			
+			final RestaurantImageView restaurantView = (RestaurantImageView) PagesController.getRestaurantImageView(item.getId(), getMe());
+//			if(RestaurantController.restMapView.containsKey(item.getId())){
+//				restaurantView = RestaurantController.restMapView.get(item.getId());
+//			}
+//			else{
+//				restaurantView = new RestaurantImageView(item, this);
+//				RestaurantController.restMapView.put(item.getId(), restaurantView);
+//			}
+//			
 			final MyListItem restaurantlItem = new  MyListItem();
 			restaurantlItem.setText(item.getName());
 			restaurantlItem.addClickHandler(new ClickHandler() {
@@ -74,7 +74,10 @@ public class CityInfoScreen extends MyPage{
 			getContentPanel().add(restaurantlItem);
 		}
 	}
-
+	
+	private CityInfoScreen getMe(){
+		return this;
+	}
 
 	@Override
 	protected void onPageShow() {

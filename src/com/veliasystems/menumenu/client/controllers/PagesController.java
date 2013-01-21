@@ -8,8 +8,10 @@ import com.google.gwt.user.client.Element;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
+import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 
 public class PagesController {
 
@@ -56,6 +58,22 @@ public class PagesController {
 		return cityInfoScreen;
 	}
 	
+	public static JQMPage getRestaurantImageView(long restaurantId, JQMPage back){
+		RestaurantImageView restaurantView = RestaurantController.restMapView.get(restaurantId);
+		
+		if(restaurantView == null){
+			Restaurant restaurant = RestaurantController.getInstance().getRestaurant(restaurantId);
+			if(restaurant != null){
+				restaurantView = new RestaurantImageView(restaurant, back);
+				RestaurantController.restMapView.put(restaurantId, restaurantView);
+				return restaurantView;
+			}else{
+				return getCityInfoScreenPage(restaurant.getCityId());
+			}
+		}
+		return restaurantView;
+			
+	}
 	/**
 	 * get div of name <strong>"load"</strong> and sets display to none
 	 */

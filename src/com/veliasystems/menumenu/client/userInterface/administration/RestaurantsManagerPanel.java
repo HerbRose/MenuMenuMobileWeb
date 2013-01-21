@@ -29,6 +29,8 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -155,7 +157,9 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
 					Restaurant object, NativeEvent event) {
-				JQMContext.changePage(restaurantController.restMapView.get(object.getId()));
+				//JQMContext.changePage(restaurantController.restMapView.get(object.getId()));
+				PagesController.showWaitPanel();
+				JQMContext.changePage(PagesController.getRestaurantImageView(object.getId(), PagesController.getPage(Pages.PAGE_ADMINISTRATION)));
 				super.onBrowserEvent(context, elem, object, event);
 			}
 		};

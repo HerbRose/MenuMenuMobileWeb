@@ -206,7 +206,7 @@ public class Customization {
 	public static final String WRONG_PHONE_NUMBER = translated.wrongPhoneNumber();
 
 	public static final String USER_ROLE = translated.userRole();
-	
+
 	public static final String ROLE = translated.role();
 	
 	public static final String EMPTY_TYPE = translated.emptyType();

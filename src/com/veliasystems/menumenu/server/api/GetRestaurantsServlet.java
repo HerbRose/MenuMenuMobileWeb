@@ -81,7 +81,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 		}
 		
 		
-		List<Restaurant> rests = storeService.loadRestaurants(city.getCity());
+		List<Restaurant> rests = storeService.loadRestaurants(cityId);
 		
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");

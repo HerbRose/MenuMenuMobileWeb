@@ -381,7 +381,7 @@ public interface Messages extends Constants {
 	
 	@DefaultStringValue("Invalid phone number") //not translated yet
 	String wrongPhoneNumber();
-		
+	
 	@DefaultStringValue("Role") //not translated yet
 	String role();
 	
