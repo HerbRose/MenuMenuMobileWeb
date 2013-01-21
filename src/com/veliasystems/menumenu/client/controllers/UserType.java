@@ -8,13 +8,19 @@ public enum UserType {
 	/**
 	 * Admin type
 	 */
-	ADMIN, 
+	ADMIN (0), 
 	/**
 	 * Agent type
 	 */
-	AGENT, 
+	AGENT (1), 
 	/**
 	 * Restaurateur type
 	 */
-	RESTAURATOR
+	RESTAURATOR (2);
+	
+	private final int userTypeValue ;
+	
+	UserType( int userTypeValue) {
+		this.userTypeValue = userTypeValue;
+	}
 }
