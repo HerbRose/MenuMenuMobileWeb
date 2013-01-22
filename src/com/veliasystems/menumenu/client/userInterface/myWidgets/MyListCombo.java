@@ -10,6 +10,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -65,27 +66,7 @@ public class MyListCombo extends FocusPanel {
 	private boolean isCheck = false;
 	
 	public MyListCombo(boolean isChecked) {
-		
 		isCheck = isChecked;
-		String id = "";
-		boolean isContinue = true;
-		while(isContinue){
-			Date date = new Date();
-			id="id" + date.getTime();
-			Element element = JS.getElement(id);
-			
-			JS.consolLog(element+"");
-			if(element == null){
-				isContinue = false;
-			}
-			
-		}
-		
-		
-		
-		scrollPanel.getElement().setId(id);
-		
-//		addOnClick(scrollPanel.getElement().getId());
 
 		setStyleName("listCombo noFocus", true);
 
@@ -223,8 +204,8 @@ public class MyListCombo extends FocusPanel {
 	 * show or hide expanded panel
 	 */
 	private void showExpandetPanel(){
-		boolean showPanel = Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0;
-		showPanel = !showPanel;
+		boolean showPanel = !(Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0); //if showPanel is true, panel should by show
+//		showPanel = !showPanel;
 		if(isCheck && showPanel){
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 			showTouchGetter(showPanel);
@@ -232,6 +213,12 @@ public class MyListCombo extends FocusPanel {
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 			showTouchGetter(showPanel);
 		}
+		String id = "id";
+
+		Date date = new Date();
+		id+= date.getTime();
+		scrollPanel.getElement().setId(id);
+		
 		addOnClick(scrollPanel.getElement().getId());
 	}
 	public void selectItem(long order){
@@ -251,7 +238,7 @@ public class MyListCombo extends FocusPanel {
 		var element=$wnd.document.getElementById('touchGetter');
 		
 		if( element.attachEvent ){
-		   element.attachEvent('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'');
+		   element.attachEvent('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'');
 		  
 		} else {
 		   element.setAttribute('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'' ); 
