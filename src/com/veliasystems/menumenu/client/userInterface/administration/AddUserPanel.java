@@ -25,7 +25,7 @@ import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
-public class AddRestauratorPanel extends FlowPanel implements IManager, IObserver {
+public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 
 	
 	private Label mailLabel;
@@ -52,7 +52,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager, IObserve
 	 */
 	private int synchronizeStatus = 0;
 	
-	public AddRestauratorPanel() {
+	public AddUserPanel() {
 		
 		
 		setStyleName("barPanel", true);
