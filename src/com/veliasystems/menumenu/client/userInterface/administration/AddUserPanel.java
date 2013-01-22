@@ -63,6 +63,21 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 		citiesChosenLabel = new Label(Customization.CHOOSE_CITIES);
 		restaurantChosenLabel = new Label(Customization.CHOOSE_RESTAURANTS);
 
+		roleListCombo.addMyClickHendler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(!citiesListCombo.getCheckedList().isEmpty()){
+					roleListCombo.selectItem((long) UserType.AGENT.userTypeValue(), true);
+				}
+				if(!restaurantListCombo.getCheckedList().isEmpty()){
+					roleListCombo.selectItem((long) UserType.RESTAURATOR.userTypeValue(), true);
+				}
+				
+			}
+		});
+		
+		
 		inputEmailRestaurator.addStyleName("myTextBox nameBox");
 		inputEmailRestaurator.getElement().setAttribute("placeHolder", Customization.EMAIL_PLACEHOLDER);	
 		

@@ -70,14 +70,13 @@ public class MyListCombo extends FocusPanel {
 
 		setStyleName("listCombo noFocus", true);
 
-		
-			addClickHandler(new ClickHandler() {
+		addClickHandler(new ClickHandler() {
 				
-				@Override
-				public void onClick(ClickEvent event) {
-					showExpandetPanel();
-				}
-			});
+			@Override
+			public void onClick(ClickEvent event) {
+				showExpandetPanel();
+			}
+		});
 	
 		expandedPanel.setStyleName("expandedPanel noFocus", true);
 		
@@ -92,6 +91,10 @@ public class MyListCombo extends FocusPanel {
 		add(mainPanel);
 	}
 
+	public void addMyClickHendler( ClickHandler clickHandler){
+		addClickHandler(clickHandler);
+	}
+	
 	/**
 	 * <i>order</i> does not affect the display order
 	 * <i>order</i> have to by >=0, if not nothing will change 
@@ -123,6 +126,18 @@ public class MyListCombo extends FocusPanel {
 		return listItems.containsKey(order);
 	}
 	
+	private void itemController(long orderToSelect, boolean select){
+		if(isCheck){
+			
+			if( (checkedList.contains(orderToSelect) && !select) || (!checkedList.contains(orderToSelect) && select) ){
+				itemController(orderToSelect);
+			}
+		}else{
+			if(selectedItem != orderToSelect){
+				itemController(orderToSelect);
+			}
+		}
+	}
 	private void itemController(long orderToSelect){
 		MyListItem panel = null;
 		if(!isCheck){
@@ -225,6 +240,9 @@ public class MyListCombo extends FocusPanel {
 		itemController(order);
 	}
 	
+	public void selectItem(long order, boolean select){
+		itemController(order, select);
+	}
 	private void showTouchGetter(boolean isShow){
 		if(isShow) {
 			Document.get().getElementById("touchGetter").setClassName(R.SHOW);
