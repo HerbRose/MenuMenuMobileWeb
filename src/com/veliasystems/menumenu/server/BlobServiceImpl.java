@@ -466,9 +466,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			}
 			
 			//remove old image and image's data
-			BlobstoreServiceFactory.getBlobstoreService().delete(
-					new BlobKey(imageBlob.getBlobKey()));
-			removeImageBlobByBlobKey(imageBlob.getBlobKey());
+//			BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
+//			removeImageBlobByBlobKey(imageBlob.getBlobKey());
 			//dao.ofy().delete(imageBlob);
 			//END - remove old image and image's data
 		} catch (IOException e) {

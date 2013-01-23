@@ -503,9 +503,11 @@ body {
 	-moz-border-radius: 14px !important;
 	-webkit-border-radius: 14px !important;
 }
-
-.namePanel {
-	top: 115px;
+.containerPanelLoginScreen {
+	margin: 20px 10px 20px 10px !important;
+	border-radius: 10px;
+	border: #c1c1c1 2px solid !important;
+	background: white;
 }
 
 .passwordPanel {
@@ -518,18 +520,8 @@ body {
 }
 
 .nameLabel,.passwordLabel {
-	min-width: 30% !important;
-	height: inherit !important;
-	margin-right: 10px !important;
-	padding-right: 10px !important;
-	border-right: solid !important;
-	border-right-width: 2px !important;
-	border-right-color: #c1c1c1 !important;
-/* 	line-height: 45px !important; */
-	text-align: right !important;
-	color: #8a8b8e !important;
-	font-weight: bold !important;
-	font-size: 15px !important;
+	text-align: right;
+	margin-right: 20px;
 }
 
 .nameBox,.passwordBox,.nameBox:FOCUS,.passwordBox:FOCUS, .plusPanelRightDiv input, .plusPanelRightDiv input:FOCUS {

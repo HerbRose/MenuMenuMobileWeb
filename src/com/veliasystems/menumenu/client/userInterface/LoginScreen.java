@@ -13,12 +13,14 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 
 public class LoginScreen extends MyPage{
@@ -35,8 +37,8 @@ public class LoginScreen extends MyPage{
 	private Label wrongData;
 	private MyListCombo languageCombo = new MyListCombo(true);
 	
-	private FlowPanel namePanel = new FlowPanel();
-	private FlowPanel passwordPanel = new FlowPanel();
+	private MyRestaurantInfoPanel namePanel = new MyRestaurantInfoPanel();
+	private MyRestaurantInfoPanel passwordPanel = new MyRestaurantInfoPanel();
 	private FlowPanel buttonPanel = new FlowPanel();
 	private FlowPanel logoPanel = new FlowPanel();
 	
@@ -52,7 +54,6 @@ public class LoginScreen extends MyPage{
 		super();
 		
 		nameBox = new TextBox();
-
 		passwordBox = new PasswordTextBox();
 
 	    okButton = new MyButton(Customization.OK);
@@ -85,23 +86,20 @@ public class LoginScreen extends MyPage{
 	    }
 	    
 	    buttonPanel.getElement().setAttribute("style", "text-align:center");
-	    
 	    buttonPanel.setStyleName("loginButtonPanel", true);
 	    
-	    namePanel.setStyleName("namePanel", true);
-	    passwordPanel.setStyleName("passwordPanel", true);
+	    namePanel.setStyleName("containerPanelLoginScreen", true);
+	    passwordPanel.setStyleName("containerPanelLoginScreen", true);
 	    
-	    nameLabel.setStyleName("myLabel nameLabel", true);
+	    nameLabel.setStyleName("nameLabel", true);
 	    nameBox.setStyleName("myTextBox nameBox", true);
 	    
-	    passwordLabel.setStyleName("myLabel passwordLabel", true);
+	    passwordLabel.setStyleName("passwordLabel", true);
 	    passwordBox.setStyleName("myTextBox passwordBox", true);
 	    
-	    namePanel.add(nameLabel);
-	    namePanel.add(nameBox);
+	    namePanel.addItem(nameLabel, nameBox);
 	    
-	    passwordPanel.add(passwordLabel);
-	    passwordPanel.add(passwordBox);
+	    passwordPanel.addItem(passwordLabel , passwordBox);
 	    
 	    buttonPanel.add(cancelButton);
 	    buttonPanel.add(okButton);
@@ -222,7 +220,8 @@ public class LoginScreen extends MyPage{
 	
 	@Override
 	protected void onPageShow() {
-		
+		namePanel.setWidth( JS.getElementOffsetWidth(getElement())-40 );
+		passwordPanel.setWidth( JS.getElementOffsetWidth(getElement())-40 );
 		String login = Cookies.getCookie(R.LOGIN);
 		if (login != null && !login.equals("null")) {
 			nameBox.setValue(Cookies.getCookie(R.LOGIN));
