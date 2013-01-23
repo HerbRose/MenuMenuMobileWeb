@@ -215,6 +215,20 @@ public class MyListCombo extends FocusPanel {
 		
 	}
 	
+	public void clearSelection(){
+		if(isCheck){
+			
+			// to avoid concurrent modification
+			List<Long> tmpList = new ArrayList<Long>();
+			tmpList.addAll(checkedList);
+			for (long item : tmpList) {		
+				selectItem(item);
+			}
+		}else{
+			selectItem(selectedItem);
+		}
+	}
+	
 	/**
 	 * show or hide expanded panel
 	 */

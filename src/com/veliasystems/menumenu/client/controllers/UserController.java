@@ -271,7 +271,7 @@ public class UserController {
 		for (String string : chosenEmailList) {
 			s+= string+ ", ";
 		}
-		
+		PagesController.showWaitPanel();
 		emailService.sendEmail(chosenEmailList, chosenEmailList.get(0), message, subject, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {

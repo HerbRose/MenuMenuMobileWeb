@@ -1,7 +1,15 @@
 package com.veliasystems.menumenu.client.userInterface.administration;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -13,6 +21,7 @@ import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.UserController;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyInfoPanelRow;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
@@ -39,95 +48,13 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 	private UserController userController = UserController.getInstance();
 	private List<String> emailList;
 	
+	private final MyInfoPanelRow messageRow;
  
 	public EmailPanel() {
 		userController.addObserver(this);
 		setStyleName("barPanel", true);
 		show(false);
-		
-		
-		
-//		addresseeListBox = new ListBox();
-//		addresseeListBox.addStyleName("properWidth");
-//		addresseeListBox.addChangeHandler(new ChangeHandler() {
-//
-//			@Override
-//			public void onChange(ChangeEvent event) {
-//				final Label label = new Label(addresseeListBox
-//						.getItemText(addresseeListBox.getSelectedIndex()));
-//				label.setTitle(addresseeListBox.getValue(addresseeListBox
-//						.getSelectedIndex()));
-//
-//				label.addClickHandler(new ClickHandler() {
-//
-//					@Override
-//					public void onClick(ClickEvent event) {
-//						chosenEmailPanel.remove(label);
-//						chosenEmailList.remove(label.getTitle());
-//						
-//						if(label.getTitle().equalsIgnoreCase(addresseeListBox.getValue(addresseeListBox
-//						.getSelectedIndex()))){
-//							addresseeListBox.setSelectedIndex(0);
-//						}
-//						
-//						if (chosenEmailList.isEmpty()) {
-//							chosenEmailPanel.removeStyleName("greenShadow");
-//						}
-//					}
-//				});
-//				clearChosenEmailList();
-//				chosenEmailPanel.add(label);
-//				chosenEmailPanel.setStyleName("greenShadow");
-//				chosenEmailList.add(addresseeListBox.getValue(addresseeListBox
-//						.getSelectedIndex()));
-//			}
-//		});
-
-//		chosenEmailPanel = new FlowPanel();
-//		chosenEmailList = new ArrayList<String>();
-		
-		
-		
-		
-	
-		
-		
-		
-		
-//		
-
-		
-		
-//		JQMButton sendButton = new JQMButton(Customization.SEND);
-//		sendButton.addClickHandler(new ClickHandler() {
-//
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				if (checkEmailValues()) {
-//					PagesController.showWaitPanel();
-////					userController.sendMail(chosenEmailList,
-////							senderTextBox.getText(), subjectTextBox.getValue(),
-////							messageTextArea.getValue());
-//				}
-//			}
-//		});
-		
-		
-
-		
-
-		
-//		add(toLabel);
-//		add(addresseeListBox);
-//		add(chosenEmailPanel);
-//		add(fromLabel);
-//		add(senderTextBox);
-//		add(subjectLabel);
-//		add(subjectTextBox);
-//		add(messageLabel);
-//		add(messageTextArea);
-//		add(sendButton);
-		
+			
 		senderTextBox = new TextBox();
 		senderTextBox.addStyleName("myTextBox nameBox");
 		senderTextBox.setEnabled(false);
@@ -141,82 +68,67 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 		messageTextArea.addStyleName("myTextBox nameBox");
 		
 		
-		subjectTextBox.getElement().setAttribute("placeHolder",
-		Customization.SUBJECT_PLACEHOLDER);
+		subjectTextBox.getElement().setAttribute("placeHolder",Customization.SUBJECT_PLACEHOLDER);
 
-		messageTextArea.getElement().setAttribute("placeHolder",
-		Customization.MESSAGE_PLACEHOLDER);
+		messageTextArea.getElement().setAttribute("placeHolder",Customization.MESSAGE_PLACEHOLDER);
+		messageTextArea.getElement().getStyle().setWidth(100, Unit.PCT);
+		
+		
+		send.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(validate()){
+					List<String> emailsToSend = new ArrayList<String>();
+					for (long item : addressListCombo.getCheckedList()) {
+						emailsToSend.add(emailList.get( (int) item)); 
+					}
+					userController.sendMail(emailsToSend, senderTextBox.getText(), subjectTextBox.getText(), messageTextArea.getText());
+				}
+			}
+		});
 		
 		container.setStyleName("containerPanelAddRestaurant", true);
 		
 		container.addItem(fromLabel, senderTextBox);
 		container.addItem(toLabel, addressListCombo);
 		container.addItem(subjectLabel, subjectTextBox);
-		container.addItem(messageLabel, messageTextArea);
+		messageRow = container.addItem(messageLabel, messageTextArea);
 		container.add(send);
 		add(container);
 		
-	}
-	
-	private boolean checkEmailValues() {
-
-		boolean isValid = false;
-
-		String alert = "";
-//
-//		if (chosenEmailList.isEmpty()) {
-//			chosenEmailPanel.setStyleName("redShadow");
-//			emptyMailList = new Label(Customization.EMPTY_MAIL_LIST);
-//			clearChosenEmailList();
-//			chosenEmailPanel.add(emptyMailList);
-//		} else {
-			if (subjectTextBox.getText().isEmpty()) {
-				alert += Customization.CONFIRMATION_NO_SUBJECT + "\n";
+		
+		messageTextArea.addKeyDownHandler(new KeyDownHandler() {
+		
+		@Override
+		public void onKeyDown(KeyDownEvent event) {
+			String height = messageTextArea.getElement().getStyle().getHeight();
+			height = height.replace("px", "");
+			if(!height.isEmpty()){
+				messageRow.setHeight(Integer.parseInt(height));
 			}
-			if (messageTextArea.getText().isEmpty()) {
-				alert += Customization.CONFIRMATION_NO_MESSAGE + "\n";
-			}
-//		}
-
-//		if (!chosenEmailList.isEmpty() && !subjectTextBox.getText().isEmpty()
-//				&& !messageTextArea.getText().isEmpty()) {
-//			isValid = true;
-//		}
-
-		if (!alert.equalsIgnoreCase("")) {
-			if (Window.confirm(alert)) {
-				isValid = true;
-			}
+			
 		}
-
-		return isValid;
+	});
+	
+		
 	}
 	
-//	private void clearChosenEmailList() {
-//		if (chosenEmailList.isEmpty())
-//			chosenEmailPanel.clear();
-//	}
+	
 	
 	@Override
 	public void clearData() {
-//		addresseeListBox.clear();
-//
-//		addresseeListBox.addItem(Customization.SELECT_ELEMENT);
-//		addresseeListBox.getElement().getFirstChildElement()
-//				.setAttribute("disabled", "disabled");
-//
-//		for (User user : userController.getUserList()) {
-//			addresseeListBox.addItem( (user.getName() != null && !user.getName().isEmpty())  ? user.getName() + "(" + user.getEmail() + ")": "No Name" + " (" + user.getEmail() + ")" , user.getEmail() );
-//		}
-//
-//		addresseeListBox.setSelectedIndex(0);
-
-//		chosenEmailList.clear();
-//		clearChosenEmailList();
-//		chosenEmailPanel.removeStyleName("redShadow");
-//		chosenEmailPanel.removeStyleName("greenShadow");
 		messageTextArea.setText("");
+		
+		
+		
+		//set height to css values after sending email in order to rest layout
+		messageTextArea.getElement().getStyle().setHeight(44.0, Unit.PX);
+		messageRow.setHeight(44);
+		
+		
 		subjectTextBox.setText("");
+		addressListCombo.clearSelection();
 	}
 
 	@Override
@@ -244,16 +156,45 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 	public void newData() {
 		emailList = userController.getEmailAdresses();
 		emailList.remove(userController.getLoggedUser().getEmail());
-		setMailPanel();
+		fillMailCombo();
 	}
 	
-	private void setMailPanel(){
+	private void fillMailCombo(){
 			
 		for (String email : emailList) {
 			addressListCombo.addListItem(addressListCombo.getNewCheckBoxItem(email), emailList.indexOf(email));
 		}
 		PagesController.hideWaitPanel();
 		
+	}
+	
+	private boolean validate(){
+		boolean isOk = true;
+		String msg = "";
+		
+				if(addressListCombo.getCheckedList().isEmpty()){
+					isOk = false;
+					msg += Customization.EMPTY_MAIL_LIST + "\n";
+				}
+				if(!msg.isEmpty()){
+					Window.alert(msg);
+					return isOk;
+				}
+				if(subjectTextBox.getText().isEmpty() && messageTextArea.getText().isEmpty()){
+					if(!Window.confirm(Customization.CONFIRMATION_NO_SUBJECT_AND_NO_MESSAGE)){
+						isOk = false;
+					}
+				} else if(subjectTextBox.getText().isEmpty()) {
+					if(!Window.confirm(Customization.CONFIRMATION_NO_SUBJECT)){
+						isOk = false;
+					}
+				} else if(messageTextArea.getText().isEmpty()){
+					if(!Window.confirm(Customization.CONFIRMATION_NO_MESSAGE)){
+						isOk = false;
+					}
+				}
+		
+		return isOk;
 	}
 
 }

@@ -534,7 +534,7 @@ body {
 
 .nameBox,.passwordBox,.nameBox:FOCUS,.passwordBox:FOCUS, .plusPanelRightDiv input, .plusPanelRightDiv input:FOCUS {
 	height: inherit !important;
-	width: 60% !important;
+/* 	width: 60% !important; */
 	margin: 0px !important;
 	padding: 0px !important;
 	border: none !important;
@@ -545,7 +545,6 @@ body {
 	box-shadow: none !important;
 	outline: none !important;
 }
-
 .languageCombo { /* 	position: absolute; */ /* 	right: 94px; */
 	/* 	top: 300px; */
 	display: none;
@@ -1064,7 +1063,8 @@ body {
 .restaurantInfoPanelLeftCelContainer{
 	float: left;
 	clear: left;
-	
+	white-space: nowrap;
+	overflow: auto;
 	
 }
 .restaurantInfoPanelRightCellContainer{
