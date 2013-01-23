@@ -10,6 +10,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -65,38 +66,17 @@ public class MyListCombo extends FocusPanel {
 	private boolean isCheck = false;
 	
 	public MyListCombo(boolean isChecked) {
-		
 		isCheck = isChecked;
-		String id = "";
-		boolean isContinue = true;
-		while(isContinue){
-			Date date = new Date();
-			id="id" + date.getTime();
-			Element element = JS.getElement(id);
-			
-			JS.consolLog(element+"");
-			if(element == null){
-				isContinue = false;
-			}
-			
-		}
-		
-		
-		
-		scrollPanel.getElement().setId(id);
-		
-//		addOnClick(scrollPanel.getElement().getId());
 
 		setStyleName("listCombo noFocus", true);
 
-		
-			addClickHandler(new ClickHandler() {
+		addClickHandler(new ClickHandler() {
 				
-				@Override
-				public void onClick(ClickEvent event) {
-					showExpandetPanel();
-				}
-			});
+			@Override
+			public void onClick(ClickEvent event) {
+				showExpandetPanel();
+			}
+		});
 	
 		expandedPanel.setStyleName("expandedPanel noFocus", true);
 		
@@ -111,6 +91,10 @@ public class MyListCombo extends FocusPanel {
 		add(mainPanel);
 	}
 
+	public void addMyClickHendler( ClickHandler clickHandler){
+		addClickHandler(clickHandler);
+	}
+	
 	/**
 	 * <i>order</i> does not affect the display order
 	 * <i>order</i> have to by >=0, if not nothing will change 
@@ -142,6 +126,18 @@ public class MyListCombo extends FocusPanel {
 		return listItems.containsKey(order);
 	}
 	
+	private void itemController(long orderToSelect, boolean select){
+		if(isCheck){
+			
+			if( (checkedList.contains(orderToSelect) && !select) || (!checkedList.contains(orderToSelect) && select) ){
+				itemController(orderToSelect);
+			}
+		}else{
+			if(selectedItem != orderToSelect){
+				itemController(orderToSelect);
+			}
+		}
+	}
 	private void itemController(long orderToSelect){
 		MyListItem panel = null;
 		if(!isCheck){
@@ -223,8 +219,8 @@ public class MyListCombo extends FocusPanel {
 	 * show or hide expanded panel
 	 */
 	private void showExpandetPanel(){
-		boolean showPanel = Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0;
-		showPanel = !showPanel;
+		boolean showPanel = !(Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0); //if showPanel is true, panel should by show
+//		showPanel = !showPanel;
 		if(isCheck && showPanel){
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 			showTouchGetter(showPanel);
@@ -232,12 +228,21 @@ public class MyListCombo extends FocusPanel {
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
 			showTouchGetter(showPanel);
 		}
+		String id = "id";
+
+		Date date = new Date();
+		id+= date.getTime();
+		scrollPanel.getElement().setId(id);
+		
 		addOnClick(scrollPanel.getElement().getId());
 	}
 	public void selectItem(long order){
 		itemController(order);
 	}
 	
+	public void selectItem(long order, boolean select){
+		itemController(order, select);
+	}
 	private void showTouchGetter(boolean isShow){
 		if(isShow) {
 			Document.get().getElementById("touchGetter").setClassName(R.SHOW);
@@ -251,7 +256,7 @@ public class MyListCombo extends FocusPanel {
 		var element=$wnd.document.getElementById('touchGetter');
 		
 		if( element.attachEvent ){
-		   element.attachEvent('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'');
+		   element.attachEvent('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'');
 		  
 		} else {
 		   element.setAttribute('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'' ); 
