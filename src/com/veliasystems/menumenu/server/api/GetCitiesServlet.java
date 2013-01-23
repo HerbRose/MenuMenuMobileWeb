@@ -27,7 +27,7 @@ public class GetCitiesServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 2566472678914274709L;
 	
-	private StoreService storeService = new StoreServiceImpl();
+	private StoreServiceImpl storeService = new StoreServiceImpl();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -41,7 +41,9 @@ public class GetCitiesServlet extends HttpServlet {
 			return;
 		}
 		
-		List<City> cities = storeService.loadCitiesEntity();
+		String country = req.getParameter("country");
+		List<City> cities = storeService.loadCitiesEntityForCountry(country);
+
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
 		
@@ -73,6 +75,7 @@ public class GetCitiesServlet extends HttpServlet {
 				cityPair.put( "name", city.getCity());
 				cityPair.put( "id", "" + city.getId());
 				cityPair.put("districtImageURL", cityImage.isEmpty()?"":addHostToUrl( city.getDistrictImageURL()) );
+				cityPair.put("country", city.getCountry());
 				attributes.add(cityPair);
 			}
 		}

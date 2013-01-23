@@ -317,6 +317,50 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			imageBlob2 = query.filter("blobKey", imageBlob.getBlobKey()).get();
 		}
 		
+		int profileWidth = 450;
+		int profileHeight = 260;
+		int logoWidth = 220;
+		int menuWidth = 220;
+		
+		//----------------------------------------
+		//--------- FOR TESTING ONLY -------------
+		//----------------------------------------
+		City cityToCheckDimensions = null;
+//		log.info("imageBlob2.getRestaurantId() " + imageBlob2.getRestaurantId());
+		if(imageBlob2.getRestaurantId() != null || !imageBlob2.getRestaurantId().isEmpty() ){
+			Restaurant restaurant = dao.ofy().find(Restaurant.class, Long.parseLong(imageBlob2.getRestaurantId()));
+			
+			if(restaurant!=null){
+//				log.info("restaurant != null: ");
+				cityToCheckDimensions = dao.ofy().find(City.class, restaurant.getCityId());
+			}
+		}
+		String cityName = null;
+		if(cityToCheckDimensions != null){
+			cityName = cityToCheckDimensions.getCity();
+//			log.info("cityToCheckDimensions != null: ");
+		}
+		if(cityName != null){
+//			log.info("cityName != null: " + cityName);
+			if(cityName.endsWith("IOS")){
+//				log.info("cityName.endsWith(\"IOS\") ");
+				newName += "_IOS_X2";
+				profileWidth *= 2;
+				profileHeight *= 2;
+				logoWidth *= 2;
+				menuWidth *= 2;
+			}else if(cityName.endsWith("RETINA")){
+//				log.info("cityName.endsWith(\"RETINA\") ");
+				newName += "_RETINA_X4";
+				profileWidth *= 4;
+				profileHeight *= 4;
+				logoWidth *= 4;
+				menuWidth *= 4;
+			}
+		}
+		//----------------------------------------
+		//---------- END FORTESTING ONLY ---------
+		//----------------------------------------
 		BlobKey blobKey ;
 		if(imageBlob2.getBlobKeyOriginalSize() != null){
 			blobKey = new BlobKey(imageBlob2.getBlobKeyOriginalSize());
@@ -365,23 +409,20 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		try{
 			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
 		}catch(ImagesServiceFailureException e){
-			log.log(Level.SEVERE, "\noldImage: "
-					+oldImage.getBlobKey()  
-					+"\n", e);
+			log.log(Level.SEVERE, "\noldImage: "+oldImage.getBlobKey()+"\n", e);
 			return null;
 		}
 		Transform scaleTransform = null;
+		
 		switch (imageBlob.getImageType()) {
 		case PROFILE:
-			scaleTransform = ImagesServiceFactory.makeResize(450, 260);
+			scaleTransform = ImagesServiceFactory.makeResize(profileWidth, profileHeight);
 			break;
 		case LOGO:
-			scaleTransform = ImagesServiceFactory.makeResize(220,
-					4000);//newImage.getHeight());
+			scaleTransform = ImagesServiceFactory.makeResize(logoWidth,4000);//newImage.getHeight());
 			break;
 		case MENU:
-			scaleTransform = ImagesServiceFactory.makeResize(220,
-					4000);//newImage.getHeight());
+			scaleTransform = ImagesServiceFactory.makeResize(menuWidth,4000);//newImage.getHeight());
 			break;
 		case CITY:
 			scaleTransform = ImagesServiceFactory.makeResize(246,290);//newImage.getHeight());
@@ -398,7 +439,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		BlobKey newBlobKey = null;
 		ImageBlob newImageBlob = null;
 		try {
-			newBlobKey = writeToBlobstore("image/jpeg", imageBlob.getImageType().name()+newName,
+			newBlobKey = writeToBlobstore("image/jpeg", imageBlob.getImageType().name()+newName+".jpg",
 					scaleImage.getImageData());
 			newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
 					newBlobKey.getKeyString(), imageBlob.getDateCreated(),
@@ -460,7 +501,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
 		
-		ImageBlob newImageBlob = cropImage(imageBlob, leftX, topY, rightX, bottomY, "imageCrop.jpg");
+		ImageBlob newImageBlob = cropImage(imageBlob, leftX, topY, rightX, bottomY, "imageCrop");
 		
 		if(newImageBlob == null){
 			throw new NullPointerException();
@@ -585,7 +626,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * @param imageBlob - image to copy and delete old, used to resize images to smaller
 	 */
 	public void copyAndDeleteBlob(ImageBlob imageBlob) {
-		cropImage(imageBlob, 0, 0, 1, 1, "imageResized.jpg");
+		cropImage(imageBlob, 0, 0, 1, 1, "imageResized");
 	}
 	/**
 	 * 

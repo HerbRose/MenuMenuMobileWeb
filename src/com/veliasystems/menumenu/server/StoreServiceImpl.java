@@ -273,7 +273,20 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return dao.ofy().query(City.class).list();
 	}
 	
-	
+	public List<City> loadCitiesEntityForCountry( String country) {
+
+		Query citiesQuery = dao.ofy().query(City.class);
+		if(citiesQuery == null){
+			return new ArrayList<City>();
+		}
+		
+		if(country == null || country.isEmpty()){
+			return citiesQuery.list();
+		}
+		
+		List<City> citiesList = citiesQuery.filter("country", country).list();
+		return citiesList;
+	}
 	@Override
 	public void fillWithData( ) {
 		List<Restaurant> rests = getData();

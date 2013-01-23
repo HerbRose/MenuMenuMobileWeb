@@ -31,7 +31,7 @@ import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.administration.AddAdminPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.AddAgentPanel;
-import com.veliasystems.menumenu.client.userInterface.administration.AddRestauratorPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.AddUserPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.CityManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.DefaultEmptyMenuPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.EditDataPanel;
@@ -351,7 +351,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 	 * @return instance of AddRestauratorPanel() projected onto FlowPanel
 	 */
 	private FlowPanel setRestauratorPanel() {
-		restauratorPanel = new AddRestauratorPanel();
+		restauratorPanel = new AddUserPanel();
 		panelList.put(panelCount++, restauratorPanel);
 		tabBar.addTab(restauratorPanel.getName());
 		if (restaurant != null) {

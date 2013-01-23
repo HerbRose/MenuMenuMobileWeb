@@ -25,7 +25,7 @@ import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
-public class AddRestauratorPanel extends FlowPanel implements IManager, IObserver {
+public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 
 	
 	private Label mailLabel;
@@ -52,7 +52,7 @@ public class AddRestauratorPanel extends FlowPanel implements IManager, IObserve
 	 */
 	private int synchronizeStatus = 0;
 	
-	public AddRestauratorPanel() {
+	public AddUserPanel() {
 		
 		
 		setStyleName("barPanel", true);
@@ -63,6 +63,21 @@ public class AddRestauratorPanel extends FlowPanel implements IManager, IObserve
 		citiesChosenLabel = new Label(Customization.CHOOSE_CITIES);
 		restaurantChosenLabel = new Label(Customization.CHOOSE_RESTAURANTS);
 
+		roleListCombo.addMyClickHendler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(!citiesListCombo.getCheckedList().isEmpty()){
+					roleListCombo.selectItem((long) UserType.AGENT.userTypeValue(), true);
+				}
+				if(!restaurantListCombo.getCheckedList().isEmpty()){
+					roleListCombo.selectItem((long) UserType.RESTAURATOR.userTypeValue(), true);
+				}
+				
+			}
+		});
+		
+		
 		inputEmailRestaurator.addStyleName("myTextBox nameBox");
 		inputEmailRestaurator.getElement().setAttribute("placeHolder", Customization.EMAIL_PLACEHOLDER);	
 		
