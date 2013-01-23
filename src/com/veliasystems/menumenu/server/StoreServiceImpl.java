@@ -506,7 +506,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		String message = "Hello "+userName+". \n\n";
 		
 		if(isNew){
-			message += "This email address has been given during registration process on MenuMenu website.\n\n"+
+			message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
 					   "Your data needed to login are:\n"+
 					   "\tlogin: "+ user.getEmail()+"\n"+
 					   "\tpassword: "+ user.getPassword()+"\n\n"+
