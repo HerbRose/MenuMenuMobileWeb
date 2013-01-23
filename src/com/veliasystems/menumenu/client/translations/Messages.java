@@ -328,70 +328,70 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Image type") 	
 	String imageType();
 	
-	@DefaultStringValue("Visibility for tests") 	//not translated yet
+	@DefaultStringValue("Visibility for tests") 	
 	String visibilityForTests();
 	
-	@DefaultStringValue("District image")  //not translated yet
+	@DefaultStringValue("District image") 
 	String districtImage();
 	
-	@DefaultStringValue("User is not allowed to edit this restaurant") //not translated yet
+	@DefaultStringValue("User is not allowed to edit this restaurant") 
 	String userNotAllowed();
 	
-	@DefaultStringValue("User does not exist") //not translated yet
+	@DefaultStringValue("User does not exist") 
 	String userNonExist();
 	
-	@DefaultStringValue("Other restaurant with th same address and name exist in chosen address") //not translated yet
+	@DefaultStringValue("Other restaurant with the same address and name exist in chosen address") 
 	String restaurantExist();
 
-	@DefaultStringValue("Users") //not translated yet
+	@DefaultStringValue("Users")
 	String users();
 	
-	@DefaultStringValue("Poland") //not translated yet
+	@DefaultStringValue("Poland") 
 	String poland();
 	
-	@DefaultStringValue("France") //not translated yet
+	@DefaultStringValue("France") 
 	String france();
 
-	@DefaultStringValue("Country") //not translated yet
+	@DefaultStringValue("Country")
 	String country();
 	
-	@DefaultStringValue("Name") //not translated yet
+	@DefaultStringValue("Name") 
 	String name();
 	
-	@DefaultStringValue("Do you want to download mobile application?") //not translated yet
+	@DefaultStringValue("Do you want to download mobile application?") 
 	String getMobileApp();
 	
-	@DefaultStringValue("No thanks") //not translated yet
+	@DefaultStringValue("No thanks") 
 	String noThanks();
 	
-	@DefaultStringValue("Download app") //not translated yet
+	@DefaultStringValue("Download app") 
 	String getApp();
 	
 	@DefaultStringValue("Choose restaurants") 
 	String chooseRestaurants();
 	
-	@DefaultStringValue("Choose") //not translated yet
+	@DefaultStringValue("Choose")
 	String choose();
 	
-	@DefaultStringValue("Password and repeated password are not the same") //not translated yet
+	@DefaultStringValue("Password and repeated password are not the same") 
 	String wrongPasswords();
 	
-	@DefaultStringValue("Empty list with restaurants") //not translated yet
+	@DefaultStringValue("Empty list with restaurants") 
 	String emptyList();
 	
-	@DefaultStringValue("Invalid phone number") //not translated yet
+	@DefaultStringValue("Invalid phone number") 
 	String wrongPhoneNumber();
 	
-	@DefaultStringValue("Role") //not translated yet
+	@DefaultStringValue("Role") 
 	String role();
 	
-	@DefaultStringValue("Empty user type") //not translated yet
+	@DefaultStringValue("Empty user type") 
 	String emptyType();
 	
-	@DefaultStringValue("Empty city list") //not translated yet
+	@DefaultStringValue("Empty city list") 
 	String emptyCityList();
 	
-	@DefaultStringValue("Empty restaurant list") //not translated yet
+	@DefaultStringValue("Empty restaurant list")
 	String emptyRestaurantList();
 
 	@DefaultStringValue("User role")
@@ -400,7 +400,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Choose cities")
 	String chooseCities();
 	
-	@DefaultStringValue("Password and repeated password are not the same") //not translated
+	@DefaultStringValue("Password and repeated password are not the same")
 	String passAndRepeatIncorrect();
 	
 
