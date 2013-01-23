@@ -81,6 +81,15 @@ public class UserController {
 			}
 		});
 	}
+	
+	public List<String> getEmailAdresses(){
+		List<String> emailList = new ArrayList<String>();
+		
+		for (User user : getUserList() ) {
+			emailList.add(user.getEmail());
+		}
+		return emailList;
+	}
 	/**
 	 * 
 	 * @return Map of {@link User}'s  as value, email as key
