@@ -399,4 +399,12 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Choose cities")
 	String chooseCities();
+	
+	@DefaultStringValue("Password and repeated password are not the same") //not translated
+	String passAndRepeatIncorrect();
+	
+
+	@DefaultStringValue("Old password missing")
+	String oldPasswordMissing();
+
 }

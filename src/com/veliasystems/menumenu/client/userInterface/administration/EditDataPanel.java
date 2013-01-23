@@ -9,8 +9,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 public class EditDataPanel extends FlowPanel implements IManager {
 
@@ -29,7 +31,10 @@ public class EditDataPanel extends FlowPanel implements IManager {
 	private Button saveEditedUser;
 
 	private UserController userController = UserController.getInstance();
-
+	
+	private MyRestaurantInfoPanel container = new MyRestaurantInfoPanel();
+	
+	
 	public EditDataPanel() {
 
 		setStyleName("barPanel", true);
@@ -38,44 +43,38 @@ public class EditDataPanel extends FlowPanel implements IManager {
 		inputOldPasswordLabel = new Label(Customization.INPUT_OLD_PASSWORD);
 
 		inputOldPasswordBox = new PasswordTextBox();
-		inputOldPasswordBox.getElement().setAttribute("placeHolder",
-				Customization.INPUT_OLD_PASSWORD);
-		inputOldPasswordBox.addStyleName("properWidth");
+		inputOldPasswordBox.getElement().setAttribute("placeHolder",Customization.INPUT_OLD_PASSWORD);
+		inputOldPasswordBox.addStyleName("myTextBox nameBox");
 
 		editPasswordLabel = new Label(Customization.INPUT_PASSWORD);
 
 		editPasswordBox = new PasswordTextBox();
-		editPasswordBox.getElement().setAttribute("placeHolder",
-				Customization.PASSWORD_PLACEHOLDER);
-		editPasswordBox.addStyleName("properWidth");
+		editPasswordBox.getElement().setAttribute("placeHolder",Customization.PASSWORD_PLACEHOLDER);
+		editPasswordBox.addStyleName("myTextBox nameBox");
 
 		repeatPasswordLabel = new Label(Customization.REPEAT_PASSWORD);
 
 		repeatPasswordBox = new PasswordTextBox();
-		repeatPasswordBox.getElement().setAttribute("placeHolder",
-				Customization.REPEAT_PASSWORD_PLACEHOLDER);
-		repeatPasswordBox.addStyleName("properWidth");
+		repeatPasswordBox.getElement().setAttribute("placeHolder",Customization.REPEAT_PASSWORD_PLACEHOLDER);
+		repeatPasswordBox.addStyleName("myTextBox nameBox");
 
 		editNameLabel = new Label(Customization.USER_NAME);
 
 		editNameBox = new TextBox();
-		editNameBox.getElement().setAttribute("placeHolder",
-				Customization.USER_NAME_PLACEHOLDER);
-		editNameBox.addStyleName("properWidth");
+		editNameBox.getElement().setAttribute("placeHolder",Customization.USER_NAME_PLACEHOLDER);
+		editNameBox.addStyleName("myTextBox nameBox");
 
 		editSurnameLabel = new Label(Customization.USER_SURNAME);
 
 		editSurnameBox = new TextBox();
-		editSurnameBox.getElement().setAttribute("placeHolder",
-				Customization.USER_SURNNAME_PLACEHOLDER);
-		editSurnameBox.addStyleName("properWidth");
+		editSurnameBox.getElement().setAttribute("placeHolder",Customization.USER_SURNNAME_PLACEHOLDER);
+		editSurnameBox.addStyleName("myTextBox nameBox");
 
 		phoneNumberLabel = new Label(Customization.USER_PHONE);
 
 		phoneNumerBox = new TextBox();
-		phoneNumerBox.getElement().setAttribute("placeHolder",
-				Customization.USER_PHONE);
-		phoneNumerBox.addStyleName("properWidth");
+		phoneNumerBox.getElement().setAttribute("placeHolder",Customization.USER_PHONE);
+		phoneNumerBox.addStyleName("myTextBox nameBox");
 
 		saveEditedUser = new Button(Customization.SAVE);
 
@@ -107,25 +106,26 @@ public class EditDataPanel extends FlowPanel implements IManager {
 
 			}
 		});
-
-		add(inputOldPasswordLabel);
-		add(inputOldPasswordBox);
-		add(editPasswordLabel);
-		add(editPasswordBox);
-		add(repeatPasswordLabel);
-		add(repeatPasswordBox);
-		add(editNameLabel);
-		add(editNameBox);
-		add(editSurnameLabel);
-		add(editSurnameBox);
-		add(phoneNumberLabel);
-		add(phoneNumerBox);
-		add(saveEditedUser);
+		
+		
+		container.setStyleName("containerPanelAddRestaurant", true);
+		
+		container.addItem(inputOldPasswordLabel, inputOldPasswordBox);
+		container.addItem(editPasswordLabel, editPasswordBox);
+		container.addItem(repeatPasswordLabel, repeatPasswordBox);
+		container.addItem(editNameLabel, editNameBox);
+		container.addItem(editSurnameLabel, editSurnameBox);
+		container.addItem(phoneNumberLabel, phoneNumerBox);
+		container.add(saveEditedUser);
+		
+		add(container);
+		
 	}
 
 	private boolean validChangedData() {
 		boolean isCorrect = false;
-
+		
+		String msg = "";
 
 			if (!editPasswordBox.getValue().trim().equals("")) {
 
@@ -134,22 +134,23 @@ public class EditDataPanel extends FlowPanel implements IManager {
 					if (editPasswordBox.getValue().trim().equals("")
 							|| repeatPasswordBox.getValue().trim().equals("")
 							|| !editPasswordBox.getValue().equals(repeatPasswordBox.getValue())) {
-						editPasswordBox.setStyleName("redShadow", true);
-						repeatPasswordBox.setStyleName("redShadow", true);
+						msg += Customization.PASSWORD_AND_REPEAT_ARE_NOT_THE_SAME;
 						isCorrect = false;
 					} else {
-						editPasswordBox.setStyleName("greenShadow", true);
-						repeatPasswordBox.setStyleName("greenShadow", true);
 						isCorrect = true;
 					}
 				}
 				
 				else{
-					inputOldPasswordBox.setStyleName("redShadow", true);
+					msg += Customization.OLD_PASSWORD_MISSING;
 				}
 				
 			} else {
 				isCorrect = true;
+			}
+			
+			if(!msg.isEmpty()){
+				Window.alert(msg);
 			}
 
 		return isCorrect;
@@ -184,6 +185,10 @@ public class EditDataPanel extends FlowPanel implements IManager {
 	public void show(boolean isVisable) {
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);
+		if(isVisable){
+			container.setWidth( JS.getElementOffsetWidth(getParent().getElement())-40 );
+		}
+		
 	}
 
 }

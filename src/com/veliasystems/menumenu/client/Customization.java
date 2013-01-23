@@ -214,6 +214,10 @@ public class Customization {
 	public static final String EMPTY_CITY_LIST = translated.emptyCityList();
 	
 	public static final String EMPTY_RESTAURANT_LIST = translated.emptyRestaurantList();
+	
+	public static final String PASSWORD_AND_REPEAT_ARE_NOT_THE_SAME = translated.passAndRepeatIncorrect();
+	
+	public static final String OLD_PASSWORD_MISSING = translated.oldPasswordMissing();
 }
   
   
