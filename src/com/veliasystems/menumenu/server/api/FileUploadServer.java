@@ -83,6 +83,7 @@ public class FileUploadServer extends HttpServlet {
 					BlobKey blobKey = blobService.writeToBlobstore("image/jpeg", "fromIos.jpg", imageBlob.getBytes());
 					
 					newImageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), imageType);
+					
 					storService.saveImageBlob(newImageBlob);
 					
 					

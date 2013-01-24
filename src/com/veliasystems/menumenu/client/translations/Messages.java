@@ -407,4 +407,16 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Old password missing")
 	String oldPasswordMissing();
 
+	@DefaultStringValue("Error")
+	String popUpErrorHeader();
+
+	@DefaultStringValue("Confirm")
+	String popUpConfirmHeader();
+
+	@DefaultStringValue("Success")
+	String popUpSuccessHeader();
+
+	@DefaultStringValue("Warning")
+	String popUpWarningHeader();
+
 }

@@ -12,12 +12,15 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
 
 public class PagesController {
 
 	private static Map<Pages, JQMPage> pagesMap = new HashMap<Pages, JQMPage>();
 	public static int contentWidth = getBodyOffsetWidth();
 	private static CityController cityController = CityController.getInstance();
+	
+	public static MyPopUp MY_POP_UP = new MyPopUp();
 	/**
 	 * set the page only if local page is null
 	 * @param enumPage

@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
 
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -9,6 +10,7 @@ import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
 import com.veliasystems.menumenu.client.userInterface.LoginScreen;
 import com.veliasystems.menumenu.client.userInterface.Pages;
 import com.veliasystems.menumenu.client.userInterface.WelcomeMobilePage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
 
 
 public class MenuMenuMobileWeb implements EntryPoint {
@@ -19,7 +21,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	public void onModuleLoad() {
 		
 		String logged = Cookies.getCookie(R.LOGGED_IN);
-		
+		RootPanel.get().insert(PagesController.MY_POP_UP, 0);
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0
 				|| osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;

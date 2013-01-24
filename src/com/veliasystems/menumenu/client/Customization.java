@@ -218,6 +218,14 @@ public class Customization {
 	public static final String PASSWORD_AND_REPEAT_ARE_NOT_THE_SAME = translated.passAndRepeatIncorrect();
 	
 	public static final String OLD_PASSWORD_MISSING = translated.oldPasswordMissing();
+
+	public static final String POP_UP_ERROR_HEADER = translated.popUpErrorHeader();
+
+	public static final String POP_UP_CONFIRM_HEADER = translated.popUpConfirmHeader();
+
+	public static final String POP_UP_SUCCESS_HEADER = translated.popUpSuccessHeader();
+
+	public static final String POP_UP_WARNING_HEADER = translated.popUpWarningHeader();
 }
   
   

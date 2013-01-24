@@ -16,10 +16,13 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 
@@ -52,6 +55,7 @@ public class LoginScreen extends MyPage{
 	
 	public LoginScreen(boolean isWrongLogin){
 		super();
+		new MyPopUp();
 		
 		nameBox = new TextBox();
 		passwordBox = new PasswordTextBox();
@@ -64,7 +68,12 @@ public class LoginScreen extends MyPage{
 			public void onClick(ClickEvent event) {
 				
 				if(nameBox.getValue().equals("") || passwordBox.getValue().equals("")){
-					Window.alert(Customization.LOGIN_ERROR);
+					PagesController.MY_POP_UP.showError(new Label(Customization.LOGIN_ERROR), new IMyAnswer() {
+						
+				    	@Override
+						public void answer(Boolean answer) {
+						}
+					});
 				}else{
 					Cookies.setCookie(R.LOGIN, nameBox.getValue());
 					JQMContext.changePage(new LoadDataScreen(nameBox.getValue(), passwordBox.getValue()));
@@ -157,7 +166,7 @@ public class LoginScreen extends MyPage{
 	    //getContentPanel().add(languageCombo);
 	    getContentPanel().add(buttonPanel);
 	    getHeader().addImageHeader(logoPanel);
-	   
+	  
 	}
 	
 	

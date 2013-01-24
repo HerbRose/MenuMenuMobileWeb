@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -50,6 +51,7 @@ public class MyButton extends FocusPanel {
 		}
 		//getElement().setAttribute("style", "background: "+ backgroundStyleProperty);
 		getElement().getStyle().setProperty("background",backgroundStyleProperty);
+
 	}
 
 	public void setText(String text) {

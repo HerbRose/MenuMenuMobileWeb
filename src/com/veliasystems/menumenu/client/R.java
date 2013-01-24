@@ -48,6 +48,16 @@ public class R {
     public static final String RESTAURANT_RESULT_FOR_MAP ="Restaurant";
     
     public static final String USER_AGENT = getUserAgent();
+
+    private static final String IMAGE_PATH = "img/layout/";
+    
+	public static final String ERROR_IMAGE_URL = IMAGE_PATH+"error.png";
+
+	public static final String CONFIRM_IMAGE_URL = IMAGE_PATH+"info.png";
+
+	public static final String SUCCESS_IMAGE_URL = IMAGE_PATH+"confirme.png";
+
+	public static final String WARNING_IMAGE_URL = IMAGE_PATH+"warning.png";
     
     private native static String getUserAgent()/*-{
 		return navigator.userAgent;
