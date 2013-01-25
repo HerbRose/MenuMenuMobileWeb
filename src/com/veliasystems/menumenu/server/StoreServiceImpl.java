@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -46,6 +47,7 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.entities.UserToAdd;
 import com.veliasystems.menumenu.client.services.StoreService;
 
 /**
@@ -450,16 +452,28 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			if(user == null){
 				user = new User(userEmail);
 
-				int i = (int) (Math.random() * 100);
+				//int i = (int) (Math.random() * 100);
 				
-				user.setPassword(getLoginFromMail(userEmail)+i);
+				//user.setPassword(getLoginFromMail(userEmail)+i);
 				
 				user.setRestaurantsId(new ArrayList<Long>());
 				
 				user.getRestaurantsId().add(r.getId());
 				user.setAddedByUser(emailAddingUser);
 				user.setRestaurator(true);
-				sendMailToUserAfterAddingRestaurant(true, user, r.getName());
+				
+				UserToAdd userToAdd = new UserToAdd(userEmail);
+				Random random = new Random();
+				String tmpString = "";
+				String confirmId = "";
+				for(int i=0 ; i<10; i++){
+					tmpString = Long.toString(random.nextLong(), 36);
+					tmpString = tmpString.replace("-", "");
+					confirmId+=tmpString;
+				}
+				userToAdd.setConfirmId(confirmId);
+				dao.ofy().put(userToAdd);
+				sendMailToUserAfterAddingRestaurant(userToAdd, user, r.getName());
 				dao.ofy().put(user);
 				isAdded = true;
 			}else{
@@ -468,7 +482,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				}
 				user.getRestaurantsId().add(r.getId());
 				user.setRestaurator(true);
-				sendMailToUserAfterAddingRestaurant(false, user, r.getName());
+				sendMailToUserAfterAddingRestaurant(null, user, r.getName());
 				dao.ofy().put(user);
 				isAdded = true;
 			}
@@ -497,7 +511,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		emailService.sendEmail(toAddress, userName, message, subject);
 		
 	}
-	private void sendMailToUserAfterAddingRestaurant(boolean isNew, User user, String restaurantName){
+	private void sendMailToUserAfterAddingRestaurant(UserToAdd userToAdd, User user, String restaurantName){
 		String userName = user.getName();
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
@@ -505,14 +519,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		String subject = "Message from website MenuMenu";
 		String message = "Hello "+userName+". \n\n";
 		
-		if(isNew){
+		if(userToAdd != null){
 			message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
-					   "Your data needed to login are:\n"+
-					   "\tlogin: "+ user.getEmail()+"\n"+
-					   "\tpassword: "+ user.getPassword()+"\n\n"+
-					   "Remember about changing your password in administration panel.\n\n"+
-					   "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
-					   "Thank you: MenuMenu team.\n\n"+
+					   "Click on the link below to finish this process:\n\n"+
+					   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
+					   "or ignore this message if you do not want participate in our project. \n\n"+
+//					   "Your data needed to login are:\n"+
+//					   "\tlogin: "+ user.getEmail()+"\n"+
+//					   "\tpassword: "+ user.getPassword()+"\n\n"+
+//					   "Remember about changing your password in administration panel.\n\n"+
+//					   "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
+//					   "Thank you: MenuMenu team.\n\n"+
 					   "This email has been generated automatically. Please do not reply to this email address."; 
 		}else{
 			message += "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
@@ -796,6 +813,21 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if(restQuery == null) return null;
 		return restQuery.listKeys();
+	}
+	private User loadUser( String email){
+		if( email == null || !email.isEmpty() ){
+			return null;
+		}
+		
+		return dao.ofy().find(User.class, email);
+	}
+	
+	private UserToAdd loadUserToAdd( String email ){
+		if( email == null || !email.isEmpty() ){
+			return null;
+		}
+		
+		return dao.ofy().find(UserToAdd.class, email);
 	}
 	
 	@Override
@@ -1230,6 +1262,34 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		dao.ofy().put(user);
 		sendMailToNewUser(user);
+	}
+	
+	@Override
+	public void confirmUser(User user, UserToAdd userToAdd){
+		
+		if(user == null || userToAdd == null || !user.getEmail().equals(userToAdd.getEmail())){
+			return;
+		}
+		
+		User userFromServer = loadUser(user.getEmail());
+		UserToAdd userToAddFromServer = loadUserToAdd(userToAdd.getEmail());
+		
+		if(userFromServer == null || userToAddFromServer == null){
+			return;
+		}
+		
+		if(!userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
+			return;
+		}
+		
+		userFromServer.setPassword(user.getPassword());
+		userFromServer.setName(user.getName());
+		userFromServer.setSurname(user.getSurname());
+		userFromServer.setPhoneNumber(user.getPhoneNumber());
+		
+		dao.ofy().put(userFromServer);
+		dao.ofy().delete(userToAddFromServer);
+		
 	}
 	
 	@Override

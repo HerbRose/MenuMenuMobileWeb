@@ -11,6 +11,7 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.entities.UserToAdd;
 
 public interface StoreServiceAsync {
 
@@ -80,5 +81,8 @@ public interface StoreServiceAsync {
 
 	void getRestaurantsForUser(String email,
 			AsyncCallback<List<Restaurant>> callback);
+
+	void confirmUser(User user, UserToAdd userToAdd,
+			AsyncCallback<Void> callback);
 
 }

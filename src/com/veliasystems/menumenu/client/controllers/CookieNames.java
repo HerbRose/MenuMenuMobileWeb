@@ -58,6 +58,14 @@ public enum CookieNames {
 	 * <strong>WORNING</strong> if you change the enum name don't forget change cookie name in <code>picupCollback.html</code> 
 	 */
 	IMAGE_TYPE_PICUP,
+	/**
+	 * <strong>WORNING</strong> if you change the enum name don't forget change cookie name in <code>newUser</code> 
+	 */
+	NEW_USER_EMAIL,
+	/**
+	 * <strong>WORNING</strong> if you change the enum name don't forget change cookie name in <code>newUser</code> 
+	 */
+	NEW_USER_CONFIRME_ID,
 
 	
 }

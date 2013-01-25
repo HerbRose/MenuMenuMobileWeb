@@ -5,9 +5,12 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
 
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
 import com.veliasystems.menumenu.client.userInterface.LoginScreen;
+import com.veliasystems.menumenu.client.userInterface.NewUserPage;
 import com.veliasystems.menumenu.client.userInterface.Pages;
 import com.veliasystems.menumenu.client.userInterface.WelcomeMobilePage;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
@@ -18,7 +21,15 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	public static boolean loggedIn = false;
 	private String osType = R.USER_AGENT;
 	
+	private CookieController cookieController = CookieController.getInstance();
+	
 	public void onModuleLoad() {
+		
+		String newUser = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
+		if(newUser != null && !newUser.equals("null")){ //it's weird, but it seems to be working
+			JQMContext.changePage(new NewUserPage());
+			return;
+		}
 		
 		String logged = Cookies.getCookie(R.LOGGED_IN);
 		RootPanel.get().insert(PagesController.MY_POP_UP, 0);

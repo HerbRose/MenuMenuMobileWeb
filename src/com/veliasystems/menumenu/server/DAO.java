@@ -6,16 +6,18 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.entities.UserToAdd;
 
 public class DAO extends DAOBase {
 	/**
 	 * Registering entities class to datastore in order to save
 	 */
 	static {
-		ObjectifyService.register(User.class);
+		ObjectifyService.register( User.class );
         ObjectifyService.register( Restaurant.class );
         ObjectifyService.register( ImageBlob.class );
-        ObjectifyService.register(City.class);
+        ObjectifyService.register( City.class );
+        ObjectifyService.register( UserToAdd.class );
     }
 	
 	public DAO() {
