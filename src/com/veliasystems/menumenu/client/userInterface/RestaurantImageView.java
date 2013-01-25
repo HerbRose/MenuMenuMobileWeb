@@ -835,34 +835,56 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		});
 		
 		if(isOSMobile && !isOS6){
+			
 			addBoardFromBottom.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
-							new AsyncCallback<String>() {
-								@Override
-								public void onSuccess(String result) {
-									String callbackURL = R.HOST_URL + "picupCallback.html" ;
-									
-									cookieController.setCookie(CookieNames.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
-									cookieController.setCookie(CookieNames.RESTAURANT_ID_PICUP, restaurant.getId()+"");
-									
-									onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
-	
-									JS.clickOnInputFile(fileLogoUpload.getElement());
-	
-								}
-	
-								@Override
-								public void onFailure(Throwable caught) {
-	
-								}
-							});
+					
+					PagesController.MY_POP_UP.showConfirm(new Label(Customization.PUBLISH_IMAGE_INFO), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+							if(answer){
+								blobService.getBlobStoreUrl(restaurant.getId()+"", ImageType.LOGO,
+										new AsyncCallback<String>() {
+											@Override
+											public void onSuccess(String result) {
+												String callbackURL = R.HOST_URL + "picupCallback.html" ;
+												
+												cookieController.setCookie(CookieNames.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
+												cookieController.setCookie(CookieNames.RESTAURANT_ID_PICUP, restaurant.getId()+"");
+												
+												onUploadFormLoaded(fileLogoUpload.getElement(), result, callbackURL, R.HOST_URL);
+				
+												JS.clickOnInputFile(fileLogoUpload.getElement());
+				
+											}
+				
+											@Override
+											public void onFailure(Throwable caught) {
+				
+											}
+										});
+							}
+						}
+					});
+					
+				
 				}
 			});
 
 		} else if(isAndroid){
+//			PagesController.MY_POP_UP.showConfirm(new Label(Customization.PUBLISH_IMAGE_INFO), new IMyAnswer() {
+//				
+//				@Override
+//				public void answer(Boolean answer) {
+//					if(answer){
+//						formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+//						addFlowPanel.insert(formLogoUpload, 0);
+//					}
+//				}
+//			});
 			formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
 			addFlowPanel.insert(formLogoUpload, 0);
 		} else{
@@ -870,13 +892,22 @@ public class RestaurantImageView extends MyPage implements IObserver {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					JS.clickOnInputFile(fileLogoUpload.getElement());
-					formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
-					formLogoUpload.getElement().getStyle().setPosition(Position.RELATIVE);
-					addFlowPanel.add(formLogoUpload);
-					add(formLogoUpload);
-					deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
-					setDefautDeleteContent();
+					PagesController.MY_POP_UP.showConfirm(new Label(Customization.PUBLISH_IMAGE_INFO), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+							if(answer){
+								JS.clickOnInputFile(fileLogoUpload.getElement());
+								formLogoUpload.getElement().getStyle().setDisplay(Display.BLOCK);
+								formLogoUpload.getElement().getStyle().setPosition(Position.RELATIVE);
+								addFlowPanel.add(formLogoUpload);
+								add(formLogoUpload);
+								deletePanel.getElement().getStyle().setHeight(0.00, Unit.PX);
+								setDefautDeleteContent();
+							}				
+						}
+					});
+					
 				}
 			});
 		}
