@@ -159,7 +159,8 @@ public class NewUserPage extends MyPage{
 	@Override
 	protected void onPageShow() {
 		super.onPageShow();
-		container.setWidth( JS.getElementOffsetWidth(getParent().getElement())-40 );
+		container.setWidth( JS.getElementOffsetWidth(getElement())-40 );
+		PagesController.hideWaitPanel();
 	}
 	
 	private boolean validate(){
