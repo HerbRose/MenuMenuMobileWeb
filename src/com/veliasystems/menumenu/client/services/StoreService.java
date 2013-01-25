@@ -5,8 +5,9 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.veliasystems.menumenu.client.controllers.ResponseSaveCityWrapper;
-import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUserWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -24,7 +25,7 @@ public interface StoreService extends RemoteService {
 	 * @param r - {@link Restaurant} to save in datastore
 	 * 
 	 */
-	ResponseSaveWrapper saveRestaurant(String userEmail ,Restaurant r, long oldCityId, long newCityId, List<String> usersToAdd );
+	ResponseSaveRestaurantWrapper saveRestaurant(String userEmail ,Restaurant r, long oldCityId, long newCityId, List<String> usersToAdd );
 	
 	Restaurant saveRestaurant(Restaurant r);
 	/**
@@ -175,5 +176,5 @@ public interface StoreService extends RemoteService {
 
 	List<Restaurant> getRestaurantsForUser(String email);
 
-	void confirmUser(User user, UserToAdd userToAdd);
+	ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd);
 }

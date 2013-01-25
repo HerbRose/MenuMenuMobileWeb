@@ -15,6 +15,8 @@ public class ErrorCodes implements IsSerializable {
 	public static final int RESTAURANT_EXIST_IN_OTHER_CITY = 2;
 	public static final int RESTAURANT_EXIST_IN_THIS_CITY = 3;
 	public static final int CITY_ALREADY_EXIST = 4;
+	public static final int SERVER_ERROR  = 5;
+	public static final int ERROR_WHILE_CREATE_NEW_USER = 6;
 	
 	public ErrorCodes() {
 	}
@@ -31,6 +33,10 @@ public class ErrorCodes implements IsSerializable {
 			return Customization.RESTAURANT_EXIST_ERROR;
 		case 4:
 			return Customization.CITY_EXIST_ERROR;
+		case 5:
+			return Customization.ERROR;
+		case 6:
+			return Customization.ERROR_WHILE_CREATE_NEW_USER;
 			default:
 				return Customization.ERROR;
 			}

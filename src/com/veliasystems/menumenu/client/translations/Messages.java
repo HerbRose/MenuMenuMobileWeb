@@ -432,4 +432,8 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Input email for another user to be accessed to this restaurant")
 	String inputEmailforUser();
 	
+	//not translated
+	@DefaultStringValue("Error while creating new user profile, please contact to administrator")
+	String userAddProblem();
+	
 }

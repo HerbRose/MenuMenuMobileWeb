@@ -1,17 +1,17 @@
-package com.veliasystems.menumenu.client.controllers;
+package com.veliasystems.menumenu.client.controllers.responseWrappers;
 
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 
-public class ResponseSaveWrapper implements IsSerializable{
+public class ResponseSaveRestaurantWrapper implements IsSerializable{
 
 	private Restaurant restaurant;
 	private List<Integer> errorCodes;
 	
 	
-	public ResponseSaveWrapper() {
+	public ResponseSaveRestaurantWrapper() {
 	}
 	
 	public List<Integer> getErrorCodes() {

@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.client.controllers;
+package com.veliasystems.menumenu.client.controllers.responseWrappers;
 
 import java.util.List;
 

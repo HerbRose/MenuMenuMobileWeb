@@ -3,7 +3,6 @@ package com.veliasystems.menumenu.client.userInterface;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -11,12 +10,16 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.ErrorCodes;
 import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUserWrapper;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.entities.UserToAdd;
 import com.veliasystems.menumenu.client.services.StoreService;
@@ -105,12 +108,24 @@ public class NewUserPage extends MyPage{
 						UserToAdd userToAdd = new UserToAdd(email);
 						userToAdd.setConfirmId(confirmId);
 						
-						storeService.confirmUser(user, userToAdd, new AsyncCallback<Void>() {
+						storeService.confirmUser(user, userToAdd, new AsyncCallback<ResponseUserWrapper>() {
 							
 							@Override
-							public void onSuccess(Void result) {
-								// TODO Auto-generated method stub
-								
+							public void onSuccess(ResponseUserWrapper result) {
+									if(result.getErrorCodes().isEmpty()){
+										JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
+									} else{
+										String msg = "";
+										for (int i : result.getErrorCodes()) {
+											msg += ErrorCodes.getError(i) + "\n\n";
+										}
+										PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+											
+											@Override
+											public void answer(Boolean answer) {
+											}
+										});
+									}
 							}
 							
 							@Override

@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.veliasystems.menumenu.client.controllers.ResponseSaveCityWrapper;
-import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUserWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -16,7 +17,7 @@ import com.veliasystems.menumenu.client.entities.UserToAdd;
 public interface StoreServiceAsync {
 
 	void saveRestaurant(String userEmail, Restaurant r, long oldCityId,
-			long newCityId,List<String> usersToAdd, AsyncCallback<ResponseSaveWrapper> callback);
+			long newCityId,List<String> usersToAdd, AsyncCallback<ResponseSaveRestaurantWrapper> callback);
 
 	void loadRestaurants(AsyncCallback<List<Restaurant>> callback);
 
@@ -83,6 +84,6 @@ public interface StoreServiceAsync {
 			AsyncCallback<List<Restaurant>> callback);
 
 	void confirmUser(User user, UserToAdd userToAdd,
-			AsyncCallback<Void> callback);
+			AsyncCallback<ResponseUserWrapper> callback);
 
 }

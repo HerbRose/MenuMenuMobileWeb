@@ -40,8 +40,9 @@ import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.ErrorCodes;
-import com.veliasystems.menumenu.client.controllers.ResponseSaveCityWrapper;
-import com.veliasystems.menumenu.client.controllers.ResponseSaveWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUserWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -546,9 +547,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public ResponseSaveWrapper saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId, List<String> usersToAdd) {
+	public ResponseSaveRestaurantWrapper saveRestaurant(String userEmail,Restaurant r, long oldCityId, long newCityId, List<String> usersToAdd) {
 		
-		ResponseSaveWrapper returnObject = new ResponseSaveWrapper();
+		ResponseSaveRestaurantWrapper returnObject = new ResponseSaveRestaurantWrapper();
 		List<Integer> errorCodes = new ArrayList<Integer>();
 		
 		User foundUser = findUser(userEmail);
@@ -1265,30 +1266,44 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
-	public void confirmUser(User user, UserToAdd userToAdd){
+	public ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd){
+		ResponseUserWrapper responseUserWrapper = new ResponseUserWrapper();
+		List<Integer> errorCodes = new ArrayList<Integer>();
+		
 		
 		if(user == null || userToAdd == null || !user.getEmail().equals(userToAdd.getEmail())){
-			return;
+//			return;
+			errorCodes.add(ErrorCodes.SERVER_ERROR);
 		}
 		
 		User userFromServer = loadUser(user.getEmail());
 		UserToAdd userToAddFromServer = loadUserToAdd(userToAdd.getEmail());
 		
-		if(userFromServer == null || userToAddFromServer == null){
-			return;
+		if(userFromServer == null || userToAddFromServer == null|| !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
+//			return;
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
+			
 		}
 		
-		if(!userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
-			return;
+		if(errorCodes.isEmpty()){
+			userFromServer.setPassword(user.getPassword());
+			userFromServer.setName(user.getName());
+			userFromServer.setSurname(user.getSurname());
+			userFromServer.setPhoneNumber(user.getPhoneNumber());
+			
+			dao.ofy().put(userFromServer);
+			dao.ofy().delete(userToAddFromServer);
+			
+			userFromServer.setPassword("");
+			responseUserWrapper.setUser(userFromServer);
+			responseUserWrapper.setErrorCodes(errorCodes);
+			return responseUserWrapper;
+		}else{
+			responseUserWrapper.setUser(new User(""));
+			responseUserWrapper.setErrorCodes(errorCodes);
+			return responseUserWrapper;
 		}
-		
-		userFromServer.setPassword(user.getPassword());
-		userFromServer.setName(user.getName());
-		userFromServer.setSurname(user.getSurname());
-		userFromServer.setPhoneNumber(user.getPhoneNumber());
-		
-		dao.ofy().put(userFromServer);
-		dao.ofy().delete(userToAddFromServer);
+	
 		
 	}
 	

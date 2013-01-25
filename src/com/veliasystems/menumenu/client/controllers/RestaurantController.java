@@ -17,6 +17,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -247,7 +248,7 @@ public class RestaurantController {
 		
 		PagesController.showWaitPanel();
 
-		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId,userEmailToAdd, new AsyncCallback<ResponseSaveWrapper>() {
+		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId,userEmailToAdd, new AsyncCallback<ResponseSaveRestaurantWrapper>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -264,7 +265,7 @@ public class RestaurantController {
 			}
 
 			@Override
-			public void onSuccess(ResponseSaveWrapper result) {
+			public void onSuccess(ResponseSaveRestaurantWrapper result) {
 				if(result.getErrorCodes().size() >0){
 					String msg = "";
 					for (int i : result.getErrorCodes()) {

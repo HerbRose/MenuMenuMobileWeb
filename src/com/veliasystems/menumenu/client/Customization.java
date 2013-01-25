@@ -232,6 +232,8 @@ public class Customization {
 	public static final String PUBLISH_IMAGE_INFO = translated.publishImageInfo();
 	
 	public static final String INPUT_EMAIL_FOR_USER = translated.inputEmailforUser();
+	
+	public static final String ERROR_WHILE_CREATE_NEW_USER = translated.userAddProblem();
 }
   
   
