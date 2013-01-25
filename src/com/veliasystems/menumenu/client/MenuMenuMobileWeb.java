@@ -26,6 +26,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	private CookieController cookieController = CookieController.getInstance();
 	
 	public void onModuleLoad() {
+		RootPanel.get().insert(PagesController.MY_POP_UP, 0);
 		
 		String newUser = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
 		if(newUser != null && !newUser.equals("null") && !newUser.isEmpty()){ //it's weird, but it seems to be working
@@ -34,7 +35,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		}
 		
 		String logged = Cookies.getCookie(R.LOGGED_IN);
-		RootPanel.get().insert(PagesController.MY_POP_UP, 0);
+		
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0
 				|| osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;

@@ -14,10 +14,11 @@ public class UserToAdd implements Serializable {
 
 	private static final long serialVersionUID = 5694392315830957411L;
 	
-	@Id
+	
 	/**
 	 * The user email (and login)
 	 */
+	@Id
 	private String email; //login
 	/**
 	 * an id generated when user account was creating. 

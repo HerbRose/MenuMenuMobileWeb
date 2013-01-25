@@ -464,15 +464,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				user.setRestaurator(true);
 				
 				UserToAdd userToAdd = new UserToAdd(userEmail);
-				Random random = new Random();
-				String tmpString = "";
-				String confirmId = "";
-				for(int i=0 ; i<10; i++){
-					tmpString = Long.toString(random.nextLong(), 36);
-					tmpString = tmpString.replace("-", "");
-					confirmId+=tmpString;
-				}
-				userToAdd.setConfirmId(confirmId);
+				
+				userToAdd.setConfirmId(getConfirmId());
 				dao.ofy().put(userToAdd);
 				sendMailToUserAfterAddingRestaurant(userToAdd, user, r.getName());
 				dao.ofy().put(user);
@@ -492,7 +485,19 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 
 	
-	private void sendMailToNewUser(User user){
+	private String getConfirmId() {
+		Random random = new Random();
+		String tmpString = "";
+		String confirmId = "";
+		for(int i=0 ; i<10; i++){
+			tmpString = Long.toString(random.nextLong(), 36);
+			tmpString = tmpString.replace("-", "");
+			confirmId+=tmpString;
+		}
+		return confirmId;
+	}
+
+	private void sendMailToNewUser(User user, UserToAdd userToAdd){
 		String userName = user.getName();
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
@@ -500,11 +505,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		String subject = "Message from website MenuMenu";
 		String message = "Hello "+userName+". \n\n";
 		
-		message += "This email address has been given during registration process on MenuMenu website.\n\n"+
-				   "Your data needed to login are:\n"+
-				   "\tlogin: "+ user.getEmail()+"\n"+
-				   "\tpassword: "+ user.getPassword()+"\n\n"+
-				   "Remember about changing your password in administration panel.\n\n"+
+		message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
+				   "Click on the link below to finish this process:\n\n"+
+				   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
+				   "or ignore this message if you do not want participate in our project. \n\n"+
 				   "Thank you: MenuMenu team.\n\n"+
 				   "This email has been generated automatically. Please do not reply to this email address."; 
 		List<String> toAddress = new ArrayList<String>();
@@ -530,7 +534,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //					   "\tpassword: "+ user.getPassword()+"\n\n"+
 //					   "Remember about changing your password in administration panel.\n\n"+
 //					   "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
-//					   "Thank you: MenuMenu team.\n\n"+
+					   "Thank you: MenuMenu team.\n\n"+
 					   "This email has been generated automatically. Please do not reply to this email address."; 
 		}else{
 			message += "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
@@ -816,7 +820,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return restQuery.listKeys();
 	}
 	private User loadUser( String email){
-		if( email == null || !email.isEmpty() ){
+		if( email == null || email.isEmpty() ){
 			return null;
 		}
 		
@@ -824,7 +828,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	private UserToAdd loadUserToAdd( String email ){
-		if( email == null || !email.isEmpty() ){
+		if( email == null || email.isEmpty() ){
 			return null;
 		}
 		
@@ -1258,29 +1262,35 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public void addUser(User user){
 		
-		int i = (int) (Math.random() * 100);
-		user.setPassword(getLoginFromMail(user.getEmail())+i);
+		UserToAdd userToAdd = new UserToAdd(user.getEmail());
+		userToAdd.setConfirmId(getConfirmId());
 		
 		dao.ofy().put(user);
-		sendMailToNewUser(user);
+		dao.ofy().put(userToAdd);
+		
+		sendMailToNewUser(user, userToAdd);
 	}
 	
 	@Override
 	public ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd){
+		
 		ResponseUserWrapper responseUserWrapper = new ResponseUserWrapper();
 		List<Integer> errorCodes = new ArrayList<Integer>();
 		
 		
 		if(user == null || userToAdd == null || !user.getEmail().equals(userToAdd.getEmail())){
 //			return;
+			log.severe("user == null || userToAdd == null || !user.getEmail().equals(userToAdd.getEmail()");
 			errorCodes.add(ErrorCodes.SERVER_ERROR);
 		}
 		
 		User userFromServer = loadUser(user.getEmail());
 		UserToAdd userToAddFromServer = loadUserToAdd(userToAdd.getEmail());
 		
-		if(userFromServer == null || userToAddFromServer == null|| !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
+		if(userFromServer == null || userToAddFromServer == null || !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
 //			return;
+			log.severe("userFromServer: " + userFromServer + " userToAddFromServer: " + userToAddFromServer+ 
+					"\n userToAdd.getConfirmId(): " + userToAdd.getConfirmId());
 			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 			
 		}
@@ -1393,7 +1403,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		} else if(!newPassword.isEmpty() && oldPassword.equals(userToChange.getPassword())){
 			userToChange.setPassword(newPassword);
 			message += "\n\n Your password has been changed";
-			message += "\n\n Your new password is: " + userToChange.getPassword();
 			
 		} else if(newPassword.isEmpty()){
 			message += "\n\n Your personal data have been changed: ";

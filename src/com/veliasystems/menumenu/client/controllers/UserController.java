@@ -136,6 +136,14 @@ public class UserController {
 			public void onSuccess(Void result) {
 				users.put(userToAdd.getEmail(), userToAdd);
 				notifyAllObservers();
+				PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 				PagesController.hideWaitPanel();
 			}
 			

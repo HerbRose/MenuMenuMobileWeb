@@ -76,7 +76,7 @@ public class JS {
 	
 	
 	public static native void consolLog(String elementId)/*-{
-//		$wnd.console.log("JS::consolLog: " + elementId);
+		$wnd.console.log("JS::consolLog: " + elementId);
 	}-*/;
 
 
