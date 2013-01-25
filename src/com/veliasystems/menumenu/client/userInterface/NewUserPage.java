@@ -1,8 +1,10 @@
 package com.veliasystems.menumenu.client.userInterface;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -12,7 +14,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.Util;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.entities.UserToAdd;
+import com.veliasystems.menumenu.client.services.StoreService;
+import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
@@ -36,12 +44,19 @@ public class NewUserPage extends MyPage{
 	
 	
 	private MyRestaurantInfoPanel container = new MyRestaurantInfoPanel();
-	
+	private final StoreServiceAsync storeService = GWT.create(StoreService.class);
+	private CookieController cookieController = CookieController.getInstance();
+	private String email = "";
+	private String confirmId = "";
 	public NewUserPage() {
 		super();
-		 logoPanel.add(new Image("img/layout/menuMenuLogo.png"));
-		 logoPanel.setStyleName("logoPanel", true);
-		 getHeader().addImageHeader(logoPanel);  
+		
+		email = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
+		confirmId = cookieController.getCookie(CookieNames.NEW_USER_CONFIRME_ID);
+		
+		logoPanel.add(new Image("img/layout/menuMenuLogo.png"));
+		logoPanel.setStyleName("logoPanel", true);
+		getHeader().addImageHeader(logoPanel);  
 		 
 		
 			editPasswordLabel = new Label(Customization.INPUT_PASSWORD);
@@ -80,10 +95,33 @@ public class NewUserPage extends MyPage{
 				@Override
 				public void onClick(ClickEvent event) {
 					if(validate()){
-						PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
+						
+						User user = new User(email);
+						user.setPhoneNumber(phoneNumerBox.getText());
+						user.setPassword(editPasswordBox.getText());
+						user.setName(editNameBox.getText());
+						user.setSurname(editSurnameBox.getText());
+						
+						UserToAdd userToAdd = new UserToAdd(email);
+						userToAdd.setConfirmId(confirmId);
+						
+						storeService.confirmUser(user, userToAdd, new AsyncCallback<Void>() {
 							
 							@Override
-							public void answer(Boolean answer) {
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void onFailure(Throwable caught) {
+								PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+									
+									@Override
+									public void answer(Boolean answer) {
+										// TODO Auto-generated method stub	
+									}
+								});
 								
 							}
 						});

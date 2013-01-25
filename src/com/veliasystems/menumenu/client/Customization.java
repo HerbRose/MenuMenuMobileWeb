@@ -2,7 +2,6 @@
 package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.veliasystems.menumenu.client.translations.Messages;
 /**
  * 
@@ -231,6 +230,8 @@ public class Customization {
 	public static final String PUBLISH_PFOFILE_INFO = translated.publishProfileInfo();
 	
 	public static final String PUBLISH_IMAGE_INFO = translated.publishImageInfo();
+	
+	public static final String INPUT_EMAIL_FOR_USER = translated.inputEmailforUser();
 }
   
   

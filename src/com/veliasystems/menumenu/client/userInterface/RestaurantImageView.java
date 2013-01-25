@@ -200,6 +200,14 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		adminPanelWrapper.add(addUserTextBoxDiv);
 		
 		
+		addUserImage.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				setPlaceHolder(addUserTextBox, Customization.INPUT_EMAIL_FOR_USER);
+			}
+		});
+		
 		logoImage = new Image();
 		if (restaurant.getMainLogoImageString() != null) {
 			logoImage.setUrl(restaurant.getMainLogoImageString());

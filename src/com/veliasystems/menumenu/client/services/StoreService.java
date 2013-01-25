@@ -12,6 +12,7 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.entities.UserToAdd;
 
 /**
  * The client side stub for the RPC service.
@@ -173,4 +174,6 @@ public interface StoreService extends RemoteService {
 	User saveUser(User user);
 
 	List<Restaurant> getRestaurantsForUser(String email);
+
+	void confirmUser(User user, UserToAdd userToAdd);
 }

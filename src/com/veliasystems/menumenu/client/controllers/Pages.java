@@ -32,7 +32,8 @@ public enum Pages {
 	 * use {@link Pages#PAGE_ADMINISTRATION}
 	 */
 	PAGE_RESTAURANT_MANAGER,
-	PAGE_ADMINISTRATION;
+	PAGE_ADMINISTRATION,
+	POP_UP;
 	
 	
 	/**
@@ -63,7 +64,7 @@ public enum Pages {
 					page = new RestaurantsManagerScreen();
 				break;
 			default:
-				page = null;
+				page = new JQMPage();
 				break;
 			}
 		return page;
