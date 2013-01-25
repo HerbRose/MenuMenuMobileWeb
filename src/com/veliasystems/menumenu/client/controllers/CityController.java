@@ -11,12 +11,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 /**
  * Singleton.
@@ -141,20 +143,38 @@ public class CityController{
 			
 			@Override
 			public void onSuccess(Map<String, String> result) {
-				
-				if(result == null){
-					Window.alert(Customization.WRONG_DATA_ERROR);
-				}else{
-					Window.alert(Customization.COPY_RESTAURANTS_IN_PROGRESS);
-				}
 				PagesController.hideWaitPanel();
-				
+				if(result == null){
+//					Window.alert(Customization.WRONG_DATA_ERROR);
+					PagesController.MY_POP_UP.showError(new Label(Customization.WRONG_DATA_ERROR), new IMyAnswer() {
+						
+				    	@Override
+						public void answer(Boolean answer) {
+						}
+					});
+				}else{
+//					Window.alert(Customization.COPY_RESTAURANTS_IN_PROGRESS);
+					PagesController.MY_POP_UP.showSuccess(new Label(Customization.COPY_RESTAURANTS_IN_PROGRESS), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {	
+						}
+					});
+				}
+			
+		
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 	}
@@ -176,8 +196,15 @@ public class CityController{
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.hideWaitPanel();
+				
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 	}
@@ -235,21 +262,40 @@ public class CityController{
 						History.back();
 					}
 					PagesController.hideWaitPanel();
-					Window.alert(Customization.OK);
+					
+					PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+						}
+					});
+//					Window.alert(Customization.OK);
 				}else{
 					String msg = "";
 						for (int i : response.getErrorCodes()) {
 							msg += ErrorCodes.getError(i) + "\n\n";
 						}
 					PagesController.hideWaitPanel();
-					Window.alert(msg);
+					
+					PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+					
+						}
+					});
 				}
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 		
@@ -269,7 +315,13 @@ public class CityController{
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 	}

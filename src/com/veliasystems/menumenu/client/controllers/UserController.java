@@ -8,17 +8,16 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.EmailService;
 import com.veliasystems.menumenu.client.services.EmailServiceAsync;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
-import com.veliasystems.menumenu.client.userInterface.administration.EditDataPanel;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 /**
  * 
  * Controller to all {@link User} operations
@@ -144,8 +143,12 @@ public class UserController {
 			public void onFailure(Throwable caught) {
 				log.warning(caught.getMessage()); 
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
-				
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {		
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 	}
@@ -163,11 +166,23 @@ public class UserController {
 			@Override
 			public void onSuccess(User result) {
 				if(result == null){
-					Window.alert("bad login or user not found");
+//					Window.alert("bad login or user not found");
+					PagesController.MY_POP_UP.showError(new Label("bad login or user not found"), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {	
+						}
+					});
 				}else{
 					String login = result.getEmail();
 					users.put(login, result);					
-					Window.alert(Customization.EMAIL_SEND);
+//					Window.alert(Customization.EMAIL_SEND);
+					PagesController.MY_POP_UP.showSuccess(new Label(Customization.EMAIL_SEND), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+						}
+					});
 				}
 			}
 		});
@@ -275,14 +290,25 @@ public class UserController {
 		emailService.sendEmail(chosenEmailList, chosenEmailList.get(0), message, subject, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
-				Window.alert(Customization.EMAIL_SEND);
+//				Window.alert(Customization.EMAIL_SEND);
+				PagesController.MY_POP_UP.showSuccess(new Label(Customization.EMAIL_SEND), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {	
+					}
+				});
 				notifyAllObservers();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);
-				
+						// Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 		
@@ -334,13 +360,26 @@ public class UserController {
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.ERROR);	
+//				Window.alert(Customization.ERROR);	
+				PagesController.MY_POP_UP.showError(new Label(Customization.ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 
 			@Override
 			public void onSuccess(User result) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.OK);
+//				Window.alert(Customization.OK);
+				PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 	}

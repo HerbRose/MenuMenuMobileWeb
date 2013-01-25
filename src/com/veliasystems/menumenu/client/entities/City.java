@@ -71,7 +71,11 @@ public class City implements Serializable{
 		String thisCityNameWithOutWhiteSpace = this.getCity().replaceAll(" ", "");
 		String cityToCheckNameWithOutWhiteSpace = c.getCity().replaceAll(" ", "");
 		
-		if(thisCityNameWithOutWhiteSpace.equalsIgnoreCase(cityToCheckNameWithOutWhiteSpace)){
+//		if(thisCityNameWithOutWhiteSpace.equalsIgnoreCase(cityToCheckNameWithOutWhiteSpace)){
+//			return true;
+//		}
+		
+		if(this.city.trim().equalsIgnoreCase(c.city.trim()) && this.country.trim().equalsIgnoreCase(c.country.trim())){
 			return true;
 		}
 		

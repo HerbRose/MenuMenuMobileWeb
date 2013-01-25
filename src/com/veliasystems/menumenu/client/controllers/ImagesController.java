@@ -9,6 +9,7 @@ import java.util.Set;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -17,6 +18,7 @@ import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
 import com.veliasystems.menumenu.client.userInterface.MyImage;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 
 public class ImagesController {
@@ -78,7 +80,13 @@ public class ImagesController {
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
 				notifyAllObservers();
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 
 			@Override
@@ -180,8 +188,13 @@ public class ImagesController {
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
-				
+				//Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 		});
 	}
@@ -213,7 +226,13 @@ public class ImagesController {
 			@Override
 			public void onFailure(Throwable caught) {	
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+				//Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
 			}
 			@Override
 			public void onSuccess(Boolean result) {

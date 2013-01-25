@@ -52,6 +52,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
@@ -599,7 +600,14 @@ public class RestaurantImageView extends MyPage implements IObserver {
 			}
 		}
 		if(!msg.isEmpty()){
-			Window.alert(msg);
+//			Window.alert(msg);
+			PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+					
+				}
+			});
 		}
 		return isCorrect;
 	}
@@ -859,8 +867,14 @@ public class RestaurantImageView extends MyPage implements IObserver {
 							@Override
 							public void onFailure(Throwable caught) {
 								PagesController.hideWaitPanel();
-								Window.alert("Problem with upload. Try again");
-
+//								Window.alert("Problem with upload. Try again");
+								PagesController.MY_POP_UP.showError(new Label("Problem with upload. Try again"), new IMyAnswer() {
+									
+									@Override
+									public void answer(Boolean answer) {
+										
+									}
+								});
 							}
 						});
 			}

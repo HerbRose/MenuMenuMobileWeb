@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
@@ -29,6 +28,7 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 public class LoadDataScreen extends JQMPage {
 	
@@ -61,7 +61,14 @@ public class LoadDataScreen extends JQMPage {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR)
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 				Cookies.removeCookie(R.LOADED);
 				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
 				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);

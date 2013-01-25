@@ -18,7 +18,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -28,12 +27,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.controllers.CityController;
-import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 
@@ -137,11 +136,23 @@ public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 			 
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
-					Restaurant object, NativeEvent event) {
-				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE + "\n" + object.getName() + " " + cityController.getCity(object.getCityId()).getCity() )){
-					justDeletedItemCity = object.getCityId();
-					restaurantController.deleteRestaurant(object, RestaurantsManagerPanel.class.getName());
-				}
+					final Restaurant object, NativeEvent event) {
+//				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE + "\n" + object.getName() + " " + cityController.getCity(object.getCityId()).getCity() )){
+//					justDeletedItemCity = object.getCityId();
+//					restaurantController.deleteRestaurant(object, RestaurantsManagerPanel.class.getName());
+//				}
+				PagesController.MY_POP_UP.showConfirm(new Label(Customization.ARE_YOU_SURE_WANT_DELETE + ": " + object.getName() + " " + cityController.getCity(object.getCityId()).getCity()), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						if(answer){
+							justDeletedItemCity = object.getCityId();
+							restaurantController.deleteRestaurant(object, RestaurantsManagerPanel.class.getName());
+							clearData();
+						}
+						
+					}
+				});
 				super.onBrowserEvent(context, elem, object, event);
 			}
 			

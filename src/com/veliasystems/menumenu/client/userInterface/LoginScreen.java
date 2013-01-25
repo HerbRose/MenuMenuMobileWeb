@@ -55,8 +55,7 @@ public class LoginScreen extends MyPage{
 	
 	public LoginScreen(boolean isWrongLogin){
 		super();
-		new MyPopUp();
-		
+				
 		nameBox = new TextBox();
 		passwordBox = new PasswordTextBox();
 

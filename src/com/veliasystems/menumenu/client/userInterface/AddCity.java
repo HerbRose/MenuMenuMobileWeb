@@ -2,7 +2,6 @@ package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.JQMContext;
@@ -18,6 +17,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 public class AddCity extends MyPage implements IObserver{
@@ -126,7 +126,15 @@ public class AddCity extends MyPage implements IObserver{
 	}
 	
 	private void showWarning( String worning){
-		Window.alert(worning);
+//		Window.alert(worning);
+		PagesController.MY_POP_UP.showWarning(new Label(worning), new IMyAnswer() {
+			
+			@Override
+			public void answer(Boolean answer) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	@Override

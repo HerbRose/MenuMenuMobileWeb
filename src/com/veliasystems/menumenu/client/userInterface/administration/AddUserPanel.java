@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -23,6 +22,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 public class AddUserPanel extends FlowPanel implements IManager, IObserver {
@@ -149,7 +149,14 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 		}
 
 		if(!msg.isEmpty()){
-			Window.alert(msg);
+//			Window.alert(msg);
+			PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+						
+				}
+			});
 		}
 		return isCorrect;
 	}

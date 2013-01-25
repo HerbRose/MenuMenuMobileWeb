@@ -7,9 +7,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -31,6 +29,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 
 
@@ -60,9 +59,18 @@ public class CityListScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_LOGOUT)){
-					JQMContext.changePage(new LogoutScreen(), Transition.SLIDE);
-				}
+//				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_LOGOUT)){
+//					JQMContext.changePage(new LogoutScreen(), Transition.SLIDE);
+//				}
+				PagesController.MY_POP_UP.showConfirm(new Label(Customization.ARE_YOU_SURE_WANT_LOGOUT), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						if(answer){
+							JQMContext.changePage(new LogoutScreen(), Transition.SLIDE);
+						}
+					}
+				});
 			}
 		});
 		

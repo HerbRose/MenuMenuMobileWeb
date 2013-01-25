@@ -44,6 +44,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
@@ -184,7 +185,14 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 							public void onFailure(Throwable caught) {
 
 								PagesController.hideWaitPanel();
-								Window.alert(Customization.CONNECTION_ERROR);
+//								Window.alert(Customization.CONNECTION_ERROR);
+								PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+									
+									@Override
+									public void answer(Boolean answer) {
+										
+									}
+								});
 								// logoImage.setUrl("");
 								// addBoardWrap.remove(logoEditImage);
 							}
@@ -332,7 +340,14 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 
 		city = cityController.getCity(cityId);
 		if (city == null) {
-			Window.alert(Customization.ERROR);
+//			Window.alert(Customization.ERROR);
+			PagesController.MY_POP_UP.showError(new Label(Customization.ERROR), new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+				
+				}
+			});
 			return;
 		}
 		init(true);
@@ -719,8 +734,14 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 							@Override
 							public void onFailure(Throwable caught) {
 								PagesController.hideWaitPanel();
-								Window.alert("Problem with upload. Try again");
-
+//								Window.alert("Problem with upload. Try again");
+								PagesController.MY_POP_UP.showError(new Label("Problem with upload. Try again"), new IMyAnswer() {
+									
+									@Override
+									public void answer(Boolean answer) {
+										
+									}
+								});
 							}
 						});
 			}

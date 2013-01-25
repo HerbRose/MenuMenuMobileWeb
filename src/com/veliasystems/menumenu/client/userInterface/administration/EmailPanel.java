@@ -8,8 +8,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -23,6 +21,7 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyInfoPanelRow;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 public class EmailPanel extends FlowPanel implements IManager, IObserver {
@@ -78,12 +77,34 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(validate()){
-					List<String> emailsToSend = new ArrayList<String>();
-					for (long item : addressListCombo.getCheckedList()) {
-						emailsToSend.add(emailList.get( (int) item)); 
-					}
-					userController.sendMail(emailsToSend, senderTextBox.getText(), subjectTextBox.getText(), messageTextArea.getText());
+//				if(validate()){
+//					List<String> emailsToSend = new ArrayList<String>();
+//					for (long item : addressListCombo.getCheckedList()) {
+//						emailsToSend.add(emailList.get( (int) item)); 
+//					}
+//					userController.sendMail(emailsToSend, senderTextBox.getText(), subjectTextBox.getText(), messageTextArea.getText());
+//				}
+				String valid  = validate();
+				
+				if(valid.isEmpty() && !addressListCombo.getCheckedList().isEmpty()){
+					sendMessage();
+				}else if (!valid.isEmpty() && !addressListCombo.getCheckedList().isEmpty()){
+					
+					PagesController.MY_POP_UP.showConfirm(new Label(valid), new IMyAnswer() {		
+						@Override
+						public void answer(Boolean answer) {
+							if(answer){
+								sendMessage();
+							}
+						}
+					});
+				} else if(addressListCombo.getCheckedList().isEmpty()){
+						PagesController.MY_POP_UP.showError(new Label(Customization.EMPTY_MAIL_LIST), new IMyAnswer() {		
+						@Override
+						public void answer(Boolean answer) {
+	
+						}
+					});
 				}
 			}
 		});
@@ -114,6 +135,13 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 		
 	}
 	
+	private void sendMessage(){
+		List<String> emailsToSend = new ArrayList<String>();
+		for (long item : addressListCombo.getCheckedList()) {
+			emailsToSend.add(emailList.get( (int) item)); 
+		}
+		userController.sendMail(emailsToSend, senderTextBox.getText(), subjectTextBox.getText(), messageTextArea.getText());
+	}
 	
 	
 	@Override
@@ -168,33 +196,17 @@ public class EmailPanel extends FlowPanel implements IManager, IObserver {
 		
 	}
 	
-	private boolean validate(){
-		boolean isOk = true;
-		String msg = "";
-		
-				if(addressListCombo.getCheckedList().isEmpty()){
-					isOk = false;
-					msg += Customization.EMPTY_MAIL_LIST + "\n";
-				}
-				if(!msg.isEmpty()){
-					Window.alert(msg);
-					return isOk;
-				}
+	private String validate(){
+	String msg = "";
 				if(subjectTextBox.getText().isEmpty() && messageTextArea.getText().isEmpty()){
-					if(!Window.confirm(Customization.CONFIRMATION_NO_SUBJECT_AND_NO_MESSAGE)){
-						isOk = false;
-					}
+					msg += Customization.CONFIRMATION_NO_SUBJECT_AND_NO_MESSAGE + "\n";
 				} else if(subjectTextBox.getText().isEmpty()) {
-					if(!Window.confirm(Customization.CONFIRMATION_NO_SUBJECT)){
-						isOk = false;
-					}
-				} else if(messageTextArea.getText().isEmpty()){
-					if(!Window.confirm(Customization.CONFIRMATION_NO_MESSAGE)){
-						isOk = false;
-					}
+					msg+=Customization.CONFIRMATION_NO_SUBJECT + "\n";		
+				} else if(messageTextArea.getText().isEmpty()){				
+					msg+=Customization.CONFIRMATION_NO_MESSAGE+ "\n";
 				}
-		
-		return isOk;
+
+		return msg;
 	}
 
 }

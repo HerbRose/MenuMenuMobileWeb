@@ -137,7 +137,7 @@ public class MyPopUp extends FlowPanel{
 		List<Widget> footerWidgetList = new ArrayList<Widget>();
 		footerWidgetList.add(confirmButtonPanel);
 		footerWidgetList.add(cancelButtonPanel);
-		
+		contentPanel.add(content);
 		setPopUpLook(PopUpType.CONFIRM, footerWidgetList);
 	}
 	public void showWarning( Widget content, IMyAnswer answer){
@@ -191,7 +191,7 @@ public class MyPopUp extends FlowPanel{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				answer.answer(true);
+				answer.answer(false);
 				clearMe();
 			}
 		});

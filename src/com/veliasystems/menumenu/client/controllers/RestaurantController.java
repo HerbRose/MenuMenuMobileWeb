@@ -12,11 +12,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -29,6 +29,7 @@ import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.CropImage;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 
 
@@ -215,7 +216,13 @@ public class RestaurantController {
 				notifyAllObservers();
 				
 				if(isBack){
-					Window.alert(Customization.RESTAURANTSAVED);
+//					Window.alert(Customization.RESTAURANTSAVED);
+					PagesController.MY_POP_UP.showSuccess(new Label(Customization.RESTAURANTSAVED), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+						}
+					});
 					JQMContext.changePage(CityController.cityMapView.get(restaurant.getCityId()) , Transition.SLIDE);
 					
 				}
@@ -223,7 +230,14 @@ public class RestaurantController {
 			}
 			@Override
 			public void onFailure(Throwable caught) {	
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 		
@@ -238,8 +252,15 @@ public class RestaurantController {
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
-	
+//				Window.alert(Customization.CONNECTION_ERROR);
+				
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 
 			@Override
@@ -250,7 +271,13 @@ public class RestaurantController {
 						msg += ErrorCodes.getError(i) + "\n\n";
 					}
 					
-					Window.alert(msg);
+//					Window.alert(msg);
+					PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+						}
+					});
 				}
 				if(result.getRestaurant() != null){
 					putRestaurantToLocalList(result.getRestaurant());
@@ -287,17 +314,28 @@ public class RestaurantController {
 				
 				putRestaurantToLocalList(newRestaurant);
 				PagesController.hideWaitPanel();
-				Window.alert(message);
-				
+//				Window.alert(message);
+				PagesController.MY_POP_UP.showSuccess(new Label(message), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+										}
+				});
 				JQMContext.changePage( PagesController.getCityInfoScreenPage(newRestaurant.getCityId()) );//CityController.cityMapView.get(newRestaurant.getCityId()) , Transition.SLIDE);
 				
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.hideWaitPanel();
-				
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 	}
@@ -398,12 +436,28 @@ public class RestaurantController {
 			@Override
 			public void onSuccess(ImageBlob imageBlob) {
 				log.info("getLastUploadedImage onSuccess: " + imageBlob == null?"null":imageBlob.getImageUrl());
-				if(imageBlob == null) Window.alert(Customization.CONNECTION_ERROR);
+				if(imageBlob == null) {
+//					Window.alert(Customization.CONNECTION_ERROR);
+					PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+				
+						}
+					});
+				}
 				else JQMContext.changePage(new CropImage(imageBlob, backPage), Transition.SLIDE);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 //		blobService.getImagesByType(myRestaurantId, myImageType, new AsyncCallback<List<ImageBlob>>() {
@@ -442,7 +496,17 @@ public class RestaurantController {
 		blobService.getLastUploadedImage(restaurantId, imageType, new AsyncCallback<ImageBlob>() {
 			@Override
 			public void onSuccess(ImageBlob result) {
-				if(result == null) Window.alert(Customization.CONNECTION_ERROR);
+				if(result == null){
+//					Window.alert(Customization.CONNECTION_ERROR);
+					
+					PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+							
+						}
+					});
+				}
 				else{
 					if(cookieController.getCookie(CookieNames.IS_PICUP_USED).equals("true")){
 						JQMContext.changePage(new CropImage(result, new AddRestaurantScreen()), Transition.SLIDE);
@@ -454,7 +518,14 @@ public class RestaurantController {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 	}
@@ -502,7 +573,14 @@ public class RestaurantController {
 	public void afterCrop(final ImageBlob newImageBlob, ImageBlob oldImageBlob, final JQMPage backPage) {
 		
 		if(newImageBlob == null){
-			Window.alert(Customization.CONNECTION_ERROR);
+//			Window.alert(Customization.CONNECTION_ERROR);
+			PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+					
+				}
+			});
 			return;
 		}
 		
@@ -560,7 +638,14 @@ public class RestaurantController {
 				@Override
 				public void onFailure(Throwable caught) {
 					PagesController.hideWaitPanel();
-					Window.alert(Customization.CONNECTION_ERROR);
+//					Window.alert(Customization.CONNECTION_ERROR);
+					PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+							
+						}
+					});
 				}
 			});
 		}else{ 
@@ -609,7 +694,14 @@ public class RestaurantController {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(Customization.CONNECTION_ERROR);	
+//				Window.alert(Customization.CONNECTION_ERROR);	
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 				
 			}
 		});
@@ -633,12 +725,19 @@ public class RestaurantController {
 					restaurants.put(restaurant.getId(), restaurant);
 				}
 				PagesController.hideWaitPanel();
-				Window.alert("Done");	
+//				Window.alert("Done");	
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);	
+//				Window.alert(Customization.CONNECTION_ERROR);	
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 		
@@ -670,7 +769,14 @@ public class RestaurantController {
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 		
@@ -710,7 +816,14 @@ public class RestaurantController {
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 		
@@ -728,7 +841,14 @@ public class RestaurantController {
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-				Window.alert(Customization.CONNECTION_ERROR);
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
 			}
 		});
 		

@@ -2,7 +2,6 @@ package com.veliasystems.menumenu.client.userInterface.administration;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -10,8 +9,10 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.User;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 public class EditDataPanel extends FlowPanel implements IManager {
@@ -150,7 +151,14 @@ public class EditDataPanel extends FlowPanel implements IManager {
 			}
 			
 			if(!msg.isEmpty()){
-				Window.alert(msg);
+//				Window.alert(msg);
+				PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+				
+					}
+				});
 			}
 
 		return isCorrect;

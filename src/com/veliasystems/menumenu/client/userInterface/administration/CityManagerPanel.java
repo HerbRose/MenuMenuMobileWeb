@@ -32,6 +32,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyInfoPanelRow;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
 
@@ -161,9 +162,18 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE)){
-					cityController.deleteCity(city.getId());
-				}
+//				if(Window.confirm(Customization.ARE_YOU_SURE_WANT_DELETE)){
+//					cityController.deleteCity(city.getId());
+//				}
+				PagesController.MY_POP_UP.showConfirm(new Label(Customization.ARE_YOU_SURE_WANT_DELETE), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						if(answer){
+							cityController.deleteCity(city.getId());
+						}
+					}
+				});
 				
 			}
 		});
@@ -178,7 +188,14 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 				if(validData(city)){
 					cityController.saveCity(getMe(), city, false);
 				}else{
-					Window.alert(Customization.WRONG_DATA_ERROR);
+//					Window.alert(Customization.WRONG_DATA_ERROR);
+					PagesController.MY_POP_UP.showError(new Label(Customization.WRONG_DATA_ERROR), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+								
+						}
+					});
 				}
 			}
 
