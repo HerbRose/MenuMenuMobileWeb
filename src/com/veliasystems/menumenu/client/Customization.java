@@ -1,3 +1,4 @@
+
 package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.GWT;
@@ -226,6 +227,10 @@ public class Customization {
 	public static final String POP_UP_SUCCESS_HEADER = translated.popUpSuccessHeader();
 
 	public static final String POP_UP_WARNING_HEADER = translated.popUpWarningHeader();
+	
+	public static final String PUBLISH_PFOFILE_INFO = translated.publishProfileInfo();
+	
+	public static final String PUBLISH_IMAGE_INFO = translated.publishImageInfo();
 }
   
   

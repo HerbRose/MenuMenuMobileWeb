@@ -15,7 +15,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -385,6 +384,12 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		ImagesController.imageUrl="";
 	}
 	
+	private void publishRestaurant(){
+		restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
+		restaurantController.saveRestaurant(restaurant, false);
+		changeIcons();
+	}
+	
 	@Override
 	protected void onPageShow() {
 		
@@ -432,9 +437,19 @@ public class RestaurantImageView extends MyPage implements IObserver {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
-					restaurantController.saveRestaurant(restaurant, false);
-					changeIcons();
+					if(!restaurant.isVisibleForApp()){
+						PagesController.MY_POP_UP.showConfirm(new Label(Customization.PUBLISH_PFOFILE_INFO), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+							if(answer){
+								publishRestaurant();
+							}
+						}
+					});
+				} else{
+					publishRestaurant();
+				}
 				}
 			});
 			
@@ -443,9 +458,20 @@ public class RestaurantImageView extends MyPage implements IObserver {
 				@Override
 				public void onClick(ClickEvent event) {
 					//TODO not save, what if are connection error
-					restaurant.setVisibleForApp(!restaurant.isVisibleForApp());
-					restaurantController.saveRestaurant(restaurant, false);
-					changeIcons();
+					if(!restaurant.isVisibleForApp()){
+							PagesController.MY_POP_UP.showConfirm(new Label(Customization.PUBLISH_PFOFILE_INFO), new IMyAnswer() {
+							
+							@Override
+							public void answer(Boolean answer) {
+								if(answer){
+									publishRestaurant();
+								}
+							}
+						});
+					} else{
+						publishRestaurant();
+					}
+					
 				}
 			});
 			

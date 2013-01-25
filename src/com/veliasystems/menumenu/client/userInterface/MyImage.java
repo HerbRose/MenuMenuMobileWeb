@@ -1,11 +1,9 @@
 package com.veliasystems.menumenu.client.userInterface;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,6 +17,7 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 public class MyImage extends FlowPanel {
 
@@ -125,10 +124,20 @@ public class MyImage extends FlowPanel {
 			public void onClick(ClickEvent event) {
 
 				if(!parent.isEdit()){
-					PagesController.showWaitPanel();
-					restaurantController.setMainImage(imgBlob);
-//					JQMContext.changePage(new Test(imgBlob));
-					getImagesController().selectImage(getMe());
+					
+					PagesController.MY_POP_UP.showConfirm(new Label(Customization.PUBLISH_IMAGE_INFO), new IMyAnswer() {
+						
+						@Override
+						public void answer(Boolean answer) {
+							if(answer){
+								PagesController.showWaitPanel();
+								restaurantController.setMainImage(imgBlob);
+//								JQMContext.changePage(new Test(imgBlob));
+								getImagesController().selectImage(getMe());
+							}
+						}
+					});
+					
 				}
 				else{
 					parent.showDeletePanelForImages(imgBlob);
