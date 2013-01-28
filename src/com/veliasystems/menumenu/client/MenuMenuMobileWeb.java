@@ -6,13 +6,10 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
-
-
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
-import com.veliasystems.menumenu.client.userInterface.LoginScreen;
 import com.veliasystems.menumenu.client.userInterface.NewUserPage;
 import com.veliasystems.menumenu.client.userInterface.Pages;
 import com.veliasystems.menumenu.client.userInterface.WelcomeMobilePage;
@@ -27,7 +24,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	
 	public void onModuleLoad() {
 		RootPanel.get().insert(PagesController.MY_POP_UP, 0);
-		
+		RootPanel.get().insert(PagesController.TOUCH_GETTER, 0);
 		String newUser = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
 		if(newUser != null && !newUser.equals("null") && !newUser.isEmpty()){ //it's weird, but it seems to be working
 			JQMContext.changePage(new NewUserPage());

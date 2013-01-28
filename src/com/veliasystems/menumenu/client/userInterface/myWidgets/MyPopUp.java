@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 
 enum PopUpType{
 	ERROR (Customization.POP_UP_ERROR_HEADER, R.ERROR_IMAGE_URL, Customization.OK, ""),
@@ -60,6 +61,8 @@ public class MyPopUp extends FlowPanel{
 	
 	private MyButton confirmButtonPanel;
 	private MyButton cancelButtonPanel;
+	
+	private TouchGetter touchGetter = PagesController.TOUCH_GETTER;
 	
 	public MyPopUp() {
 		getElement().setId("myPopUp");
@@ -112,6 +115,9 @@ public class MyPopUp extends FlowPanel{
 		
 		getElement().getStyle().setTop(100, Unit.PX) ;
 		getElement().getStyle().setZIndex(9999);
+		
+		TouchGetter.removeMyClickHandler();
+		TouchGetter.showTouchGetter(true);
 		
 	}
 	
@@ -177,6 +183,7 @@ public class MyPopUp extends FlowPanel{
 			public void onClick(ClickEvent event) {
 				answer.answer(true);
 				clearMe();
+				TouchGetter.showTouchGetter(false);
 			}
 		});
 	}
@@ -193,6 +200,7 @@ public class MyPopUp extends FlowPanel{
 			public void onClick(ClickEvent event) {
 				answer.answer(false);
 				clearMe();
+				TouchGetter.showTouchGetter(false);
 			}
 		});
 	}

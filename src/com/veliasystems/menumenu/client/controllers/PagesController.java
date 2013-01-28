@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.Element;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.City;
@@ -13,6 +12,7 @@ import com.veliasystems.menumenu.client.userInterface.CityInfoScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantImageView;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.TouchGetter;
 
 public class PagesController {
 
@@ -21,6 +21,7 @@ public class PagesController {
 	private static CityController cityController = CityController.getInstance();
 	
 	public static MyPopUp MY_POP_UP = new MyPopUp();
+	public static TouchGetter TOUCH_GETTER = new TouchGetter();
 	/**
 	 * set the page only if local page is null
 	 * @param enumPage

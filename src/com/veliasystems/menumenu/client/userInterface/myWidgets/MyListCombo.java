@@ -7,17 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.TouchGetter.HidePanels;
 
 /**
  * 
@@ -64,6 +62,8 @@ public class MyListCombo extends FocusPanel {
 	 * if with checkbox
 	 */
 	private boolean isCheck = false;
+	
+	private TouchGetter touchGetter = PagesController.TOUCH_GETTER;
 	
 	public MyListCombo(boolean isChecked) {
 		isCheck = isChecked;
@@ -234,13 +234,12 @@ public class MyListCombo extends FocusPanel {
 	 */
 	private void showExpandetPanel(){
 		boolean showPanel = !(Document.get().getElementById("touchGetter").getClassName().indexOf(R.SHOW) >= 0); //if showPanel is true, panel should by show
-//		showPanel = !showPanel;
 		if(isCheck && showPanel){
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
-			showTouchGetter(showPanel);
+			TouchGetter.showTouchGetter(showPanel);
 		}else if(!isCheck){
 			scrollPanel.setStyleName("hideListComboScrollPanel", !showPanel);
-			showTouchGetter(showPanel);
+			TouchGetter.showTouchGetter(showPanel);
 		}
 		String id = "id";
 
@@ -248,7 +247,14 @@ public class MyListCombo extends FocusPanel {
 		id+= date.getTime();
 		scrollPanel.getElement().setId(id);
 		
-		addOnClick(scrollPanel.getElement().getId());
+		
+		touchGetter.addClickHandler(new HidePanels() {
+			
+			@Override
+			public void hidePanels() {
+				scrollPanel.addStyleName("listComboScrollPanel hideListComboScrollPanel");
+			}
+		});
 	}
 	public void selectItem(long order){
 		itemController(order);
@@ -257,24 +263,5 @@ public class MyListCombo extends FocusPanel {
 	public void selectItem(long order, boolean select){
 		itemController(order, select);
 	}
-	private void showTouchGetter(boolean isShow){
-		if(isShow) {
-			Document.get().getElementById("touchGetter").setClassName(R.SHOW);
-		}else{
-			Document.get().getElementById("touchGetter").setClassName(R.HIDE);
-		}
-	}
-	
-	private native void addOnClick(String scrollPanel)/*-{
-		
-		var element=$wnd.document.getElementById('touchGetter');
-		
-		if( element.attachEvent ){
-		   element.attachEvent('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'');
-		  
-		} else {
-		   element.setAttribute('onclick', 'document.getElementById(\'touchGetter\').className =\'hide\'; document.getElementById(\''+scrollPanel+'\').className =\'listComboScrollPanel hideListComboScrollPanel\'' ); 
-		  
-		}
-	}-*/;
+
 }
