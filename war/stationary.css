@@ -991,4 +991,15 @@
 /* KONIEC MyRestaurantInfoPanel*/
 
 
+.openWrapper{
+	position: relative;
+}
 
+.openTextBox{
+	position: absolute;
+	right: 0px;
+}
+.openCombo{
+	position: absolute;;
+	left: 0px;
+}

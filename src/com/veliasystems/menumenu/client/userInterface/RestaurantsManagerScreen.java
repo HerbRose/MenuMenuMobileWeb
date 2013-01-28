@@ -40,6 +40,7 @@ import com.veliasystems.menumenu.client.userInterface.administration.EmailPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.IManager;
 import com.veliasystems.menumenu.client.userInterface.administration.LastUploadedImages;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsOpenHours;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
@@ -89,6 +90,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 	private IManager removeUsersPanel;
 	private IManager cityManagerPanel;
 	private IManager lastUploadedImages;
+	private IManager restaurantOpenHours;
 
 	private IManager currentlyDisplayedPanel = null;
 	
@@ -312,6 +314,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 		add(setRemoveUsersPanel());
 		add(setCityManager());
 		add(setLastImages());
+		add(setRestaurantOpenHours());
 	}
 
 	/**
@@ -320,6 +323,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 	private void setAgentButtons() {
 		add(setRestauratorPanel());
 		add(setEditDataPanel());
+		add(setRestaurantOpenHours());
 	}
 	
 	/**
@@ -431,6 +435,13 @@ public class RestaurantsManagerScreen extends MyPage implements
 		panelList.put(panelCount++, lastUploadedImages);
 		tabBar.addTab(lastUploadedImages.getName());
 		return (FlowPanel) lastUploadedImages;
+	}
+	
+	private FlowPanel setRestaurantOpenHours(){
+		restaurantOpenHours =  new RestaurantsOpenHours();
+		panelList.put(panelCount++, restaurantOpenHours);
+		tabBar.addTab(restaurantOpenHours.getName());
+		return (FlowPanel) restaurantOpenHours;
 	}
 	
 	@Override

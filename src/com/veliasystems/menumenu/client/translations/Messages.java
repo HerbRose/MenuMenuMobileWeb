@@ -436,4 +436,36 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Error while creating new user profile, please contact to administrator")
 	String userAddProblem();
 	
+	//not translated
+	@DefaultStringValue("Monday")
+	String monday();
+	
+	//not translated
+	@DefaultStringValue("Tuesday")
+	String tuesday();
+	
+	//not translated
+	@DefaultStringValue("Wednesday")
+	String wednesday();
+	
+	//not translated
+	@DefaultStringValue("Thursday")
+	String thursday();
+	
+	//not translated
+	@DefaultStringValue("Friday")
+	String friday();
+	
+	//not translated
+	@DefaultStringValue("Saturday")
+	String saturday();
+	
+	//not translated
+	@DefaultStringValue("Sunday")
+	String sunday();
+	
+	//not translated
+	@DefaultStringValue("Restaurant Open Hours")
+	String restaurantOpenHours();
+	
 }

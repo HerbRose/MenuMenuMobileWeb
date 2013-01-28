@@ -234,6 +234,22 @@ public class Customization {
 	public static final String INPUT_EMAIL_FOR_USER = translated.inputEmailforUser();
 	
 	public static final String ERROR_WHILE_CREATE_NEW_USER = translated.userAddProblem();
+	
+	public static final String MONDAY = translated.monday();
+	
+	public static final String TUESDAY = translated.tuesday();
+	
+	public static final String WEDNESDAY = translated.wednesday();
+	
+	public static final String THURSDAY = translated.thursday();
+	
+	public static final String FRIDAY = translated.friday();
+	
+	public static final String SATURDAY = translated.saturday();
+	
+	public static final String SUNDAY = translated.sunday();
+	
+	public static final String RESTAURANT_OPEN_HOURS = translated.restaurantOpenHours();
 }
   
   
