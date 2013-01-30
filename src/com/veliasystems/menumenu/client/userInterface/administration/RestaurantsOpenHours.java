@@ -448,6 +448,7 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 							setPlaceholderAndEnable(textBox, Customization.INPUT_HOURS, true);
 						}else{
 							textBox.setText(hours);
+							textBox.setEnabled(true);
 						}	
 					}
 				}
