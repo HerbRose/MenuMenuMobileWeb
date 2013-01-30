@@ -392,7 +392,6 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 				if(entry.getValue().getText().isEmpty()){
 					valid = false;
 					errorList.add(entry.getValue().getTitle());
-					System.out.println(entry.getValue().getTitle());
 				}
 			}
 		}
@@ -431,6 +430,7 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 	}
 	
 	private String getOpenHoursFromRestaurant(Restaurant r, Days day){
+		if(r.getOpenHours() == null) return "";
 		return r.getOpenHours().get(day.getOrder());
 	}
 	private void setClickHandler(final Restaurant r,final Days day,final MyListCombo widget, final TextBox textBox){

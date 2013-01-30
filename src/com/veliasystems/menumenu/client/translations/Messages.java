@@ -477,7 +477,7 @@ public interface Messages extends Constants {
 	String closed();
 
 	//not translated
-	@DefaultStringValue("InputHours")
+	@DefaultStringValue("Input Hours")
 	String inputHours();
 	
 	//not translated
