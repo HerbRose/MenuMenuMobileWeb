@@ -54,4 +54,8 @@ public class MyInfoPanelRow extends FlowPanel{
 		rightCellContainer.setHeight(height + "px");
 		
 	}
+	
+	public String getRightCellContainerWidth(){
+		return rightCellContainer.getElement().getStyle().getWidth();
+	}
 }

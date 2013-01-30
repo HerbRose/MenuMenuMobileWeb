@@ -94,7 +94,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 		}
 		
 		
-		List< Map<String,String> > attributes = new ArrayList< Map<String,String>>();
+		List< Map<String,Object> > attributes = new ArrayList< Map<String,Object>>();
 		ImageBlob emptyDefoultMenu;
 		if(blobService.getDefaultEmptyMenu().isEmpty()){
 			emptyDefoultMenu = new ImageBlob();
@@ -131,7 +131,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 				
 				List<ImageBlob> imageBlobs = storeService.getImageBlobs(blobkeys);
 				
-				Map<String,String> map = new HashMap<String,String>();
+				Map<String,Object> map = new HashMap<String,Object>();
 				map.put( "id", ""+ r.getId());
 				map.put( "name", r.getName());
 				map.put( "city", getCityName(r.getCityId()) );
@@ -143,6 +143,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "lat", "" + r.getLat());
 				map.put( "lng", "" + r.getLng());
 				map.put("phoneRestaurant", r.getPhoneRestaurant());
+				map.put("openHours", r.getOpenHours());
 				
 				for (ImageBlob imageBlob : imageBlobs) {
 					if(imageBlob != null) map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");

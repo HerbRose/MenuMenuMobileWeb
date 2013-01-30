@@ -1,8 +1,11 @@
 package com.veliasystems.menumenu.client.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.jdo.annotations.Persistent;
 import javax.persistence.Id;
 
 import com.veliasystems.menumenu.client.Util;
@@ -40,6 +43,8 @@ public class Restaurant implements Serializable {
 	private List<ImageBlob> profileImages;
 	/** Lists of url's with board images */
 	private List<ImageBlob> logoImages;
+	
+	private ArrayList<String> openHours = null;
 	
 	/**
 	 * 
@@ -406,4 +411,10 @@ public class Restaurant implements Serializable {
 		this.longitude = longitude;
 	}
 
+	public ArrayList<String> getOpenHours() {
+		return openHours;
+	}
+	public void setOpenHours(ArrayList<String> openHours) {
+		this.openHours = openHours;
+	}
 }

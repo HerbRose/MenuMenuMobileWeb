@@ -142,11 +142,11 @@ public class GetRestaurantsInArea extends HttpServlet {
 			emptyDefoultMenu = emptyBlobsList.get(0);
 		}
 		
-		List<Map<String, String>> attributes = new ArrayList<Map<String, String>>();
+		List<Map<String, Object>> attributes = new ArrayList<Map<String, Object>>();
 
 		for (Restaurant restaurant : restaurantList) {
 			
-					Map<String, String> map = new HashMap<String, String>();
+					Map<String, Object> map = new HashMap<String, Object>();
 
 					List<String> blobkeys = new ArrayList<String>();
 
@@ -205,6 +205,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 						map.put(imageBlob.getImageType() + "DateCreate",
 								imageBlob.getDateCreated() + "");
 					}
+					map.put("openHours", restaurant.getOpenHours());
 					attributes.add(map);
 				}
 		

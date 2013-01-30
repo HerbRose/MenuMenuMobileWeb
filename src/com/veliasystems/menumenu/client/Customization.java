@@ -250,6 +250,14 @@ public class Customization {
 	public static final String SUNDAY = translated.sunday();
 	
 	public static final String RESTAURANT_OPEN_HOURS = translated.restaurantOpenHours();
+	
+	public static final String OPEN = translated.open();
+	
+	public static final String CLOSED = translated.closed();
+	
+	public static final String INPUT_HOURS = translated.inputHours();
+	
+	public static final String MISSING_OPEN_HOURS = translated.missingOpenHours();
 }
   
   

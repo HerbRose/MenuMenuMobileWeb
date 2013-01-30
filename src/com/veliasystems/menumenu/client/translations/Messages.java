@@ -468,4 +468,21 @@ public interface Messages extends Constants {
 	@DefaultStringValue("Restaurant Open Hours")
 	String restaurantOpenHours();
 	
+	//not translated
+	@DefaultStringValue("Open")
+	String open();
+	
+	//not translated
+	@DefaultStringValue("Closed")
+	String closed();
+
+	//not translated
+	@DefaultStringValue("InputHours")
+	String inputHours();
+	
+	//not translated
+	@DefaultStringValue("Missing open hours")
+	String missingOpenHours();
+		
+	
 }
