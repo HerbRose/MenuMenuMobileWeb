@@ -176,10 +176,10 @@ public class CityListScreen extends MyPage implements IObserver{
 		
 		cookieController.clearCookie(CookieNames.RESTAURANT_ID);
 		
-		if(userController.getLoggedUser().isAdmin()){
-			getContentPanel().add(adminPanelWrapper);
-		}
-		
+//		if(userController.getLoggedUser().isAdmin()){
+//			getContentPanel().add(adminPanelWrapper);
+//		}
+//		
 //		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
 		PagesController.hideWaitPanel();
 	}
