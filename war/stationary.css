@@ -997,7 +997,7 @@
 
 .openTextBox{
 	position: absolute;
-/* 	right: 0px; */
+	top: 5px;
 }
 .openCombo{
 	position: absolute;;
