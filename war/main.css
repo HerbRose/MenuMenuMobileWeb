@@ -256,12 +256,12 @@
 }
 
 #leftArrow {
-	width: 30px;
+	width: 40px;
 	left: 0px;
 	position: absolute;
 }
 #rightArrow {
-	width: 30px;
+	width: 40px;
 	right: 0px;
 	position: absolute;
 }

@@ -1003,3 +1003,8 @@
 	position: absolute;;
 	left: 0px;
 }
+
+.gwt-TabBarItem{
+	height: 30px !important;
+	line-height: 30px !important;
+}

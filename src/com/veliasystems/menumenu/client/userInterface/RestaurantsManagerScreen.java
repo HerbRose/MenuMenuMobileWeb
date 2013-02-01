@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -15,6 +16,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.user.client.ui.TabBar.Tab;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -29,8 +31,6 @@ import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.userInterface.administration.AddAdminPanel;
-import com.veliasystems.menumenu.client.userInterface.administration.AddAgentPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.AddUserPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.CityManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.DefaultEmptyMenuPanel;
@@ -166,7 +166,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 		default:
 			setAgentButtons();
 		}
-
+		
 	}
 
 	private void setArrowActions() {
@@ -372,6 +372,8 @@ public class RestaurantsManagerScreen extends MyPage implements
 	private FlowPanel setEditDataPanel() {
 		editDataPanel = new EditDataPanel();
 		panelList.put(panelCount++, editDataPanel);
+		
+		
 		tabBar.addTab(editDataPanel.getName());
 		return (FlowPanel) editDataPanel;
 	}
