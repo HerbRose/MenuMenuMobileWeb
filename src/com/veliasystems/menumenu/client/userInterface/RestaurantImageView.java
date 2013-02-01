@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -148,6 +149,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	public RestaurantImageView(Restaurant r, JQMPage back) {
 		super(r.getName());
 		
+		restaurantController.addObserver(this);
 		this.restaurant = restaurantController.getRestaurant(r.getId());
 		
 		deleteProfileConfirmed.addStyleName("deleteProfileConfirmed noFocus pointer");
@@ -991,7 +993,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	public void setEdit(boolean isEdit) {
 		this.isEdit = isEdit;
 	}
-
+	//
 	@Override
 	public void onChange() {
 		nameLabelInfo.setText(restaurant.getName());

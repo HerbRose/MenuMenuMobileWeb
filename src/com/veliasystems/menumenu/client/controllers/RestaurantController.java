@@ -246,7 +246,7 @@ public class RestaurantController {
 
 	public void saveRestaurant(String userEmail, Restaurant r, long oldCityId, long newCityId, List<String> userEmailToAdd){
 		
-		PagesController.showWaitPanel();
+//		PagesController.showWaitPanel();
 
 		storeService.saveRestaurant(userEmail, r, oldCityId, newCityId,userEmailToAdd, new AsyncCallback<ResponseSaveRestaurantWrapper>() {
 
