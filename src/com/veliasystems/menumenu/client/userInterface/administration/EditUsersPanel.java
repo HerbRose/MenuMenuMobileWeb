@@ -302,25 +302,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		
 		restaurantList = restaurantController.getRestaurantsList();
 		cityList = cityController.getCitiesList();
-		
-		Collections.sort(restaurantList, new Comparator<Restaurant>() {
-				@Override
-				public int compare(Restaurant o1, Restaurant o2) {
-					return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-				}
-		});
-		
-		
-		Collections.sort(cityList, new Comparator<City>() {
-
-			@Override
-			public int compare(City o1, City o2) {
-				 return o1.getCity().toLowerCase().compareTo(o2.getCity().toLowerCase());
-			}
-			
-		});
-		
-		
+				
 		String userName = userController.getLoggedUser().getEmail();
 		for (User user : userController.getUserList()) {
 			if(!user.getEmail().equalsIgnoreCase(userName)) userList.add(user);

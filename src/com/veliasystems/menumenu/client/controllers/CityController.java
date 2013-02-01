@@ -1,6 +1,8 @@
 package com.veliasystems.menumenu.client.controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +99,15 @@ public class CityController{
 		for (Long cityId : getCitiesKey()) {
 			citiesList.add(cities.get(cityId));
 		}
+		
+		Collections.sort(citiesList, new Comparator<City>() {
+
+			@Override
+			public int compare(City o1, City o2) {
+				 return o1.getCity().toLowerCase().compareTo(o2.getCity().toLowerCase());
+			}
+			
+		});
 		return citiesList;
 	}
 	
