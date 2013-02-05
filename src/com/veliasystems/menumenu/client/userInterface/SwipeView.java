@@ -295,8 +295,7 @@ public class SwipeView extends FlowPanel {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								Document.get().getElementById("load")
-										.setClassName("loaded");
+								PagesController.hideWaitPanel();
 //								Window.alert("Problem with upload. Try again");
 								PagesController.MY_POP_UP.showError(new Label("Problem with upload. Try again"), new IMyAnswer() {
 									

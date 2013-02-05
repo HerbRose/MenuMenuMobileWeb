@@ -269,10 +269,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 		
 		
-		if(imageBlob.getBlobKeyOriginalSize() != null && !imageBlob.getBlobKeyOriginalSize().isEmpty()){
-			BlobstoreServiceFactory.getBlobstoreService().delete(
-					new BlobKey(imageBlob.getBlobKeyOriginalSize()));
-		}
+//		if(imageBlob.getBlobKeyOriginalSize() != null && !imageBlob.getBlobKeyOriginalSize().isEmpty()){
+//			BlobstoreServiceFactory.getBlobstoreService().delete(
+//					new BlobKey(imageBlob.getBlobKeyOriginalSize()));
+//		}
 		BlobstoreServiceFactory.getBlobstoreService().delete(
 				new BlobKey(imageBlob.getBlobKey()));
 		dao.ofy().delete(imageBlob);
@@ -467,7 +467,9 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			
 			//remove old image and image's data
 //			BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
-//			removeImageBlobByBlobKey(imageBlob.getBlobKey());
+			
+			//this method will remove imageMin.jpg which was used to display to user in browser and will keep the original image in blobstore
+			removeImageBlobByBlobKey(imageBlob.getBlobKey());
 			dao.ofy().delete(imageBlob);
 			//END - remove old image and image's data
 		} catch (IOException e) {
