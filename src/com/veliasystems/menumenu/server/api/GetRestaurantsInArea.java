@@ -194,7 +194,15 @@ public class GetRestaurantsInArea extends HttpServlet {
 					map.put("logoImage",
 							(restaurant.getMainLogoImageString() != null) ? addHostToUrl(restaurant
 									.getMainLogoImageString()) : "EMPTY");
-					map.put( "menuImage", (restaurant.getMainMenuImageString()!=null) ? addHostToUrl(restaurant.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+					if(restaurant.getMainMenuImageString()!=null){
+						map.put("menuImage", addHostToUrl(restaurant.getMainMenuImageString()));
+						map.put("menuImageDefault", false);
+					}else{
+						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+						map.put("menuImageDefault", true);
+					}
+					
+					//map.put( "menuImage", (restaurant.getMainMenuImageString()!=null) ? addHostToUrl(restaurant.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 					map.put("profileImage",
 							(restaurant.getMainProfileImageString() != null) ? addHostToUrl(restaurant
 									.getMainProfileImageString()) : "EMPTY");
