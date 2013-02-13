@@ -1010,6 +1010,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				break;
 			case MENU:
 				r.setMainMenuImageString(imageBlob.getImageUrl());
+				if(imageBlob.getBlobKeyScreenSize()!=null) r.setMainMenuScreenSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKeyScreenSize());
+				if(imageBlob.getBlobKeyScaleSize()!=null) r.setMainMenuScaleSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKeyScaleSize());
 				r.setClearBoard(false);
 				break;
 		}
@@ -1366,6 +1368,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		
 		restaurant.setEmptyMenuImageString(null);
 		restaurant.setMainMenuImageString(null);
+		
+		restaurant.setMainMenuScreenSizeImageString(null);
+		restaurant.setMainMenuScaleSizeImageString(null);
 		restaurant.setClearBoard(true);
 		saveRestaurant(restaurant);
 		

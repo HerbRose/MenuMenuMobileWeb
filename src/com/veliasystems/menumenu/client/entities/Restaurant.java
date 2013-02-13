@@ -70,6 +70,9 @@ public class Restaurant implements Serializable {
 	private String mainLogoImageString;
 	private String mainMenuImageString;
 	
+	private String mainMenuScreenSizeImageString = null;
+	private String mainMenuScaleSizeImageString = null;
+	
 	{
 		id = Util.getRandom(9999999);
 	}
@@ -416,5 +419,20 @@ public class Restaurant implements Serializable {
 	}
 	public void setOpenHours(ArrayList<String> openHours) {
 		this.openHours = openHours;
+	}
+	
+	public String getMainMenuScaleSizeImageString() {
+		return mainMenuScaleSizeImageString;
+	}
+	public String getMainMenuScreenSizeImageString() {
+		return mainMenuScreenSizeImageString;
+	}
+	public void setMainMenuScaleSizeImageString(
+			String mainMenuScaleSizeImageString) {
+		this.mainMenuScaleSizeImageString = mainMenuScaleSizeImageString;
+	}
+	public void setMainMenuScreenSizeImageString(
+			String mainMenuScreenSizeImageString) {
+		this.mainMenuScreenSizeImageString = mainMenuScreenSizeImageString;
 	}
 }

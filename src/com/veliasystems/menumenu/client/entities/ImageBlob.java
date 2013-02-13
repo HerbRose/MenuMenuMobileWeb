@@ -41,6 +41,16 @@ public class ImageBlob implements Serializable {
 	 * The image blobKey (converted to {@link String}) to original size
 	 */
 	private String blobKeyOriginalSize = null;
+	
+	/**
+	 * The image blobKey (converted to {@link String}) of image matched to screen size of mobile
+	 */
+	private String blobKeyScreenSize = null;
+	
+	/**
+	 * The image blobKey (converted to {@link String}) of image matched to scale image on mobile side (better quality)
+	 */
+	private String blobKeyScaleSize = null;
 	/**
 	 * Date of creation of image
 	 */
@@ -140,7 +150,34 @@ public class ImageBlob implements Serializable {
     public void setBlobKeyOriginalSize(String blobKeyOriginalSize) {
 		this.blobKeyOriginalSize = blobKeyOriginalSize;
 	}
-	
+	/**
+	 * get the image blobKey (converted to {@link String}) to  image matched to screen size of mobile
+	 * @return image blobKey (converted to {@link String}) of image matched to screen size of mobile
+	 */
+    public String getBlobKeyScreenSize() {
+		return blobKeyScreenSize;
+	}
+    /**
+     * set the image blobKey (converted to {@link String}) to  image matched to screen size of mobile
+     * @param blobKeyScreenSize the image blobKey (converted to {@link String}) to matched screen size
+     */
+    public void setBlobKeyScreenSize(String blobKeyScreenSize) {
+		this.blobKeyScreenSize = blobKeyScreenSize;
+	}
+    /**
+     * get image blobKey (converted to {@link String}) of image in better quality for scaling
+     * @return blobKeyScaleSize the image blobKey 
+     */
+    public String getBlobKeyScaleSize() {
+		return blobKeyScaleSize;
+	}
+    /**
+     * set image blobKey (converted to {@link String}) of image in better quality for scaling
+     * @param blobKeyScaleSize image blobKey (converted to {@link String})
+     */
+    public void setBlobKeyScaleSize(String blobKeyScaleSize) {
+		this.blobKeyScaleSize = blobKeyScaleSize;
+	}
 	/**
 	 * Return url of image that have to be added to host of url
 	 * @return the image url (eg. to use in web)

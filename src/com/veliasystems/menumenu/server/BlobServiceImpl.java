@@ -275,6 +275,19 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 //		}
 		BlobstoreServiceFactory.getBlobstoreService().delete(
 				new BlobKey(imageBlob.getBlobKey()));
+		
+		
+		if(imageBlob.getImageType() == ImageType.MENU){
+			if(imageBlob.getBlobKeyScaleSize() != null){
+				BlobstoreServiceFactory.getBlobstoreService().delete(
+						new BlobKey(imageBlob.getBlobKeyScaleSize()));
+			}
+			if(imageBlob.getBlobKeyScreenSize() != null){
+				BlobstoreServiceFactory.getBlobstoreService().delete(
+						new BlobKey(imageBlob.getBlobKeyScreenSize()));
+			}
+			
+		}
 		dao.ofy().delete(imageBlob);
 				
 //		String blobKeyToDelete = imageBlob.getBlobKey();
@@ -308,7 +321,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * 
 	 */
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String newName) {
-
+		Restaurant restaurant = null ;
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
 		if (query == null) {
@@ -321,6 +334,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		int profileHeight = 260;
 		int logoWidth = 220;
 		int menuWidth = 220;
+		int menuScreenWidth = 440;
+		int menuScaleWidth = 880;
 		
 		//----------------------------------------
 		//--------- FOR TESTING ONLY -------------
@@ -328,7 +343,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		City cityToCheckDimensions = null;
 //		log.info("imageBlob2.getRestaurantId() " + imageBlob2.getRestaurantId());
 		if(imageBlob2.getRestaurantId() != null || !imageBlob2.getRestaurantId().isEmpty() ){
-			Restaurant restaurant = dao.ofy().find(Restaurant.class, Long.parseLong(imageBlob2.getRestaurantId()));
+			restaurant = dao.ofy().find(Restaurant.class, Long.parseLong(imageBlob2.getRestaurantId()));
 			
 			if(restaurant!=null){
 //				log.info("restaurant != null: ");
@@ -414,6 +429,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 		Transform scaleTransform = null;
 		
+		//for only menu images
+		Transform screenSizeTransform = null;
+		Transform scaleSizeTransform = null;
+		
 		switch (imageBlob.getImageType()) {
 		case PROFILE:
 			scaleTransform = ImagesServiceFactory.makeResize(profileWidth, profileHeight);
@@ -431,11 +450,37 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			log.severe("Unknow image type: " + imageBlob.getImageType());
 			return null;
 		}
+		
+		Image screenSizeMenuImage = null;
+		Image scaleSizeMenuImage = null;
+		BlobKey screenSizeBlobKey = null;
+		BlobKey scaleSizeBlobKey = null;
+		if(imageBlob.getImageType() == ImageType.MENU){
 
-		Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, inputSettings, outputSettings);
+			screenSizeTransform = ImagesServiceFactory.makeResize(menuScreenWidth, 4000);
+			scaleSizeTransform = ImagesServiceFactory.makeResize(menuScaleWidth, 4000);
+			Image tmp1 = newImage;
+			Image tmp2 = newImage;
 		
+			
+			try {
+				screenSizeMenuImage = imagesService.applyTransform(screenSizeTransform, tmp1, inputSettings, outputSettings);
+				screenSizeBlobKey = writeToBlobstore("image/jpeg", "screenSizeMenuImage.jpg", screenSizeMenuImage.getImageData());
+				
+				OutputSettings outScale = new OutputSettings(OutputEncoding.JPEG);
+				outScale.setQuality(100);
+				
+				scaleSizeMenuImage = imagesService.applyTransform(scaleSizeTransform, tmp2, inputSettings, outScale);
+				
+				scaleSizeBlobKey = writeToBlobstore("image/jpeg", "scaleSizeBlobKey.jpg", scaleSizeMenuImage.getImageData());
+					
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
-		
+		Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, inputSettings, outputSettings);
 		BlobKey newBlobKey = null;
 		ImageBlob newImageBlob = null;
 		try {
@@ -447,6 +492,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			newImageBlob.setWidth(scaleImage.getWidth());
 			newImageBlob.setHeight(scaleImage.getHeight());
 			newImageBlob.setBlobKeyOriginalSize(imageBlob2.getBlobKeyOriginalSize());
+			
+			if(imageBlob.getImageType() == ImageType.MENU){
+				newImageBlob.setBlobKeyScreenSize(screenSizeBlobKey.getKeyString());
+				newImageBlob.setBlobKeyScaleSize(scaleSizeBlobKey.getKeyString());	
+			}
 			dao.ofy().put(newImageBlob);
 			
 			if(newImageBlob.getImageType() == ImageType.CITY){

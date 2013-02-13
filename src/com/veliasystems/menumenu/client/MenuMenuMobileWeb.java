@@ -3,7 +3,9 @@ package com.veliasystems.menumenu.client;
 
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.CookieController;
@@ -23,6 +25,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	private CookieController cookieController = CookieController.getInstance();
 	
 	public void onModuleLoad() {
+		
 		RootPanel.get().insert(PagesController.MY_POP_UP, 0);
 		RootPanel.get().insert(PagesController.TOUCH_GETTER, 0);
 		String newUser = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
