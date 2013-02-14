@@ -76,7 +76,8 @@ public interface StoreServiceAsync {
 
 	void saveRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
 
-	void getCitiesForUser(String email, AsyncCallback<List<City>> callback);
+	void getCitiesForUser(String email, long lastCitySyncDate,
+			AsyncCallback<Map<Long, List<City>>> callback);
 
 	void saveUser(User user, AsyncCallback<User> callback);
 
@@ -85,5 +86,10 @@ public interface StoreServiceAsync {
 
 	void confirmUser(User user, UserToAdd userToAdd,
 			AsyncCallback<ResponseUserWrapper> callback);
+
+	void getRestaurantsForUser(String email, long cityId,
+			AsyncCallback<List<Restaurant>> callback);
+
+	void authorization(String login, AsyncCallback<User> callback);
 
 }

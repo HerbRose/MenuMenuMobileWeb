@@ -39,6 +39,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.ErrorCodes;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
@@ -182,11 +183,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @return List of {@link City} available for the {@link User}
 	 */
 	@Override
-	public List<City> getCitiesForUser(String email){
-		
-		User user = findUser(email);
-		return loadCities(user);
-		
+	public Map<Long ,List<City>> getCitiesForUser(String email, long lastCitySyncDate){
+		Map<Long ,List<City>> response = new HashMap<Long, List<City>>();
+		log.info("lastCitySyncDate: " + lastCitySyncDate +"\n Util.CITY_LAST_DATE_SYNC: "+ Util.getCityLastDateSync());
+		if(Util.getCityLastDateSync() > lastCitySyncDate){
+			User user = findUser(email);
+			response.put(Util.getCityLastDateSync(), loadCities(user));
+		}else{
+			response.put(Util.getCityLastDateSync(), null);
+		}
+
+		return response;
 	}
 	
 	/**
@@ -201,6 +208,28 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return loadRestaurants(user);
 		
 	}	
+	
+	/**
+	 * 
+	 * @param email the {@link User#email}
+	 * @return List of {@link Restaurant} available for the {@link User}
+	 */
+	@Override
+	public List<Restaurant> getRestaurantsForUser(String email, long cityId){
+		
+		User user = findUser(email);
+		List<Restaurant> restaurants = loadRestaurants(user);
+		List<Restaurant> restaurantsInCity = new ArrayList<Restaurant>();
+		for (Restaurant restaurant : restaurants) {
+			if(restaurant.getCityId() == cityId){
+				restaurantsInCity.add(restaurant);
+			}
+		}
+		
+		return restaurantsInCity;
+		
+	}
+	
 	/**
 	 * 
 	 * @param restList - List of {@link Restaurant} 
@@ -1200,7 +1229,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param login - {@link User} login
 	 * @return {@link User} if is permitted or null if not
 	 */
-	private User authorization(String login){
+	@Override
+	public User authorization(String login){
 		Query<User> userQuery = dao.ofy().query(User.class);
 		if(userQuery != null){
 			for (User user : userQuery) {

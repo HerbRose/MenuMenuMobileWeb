@@ -838,20 +838,19 @@ public class RestaurantController {
 		});
 		
 	}
-	public void refreshRestaurants(final IObserver addRestauratorPanel) {
+	public void refreshRestaurants(final IObserver observer) {
 		
 		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<Restaurant>>() {
 			
 			@Override
 			public void onSuccess(List<Restaurant> restaurants) {
 				refreshRestaurantList(restaurants);
-				notifieObserver(addRestauratorPanel);
+				notifieObserver(observer);
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-//				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
 					
 					@Override
@@ -864,6 +863,39 @@ public class RestaurantController {
 		
 	}
 
+	public void refreshRestaurants(final IObserver observer, long cityId) {
+		
+		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), cityId, new AsyncCallback<List<Restaurant>>() {
+			
+			@Override
+			public void onSuccess(List<Restaurant> restaurants) {
+				updateRestaurantList(restaurants);
+				notifieObserver(observer);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
+			}
+		});
+		
+	}
+	
+	private void updateRestaurantList(List<Restaurant> restaurants) {
+		for (Restaurant restaurant : restaurants) {
+			
+			this.restaurants.put(restaurant.getId(), restaurant);
+		}
+		
+	}
+	
 	private void refreshRestaurantList(List<Restaurant> restaurants) {
 		this.restaurants.clear();
 		for (Restaurant restaurant : restaurants) {

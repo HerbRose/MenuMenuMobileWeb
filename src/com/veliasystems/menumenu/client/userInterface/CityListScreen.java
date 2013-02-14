@@ -93,9 +93,9 @@ public class CityListScreen extends MyPage implements IObserver{
 		
 
 		
-	    cityList = CityController.getInstance().getCitiesList();
-	    addCities(cityList);
-	    	       
+//	    cityList = cityController.getCitiesList();
+//	    addCities(cityList);
+	    cityController.refreshCities(this);	       
 	    getHeader().setLeftButton(logoutButton);
 	  
 	    
@@ -145,14 +145,14 @@ public class CityListScreen extends MyPage implements IObserver{
 			}
 		});
 			
-		for(City city: cities){
-			final CityInfoScreen cityInfoScreen;
-			if(CityController.cityMapView.containsKey(city.getId())){
-				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
-			}else{
-				cityInfoScreen = new CityInfoScreen(city);
-				CityController.cityMapView.put(city.getId(), cityInfoScreen);
-			}
+		for(final City city: cities){
+//			final CityInfoScreen cityInfoScreen;
+//			if(CityController.cityMapView.containsKey(city.getId())){
+//				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
+//			}else{
+//				cityInfoScreen = new CityInfoScreen(city);
+//				CityController.cityMapView.put(city.getId(), cityInfoScreen);
+//			}
 			
 			final MyListItem cityItem = new MyListItem();
 			cityItem.setText(city.getCity());
@@ -161,6 +161,15 @@ public class CityListScreen extends MyPage implements IObserver{
 				@Override
 				public void onClick(ClickEvent event) {
 					PagesController.showWaitPanel();
+					
+					CityInfoScreen cityInfoScreen;
+					if(CityController.cityMapView.containsKey(city.getId())){
+						cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
+					}else{
+						cityInfoScreen = new CityInfoScreen(city);
+						CityController.cityMapView.put(city.getId(), cityInfoScreen);
+					}
+					
 					JQMContext.changePage(cityInfoScreen);
 				}
 			});
@@ -181,7 +190,9 @@ public class CityListScreen extends MyPage implements IObserver{
 //		}
 //		
 //		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
-		PagesController.hideWaitPanel();
+		
+		cityController.refreshCities(this);
+//		PagesController.hideWaitPanel();
 	}
 
 	@Override
@@ -192,6 +203,7 @@ public class CityListScreen extends MyPage implements IObserver{
 		getContentPanel().clear();
 		cityList = cityController.getCitiesList();
 	    addCities(cityList);
+	    getContentPanel().add(adminPanelWrapper);
 	}
 	
 	private native int getOffsetWidth(Element element)/*-{
@@ -202,5 +214,6 @@ public class CityListScreen extends MyPage implements IObserver{
 	@Override
 	public void newData() {
 		refreshCityList();
+		PagesController.hideWaitPanel();
 	}
 }

@@ -1,9 +1,11 @@
 package com.veliasystems.menumenu.client;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
@@ -14,6 +16,9 @@ public class Util
 {
 
     private static String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    
+    private static long CITY_LAST_DATE_SYNC = 0;
+	public static long RESTAURANT_LAST_DATE_SYNC = 0;
     
 	public static long getRandom() {
 	   return (long) (Math.random() * 999999999);
@@ -31,6 +36,22 @@ public class Util
                 return false;
     }
 
+    public static long getCityLastDateSync(){
+    	
+//    	if(GWT.isClient()){
+//    		if(CITY_LAST_DATE_SYNC == 0){
+//    			setCityLastDateSync();
+//    		}
+//    	}
+    	
+    	return CITY_LAST_DATE_SYNC;
+    }
+    public static void setCityLastDateSync(){
+    	CITY_LAST_DATE_SYNC = new Date().getTime();
+    }
+    public static void setCityLastDateSync(long dateTime){
+    	CITY_LAST_DATE_SYNC = dateTime;
+    }
     /**
      * valid numbers example:
      * <ul>

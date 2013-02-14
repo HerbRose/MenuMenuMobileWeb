@@ -10,6 +10,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -20,7 +21,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
-public class CityInfoScreen extends MyPage{
+public class CityInfoScreen extends MyPage implements IObserver{
 	
 	private BackButton backButton;
 	private MyButton addButton;
@@ -50,8 +51,8 @@ public class CityInfoScreen extends MyPage{
 			}
 		});
 		
-		for(Restaurant item: list){
-			final RestaurantImageView restaurantView = (RestaurantImageView) PagesController.getRestaurantImageView(item.getId(), getMe());
+		for(final Restaurant item: list){
+//			final RestaurantImageView restaurantView = (RestaurantImageView) PagesController.getRestaurantImageView(item.getId(), getMe());
 //			if(RestaurantController.restMapView.containsKey(item.getId())){
 //				restaurantView = RestaurantController.restMapView.get(item.getId());
 //			}
@@ -66,7 +67,8 @@ public class CityInfoScreen extends MyPage{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					Document.get().getElementById("load").setClassName(R.LOADING);
+					PagesController.showWaitPanel();
+					RestaurantImageView restaurantView = (RestaurantImageView) PagesController.getRestaurantImageView(item.getId(), getMe());
 					JQMContext.changePage(restaurantView);
 				}
 			});
@@ -89,9 +91,10 @@ public class CityInfoScreen extends MyPage{
 		cityName = city.getCity();
 		getHeader().setTitle(cityName);
 		
-		refreshRestaurantList();
+		//refreshRestaurantList();
+		restaurantController.refreshRestaurants(this, city.getId());
 		restaurantController.setLastOpenPage(this);
-		Document.get().getElementById("load").setClassName(R.LOADED);
+//		PagesController.hideWaitPanel();
 	}
 	private void refreshRestaurantList() {
 		getContentPanel().clear();
@@ -128,5 +131,21 @@ public class CityInfoScreen extends MyPage{
         addRestaurants(restaurants);
         
         loaded = true;
+	}
+
+
+	@Override
+	public void onChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void newData() {
+		refreshRestaurantList();
+		
+		
+		PagesController.hideWaitPanel();
 	}
 }

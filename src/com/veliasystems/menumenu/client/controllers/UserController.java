@@ -220,6 +220,25 @@ public class UserController {
 	public void setUsers(Map<String, User> users) {
 		this.users = users;
 	}
+	
+	/**
+	 * Sets required data for logged user
+	 * @param user logged user
+	 */
+	public void setLoggedUser(User user) {
+		if(user == null) return;
+		users.put(user.getEmail(), user);
+		loggedUser = user.getEmail();
+		if(user.isAdmin()){
+			userType = UserType.ADMIN;
+		}else if(user.isAgent()){
+			userType = UserType.AGENT;
+		}else{
+			userType = UserType.RESTAURATOR;
+		}
+		
+	}
+	
 	/**
 	 * @deprecated
 	 * @param login

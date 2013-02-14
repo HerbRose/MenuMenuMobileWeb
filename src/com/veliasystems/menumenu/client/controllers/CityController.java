@@ -15,6 +15,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.Restaurant;
@@ -110,6 +111,7 @@ public class CityController{
 		});
 		return citiesList;
 	}
+	
 	
 	/**
 	 *Saving city in datastore and put to local map with cities
@@ -315,12 +317,23 @@ public class CityController{
 
 	public void refreshCities(final IObserver observer) {
 		PagesController.showWaitPanel();
-		
-		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
+		Window.alert("new data from serwer, \n local time: " + Util.getCityLastDateSync() );
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), Util.getCityLastDateSync(), new AsyncCallback< Map<Long ,List<City>> >() {
 			
 			@Override
-			public void onSuccess(List<City> citiesList) {
-				refreshCities(citiesList);
+			public void onSuccess(Map<Long ,List<City>> responseMap) {
+				
+				Set<Long> isNewData = responseMap.keySet();
+				
+				for (Long lastSync : isNewData) {
+					if(lastSync > Util.getCityLastDateSync() ){
+						refreshCities(responseMap.get(lastSync));
+						Window.alert("new data from serwer, \n local time: " + Util.getCityLastDateSync() + "\nServer time: "+ lastSync);
+						Util.setCityLastDateSync(lastSync);
+						
+					}
+				}
+				
 				notifyObserver(observer);
 			}
 
