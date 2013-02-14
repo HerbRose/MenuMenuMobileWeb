@@ -29,6 +29,7 @@ import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
+import com.google.appengine.api.images.CompositeTransform;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesService.OutputEncoding;
@@ -408,25 +409,32 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		if(bottomY <=0) bottomY = 0 + 0.1;
 		if(topY >=1) topY = 1 -0.1;
 		
-
-		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY,
-				rightX, bottomY);
+		CompositeTransform compositeTransformForScaleImage = ImagesServiceFactory.makeCompositeTransform();
+		CompositeTransform compositeTransformForScreenSize = ImagesServiceFactory.makeCompositeTransform();
+		CompositeTransform compositeTransformForScaleSizeMenuImage = ImagesServiceFactory.makeCompositeTransform();
+		
+//		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY);
+		
+		compositeTransformForScaleImage.concatenate(ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY));
+		compositeTransformForScreenSize.concatenate(ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY));
+		compositeTransformForScaleSizeMenuImage.concatenate(ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY));
 		
 		InputSettings inputSettings = new InputSettings();
 		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
 		
+		
 		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
-//		outputSettings.setQuality(100);
+		outputSettings.setQuality(100);
 		
 		
 //		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
-		Image newImage;
-		try{
-			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
-		}catch(ImagesServiceFailureException e){
-			log.log(Level.SEVERE, "\noldImage: "+oldImage.getBlobKey()+"\n", e);
-			return null;
-		}
+//		Image newImage = null;
+//		try{
+//			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
+//		}catch(ImagesServiceFailureException e){
+//			log.log(Level.SEVERE, "\noldImage: "+oldImage.getBlobKey()+"\n", e);
+//			return null;
+//		}
 		Transform scaleTransform = null;
 		
 		//for only menu images
@@ -459,19 +467,28 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 			screenSizeTransform = ImagesServiceFactory.makeResize(menuScreenWidth, 4000);
 			scaleSizeTransform = ImagesServiceFactory.makeResize(menuScaleWidth, 4000);
-			Image tmp1 = newImage;
-			Image tmp2 = newImage;
+//			Image tmp1 = newImage;
+//			Image tmp2 = newImage;
+			Image tmp1 = ImagesServiceFactory.makeImageFromBlob(blobKey);
+			Image tmp2 = ImagesServiceFactory.makeImageFromBlob(blobKey);
 		
 			
 			try {
-				screenSizeMenuImage = imagesService.applyTransform(screenSizeTransform, tmp1, inputSettings, outputSettings);
+				
+				compositeTransformForScreenSize.concatenate(ImagesServiceFactory.makeResize(menuScreenWidth, 4000));
+				
+				
+			//	screenSizeMenuImage = imagesService.applyTransform(screenSizeTransform, tmp1, inputSettings, outputSettings);
+				screenSizeMenuImage = imagesService.applyTransform(compositeTransformForScreenSize, tmp1, inputSettings, outputSettings);
 				screenSizeBlobKey = writeToBlobstore("image/jpeg", "screenSizeMenuImage.jpg", screenSizeMenuImage.getImageData());
 				
 				OutputSettings outScale = new OutputSettings(OutputEncoding.JPEG);
 				outScale.setQuality(100);
 				
-				scaleSizeMenuImage = imagesService.applyTransform(scaleSizeTransform, tmp2, inputSettings, outScale);
 				
+				compositeTransformForScaleSizeMenuImage.concatenate(ImagesServiceFactory.makeResize(menuScaleWidth, 4000));
+//				scaleSizeMenuImage = imagesService.applyTransform(scaleSizeTransform, tmp2, inputSettings, outScale);
+				scaleSizeMenuImage = imagesService.applyTransform(compositeTransformForScaleSizeMenuImage, tmp2, inputSettings, outScale);
 				scaleSizeBlobKey = writeToBlobstore("image/jpeg", "scaleSizeBlobKey.jpg", scaleSizeMenuImage.getImageData());
 					
 				
@@ -480,7 +497,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
-		Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, inputSettings, outputSettings);
+		compositeTransformForScaleImage.concatenate(scaleTransform);
+		Image newImage = oldImage;
+//		Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, inputSettings, outputSettings);
+		Image scaleImage = imagesService.applyTransform(compositeTransformForScaleImage, newImage, inputSettings, outputSettings);
 		BlobKey newBlobKey = null;
 		ImageBlob newImageBlob = null;
 		try {
