@@ -170,7 +170,7 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 					@Override
 					public void answer(Boolean answer) {
 						if(answer){
-							cityController.deleteCity(city.getId());
+							cityController.deleteCity(getMe(),city.getId());
 						}
 					}
 				});

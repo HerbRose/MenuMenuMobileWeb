@@ -194,7 +194,7 @@ public class CityController{
 	 * Delete city from datastore
 	 * @param id - id of {@link City}
 	 */
-	public void deleteCity(Long id) {
+	public void deleteCity(final IObserver iObserver, Long id) {
 		PagesController.showWaitPanel();
 		storeService.deleteRestaurants(id, new AsyncCallback<Long>() {
 			
@@ -203,6 +203,8 @@ public class CityController{
 				List<Restaurant> restaurantsToDelete = restaurantController.getRestaurantsInCity(cityId);
 				cities.remove(cityId);
 				restaurantController.removeRestaurantLocally(restaurantsToDelete);
+				notifyAllObservers();
+				notifyObserver(iObserver);
 				PagesController.hideWaitPanel();
 			}
 			
