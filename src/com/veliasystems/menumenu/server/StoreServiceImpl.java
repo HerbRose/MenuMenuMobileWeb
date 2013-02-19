@@ -1225,7 +1225,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			
 		});
 		
-		allData.put("Restaurants", citieslist);
+		allData.put("Restaurants", restlist);
 		allData.put("Cities", citieslist);
 		allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		
