@@ -109,7 +109,7 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 						newUser.setCitiesId(citiesListCombo.getCheckedList());
 						newUser.setAgent(true);
 					}
-					if(restaurantListCombo.getCheckedList().isEmpty()){
+					if(!restaurantListCombo.getCheckedList().isEmpty()){
 						newUser.setRestaurantsId(restaurantListCombo.getCheckedList());
 						newUser.setRestaurator(true);
 					}

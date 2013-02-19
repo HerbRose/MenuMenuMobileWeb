@@ -18,6 +18,7 @@ public class Restaurant implements Serializable {
 	private long id;
 	
 	private String name;
+	private String normalizedName = null; //only set on server side
 	private String address;
 	/**
 	 * @deprecated
@@ -114,6 +115,21 @@ public class Restaurant implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * 
+	 * @return {@link String} with normalized name
+	 */
+	public String getNormalizedName() {
+		return normalizedName;
+	}
+	/**
+	 * This method should be used only on <b>server</b> side
+	 * @param normalizedName {@link String} with normalized name
+	 */
+	public void setNormalizedName(String normalizedName) {
+		this.normalizedName = normalizedName;
 	}
 	/**
 	 * 

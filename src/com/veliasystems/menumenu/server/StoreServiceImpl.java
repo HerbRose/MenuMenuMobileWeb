@@ -1614,4 +1614,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 	}
 	
+
+	
 }
