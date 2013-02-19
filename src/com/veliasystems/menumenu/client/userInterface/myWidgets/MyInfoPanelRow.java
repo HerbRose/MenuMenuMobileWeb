@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.client.userInterface.myWidgets;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.veliasystems.menumenu.client.JS;
 
 public class MyInfoPanelRow extends FlowPanel{
 	
@@ -43,7 +44,7 @@ public class MyInfoPanelRow extends FlowPanel{
 		
 		leftCelContainerWidth = width * 0.3;
 		
-		leftCelContainer.getElement().getStyle().setWidth(leftCelContainerWidth, Unit.PX);
+		leftCelContainer.getElement().getStyle().setWidth(leftCelContainerWidth-13, Unit.PX); //-10 because padding-right = 10 px
 		rightCellContainer.getElement().getStyle().setMarginLeft(leftCelContainerWidth, Unit.PX);
 		rightCellContainer.getElement().getStyle().setWidth(width-leftCelContainerWidth-30, Unit.PX);
 	}

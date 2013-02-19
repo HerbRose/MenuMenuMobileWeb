@@ -3,6 +3,7 @@ package com.veliasystems.menumenu.server.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -91,7 +92,13 @@ public class FileUploadServer extends HttpServlet {
 					newImageBlob.setBlobKeyOriginalSize(blobKeyOrginalSize.getKeyString());
 					
 					storService.saveImageBlob(newImageBlob);
-					blobService.cropImage(newImageBlob, 0, 0, 1, 1);
+					Map<String, ImageBlob> returnedMap =  blobService.cropImage(newImageBlob, 0, 0, 1, 1);
+					ImageBlob tmpImageBlob = returnedMap.get("new");
+					if(tmpImageBlob != null) newImageBlob.setBlobKey(tmpImageBlob.getBlobKey());
+					else{
+						log.warning("FileUploadServer::doPost: new blobKey not defined" );
+						return;
+					}
 					
 				}
 			}
