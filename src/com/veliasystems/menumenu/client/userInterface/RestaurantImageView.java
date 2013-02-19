@@ -70,7 +70,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	private UserController userController = UserController.getInstance();
 	private ImagesController imagesController = ImagesController.getInstance();
 
-	private MyButton cancelButton = new MyButton(Customization.CANCEL);;
+	private MyButton cancelButton = new MyButton(Customization.CANCEL);
 	private MyButton saveButton = new MyButton(Customization.SAVE);
 	private BackButton backButton;
 	private MyButton editButton;
@@ -196,6 +196,19 @@ public class RestaurantImageView extends MyPage implements IObserver {
 		addUserTextBox = new TextBox();
 		addUserTextBox.addStyleName("myTextBox noFocus");
 		setPlaceHolder(addUserTextBox, Customization.ADD_USER);
+		
+		
+		addUserTextBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+					if(addUserTextBox.getText().isEmpty()){
+						saveButton.removeStyleName("blink");
+					}else{
+						saveButton.addStyleName("blink");
+					}
+			}
+		});
 
 		addUserTextBoxDiv.add(addUserTextBox);
 		adminPanelWrapper.add(addUserImage);
@@ -277,6 +290,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 					if (!addUserTextBox.getText().isEmpty()) { // validation of email is checked in validate() method
 						usersEmailToAdd.add(addUserTextBox.getText());
 					}
+					PagesController.showWaitPanel();
 					
 					RestaurantController.getInstance().saveRestaurant(UserController.getInstance().getLoggedUser().getEmail(), restaurant, restaurant.getCityId(), cityController.getCity(citiesListCombo.getSelectedOrder()).getId(),usersEmailToAdd);		
 					setProperButtons();

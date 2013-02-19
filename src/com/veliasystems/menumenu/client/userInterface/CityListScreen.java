@@ -136,15 +136,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	}
 	
 	private void addCities(List<City> cities){
-		
-		java.util.Collections.sort(cities, new Comparator<City>() {
-
-			@Override
-			public int compare(City o1, City o2) {
-				 return o1.getCity().toLowerCase().compareTo(o2.getCity().toLowerCase());
-			}
-		});
-			
+					
 		for(City city: cities){
 			final CityInfoScreen cityInfoScreen;
 			if(CityController.cityMapView.containsKey(city.getId())){

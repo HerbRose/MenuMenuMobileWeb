@@ -9,9 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.thirdparty.guava.common.collect.Ordering;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
@@ -100,12 +102,13 @@ public class CityController{
 			citiesList.add(cities.get(cityId));
 		}
 		
+	
 		Collections.sort(citiesList, new Comparator<City>() {
 
 			@Override
 			public int compare(City o1, City o2) {
-				 return o1.getCity().toLowerCase().compareTo(o2.getCity().toLowerCase());
-			}
+				 	return o1.getNormalizedCityName().toLowerCase().compareTo(o2.getNormalizedCityName().toLowerCase());
+				}
 			
 		});
 		return citiesList;

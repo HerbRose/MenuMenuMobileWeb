@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
@@ -144,7 +143,7 @@ public class RestaurantController {
 		Collections.sort(restaurantsList, new Comparator<Restaurant>() {
 			@Override
 			public int compare(Restaurant o1, Restaurant o2) {
-				return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+				return o1.getNormalizedName().toLowerCase().compareTo(o2.getNormalizedName().toLowerCase());
 			}
 		});
 		
