@@ -98,7 +98,7 @@ public class NewUserPage extends MyPage{
 				@Override
 				public void onClick(ClickEvent event) {
 					if(validate()){
-						
+						PagesController.showWaitPanel();
 						User user = new User(email);
 						user.setPhoneNumber(phoneNumerBox.getText());
 						user.setPassword(editPasswordBox.getText());
@@ -107,29 +107,34 @@ public class NewUserPage extends MyPage{
 						
 						UserToAdd userToAdd = new UserToAdd(email);
 						userToAdd.setConfirmId(confirmId);
-						
+//						JS.consolLog(confirmId);
+//						JS.consolLog(email);
 						storeService.confirmUser(user, userToAdd, new AsyncCallback<ResponseUserWrapper>() {
 							
 							@Override
 							public void onSuccess(ResponseUserWrapper result) {
-									if(result.getErrorCodes().isEmpty()){
-										JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
-									} else{
-										String msg = "";
-										for (int i : result.getErrorCodes()) {
-											msg += ErrorCodes.getError(i) + "\n\n";
-										}
-										PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
-											
-											@Override
-											public void answer(Boolean answer) {
-											}
-										});
+								PagesController.hideWaitPanel();
+								if(result.getErrorCodes().isEmpty()){
+									cookieController.clearCookie(CookieNames.NEW_USER_CONFIRME_ID);
+									cookieController.clearCookie(CookieNames.NEW_USER_EMAIL);
+									JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
+								} else{
+									String msg = "";
+									for (int i : result.getErrorCodes()) {
+										msg += ErrorCodes.getError(i) + "\n\n";
 									}
+									PagesController.MY_POP_UP.showError(new Label(msg), new IMyAnswer() {
+											
+										@Override
+										public void answer(Boolean answer) {
+										}
+									});
+								}
 							}
 							
 							@Override
 							public void onFailure(Throwable caught) {
+								PagesController.hideWaitPanel();
 								PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
 									
 									@Override

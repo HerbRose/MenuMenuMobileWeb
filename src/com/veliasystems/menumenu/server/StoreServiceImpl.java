@@ -1331,10 +1331,17 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		User userFromServer = loadUser(user.getEmail());
 		UserToAdd userToAddFromServer = loadUserToAdd(userToAdd.getEmail());
 		
-		if(userFromServer == null || userToAddFromServer == null || !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
-//			return;
-			log.severe("userFromServer: " + userFromServer.getEmail() + " userToAddFromServer: " + userToAddFromServer.getEmail() + 
-					"\n userToAdd.getConfirmId(): " + userToAdd.getConfirmId());
+		if(userFromServer == null ){
+			log.severe("userFromServer: is null");
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
+		}
+		if(userToAddFromServer == null && !errorCodes.isEmpty()){
+			log.severe("userToAddFromServer: is null");
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
+		}
+		if(!userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())  && !errorCodes.isEmpty()){
+			log.severe("ConfirmId is not valid. confirmId from server: " + userToAddFromServer.getConfirmId() + ". ConfirmId from user: " + userToAdd.getConfirmId() +
+					"email from server: " + userFromServer.getEmail() + ", email from user: " + user.getEmail());
 			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 		}
 		

@@ -37,9 +37,9 @@ var QueryString = function () { //wyciaga parametry z adresu strony (metoda GET)
 		var email = QueryString.email;
 		var id = QueryString.id; 
 
-		createCookie("NEW_USER_EMAIL", email, 1);
+		createCookie("NEW_USER_EMAIL", email, 60);
 		
-		createCookie("NEW_USER_CONFIRME_ID", id, 1);
+		createCookie("NEW_USER_CONFIRME_ID", id, 60);
 		
 		window.setTimeout(refreshPage(),500);
 	

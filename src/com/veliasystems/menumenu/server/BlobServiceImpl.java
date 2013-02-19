@@ -326,7 +326,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
 		if (query == null) {
-			imageBlob2 =  new ImageBlob();
+			imageBlob2 = new ImageBlob();
 		}else{
 			imageBlob2 = query.filter("blobKey", imageBlob.getBlobKey()).get();
 		}
@@ -585,6 +585,30 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		return mapToReturn;
 	}
+	
+	public void cropImageFromApp(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String imageName){
+		
+		Image image = ImagesServiceFactory.makeImageFromBlob(new BlobKey(imageBlob.getBlobKey()));
+		BlobKey blobKeyOriginalSize = null;
+		try {
+			blobKeyOriginalSize = writeToBlobstore("image/jpeg", imageName+"OrginalSize.jpg", image.getImageData());
+		} catch (IOException e) {
+			//log.severe("Error when try save image from app \n" );
+			e.printStackTrace();
+		}
+		if(imageName != null){
+			imageName.replaceAll(" ", "");
+		}
+		ImageBlob newImageBlob = cropImage(imageBlob, leftX, topY, rightX, bottomY, imageName+"ImageCrop");
+		
+		if(newImageBlob == null){
+			throw new NullPointerException();
+		}
+		
+		newImageBlob.setBlobKeyOriginalSize(blobKeyOriginalSize.getKeyString());
+	}
+	
+	
 	
 	@Override
 	public List<ImageBlob> getImagesByType(Long restaurantId,
@@ -872,8 +896,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		writeChannel = fileService.openWriteChannel(file, lock);
 		
 		// lets buffer the bitch
-		BufferedInputStream in = new BufferedInputStream(
-				new ByteArrayInputStream(filebytes));
+		BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(filebytes));
 		
 		byte[] buffer;
 		if(filebytes.length > 524288){

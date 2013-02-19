@@ -27,14 +27,12 @@ import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class FileUploadServer extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(FileUploadServer.class
-			.getName());
+	private static final Logger log = Logger.getLogger(FileUploadServer.class.getName());
 
 	private BlobServiceImpl blobService = new BlobServiceImpl();
 	private StoreServiceImpl storService = new StoreServiceImpl();
 	
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		String token = req.getParameter("token");
 		if (token==null || token.isEmpty() || !token.equalsIgnoreCase(R.TOKEN)) {
@@ -53,6 +51,12 @@ public class FileUploadServer extends HttpServlet {
 		resp.setContentType("application/json");
 
 		String jsonp = req.getParameter("jsonp");
+		
+		String fileName = req.getParameter("filename");
+		if(fileName == null || fileName.isEmpty() ){
+			fileName = "fileNameNotFound";
+		}
+		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		if (jsonp != null) {
@@ -80,12 +84,14 @@ public class FileUploadServer extends HttpServlet {
 				if (!item.isFormField()) {
 				
 					Blob imageBlob = new Blob(IOUtils.toByteArray(stream));
-					BlobKey blobKey = blobService.writeToBlobstore("image/jpeg", "fromIos.jpg", imageBlob.getBytes());
+					BlobKey blobKey = blobService.writeToBlobstore("image/jpeg", fileName+".jpg", imageBlob.getBytes());
+					BlobKey blobKeyOrginalSize = blobService.writeToBlobstore("image/jpeg", fileName+"MENUOrginalSize.jpg", imageBlob.getBytes());
 					
 					newImageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), imageType);
+					newImageBlob.setBlobKeyOriginalSize(blobKeyOrginalSize.getKeyString());
 					
 					storService.saveImageBlob(newImageBlob);
-					
+					blobService.cropImage(newImageBlob, 0, 0, 1, 1);
 					
 				}
 			}
