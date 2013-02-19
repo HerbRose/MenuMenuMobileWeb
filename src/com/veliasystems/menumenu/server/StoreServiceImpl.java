@@ -4,7 +4,10 @@ package com.veliasystems.menumenu.server;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -14,6 +17,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -391,6 +395,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			restaurant.setLogoImages(null);
 			restaurant.setMenuImages(null);
 			restaurant.setProfileImages(null);
+			restaurant.setNormalizedName(normalizeName(restaurant.getName()));
 		}
 		
 		dao.ofy().put(restaurants);
@@ -431,6 +436,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			}
 		}
 		
+		r.setNormalizedName(normalizeName(r.getName()));
+	
 		dao.ofy().put(r);
 		String responseMessage = "New restaurant added ";
 		if(isAdded){
@@ -442,6 +449,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		returnList.add(responseMessage);
 		
 		return returnList;
+	}
+	
+	
+	private String normalizeName(String name){
+		String normalizeName = Normalizer.normalize(name, Normalizer.Form.NFKD);
+		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+		return pattern.matcher(normalizeName).replaceAll("");
 	}
 	
 	private boolean  addUsersToRestaurant(List<String> usersEmailToAdd, Restaurant r, String emailAddingUser){
@@ -628,6 +642,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setLogoImages(null);
 			r.setMenuImages(null);
 			r.setProfileImages(null);
+			r.setNormalizedName(normalizeName(r.getName()));
 			dao.ofy().put(r);
 			if(usersToAdd != null) {
 				addUsersToRestaurant(usersToAdd, r, userEmail);
@@ -685,6 +700,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setLogoImages(null);
 			r.setMenuImages(null);
 			r.setProfileImages(null);
+			r.setNormalizedName(normalizeName(r.getName()));
 			// r.setCityId(getCityId(r.getCity()));
 			dao.ofy().put(r);
 			return r;
@@ -1091,6 +1107,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		City c = new City();
 		c.setCity(cityName);
 		c.setCountry(country);
+		c.setNormalizedCityName(normalizeName(cityName));
 		dao.ofy().put(c);
 		return c;
 	}
@@ -1118,6 +1135,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			isOk = true; //there is empty list with cities, so add first one
 		}
 		if(isOk){
+			city.setNormalizedCityName(normalizeName(city.getCity()));
 			dao.ofy().put(city);		
 		}
 		
@@ -1182,9 +1200,33 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //			allData.put("Restaurants", loadRestaurantsByCities(tmp));
 //			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
 //		}
+		List<Restaurant> restlist = loadRestaurants(user);
+		
+		
+		Collections.sort(restlist, new Comparator<Restaurant>() {
 
-		allData.put("Restaurants", loadRestaurants(user));
-		allData.put("Cities", loadCities(user));
+			@Override
+			public int compare(Restaurant o1, Restaurant o2) {
+				 	return o1.getNormalizedName().toLowerCase().compareTo(o2.getNormalizedName().toLowerCase());
+				}
+			
+		});
+		
+		
+		List<City> citieslist = loadCities(user);
+		
+		
+		Collections.sort(citieslist, new Comparator<City>() {
+
+			@Override
+			public int compare(City o1, City o2) {
+				 	return o1.getNormalizedCityName().toLowerCase().compareTo(o2.getNormalizedCityName().toLowerCase());
+				}
+			
+		});
+		
+		allData.put("Restaurants", restlist);
+		allData.put("Cities", citieslist);
 		allData.put("DefaultEmptyProfile", blobService.getEmptyList());
 		
 		List<User> usersList = getUsers();
@@ -1291,10 +1333,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		if(userFromServer == null || userToAddFromServer == null || !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
 //			return;
-			log.severe("userFromServer: " + userFromServer + " userToAddFromServer: " + userToAddFromServer+ 
+			log.severe("userFromServer: " + userFromServer.getEmail() + " userToAddFromServer: " + userToAddFromServer.getEmail() + 
 					"\n userToAdd.getConfirmId(): " + userToAdd.getConfirmId());
 			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
-			
 		}
 		
 		if(errorCodes.isEmpty()){
@@ -1571,7 +1612,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			log.severe("StoreServiceImpl::publishRestaurant(), restaurant (id: "+restaurantId+ ") not found");
 			return false;
 		}
-		
 	}
 	
 }
