@@ -21,7 +21,6 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
-import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
@@ -65,7 +64,7 @@ public class LoginScreen extends MyPage{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				
+					
 				if(nameBox.getValue().equals("") || passwordBox.getValue().equals("")){
 					PagesController.MY_POP_UP.showError(new Label(Customization.LOGIN_ERROR), new IMyAnswer() {
 						

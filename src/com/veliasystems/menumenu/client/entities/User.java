@@ -34,6 +34,7 @@ public class User implements Serializable {
 	private String name;
 	private String surname;
 	private String password;
+//	private String hashedPassword;
 	private boolean isAdmin = false;
 	private boolean isAgent = false;
 	private boolean isRestaurator = false;
@@ -120,7 +121,31 @@ public class User implements Serializable {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+		
+//		if(password != null && !password.isEmpty()){
+//			SHA2 sha2 = new SHA2();
+//			byte[] passwrdBytes = sha2.digest(password.getBytes());
+//			String hashedString = A9Utility.bytesToHex(passwrdBytes);
+//			hashedString = hashedString.replaceAll(" ", "");
+//			setHashedPassword(hashedString);
+//		}
 	}
+	
+//	/**
+//	 * 
+//	 * @return {@link User} hasshed password
+//	 */
+//	public String getHashedPassword() {
+//		return hashedPassword;
+//	}
+//	/**
+//	 * set {@link User} hashed password
+//	 * @param hashedPassword - {@link User} hashed password
+//	 */
+//	public void setHashedPassword(String hashedPassword) {
+//		this.hashedPassword = hashedPassword;
+//	}
+//	
 	/**
 	 * 
 	 * @return <strong>true</strong> if {@link User} is admin, <strong>false</strong> if not

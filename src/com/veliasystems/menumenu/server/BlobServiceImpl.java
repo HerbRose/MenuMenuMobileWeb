@@ -338,45 +338,45 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		int menuScreenWidth = 440;
 		int menuScaleWidth = 880;
 		
-		//----------------------------------------
-		//--------- FOR TESTING ONLY -------------
-		//----------------------------------------
-		City cityToCheckDimensions = null;
-//		log.info("imageBlob2.getRestaurantId() " + imageBlob2.getRestaurantId());
-		if(imageBlob2.getRestaurantId() != null || !imageBlob2.getRestaurantId().isEmpty() ){
-			restaurant = dao.ofy().find(Restaurant.class, Long.parseLong(imageBlob2.getRestaurantId()));
-			
-			if(restaurant!=null){
-//				log.info("restaurant != null: ");
-				cityToCheckDimensions = dao.ofy().find(City.class, restaurant.getCityId());
-			}
-		}
-		String cityName = null;
-		if(cityToCheckDimensions != null){
-			cityName = cityToCheckDimensions.getCity();
-//			log.info("cityToCheckDimensions != null: ");
-		}
-		if(cityName != null){
-//			log.info("cityName != null: " + cityName);
-			if(cityName.endsWith("IOS")){
-//				log.info("cityName.endsWith(\"IOS\") ");
-				newName += "_IOS_X2";
-				profileWidth *= 2;
-				profileHeight *= 2;
-				logoWidth *= 2;
-				menuWidth *= 2;
-			}else if(cityName.endsWith("RETINA")){
-//				log.info("cityName.endsWith(\"RETINA\") ");
-				newName += "_RETINA_X4";
-				profileWidth *= 4;
-				profileHeight *= 4;
-				logoWidth *= 4;
-				menuWidth *= 4;
-			}
-		}
-		//----------------------------------------
-		//---------- END FORTESTING ONLY ---------
-		//----------------------------------------
+//		//----------------------------------------
+//		//--------- FOR TESTING ONLY -------------
+//		//----------------------------------------
+//		City cityToCheckDimensions = null;
+////		log.info("imageBlob2.getRestaurantId() " + imageBlob2.getRestaurantId());
+//		if(imageBlob2.getRestaurantId() != null || !imageBlob2.getRestaurantId().isEmpty() ){
+//			restaurant = dao.ofy().find(Restaurant.class, Long.parseLong(imageBlob2.getRestaurantId()));
+//			
+//			if(restaurant!=null){
+////				log.info("restaurant != null: ");
+//				cityToCheckDimensions = dao.ofy().find(City.class, restaurant.getCityId());
+//			}
+//		}
+//		String cityName = null;
+//		if(cityToCheckDimensions != null){
+//			cityName = cityToCheckDimensions.getCity();
+////			log.info("cityToCheckDimensions != null: ");
+//		}
+//		if(cityName != null){
+////			log.info("cityName != null: " + cityName);
+//			if(cityName.endsWith("IOS")){
+////				log.info("cityName.endsWith(\"IOS\") ");
+//				newName += "_IOS_X2";
+//				profileWidth *= 2;
+//				profileHeight *= 2;
+//				logoWidth *= 2;
+//				menuWidth *= 2;
+//			}else if(cityName.endsWith("RETINA")){
+////				log.info("cityName.endsWith(\"RETINA\") ");
+//				newName += "_RETINA_X4";
+//				profileWidth *= 4;
+//				profileHeight *= 4;
+//				logoWidth *= 4;
+//				menuWidth *= 4;
+//			}
+//		}
+//		//----------------------------------------
+//		//---------- END FORTESTING ONLY ---------
+//		//----------------------------------------
 		BlobKey blobKey ;
 		if(imageBlob2.getBlobKeyOriginalSize() != null){
 			blobKey = new BlobKey(imageBlob2.getBlobKeyOriginalSize());

@@ -208,6 +208,26 @@
      <url-pattern>/fixedImagesTask</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+     <servlet-name>GetLogsServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetLogsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetLogsServlet</servlet-name>
+     <url-pattern>/getLogsServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>GetBackup</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetBackup</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetBackup</servlet-name>
+     <url-pattern>/getBackp</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>
     <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>

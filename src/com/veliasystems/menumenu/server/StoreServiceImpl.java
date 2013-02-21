@@ -1460,7 +1460,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		} else if(newPassword.isEmpty()){
 			message += "\n\n Your personal data have been changed: ";
 			message +="\n\n name: " + user.getName();
-			message +="\n\n  surname: " + user.getSurname();
+			message +="\n\n surname: " + user.getSurname();
 			message +="\n\n phone number: " + user.getPhoneNumber();
 		}
 		
