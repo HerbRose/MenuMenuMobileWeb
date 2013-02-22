@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
@@ -65,6 +66,7 @@ public class MyPopUp extends FlowPanel{
 	private TouchGetter touchGetter = PagesController.TOUCH_GETTER;
 	
 	public MyPopUp() {
+		RootPanel.get().insert(this, 0);
 		getElement().setId("myPopUp");
 		headerPanel = new FlowPanel();
 		contentPanel = new FlowPanel();
@@ -79,6 +81,7 @@ public class MyPopUp extends FlowPanel{
 		add(footerPanel);
 		
 		clearMe();
+		
 	}
 
 	private void clearMe() {

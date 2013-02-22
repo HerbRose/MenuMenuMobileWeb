@@ -177,4 +177,6 @@ public interface StoreService extends RemoteService {
 	List<Restaurant> getRestaurantsForUser(String email);
 
 	ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd);
+
+	void addUserToTests(User user);
 }

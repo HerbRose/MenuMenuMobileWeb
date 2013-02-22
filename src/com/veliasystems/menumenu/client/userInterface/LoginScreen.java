@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.userInterface;
 
-import com.google.gwt.dom.client.Document;
+import java.util.Date;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
@@ -16,6 +17,8 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.CookieController;
+import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
@@ -51,6 +54,7 @@ public class LoginScreen extends MyPage{
 	
 	private boolean isWrongData = false;
 
+	private CookieController cookieController = CookieController.getInstance();
 	
 	public LoginScreen(boolean isWrongLogin){
 		super();
@@ -73,7 +77,9 @@ public class LoginScreen extends MyPage{
 						}
 					});
 				}else{
-					Cookies.setCookie(R.LOGIN, nameBox.getValue());
+					long date = new Date().getTime();
+					date += 1000*60*60*24*3; //three days
+					cookieController.setCookie(CookieNames.LOGIN, nameBox.getValue(), date);
 					JQMContext.changePage(new LoadDataScreen(nameBox.getValue(), passwordBox.getValue()));
 				}
 			}
@@ -229,9 +235,10 @@ public class LoginScreen extends MyPage{
 	protected void onPageShow() {
 		namePanel.setWidth( JS.getElementOffsetWidth(getElement())-40 );
 		passwordPanel.setWidth( JS.getElementOffsetWidth(getElement())-40 );
-		String login = Cookies.getCookie(R.LOGIN);
+		
+		String login = cookieController.getCookie(CookieNames.LOGIN);
 		if (login != null && !login.equals("null")) {
-			nameBox.setValue(Cookies.getCookie(R.LOGIN));
+			nameBox.setValue(login);
 		}
 		else{
 			nameBox.setValue("");
@@ -240,9 +247,9 @@ public class LoginScreen extends MyPage{
 		passwordBox.setValue("");
 	
 		MenuMenuMobileWeb.loggedIn = false;
-		Cookies.removeCookie(R.LOGGED_IN);
+		cookieController.clearCookie(CookieNames.LOGGED_IN);
 		
-		Document.get().getElementById("load").setClassName(R.LOADED);
+		PagesController.hideWaitPanel();
 		
 		if(!isWrongData){
 			nameBox.removeStyleName("redShadow");

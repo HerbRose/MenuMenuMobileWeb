@@ -108,15 +108,15 @@
      <url-pattern>/service</url-pattern>
   </servlet-mapping>
 
-  <servlet>
-     <servlet-name>AddAdminServlet</servlet-name>
-     <servlet-class>com.veliasystems.menumenu.server.api.AddAdmin</servlet-class>
-  </servlet>
+<!--   <servlet> -->
+<!--      <servlet-name>AddAdminServlet</servlet-name> -->
+<!--      <servlet-class>com.veliasystems.menumenu.server.api.AddAdmin</servlet-class> -->
+<!--   </servlet> -->
 
-  <servlet-mapping>
-     <servlet-name>AddAdminServlet</servlet-name>
-     <url-pattern>/addAdmin</url-pattern>
-  </servlet-mapping>
+<!--   <servlet-mapping> -->
+<!--      <servlet-name>AddAdminServlet</servlet-name> -->
+<!--      <url-pattern>/addAdmin</url-pattern> -->
+<!--   </servlet-mapping> -->
   
   <servlet>
      <servlet-name>GetUploadUrl</servlet-name>

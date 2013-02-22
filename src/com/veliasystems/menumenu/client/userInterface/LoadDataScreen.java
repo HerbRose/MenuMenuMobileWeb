@@ -1,5 +1,6 @@
 package com.veliasystems.menumenu.client.userInterface;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,9 @@ public class LoadDataScreen extends JQMPage {
 				}
 				else{
 					setData(result);
-					Cookies.setCookie(R.LOGGED_IN, email);
+					long date = new Date().getTime();
+					date += 1000*60*60*24*3; //three days
+					cookieController.setCookie(CookieNames.LOGGED_IN, email, date);
 					changePage();	
 				}
 				

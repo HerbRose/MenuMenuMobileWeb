@@ -36,10 +36,10 @@ public class AddAdmin extends HttpServlet {
 			return;
 		}
 		
-		User user = new User("agnieszka.slusarczyk@applisoleil.com");
-		user.setPassword("agnieszka");
-		user.setAdmin(true);
-		storeService.addUser(user);
+//		User user = new User("agnieszka.slusarczyk@applisoleil.com");
+//		user.setPassword("agnieszka");
+//		user.setAdmin(true);
+//		storeService.addUser(user);
 	}
 	
 	

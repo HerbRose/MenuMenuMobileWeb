@@ -12,6 +12,7 @@ public class Customization {
 	
 	private static Messages translated = GWT.create(Messages.class);
 
+
 	public static final String DELETE_IMAGE = translated.deleteImage();
 	public static final String CITY = translated.city();
 	public static final String RESTAURANTS = translated.restaurants();  
@@ -258,6 +259,11 @@ public class Customization {
 	public static final String INPUT_HOURS = translated.inputHours();
 	
 	public static final String MISSING_OPEN_HOURS = translated.missingOpenHours();
+	
+	public static final String NO_COOKIE_SUPPORT_WARNING = translated.noCookieSupportWarning();
+
+
+	public static final String FIREFOX_WARNING = translated.firefoxWarning();
 }
   
   

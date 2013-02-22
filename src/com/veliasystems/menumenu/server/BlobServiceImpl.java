@@ -322,13 +322,26 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * 
 	 */
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String newName) {
-		Restaurant restaurant = null ;
+		
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
 		if (query == null) {
 			imageBlob2 = new ImageBlob();
 		}else{
 			imageBlob2 = query.filter("blobKey", imageBlob.getBlobKey()).get();
+		}
+		
+		if(imageBlob2 == null){ //second try
+			Query<ImageBlob> query2 = dao.ofy().query(ImageBlob.class);
+			if (query == null) {
+				imageBlob2 = new ImageBlob();
+			}else{
+				imageBlob2 = query2.filter("blobKey", imageBlob.getBlobKey()).get();
+			}
+		}
+		
+		if(imageBlob2 == null){
+			throw new NullPointerException() ;
 		}
 		
 		int profileWidth = 450;
@@ -567,8 +580,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Map<String, ImageBlob> cropImage(ImageBlob imageBlob, double leftX, double topY,
-			double rightX, double bottomY){
+	public Map<String, ImageBlob> cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY){
 		
 		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
 		

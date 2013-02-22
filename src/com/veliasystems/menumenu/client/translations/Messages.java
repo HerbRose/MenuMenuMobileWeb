@@ -483,6 +483,12 @@ public interface Messages extends Constants {
 	//not translated
 	@DefaultStringValue("Missing open hours")
 	String missingOpenHours();
+
+	@DefaultStringValue("Unfortunately cookie support appears to be turned off in your browser. You have to turn on cookie support in your browser")
+	String noCookieSupportWarning();
+
+	@DefaultStringValue("Browser you are using look like firefox, unfortunately this application doesn't support this kind of web browser. Please use another browser (we recommended browser with gecko engine)")
+	String firefoxWarning();
 		
 	
 }

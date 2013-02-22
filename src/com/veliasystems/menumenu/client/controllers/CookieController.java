@@ -1,12 +1,32 @@
 package com.veliasystems.menumenu.client.controllers;
 
+import java.util.Date;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.Label;
+import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 public class CookieController {
 
 	private static CookieController instance = null;
 	
-	private CookieController() { }
+	private CookieController() { 
+		
+		if(!isCookieEnabled()){
+			
+			Label warningLabel = new Label(Customization.NO_COOKIE_SUPPORT_WARNING);
+			
+			PagesController.MY_POP_UP.showWarning(warningLabel , new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+					// TODO Auto-generated method stub
+					
+				}
+			} );
+		}
+		
+	}
 	
 	public static CookieController getInstance() {
 		if(instance == null) instance = new CookieController();
@@ -29,8 +49,14 @@ public class CookieController {
 	public void setCookie(CookieNames cookieNames, String cookieValue){
 		Cookies.setCookie(cookieNames.name(), cookieValue);
 	}
+	public void setCookie(CookieNames cookieNames, String cookieValue, long expiryTime){
+		Cookies.setCookie(cookieNames.name(), cookieValue, new Date(expiryTime));
+	}
 	public void clearCookie(CookieNames cookieNames){
 		Cookies.removeCookie(cookieNames.name());
+	}
+	public boolean isCookieEnabled(){
+		return Cookies.isCookieEnabled();
 	}
 	
 }

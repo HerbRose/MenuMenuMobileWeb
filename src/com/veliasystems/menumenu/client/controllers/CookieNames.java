@@ -66,6 +66,14 @@ public enum CookieNames {
 	 * <strong>WORNING</strong> if you change the enum name don't forget change cookie name in <code>newUser</code> 
 	 */
 	NEW_USER_CONFIRME_ID,
+	/**
+	 * last time logged user
+	 */
+	LOGIN,
+	/**
+	 * is user logged
+	 */
+	LOGGED_IN,
 
 	
 }
