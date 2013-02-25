@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.thirdparty.guava.common.collect.Ordering;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
@@ -286,7 +287,6 @@ public class CityController{
 						public void answer(Boolean answer) {
 						}
 					});
-//					Window.alert(Customization.OK);
 				}else{
 					String msg = "";
 						for (int i : response.getErrorCodes()) {
@@ -342,6 +342,33 @@ public class CityController{
 			}
 		});
 	}
+	
+	
+	public void refreshCitiesAndNotifyAll(final IObserver observer){
+	
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
+			
+			@Override
+			public void onSuccess(List<City> citiesList) {
+				
+				refreshCities(citiesList);
+				notifyAllObservers();
+				notifyObserver(observer);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
+			}
+		});
+	}
+	
 	
 	private void notifyObserver(IObserver observer){
 		if(observer != null){
