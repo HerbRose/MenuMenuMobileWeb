@@ -264,6 +264,9 @@ public class Customization {
 
 
 	public static final String FIREFOX_WARNING = translated.firefoxWarning();
+
+
+	public static final String COPY_CITY_DATA_TO = translated.copyCityDataTo();;
 }
   
   

@@ -489,6 +489,9 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Browser you are using look like firefox, unfortunately this application doesn't support this kind of web browser. Please use another browser (we recommended browser with gecko engine)")
 	String firefoxWarning();
+
+	@DefaultStringValue("Copy city data to:")
+	String copyCityDataTo();
 		
 	
 }
