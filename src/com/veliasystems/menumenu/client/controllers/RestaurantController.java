@@ -862,6 +862,34 @@ public class RestaurantController {
 		});
 		
 	}
+	
+	public void refreshRestaurantsAndNotifyAll(final IObserver observer) {
+		
+		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<Restaurant>>() {
+			
+			@Override
+			public void onSuccess(List<Restaurant> restaurants) {
+				refreshRestaurantList(restaurants);
+				
+				notifyAllObservers();
+				notifieObserver(observer);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
+			}
+		});
+		
+	}
 
 	private void refreshRestaurantList(List<Restaurant> restaurants) {
 		this.restaurants.clear();

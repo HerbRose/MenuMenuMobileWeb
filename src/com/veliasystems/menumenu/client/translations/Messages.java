@@ -299,7 +299,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("District")
 	String district();
 	
-	@DefaultStringValue("Boss name")
+	@DefaultStringValue("Manager name")
 	String bossName();
 	
 	@DefaultStringValue("Add board")
