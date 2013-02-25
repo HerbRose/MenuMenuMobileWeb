@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.translations;
 
 import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 public interface Messages extends Constants {
 
@@ -492,6 +493,9 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Copy city data to:")
 	String copyCityDataTo();
+
+	@DefaultStringValue("Copy")
+	String copy();
 		
 	
 }

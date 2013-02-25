@@ -2,6 +2,7 @@
 package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.veliasystems.menumenu.client.translations.Messages;
 /**
  * 
@@ -269,6 +270,9 @@ public class Customization {
 	public static final String COPY_CITY_DATA_TO = translated.copyCityDataTo();
 	
 	public static final String UPLOAD_SCREEN_PANEL = translated.upload();
+
+
+	public static final String COPY = translated.copy();
 }
   
   
