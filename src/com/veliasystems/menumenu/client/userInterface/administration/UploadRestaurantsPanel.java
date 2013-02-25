@@ -102,7 +102,7 @@ public class UploadRestaurantsPanel extends FlowPanel implements IManager, IObse
 			}
 		});
 		
-		jsonImage = new Image("img/goodJson.png");
+		jsonImage = new Image("img/goodJsonExample.png");
 		jsonImage.setStyleName("goodJson");
 		
 		wrapper.add(jsonImage);
