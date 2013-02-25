@@ -4,6 +4,7 @@ package com.veliasystems.menumenu.server;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -313,7 +314,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		dao.ofy().put(r);
 	}
 	/**
@@ -1078,7 +1078,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		    Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
 
 		    Hashtable<String, Restaurant> map = new Hashtable<String, Restaurant>();
-
+		    
+		 
 		    while (iterator.hasNext()) {
 		        Map.Entry<String, JsonElement> entry = iterator.next();
 
@@ -1091,40 +1092,91 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 		    }   
 		    
-		  Set<String> restSet=  map.keySet();
-		  
+		
+		    
+		  Set<String> restSet=  map.keySet(); 
 		  List<String> city = loadCities();
-		  
 		  List<Restaurant> restaurants= loadRestaurants();
-		  
-		  
-		 
+
 		  for (String item : restSet) {
+			  Restaurant r = map.get(item);
+			  r.setNormalizedName(normalizeName(r.getName()));
 			  
-			 if(city.contains(map.get(item).getCity())){ //the city name can not by correct
-				 
-				 	if(!restaurants.contains(map.get(item))){
-				 		saveRestaurant(map.get(item), true);
-				 	}
-				 	else{
-				 		response += map.get(item).getName() + " " + Customization.DOUBLE_RESTAURANT + "\n";
-				 	}
-				 
-			 }else{
-			  response +=  map.get(item).getName() + " " + Customization.CITY_ERROR + "\n";
-			 }	
+			  if(r.getMainLogoImageString().equalsIgnoreCase("EMPTY")) r.setMainLogoImageString("");
+			  if(r.getMainMenuImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuImageString("");
+			  if(r.getMainMenuScaleSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScaleSizeImageString("");
+			  if(r.getMainMenuScreenSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScreenSizeImageString("");
+			  if(r.getMainProfileImageString().equalsIgnoreCase("EMPTY")) r.setMainProfileImageString("");
 			  
-			 
+			  r.setMainLogoImageString(URLDecoder.decode(r.getMainLogoImageString(), "UTf-8"));
+			  r.setMainMenuImageString(URLDecoder.decode(r.getMainMenuImageString(), "UTF-8"));
+			  r.setMainMenuScaleSizeImageString(URLDecoder.decode(r.getMainMenuScaleSizeImageString(), "UTF-8"));
+			  r.setMainMenuScreenSizeImageString(URLDecoder.decode(r.getMainMenuScreenSizeImageString(), "UTF-8"));
+			  r.setMainProfileImageString(URLDecoder.decode(r.getMainProfileImageString(), "UTF-8"));
 			  
+			  
+			  if(city.contains(map.get(item).getCity())){ //case when city already exists
+		 
+				boolean isExist = false;
+				
+				r.setCityId(findCityId(r.getCity()));
+				
+				for (Restaurant restaurant : restaurants) {
+					if(restaurant.equals(r)){
+						isExist = true;
+						break;
+					}
+				}
+				
+				if(!isExist){
+			 		saveRestaurant(r, true);
+				}
+			  }else if(validate(r.getCity())){ //case when city does not exist but the name is correct with '-' in name
+					City c = new City();
+					c.setCity(r.getCity());
+					c.setCountry("Poland");
+					c.setNormalizedCityName(normalizeName(c.getCity()));
+					dao.ofy().put(c);
+					city.add(c.getCity());
+					Long id = c.getId();
+					r.setCityId(id);
+					
+					saveRestaurant(r, true);
+			  }
 		  }
 		}
 		catch (Exception e) {
-			// TODO: handle exception
 			return e.toString();
 		}
 		return response;
 	}
+	
+	private boolean validate(String nameCity){
+		String matcher =".*[^-]-.*[^-]";
+		if(nameCity.matches(matcher)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private Long findCityId(String cityName){
+		
+		List<City> cities = loadCitiesEntity();
 
+		
+		Long id = (long) 0;
+		
+		for (City city : cities) {
+			if(city.getCity().equals(cityName)){
+				
+				id = city.getId();
+				
+				break;
+			}
+		}
+		
+		return id;
+	}
 
 	@Override
 	public City addCity(String cityName, String country) {

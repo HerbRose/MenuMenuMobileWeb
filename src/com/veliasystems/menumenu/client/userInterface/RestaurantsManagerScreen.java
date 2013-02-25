@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
+import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.controllers.CityController;
@@ -41,6 +42,7 @@ import com.veliasystems.menumenu.client.userInterface.administration.IManager;
 import com.veliasystems.menumenu.client.userInterface.administration.LastUploadedImages;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsOpenHours;
+import com.veliasystems.menumenu.client.userInterface.administration.UploadRestaurantsPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
@@ -91,6 +93,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 	private IManager cityManagerPanel;
 	private IManager lastUploadedImages;
 	private IManager restaurantOpenHours;
+	private IManager uploadRestaurantManager;
 
 	private IManager currentlyDisplayedPanel = null;
 	
@@ -315,7 +318,9 @@ public class RestaurantsManagerScreen extends MyPage implements
 		add(setCityManager());
 		add(setLastImages());
 		add(setRestaurantOpenHours());
+		add(setUploadRestaurantPanel());
 	}
+
 
 	/**
 	 * adding panels for the agent
@@ -444,6 +449,13 @@ public class RestaurantsManagerScreen extends MyPage implements
 		panelList.put(panelCount++, restaurantOpenHours);
 		tabBar.addTab(restaurantOpenHours.getName());
 		return (FlowPanel) restaurantOpenHours;
+	}
+	
+	private FlowPanel setUploadRestaurantPanel(){
+		uploadRestaurantManager = new UploadRestaurantsPanel();
+		panelList.put(panelCount++, uploadRestaurantManager);
+		tabBar.addTab(uploadRestaurantManager.getName());
+		return (FlowPanel) uploadRestaurantManager;
 	}
 	
 	@Override
