@@ -58,6 +58,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapper;
 import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
@@ -359,8 +360,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			throw new NullPointerException() ;
 		}
 		
-		int profileWidth = 450;
-		int profileHeight = 260;
+		int profileWidth = R.PROFILE_WIDTH;
+		int profileHeight = R.PROFILE_HEIGHT;
 		int logoWidth = 220;
 		int menuWidth = 220;
 		int menuScreenWidth = 440;

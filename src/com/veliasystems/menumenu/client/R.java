@@ -59,7 +59,11 @@ public class R {
 	public static final String SUCCESS_IMAGE_URL = IMAGE_PATH+"confirme.png";
 
 	public static final String WARNING_IMAGE_URL = IMAGE_PATH+"warning.png";
-    
+
+	public static final int PROFILE_HEIGHT = 245;
+	
+	public static final int PROFILE_WIDTH = 460;
+	
     private native static String getUserAgent()/*-{
 		return navigator.userAgent;
 	}-*/;
