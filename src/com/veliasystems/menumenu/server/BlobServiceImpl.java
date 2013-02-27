@@ -15,9 +15,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -51,10 +53,12 @@ import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapper;
 import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -1039,93 +1043,73 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 	
 }
 
-	public 	JSONArray restoreBackuoDB(String JSON) throws IOException {
-		
-			
-			Gson gson = new Gson();
-			FileService fileservice = FileServiceFactory.getFileService();
-			AppEngineFile file = new AppEngineFile(JSON);
-			//String path = file.getFullPath();
-			String response = " ";
-			
-			
-			boolean lock = false;
-			FileReadChannel readChannel = fileservice.openReadChannel(file, lock);
-			BufferedReader reader = new BufferedReader(Channels.newReader(readChannel,"UTF-8"));
-			String line = "";
-			String jsonString = "";
-			
-			while ( (line = reader.readLine())!=null) {
-				jsonString += line+ "\n";
-				
-				
-			}
-			readChannel.close();
-			
-			JsonObject object = (JsonObject) new com.google.gson.JsonParser().parse(jsonString);
-			Set<Map.Entry<String, JsonElement>> set = object.entrySet();
-			Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
-				
-		
-			JSONArray jsonArray = new JSONArray();  	
-			
-					while (iterator.hasNext()){
-						Map.Entry<String,JsonElement> entry = iterator.next();
-						String key = entry.getKey()+" ";// key of json e.g users
-						JsonElement value = entry.getValue();
-			
-//				if (key == "Restaurant"){
-//					Restaurant v = gson.fromJson(value, Restaurant.class);
-//					
-//				}
-//			
-//				if (key == "User"){
-//					User v = gson.fromJson(value, User.class);
-//					
-//				}
-//			
-//				if (key == "City"){
-//					City v = gson.fromJson(value,City.class);
-//				
-//				}
-			
-				
-						jsonArray.put(value);
-			
-			
-						int count = jsonArray.length();
-							for (int i = 0; i<count;i++){
-//				log.info("jestes");
-									try {
-										JSONObject Jobject = jsonArray.getJSONObject(i);
-					
-										if (key.equalsIgnoreCase("Restaurant")){
-											Restaurant v = gson.fromJson(Jobject.toString(), Restaurant.class);
-						
-							
-										}else if (key.equalsIgnoreCase("User")){
-											User v1 = gson.fromJson(Jobject.toString(), User.class);
-						
-										}else if (key.equalsIgnoreCase("City")){
-											City v2 = gson.fromJson(Jobject.toString(), City.class);
-					
-										}
-					
-									} catch (JSONException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-				}
-			}
-				
-		}
-				
-		return jsonArray ;
+private void parseJSONStringToObjects(String json){
+
+
+	JsonObject object = (JsonObject) new com.google.gson.JsonParser().parse(json);
+	Set<Map.Entry<String, JsonElement>> set = object.entrySet(); 
 	
+	BackupWrapper backupWrapper = new BackupWrapper();
+
+	for (Entry<String, JsonElement> entry : set) {
+
+	if(entry.getKey().equalsIgnoreCase("User")){
+
+	List<User> users = new ArrayList<User>();
+	JsonArray usersArray = (JsonArray) entry.getValue();
+	for (JsonElement user : usersArray) {
+		User value = new Gson().fromJson(user.getAsJsonObject(), User.class);
+		users.add(value);
+	}
+	backupWrapper.setUsers(users);
+	}
+	if(entry.getKey().equalsIgnoreCase("Restaurant")){
+		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+		JsonArray restaurantsArray = (JsonArray) entry.getValue();
+
+		for (JsonElement restaurant : restaurantsArray) {
+
+			Restaurant value = new Gson().fromJson(restaurant.getAsJsonObject(), Restaurant.class);
+			restaurants.add(value);
+		}
+		backupWrapper.setRestaurants(restaurants);
+		}
+	if(entry.getKey().equalsIgnoreCase("City")){
+		List<City> cities = new ArrayList<City>();
+		JsonArray restaurantsArray = (JsonArray) entry.getValue();
+	for (JsonElement city : restaurantsArray) {
+			City value = new Gson().fromJson(city.getAsJsonObject(), City.class);
+			cities.add(value);
+				}
+		backupWrapper.setCities(cities);
+
+	}
+	if(entry.getKey().equalsIgnoreCase("ImageBlob")){
+		List<ImageBlob> images = new ArrayList<ImageBlob>();
+		JsonArray restaurantsArray = (JsonArray) entry.getValue();
+	for (JsonElement image : restaurantsArray) {
+		ImageBlob value = new Gson().fromJson(image.getAsJsonObject(),ImageBlob.class);
+		images.add(value);
+	}
+	backupWrapper.setImageBlobs(images);
+	}
+	if(entry.getKey().equalsIgnoreCase("BackUpBlobKey")){
+		List<BackUpBlobKey> backups = new ArrayList<BackUpBlobKey>();
+		JsonArray restaurantsArray = (JsonArray) entry.getValue();
+	for (JsonElement backup : restaurantsArray) {
+		BackUpBlobKey value = new Gson().fromJson(backup.getAsJsonObject(),BackUpBlobKey.class);
+		backups.add(value);
+	}
+	backupWrapper.setBackups(backups);
+
+	}
+}	 
+
 }
 
 
 
-	public 	JSONArray restoreBackuoDB(String JSON) throws IOException {
+	public 	String restoreBackuoDB(String JSON) throws IOException {
 		
 			
 			Gson gson = new Gson();
@@ -1142,73 +1126,14 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 			String jsonString = "";
 			
 			while ( (line = reader.readLine())!=null) {
-				jsonString += line+ "\n";
-				
-				
+				jsonString += line+ "\n";	
 			}
 			readChannel.close();
 			
-			JsonObject object = (JsonObject) new com.google.gson.JsonParser().parse(jsonString);
-			Set<Map.Entry<String, JsonElement>> set = object.entrySet();
-			Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
-				
-		
-			JSONArray jsonArray = new JSONArray();  	
-			
-					while (iterator.hasNext()){
-						Map.Entry<String,JsonElement> entry = iterator.next();
-						String key = entry.getKey()+" ";// key of json e.g users
-						JsonElement value = entry.getValue();
-			
-//				if (key == "Restaurant"){
-//					Restaurant v = gson.fromJson(value, Restaurant.class);
-//					
-//				}
-//			
-//				if (key == "User"){
-//					User v = gson.fromJson(value, User.class);
-//					
-//				}
-//			
-//				if (key == "City"){
-//					City v = gson.fromJson(value,City.class);
-//				
-//				}
-			
-				
-						jsonArray.put(value);
-			
-			
-						int count = jsonArray.length();
-							for (int i = 0; i<count;i++){
-//				log.info("jestes");
-									try {
-										JSONObject Jobject = jsonArray.getJSONObject(i);
-					
-										if (key.equalsIgnoreCase("Restaurant")){
-											Restaurant v = gson.fromJson(Jobject.toString(), Restaurant.class);
-						
-							
-										}else if (key.equalsIgnoreCase("User")){
-											User v1 = gson.fromJson(Jobject.toString(), User.class);
-						
-										}else if (key.equalsIgnoreCase("City")){
-											City v2 = gson.fromJson(Jobject.toString(), City.class);
-					
-										}
-					
-									} catch (JSONException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-				}
-			}
-				
-		}
-				
-		return jsonArray ;
-	
-} 
-	
+			parseJSONStringToObjects(jsonString);
+			return jsonString;
+}
+
 /***
  * 
  * Comparator class used to compare image blobs by creation date
