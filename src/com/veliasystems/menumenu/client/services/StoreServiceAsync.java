@@ -86,4 +86,6 @@ public interface StoreServiceAsync {
 	void confirmUser(User user, UserToAdd userToAdd,
 			AsyncCallback<ResponseUserWrapper> callback);
 
+	void addUserToTests(User user, AsyncCallback<Void> asyncCallback);
+
 }

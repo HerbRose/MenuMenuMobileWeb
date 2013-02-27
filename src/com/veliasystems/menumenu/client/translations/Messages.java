@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.translations;
 
 import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 public interface Messages extends Constants {
 
@@ -298,7 +299,7 @@ public interface Messages extends Constants {
 	@DefaultStringValue("District")
 	String district();
 	
-	@DefaultStringValue("Boss name")
+	@DefaultStringValue("Manager name")
 	String bossName();
 	
 	@DefaultStringValue("Add board")
@@ -483,6 +484,18 @@ public interface Messages extends Constants {
 	//not translated
 	@DefaultStringValue("Missing open hours")
 	String missingOpenHours();
+
+	@DefaultStringValue("Unfortunately cookie support appears to be turned off in your browser. You have to turn on cookie support in your browser")
+	String noCookieSupportWarning();
+
+	@DefaultStringValue("Browser you are using look like firefox, unfortunately this application doesn't support this kind of web browser. Please use another browser (we recommended browser with gecko engine)")
+	String firefoxWarning();
+
+	@DefaultStringValue("Copy city data to:")
+	String copyCityDataTo();
+
+	@DefaultStringValue("Copy")
+	String copy();
 		
 	
 }

@@ -316,7 +316,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		dao.ofy().put(r);
 	}
 	/**
@@ -1101,7 +1100,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		    Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
 
 		    Hashtable<String, Restaurant> map = new Hashtable<String, Restaurant>();
-
+		    
+		 
 		    while (iterator.hasNext()) {
 		        Map.Entry<String, JsonElement> entry = iterator.next();
 
@@ -1114,10 +1114,20 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 		    }   
 		    
-		  Set<String> restSet=  map.keySet();
+
+	
+
+		
+		    
+		  Set<String> restSet=  map.keySet(); 
+
 		  List<String> city = loadCities();
 		  List<Restaurant> restaurants= loadRestaurants();
+
 		  
+
+
+
 		  for (String item : restSet) {
 			  Restaurant r = map.get(item);
 			  r.setNormalizedName(normalizeName(r.getName()));
@@ -1127,6 +1137,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			  if(r.getMainMenuScaleSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScaleSizeImageString("");
 			  if(r.getMainMenuScreenSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScreenSizeImageString("");
 			  if(r.getMainProfileImageString().equalsIgnoreCase("EMPTY")) r.setMainProfileImageString("");
+
 		  
 			  r.setMainLogoImageString(URLDecoder.decode(r.getMainLogoImageString(), "UTf-8"));
 			  r.setMainMenuImageString(URLDecoder.decode(r.getMainMenuImageString(), "UTF-8"));
@@ -1160,9 +1171,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 					city.add(c.getCity());
 					Long id = c.getId();
 					r.setCityId(id);
-
-					
-					saveRestaurant(r, true);
 			  }
 		  }
 		}
@@ -1171,6 +1179,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		return response;
 	}
+	
+	
+	
+	
+
 
 	private boolean validate(String nameCity){
 		String matcher =".*[^-]-.*[^-]";
@@ -1183,6 +1196,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private Long findCityId(String cityName){
 		
 		List<City> cities = loadCitiesEntity();
+
 
 		
 		Long id = (long) 0;
@@ -1462,7 +1476,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if( errorCodes.isEmpty() && !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
 			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 			log.severe("ConfirmId is not valid. confirmId from server: " + userToAddFromServer.getConfirmId() + ". ConfirmId from user: " + userToAdd.getConfirmId() +
+
 					"email from server: " + userFromServer.getEmail() + ", email from user: " + user.getEmail());
+
+	
+
 		}
 		
 		if(errorCodes.isEmpty()){

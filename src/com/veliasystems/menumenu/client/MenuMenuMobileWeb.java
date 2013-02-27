@@ -6,6 +6,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.CookieController;
@@ -15,6 +17,7 @@ import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
 import com.veliasystems.menumenu.client.userInterface.NewUserPage;
 import com.veliasystems.menumenu.client.userInterface.Pages;
 import com.veliasystems.menumenu.client.userInterface.WelcomeMobilePage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
 
 public class MenuMenuMobileWeb implements EntryPoint {
@@ -22,19 +25,33 @@ public class MenuMenuMobileWeb implements EntryPoint {
 	public static boolean loggedIn = false;
 	private String osType = R.USER_AGENT;
 	
-	private CookieController cookieController = CookieController.getInstance();
+	private CookieController cookieController ;
 	
 	public void onModuleLoad() {
 		
-		RootPanel.get().insert(PagesController.MY_POP_UP, 0);
-		RootPanel.get().insert(PagesController.TOUCH_GETTER, 0);
+		String userAgent = Navigator.getUserAgent();
+		if(userAgent != null && userAgent.toLowerCase().contains("firefox")){
+			Label firefoxWarningLabel = new Label(Customization.FIREFOX_WARNING);
+			PagesController.MY_POP_UP.showWarning(firefoxWarningLabel, new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
+		
+		
+		cookieController = CookieController.getInstance();
+		
 		String newUser = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
 		if(newUser != null && !newUser.equals("null") && !newUser.isEmpty()){ //it's weird, but it seems to be working
 			JQMContext.changePage(new NewUserPage());
 			return;
 		}
 		
-		String logged = Cookies.getCookie(R.LOGGED_IN);
+		String logged = cookieController.getCookie(CookieNames.LOGGED_IN); 
 		
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0
 				|| osType.toLowerCase().indexOf("iphone") >= 0;
@@ -92,4 +109,5 @@ public class MenuMenuMobileWeb implements EntryPoint {
     	return isMobile.any();
     	
 	}-*/;
+
 }

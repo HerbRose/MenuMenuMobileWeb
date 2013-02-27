@@ -47,16 +47,15 @@ public class FileUploadServer extends HttpServlet {
 			return;
 		}
 
+		String fileName = req.getParameter("filename");
+		if(fileName == null || fileName.isEmpty() ){
+			fileName = "fileNameNotFound";
+		}
 		
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
 
 		String jsonp = req.getParameter("jsonp");
-		
-		String fileName = req.getParameter("filename");
-		if(fileName == null || fileName.isEmpty() ){
-			fileName = "fileNameNotFound";
-		}
 		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 

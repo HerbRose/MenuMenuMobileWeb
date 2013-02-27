@@ -34,7 +34,8 @@ public class UserToAdd implements Serializable {
 	 * @param email
 	 */
 	public UserToAdd( String email) {
-		this.email = email;
+		if(email != null)
+			this.email = email.toLowerCase();
 	}
 
 	private UserToAdd() {} // not used

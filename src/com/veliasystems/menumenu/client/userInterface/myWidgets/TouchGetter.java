@@ -5,7 +5,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.PagesController;
 
 public class TouchGetter extends FocusPanel{
 
@@ -15,6 +17,7 @@ public class TouchGetter extends FocusPanel{
 	public TouchGetter() {
 		setStyleName("hide");
 		getElement().setId("touchGetter");
+		RootPanel.get().insert(this, 0);
 	}
 	
 	public interface HidePanels{

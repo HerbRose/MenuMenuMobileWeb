@@ -1009,11 +1009,11 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 	
 	// lets buffer the bitch
 	BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(filebytes));
-	String path = file.getFullPath();
 	
 	
 	
-	dao.ofy().put(BUBK);
+	
+	
 	byte[] buffer;
 	if(filebytes.length > 524288){
 		buffer = new byte[524288]; // 0.5 MB buffers
@@ -1030,13 +1030,13 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 	
 	
 	writeChannel.closeFinally();
-	long today = new Date().getTime();
 	
+	String path = file.getFullPath();
 	BlobKey cos = fileService.getBlobKey(file);
 	BUBK.setCreateDate(new Date());
 	BUBK.setFileBlobKey(fileService.getBlobKey(file).getKeyString());
 	BUBK.setAddress(path);
-	
+	dao.ofy().put(BUBK);
 	return cos;
 	
 }

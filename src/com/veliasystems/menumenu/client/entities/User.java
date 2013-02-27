@@ -47,7 +47,8 @@ public class User implements Serializable {
 	 * @param email
 	 */
 	public User( String email) {
-		this.email = email;
+		if(email != null)
+			this.email = email.toLowerCase();
 	}
 
 	private User() {

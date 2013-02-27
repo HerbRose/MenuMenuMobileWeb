@@ -160,6 +160,44 @@ public class UserController {
 			}
 		});
 	}
+	
+	public void addUserToTests(User user) {
+		final User userToAdd = user;
+		
+		PagesController.showWaitPanel();
+		
+		storeService.addUserToTests(user, new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				users.put(userToAdd.getEmail(), userToAdd);
+				notifyAllObservers();
+				PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				PagesController.hideWaitPanel();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				log.warning(caught.getMessage()); 
+				PagesController.hideWaitPanel();
+//				Window.alert(Customization.CONNECTION_ERROR);
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {		
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
+			}
+		});
+		
+	}
+	
 	/**
 	 * Change user data's 
 	 * @param user - {@link User} object
@@ -401,5 +439,7 @@ public class UserController {
 	private static native void consoleLog(String message)/*-{
 		console.log(message);
 	}-*/;
+	
+
 	
 }

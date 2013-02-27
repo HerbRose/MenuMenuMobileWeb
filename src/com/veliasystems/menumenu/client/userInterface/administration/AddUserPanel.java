@@ -30,6 +30,7 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 	
 	private Label mailLabel;
 	private Label roleLabel;
+	private Label testLabel;
 	private Label restaurantChosenLabel; 
 	private Label citiesChosenLabel; 
 	
@@ -42,6 +43,7 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 	private UserController userController = UserController.getInstance();
 	
 	private MyListCombo roleListCombo = new MyListCombo(true);
+	private MyListCombo testCombo = new MyListCombo(false);
 	private MyListCombo restaurantListCombo = new MyListCombo(true);
 	private MyListCombo citiesListCombo = new MyListCombo(true);
 	
@@ -59,10 +61,15 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 		show(false);
 		
 		mailLabel = new Label(Customization.INPUT_EMAIL);
+		testLabel = new Label("Is for test?");
 		roleLabel = new Label(Customization.USER_ROLE);
 		citiesChosenLabel = new Label(Customization.CHOOSE_CITIES);
 		restaurantChosenLabel = new Label(Customization.CHOOSE_RESTAURANTS);
 
+		testCombo.addListItem(testCombo.getNewItem("Yes"), 1);
+		testCombo.addListItem(testCombo.getNewItem("No"), 2);
+		testCombo.selectItem(2);
+		
 		roleListCombo.addMyClickHendler(new ClickHandler() {
 			
 			@Override
@@ -123,6 +130,7 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 		container.setStyleName("containerPanelAddRestaurant", true);
 
 		container.addItem(mailLabel, inputEmailRestaurator);
+		container.addItem(testLabel, testCombo);
 		container.addItem(roleLabel, roleListCombo);
 		container.addItem(restaurantChosenLabel, restaurantListCombo);
 		container.addItem(citiesChosenLabel, citiesListCombo);	
@@ -133,7 +141,8 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 	}
 
 	private void addUser(User user) {
-		userController.addUser(user);
+		if(testCombo.getSelectedItem().getOrder() == 2)	userController.addUser(user);
+		else userController.addUserToTests(user);
 	}
 
 	private boolean validData() {

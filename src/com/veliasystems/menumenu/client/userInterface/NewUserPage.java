@@ -1,5 +1,7 @@
 package com.veliasystems.menumenu.client.userInterface;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,6 +35,8 @@ public class NewUserPage extends MyPage{
 	
 	private FlowPanel logoPanel = new FlowPanel();
 	
+	private Label userEmailLabel;
+	private TextBox userEmailBox;
 	private Label editPasswordLabel;
 	private PasswordTextBox editPasswordBox;
 	private Label repeatPasswordLabel;
@@ -57,10 +61,20 @@ public class NewUserPage extends MyPage{
 		email = cookieController.getCookie(CookieNames.NEW_USER_EMAIL);
 		confirmId = cookieController.getCookie(CookieNames.NEW_USER_CONFIRME_ID);
 		
+		cookieController.clearCookie(CookieNames.NEW_USER_CONFIRME_ID);
+		cookieController.clearCookie(CookieNames.NEW_USER_EMAIL);
+		
 		logoPanel.add(new Image("img/layout/menuMenuLogo.png"));
 		logoPanel.setStyleName("logoPanel", true);
 		getHeader().addImageHeader(logoPanel);  
 		 
+			
+		userEmailLabel = new Label(Customization.LOGIN);
+
+		userEmailBox = new TextBox();
+		userEmailBox.setText(email);
+		userEmailBox.setEnabled(false);
+		userEmailBox.addStyleName("myTextBox nameBox");
 		
 			editPasswordLabel = new Label(Customization.INPUT_PASSWORD);
 
@@ -115,8 +129,10 @@ public class NewUserPage extends MyPage{
 							public void onSuccess(ResponseUserWrapper result) {
 								PagesController.hideWaitPanel();
 								if(result.getErrorCodes().isEmpty()){
-									cookieController.clearCookie(CookieNames.NEW_USER_CONFIRME_ID);
-									cookieController.clearCookie(CookieNames.NEW_USER_EMAIL);
+									
+									long date = new Date().getTime();
+									date += 1000*60*60*24*3; //three days
+									cookieController.setCookie(CookieNames.LOGIN, email, date);
 									JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
 								} else{
 									String msg = "";
@@ -150,6 +166,7 @@ public class NewUserPage extends MyPage{
 			});
 			
 			container.setStyleName("containerPanelAddRestaurant", true);	
+			container.addItem(userEmailLabel, userEmailBox);
 			container.addItem(editPasswordLabel, editPasswordBox);
 			container.addItem(repeatPasswordLabel, repeatPasswordBox);
 			container.addItem(editNameLabel, editNameBox);
