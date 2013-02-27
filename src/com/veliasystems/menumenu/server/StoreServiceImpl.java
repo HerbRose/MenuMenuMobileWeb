@@ -87,6 +87,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return cityListString;
 	}
 	
+	
 //	public City loadCitie(Long cityId) {
 //		
 ////		Query<City> cityQuery = dao.ofy().query(City.class);
@@ -1113,11 +1114,19 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 		    }   
 		    
+
+	
+
 		
 		    
 		  Set<String> restSet=  map.keySet(); 
+
 		  List<String> city = loadCities();
 		  List<Restaurant> restaurants= loadRestaurants();
+
+		  
+
+
 
 		  for (String item : restSet) {
 			  Restaurant r = map.get(item);
@@ -1128,30 +1137,31 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			  if(r.getMainMenuScaleSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScaleSizeImageString("");
 			  if(r.getMainMenuScreenSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScreenSizeImageString("");
 			  if(r.getMainProfileImageString().equalsIgnoreCase("EMPTY")) r.setMainProfileImageString("");
-			  
+
+		  
 			  r.setMainLogoImageString(URLDecoder.decode(r.getMainLogoImageString(), "UTf-8"));
 			  r.setMainMenuImageString(URLDecoder.decode(r.getMainMenuImageString(), "UTF-8"));
 			  r.setMainMenuScaleSizeImageString(URLDecoder.decode(r.getMainMenuScaleSizeImageString(), "UTF-8"));
 			  r.setMainMenuScreenSizeImageString(URLDecoder.decode(r.getMainMenuScreenSizeImageString(), "UTF-8"));
 			  r.setMainProfileImageString(URLDecoder.decode(r.getMainProfileImageString(), "UTF-8"));
-			  
-			  
+		  
+		  
 			  if(city.contains(map.get(item).getCity())){ //case when city already exists
 		 
 				boolean isExist = false;
-				
+			  
 				r.setCityId(findCityId(r.getCity()));
-				
+				 
 				for (Restaurant restaurant : restaurants) {
 					if(restaurant.equals(r)){
 						isExist = true;
 						break;
-					}
-				}
-				
+				 	}
+				 	}
+				 
 				if(!isExist){
 			 		saveRestaurant(r, true);
-				}
+			 }	
 			  }else if(validate(r.getCity())){ //case when city does not exist but the name is correct with '-' in name
 					City c = new City();
 					c.setCity(r.getCity());
@@ -1161,8 +1171,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 					city.add(c.getCity());
 					Long id = c.getId();
 					r.setCityId(id);
-					
-					saveRestaurant(r, true);
 			  }
 		  }
 		}
@@ -1172,6 +1180,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return response;
 	}
 	
+	
+	
+	
+
+
 	private boolean validate(String nameCity){
 		String matcher =".*[^-]-.*[^-]";
 		if(nameCity.matches(matcher)) {
@@ -1459,7 +1472,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if( errorCodes.isEmpty() && !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
 			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 			log.severe("ConfirmId is not valid. confirmId from server: " + userToAddFromServer.getConfirmId() + ". ConfirmId from user: " + userToAdd.getConfirmId() +
-					"email from server: " + userFromServer.getEmail() + ", email from user: " + user.getEmail());	
+
+					"email from server: " + userFromServer.getEmail() + ", email from user: " + user.getEmail());
+
+	
+
 		}
 		
 		if(errorCodes.isEmpty()){
@@ -1696,6 +1713,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * 
 	 * @param imageBlob - {@link ImageBlob} to save
 	 */
+	
 	public void saveImageBlob( ImageBlob imageBlob) {
 		if(imageBlob != null) dao.ofy().put(imageBlob);
 	}

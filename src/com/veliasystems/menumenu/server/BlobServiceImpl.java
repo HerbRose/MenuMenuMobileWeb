@@ -933,6 +933,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		writeChannel.closeFinally();
 		return fileService.getBlobKey(file);
 	}
+	
+	
+	
+	
 
 	public void  checkImageSize(){
 		
@@ -1034,6 +1038,92 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 	return cos;
 	
 }
+
+	public 	JSONArray restoreBackuoDB(String JSON) throws IOException {
+		
+			
+			Gson gson = new Gson();
+			FileService fileservice = FileServiceFactory.getFileService();
+			AppEngineFile file = new AppEngineFile(JSON);
+			//String path = file.getFullPath();
+			String response = " ";
+			
+			
+			boolean lock = false;
+			FileReadChannel readChannel = fileservice.openReadChannel(file, lock);
+			BufferedReader reader = new BufferedReader(Channels.newReader(readChannel,"UTF-8"));
+			String line = "";
+			String jsonString = "";
+			
+			while ( (line = reader.readLine())!=null) {
+				jsonString += line+ "\n";
+				
+				
+			}
+			readChannel.close();
+			
+			JsonObject object = (JsonObject) new com.google.gson.JsonParser().parse(jsonString);
+			Set<Map.Entry<String, JsonElement>> set = object.entrySet();
+			Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
+				
+		
+			JSONArray jsonArray = new JSONArray();  	
+			
+					while (iterator.hasNext()){
+						Map.Entry<String,JsonElement> entry = iterator.next();
+						String key = entry.getKey()+" ";// key of json e.g users
+						JsonElement value = entry.getValue();
+			
+//				if (key == "Restaurant"){
+//					Restaurant v = gson.fromJson(value, Restaurant.class);
+//					
+//				}
+//			
+//				if (key == "User"){
+//					User v = gson.fromJson(value, User.class);
+//					
+//				}
+//			
+//				if (key == "City"){
+//					City v = gson.fromJson(value,City.class);
+//				
+//				}
+			
+				
+						jsonArray.put(value);
+			
+			
+						int count = jsonArray.length();
+							for (int i = 0; i<count;i++){
+//				log.info("jestes");
+									try {
+										JSONObject Jobject = jsonArray.getJSONObject(i);
+					
+										if (key.equalsIgnoreCase("Restaurant")){
+											Restaurant v = gson.fromJson(Jobject.toString(), Restaurant.class);
+						
+							
+										}else if (key.equalsIgnoreCase("User")){
+											User v1 = gson.fromJson(Jobject.toString(), User.class);
+						
+										}else if (key.equalsIgnoreCase("City")){
+											City v2 = gson.fromJson(Jobject.toString(), City.class);
+					
+										}
+					
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+				}
+			}
+				
+		}
+				
+		return jsonArray ;
+	
+}
+
+
 
 	public 	JSONArray restoreBackuoDB(String JSON) throws IOException {
 		

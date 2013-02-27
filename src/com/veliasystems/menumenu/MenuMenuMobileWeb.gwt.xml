@@ -31,7 +31,7 @@
   <set-configuration-property name="locale.cookie" value="gwtLocale"/>
   <script src="/js/picup.2.1.1.js"></script>
   
-  <extend-property name="locale" values="en"/>
-  <extend-property name="locale" values="fr"/>
-  <extend-property name="locale" values="pl"/>
+<!--   <extend-property name="locale" values="en"/> -->
+<!--   <extend-property name="locale" values="fr"/> -->
+<!--   <extend-property name="locale" values="pl"/> -->
 </module>

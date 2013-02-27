@@ -108,8 +108,11 @@ public class CityController{
 
 			@Override
 			public int compare(City o1, City o2) {
-				 	return o1.getNormalizedCityName().toLowerCase().compareTo(o2.getNormalizedCityName().toLowerCase());
+				if(o1.getNormalizedCityName() != null && o2.getNormalizedCityName()!=null){
+					return o1.getNormalizedCityName().compareToIgnoreCase(o2.getNormalizedCityName());
 				}
+				return o1.getCity().compareToIgnoreCase(o2.getCity());
+			}
 			
 		});
 		return citiesList;
@@ -153,13 +156,13 @@ public class CityController{
 	 * @param cityIdFrom - id of {@link City} - source of data
 	 * @param cityIdTo - id of {@link City} - destination of copying data
 	 */
-	public void copyAllDataFromCity(String cityIdFrom, String cityIdTo){
+	public void copyAllDataFromCity(String cityIdFrom, String cityIdTo, final IObserver observer){
 		PagesController.showWaitPanel();
 		storeService.copyCityData(cityIdFrom, cityIdTo, userController.getLoggedUser().getEmail() , new AsyncCallback<Map<String, String>>() {
 			
 			@Override
 			public void onSuccess(Map<String, String> result) {
-				PagesController.hideWaitPanel();
+				//PagesController.hideWaitPanel();
 				if(result == null){
 //					Window.alert(Customization.WRONG_DATA_ERROR);
 					PagesController.MY_POP_UP.showError(new Label(Customization.WRONG_DATA_ERROR), new IMyAnswer() {
@@ -170,6 +173,7 @@ public class CityController{
 					});
 				}else{
 //					Window.alert(Customization.COPY_RESTAURANTS_IN_PROGRESS);
+					PagesController.hideWaitPanel();
 					PagesController.MY_POP_UP.showSuccess(new Label(Customization.COPY_RESTAURANTS_IN_PROGRESS), new IMyAnswer() {
 						
 						@Override
@@ -177,7 +181,7 @@ public class CityController{
 						}
 					});
 				}
-			
+				observer.newData();
 		
 			}
 			
@@ -191,6 +195,7 @@ public class CityController{
 					public void answer(Boolean answer) {
 					}
 				});
+				observer.newData();
 			}
 		});
 	}

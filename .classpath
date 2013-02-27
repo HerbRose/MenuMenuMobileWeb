@@ -17,4 +17,3 @@
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/gwt-2.5.0"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
-

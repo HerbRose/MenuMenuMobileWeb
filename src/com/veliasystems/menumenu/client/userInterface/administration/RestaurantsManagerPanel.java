@@ -37,8 +37,7 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswe
 public class RestaurantsManagerPanel extends FlowPanel implements IManager{
 
 	// controllers
-	private RestaurantController restaurantController = RestaurantController
-			.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private CityController cityController = CityController.getInstance();
 	// END - controllers
 	private Button saveRestaurantsButton;

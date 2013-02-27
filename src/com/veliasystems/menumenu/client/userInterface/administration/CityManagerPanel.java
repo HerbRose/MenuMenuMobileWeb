@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
@@ -32,6 +33,7 @@ import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyInfoPanelRow;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo.IMyChangeHendler;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyUploadForm;
@@ -114,10 +116,32 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		
 		cityDetails.clear();
 		
+		final Button copyCityButton = new Button(Customization.COPY);
+		
 		MyRestaurantInfoPanel cityInfoPanel = new MyRestaurantInfoPanel();
 		cityInfoPanel.setStyleName("containerPanelAddRestaurant", true);
 		cityInfoPanel.setWidth(JS.getElementOffsetWidth(getParent().getElement())-20 );
 
+		Label copyLabel = new Label(Customization.COPY_CITY_DATA_TO);
+		final MyListCombo citiesListComboToCopy = new MyListCombo(false);
+		citiesListComboToCopy.addListItem(citiesListComboToCopy.getNewItem(""), Customization.DO_NOTHING);
+		citiesListComboToCopy.addListItem(citiesListComboToCopy.getNewItem("New City"), Customization.NEW_CITY);
+		for (City cityToAddToList : cities) {
+			citiesListComboToCopy.addListItem(citiesListComboToCopy.getNewItem(cityToAddToList.getCity()), cityToAddToList.getId());
+		}
+		citiesListComboToCopy.selectItem(0);
+		citiesListComboToCopy.addMyChangeHendler(new IMyChangeHendler() {
+			
+			@Override
+			public void onChange() {
+				if(citiesListComboToCopy.getSelectedOrder() == Customization.DO_NOTHING){
+					copyCityButton.setStyleName("toClick", false);
+				}else{
+					copyCityButton.setStyleName("toClick", true);
+				}
+				
+			}
+		});
 		
 		Label nameLabel = new Label(Customization.CITY_NAME);
 		final TextBox nameTextBox = new TextBox();
@@ -178,6 +202,9 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			}
 		});
 		final MyListCombo countryListCombo = new MyListCombo(false);
+		
+		
+		FlowPanel allowButtonPanel = new FlowPanel();
 		Button saveButton = new Button(Customization.SAVE);
 		saveButton.addClickHandler(new ClickHandler() {
 			
@@ -201,24 +228,37 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 
 		});
 
+		copyCityButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(citiesListComboToCopy.getSelectedOrder() != Customization.DO_NOTHING){
+					cityController.copyAllDataFromCity(city.getId()+"", citiesListComboToCopy.getSelectedOrder()+"", getMe());
+				}
+				
+			}
+		});
+		copyCityButton.getElement().getStyle().setMarginLeft(20d, Unit.PX);
+		
 		Label countryLabel = new Label(Customization.COUNTRY);
 		
 		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.POLAND), 1);
 		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.FRANCE), 2);
-		
 		
 		if(city.getCountry().equals(Customization.POLAND)){
 			countryListCombo.selectItem(1);
 		}else if(city.getCountry().equals(Customization.FRANCE)){
 			countryListCombo.selectItem(2);
 		}
-
+		
+		
 		final MyUploadForm myUploadForm = createUpload(city.getId());
 		
 		cityInfoPanel.addItem(nameLabel, nameTextBox);
 		cityInfoPanel.addItem(visabilityLabel, isVisibleForProduction);
 		cityInfoPanel.addItem(visiblityForTestLabel, isVisibleForTests);
 		cityInfoPanel.addItem(countryLabel, countryListCombo);
+		cityInfoPanel.addItem(copyLabel, citiesListComboToCopy);
 		if(!city.getDistrictImageURL().isEmpty()){
 			myUploadForm.getElement().getStyle().setDisplay(Display.NONE);
 			add(myUploadForm);
@@ -237,7 +277,9 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			cityInfoPanel.addItem(districtImageLabel,  myUploadForm);
 		}
 
-		cityInfoPanel.addItem(saveButton, deleteButton);
+		allowButtonPanel.add(saveButton);
+		allowButtonPanel.add(copyCityButton);
+		cityInfoPanel.addItem(allowButtonPanel, deleteButton);
 
 		cityDetails.add(cityInfoPanel);
 		showCityTable(cityDetails, null, false);
@@ -380,29 +422,11 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		return districtImage;
 	}
 
-	private native int getHeight(String elementId)/*-{
-		
-		var children = $wnd.document.getElementById(elementId).childNodes;
-		var length = children.length;
-		var height = 0;
-		for( i=0; i<=length-1; i++ ){
-			height+= children[i].offsetHeight;
-		}
-		
-		return height;
-	}-*/;
-	
-	private native String getUserAgent()/*-{
-		return navigator.userAgent;
-	}-*/;
-	
-	private static native void clickOnInputFile(Element elem) /*-{
-		elem.click();
-	}-*/;
+
 
 	@Override
 	public void onChange() {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -419,4 +443,27 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	private IObserver getMe() {
 		return this;
 	}
+
+	
+	private native int getHeight(String elementId)/*-{
+	
+	var children = $wnd.document.getElementById(elementId).childNodes;
+	var length = children.length;
+	var height = 0;
+	for( i=0; i<=length-1; i++ ){
+		height+= children[i].offsetHeight;
+	}
+	
+	return height;
+	}-*/;
+	
+	private native String getUserAgent()/*-{
+		return navigator.userAgent;
+	}-*/;
+	
+	private static native void clickOnInputFile(Element elem) /*-{
+		elem.click();
+	}-*/;
 }
+
+

@@ -151,9 +151,9 @@ public class CopyDataTask extends HttpServlet{
 			newRestaurant.setPhoneUser(restaurant.getPhoneUser());
 			newRestaurant.setSurnameUser(restaurant.getSurnameUser());
 			
-			copyImages(restaurant.getLogoImages(), newRestaurant.getId()+"");
-			copyImages(restaurant.getMenuImages(), newRestaurant.getId()+"");
-			copyImages(restaurant.getProfileImages(), newRestaurant.getId()+"");
+			newRestaurant.setMainLogoImageString(copyImages(restaurant.getLogoImages(), newRestaurant.getId()+"", restaurant.getMainLogoImageString()));
+			newRestaurant.setMainMenuImageString(copyImages(restaurant.getMenuImages(), newRestaurant.getId()+"", restaurant.getMainMenuImageString()));
+			newRestaurant.setMainProfileImageString(copyImages(restaurant.getProfileImages(), newRestaurant.getId()+"", restaurant.getMainProfileImageString()));
 			
 			restaurantsToSave.add(newRestaurant);
 			
@@ -182,10 +182,17 @@ public class CopyDataTask extends HttpServlet{
 		return false;
 	}
 
-	private void copyImages(List<ImageBlob> logoImages, String newRestaurantId) {		
+	private String copyImages(List<ImageBlob> logoImages, String newRestaurantId, String mainImageLink) {		
+		String maiinNewImageLink = "";
+		String tmp = "";
+		if(mainImageLink == null) mainImageLink = "";
 		for (ImageBlob imageBlob : logoImages) {
-			blobService.copyBlob(imageBlob, newRestaurantId);
+			tmp = blobService.copyBlob(imageBlob, newRestaurantId);
+			if(mainImageLink.contains(imageBlob.getBlobKey())){
+				maiinNewImageLink = tmp;
+			}
 		}
+		return maiinNewImageLink;
 	}
 	
 	private void sendMail( String emailAddress ){
