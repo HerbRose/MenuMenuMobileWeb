@@ -101,7 +101,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * 
 	 * @param cityId - id of {@link City} to find
 	 * @return Single {@link City} object or null if is not found
-	 */
+	 */ 
 	public City findCity(Long cityId){
 		return dao.ofy().find(City.class, cityId);
 	}
