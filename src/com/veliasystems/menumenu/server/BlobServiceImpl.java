@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.server;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,16 +9,17 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.blobstore.BlobInfo;
@@ -26,6 +28,7 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.files.AppEngineFile;
+import com.google.appengine.api.files.FileReadChannel;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
@@ -34,7 +37,6 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesService.OutputEncoding;
 import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ImagesServiceFailureException;
 import com.google.appengine.api.images.InputSettings;
 import com.google.appengine.api.images.InputSettings.OrientationCorrection;
 import com.google.appengine.api.images.OutputSettings;
@@ -45,12 +47,20 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
+import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.BlobData;
 import com.veliasystems.menumenu.client.services.BlobDataFilter;
 import com.veliasystems.menumenu.client.services.BlobService;
@@ -83,6 +93,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return getAllImages("" + r.getId());
 	}
 
+	
 	/**
 	 * @param restaurantId = id of {@link Restaurant}
 	 * @return List of images connected to given {@link Restaurant}
@@ -322,13 +333,26 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * 
 	 */
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String newName) {
-		Restaurant restaurant = null ;
+		
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
 		if (query == null) {
 			imageBlob2 = new ImageBlob();
 		}else{
 			imageBlob2 = query.filter("blobKey", imageBlob.getBlobKey()).get();
+		}
+		
+		if(imageBlob2 == null){ //second try
+			Query<ImageBlob> query2 = dao.ofy().query(ImageBlob.class);
+			if (query == null) {
+				imageBlob2 = new ImageBlob();
+			}else{
+				imageBlob2 = query2.filter("blobKey", imageBlob.getBlobKey()).get();
+			}
+		}
+		
+		if(imageBlob2 == null){
+			throw new NullPointerException() ;
 		}
 		
 		int profileWidth = 450;
@@ -381,7 +405,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		if(imageBlob2.getBlobKeyOriginalSize() != null){
 			blobKey = new BlobKey(imageBlob2.getBlobKeyOriginalSize());
 			log.info("used getBlobKeyOriginalSize()");
-		}else{
+		}else{ 
 			blobKey = new BlobKey(imageBlob.getBlobKey());
 			log.info("used getBlobKey()");
 		}
@@ -567,8 +591,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Map<String, ImageBlob> cropImage(ImageBlob imageBlob, double leftX, double topY,
-			double rightX, double bottomY){
+	public Map<String, ImageBlob> cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY){
 		
 		Map<String, ImageBlob> mapToReturn = new HashMap<String, ImageBlob>();
 		
@@ -912,6 +935,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		writeChannel.closeFinally();
 		return fileService.getBlobKey(file);
 	}
+	
+	
+	
+	
 
 	public void  checkImageSize(){
 		
@@ -964,7 +991,141 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 //		
 //	}
 	
+
+public BlobKey writeBackupDB(String contentType, String fileName,
+		byte[] filebytes) throws IOException {
+	// Get a file service
+	
+	
+	
+	BackUpBlobKey BUBK = new BackUpBlobKey();
+	FileService fileService = FileServiceFactory.getFileService();
+	AppEngineFile file = fileService.createNewBlobFile(contentType,
+			fileName);
+	// Open a channel to write to it
+	boolean lock = true;
+	FileWriteChannel writeChannel = null;
+	writeChannel = fileService.openWriteChannel(file, lock);
+	
+	// lets buffer the bitch
+	BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(filebytes));
+	String path = file.getFullPath();
+	
+	
+	
+	dao.ofy().put(BUBK);
+	byte[] buffer;
+	if(filebytes.length > 524288){
+		buffer = new byte[524288]; // 0.5 MB buffers
+	}else{
+		buffer = new byte[filebytes.length]; // filebytes.length MB buffers
+	}
+
+	while (in.read(buffer) > 0) { // -1 means EndOfStream
+		ByteBuffer bb = ByteBuffer.wrap(buffer);
+		writeChannel.write(bb);
+	}
+	
+	
+	
+	
+	writeChannel.closeFinally();
+	long today = new Date().getTime();
+	
+	BlobKey cos = fileService.getBlobKey(file);
+	BUBK.setCreateDate(new Date());
+	BUBK.setFileBlobKey(fileService.getBlobKey(file).getKeyString());
+	BUBK.setAddress(path);
+	
+	return cos;
+	
 }
+
+	public 	JSONArray restoreBackuoDB(String JSON) throws IOException {
+		
+			
+			Gson gson = new Gson();
+			FileService fileservice = FileServiceFactory.getFileService();
+			AppEngineFile file = new AppEngineFile(JSON);
+			//String path = file.getFullPath();
+			String response = " ";
+			
+			
+			boolean lock = false;
+			FileReadChannel readChannel = fileservice.openReadChannel(file, lock);
+			BufferedReader reader = new BufferedReader(Channels.newReader(readChannel,"UTF-8"));
+			String line = "";
+			String jsonString = "";
+			
+			while ( (line = reader.readLine())!=null) {
+				jsonString += line+ "\n";
+				
+				
+			}
+			readChannel.close();
+			
+			JsonObject object = (JsonObject) new com.google.gson.JsonParser().parse(jsonString);
+			Set<Map.Entry<String, JsonElement>> set = object.entrySet();
+			Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
+				
+		
+			JSONArray jsonArray = new JSONArray();  	
+			
+					while (iterator.hasNext()){
+						Map.Entry<String,JsonElement> entry = iterator.next();
+						String key = entry.getKey()+" ";// key of json e.g users
+						JsonElement value = entry.getValue();
+			
+//				if (key == "Restaurant"){
+//					Restaurant v = gson.fromJson(value, Restaurant.class);
+//					
+//				}
+//			
+//				if (key == "User"){
+//					User v = gson.fromJson(value, User.class);
+//					
+//				}
+//			
+//				if (key == "City"){
+//					City v = gson.fromJson(value,City.class);
+//				
+//				}
+			
+				
+						jsonArray.put(value);
+			
+			
+						int count = jsonArray.length();
+							for (int i = 0; i<count;i++){
+//				log.info("jestes");
+									try {
+										JSONObject Jobject = jsonArray.getJSONObject(i);
+					
+										if (key.equalsIgnoreCase("Restaurant")){
+											Restaurant v = gson.fromJson(Jobject.toString(), Restaurant.class);
+						
+							
+										}else if (key.equalsIgnoreCase("User")){
+											User v1 = gson.fromJson(Jobject.toString(), User.class);
+						
+										}else if (key.equalsIgnoreCase("City")){
+											City v2 = gson.fromJson(Jobject.toString(), City.class);
+					
+										}
+					
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+				}
+			}
+				
+		}
+				
+		return jsonArray ;
+	
+}
+
+
 
 
 	
@@ -983,5 +1144,7 @@ class MyComparator implements Comparator<ImageBlob> {
 		}
 		return 0;
 	}
+
+}
 
 }

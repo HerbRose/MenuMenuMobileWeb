@@ -4,6 +4,7 @@ package com.veliasystems.menumenu.server;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,7 @@ import com.veliasystems.menumenu.client.controllers.ErrorCodes;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUserWrapper;
+import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -84,6 +86,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return cityListString;
 	}
+	
 	
 //	public City loadCitie(Long cityId) {
 //		
@@ -530,6 +533,26 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		emailService.sendEmail(toAddress, userName, message, subject);
 		
 	}
+	private void sendMailToNewUser(User user, UserToAdd userToAdd, String recipient){
+		String userName = user.getName();
+		if(userName == null || userName.isEmpty()){
+			userName = getLoginFromMail(user.getEmail());
+		}
+		String subject = "Message from website MenuMenu";
+		String message = "Hello "+userName+". \n\n";
+		
+		message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
+				   "Click on the link below to finish this process:\n\n"+
+				   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
+				   "or ignore this message if you do not want participate in our project. \n\n"+
+				   "Thank you: MenuMenu team.\n\n"+
+				   "This email has been generated automatically. Please do not reply to this email address."; 
+		List<String> toAddress = new ArrayList<String>();
+		toAddress.add(recipient);
+		emailService.sendEmail(toAddress, userName, message, subject);
+		
+	}
+	
 	private void sendMailToUserAfterAddingRestaurant(UserToAdd userToAdd, User user, String restaurantName){
 		String userName = user.getName();
 		if(userName == null || userName.isEmpty()){
@@ -825,6 +848,26 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return getImageLists( restQuery.order("name").list() );  
 	}
+	
+	public List<Restaurant> loadbcRestaurants() {
+		
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		
+			return restQuery.order("name").list();
+	}
+	public List <ImageBlob> loadImageBlob(){
+		 Query <ImageBlob>imgQuery =  dao.ofy().query(ImageBlob.class);
+				return imgQuery.list();
+	}
+	public List <ImageType> loadImageType(){
+		Query <ImageType>imgTQuerry = dao.ofy().query(ImageType.class);
+		return imgTQuerry.list();
+	}
+	public List <BackUpBlobKey> loadBUBK(){
+		Query <BackUpBlobKey>bubkQuery = dao.ofy().query(BackUpBlobKey.class);
+		return bubkQuery.list();
+	}
+	
 	/**
 	 * 
 	 * @return List of keys {@link Restaurant}
@@ -840,7 +883,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			return null;
 		}
 		
-		return dao.ofy().find(User.class, email);
+		return dao.ofy().find(User.class, email.toLowerCase());
 	}
 	
 	private UserToAdd loadUserToAdd( String email ){
@@ -848,7 +891,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			return null;
 		}
 		
-		return dao.ofy().find(UserToAdd.class, email);
+		return dao.ofy().find(UserToAdd.class, email.toLowerCase());
 	}
 	
 	@Override
@@ -1026,8 +1069,18 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				break;
 			case MENU:
 				r.setMainMenuImageString(imageBlob.getImageUrl());
-				if(imageBlob.getBlobKeyScreenSize()!=null) r.setMainMenuScreenSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKeyScreenSize());
-				if(imageBlob.getBlobKeyScaleSize()!=null) r.setMainMenuScaleSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKeyScaleSize());
+				if(imageBlob.getBlobKeyScreenSize()!=null){
+					r.setMainMenuScreenSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKeyScreenSize());
+				}else{
+					r.setMainMenuScreenSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKey());
+				}
+				
+				if(imageBlob.getBlobKeyScaleSize()!=null){
+					r.setMainMenuScaleSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKeyScaleSize());
+				}else{
+					r.setMainMenuScaleSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKey());
+				}
+				
 				r.setClearBoard(false);
 				break;
 		}
@@ -1062,39 +1115,89 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		    }   
 		    
 		  Set<String> restSet=  map.keySet();
-		  
 		  List<String> city = loadCities();
-		  
 		  List<Restaurant> restaurants= loadRestaurants();
 		  
-		  
-		 
 		  for (String item : restSet) {
+			  Restaurant r = map.get(item);
+			  r.setNormalizedName(normalizeName(r.getName()));
 			  
-			 if(city.contains(map.get(item).getCity())){ //the city name can not by correct
+			  if(r.getMainLogoImageString().equalsIgnoreCase("EMPTY")) r.setMainLogoImageString("");
+			  if(r.getMainMenuImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuImageString("");
+			  if(r.getMainMenuScaleSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScaleSizeImageString("");
+			  if(r.getMainMenuScreenSizeImageString().equalsIgnoreCase("EMPTY")) r.setMainMenuScreenSizeImageString("");
+			  if(r.getMainProfileImageString().equalsIgnoreCase("EMPTY")) r.setMainProfileImageString("");
+		  
+			  r.setMainLogoImageString(URLDecoder.decode(r.getMainLogoImageString(), "UTf-8"));
+			  r.setMainMenuImageString(URLDecoder.decode(r.getMainMenuImageString(), "UTF-8"));
+			  r.setMainMenuScaleSizeImageString(URLDecoder.decode(r.getMainMenuScaleSizeImageString(), "UTF-8"));
+			  r.setMainMenuScreenSizeImageString(URLDecoder.decode(r.getMainMenuScreenSizeImageString(), "UTF-8"));
+			  r.setMainProfileImageString(URLDecoder.decode(r.getMainProfileImageString(), "UTF-8"));
+		  
+		  
+			  if(city.contains(map.get(item).getCity())){ //case when city already exists
+		 
+				boolean isExist = false;
+			  
+				r.setCityId(findCityId(r.getCity()));
 				 
-				 	if(!restaurants.contains(map.get(item))){
-				 		saveRestaurant(map.get(item), true);
+				for (Restaurant restaurant : restaurants) {
+					if(restaurant.equals(r)){
+						isExist = true;
+						break;
 				 	}
-				 	else{
-				 		response += map.get(item).getName() + " " + Customization.DOUBLE_RESTAURANT + "\n";
 				 	}
 				 
-			 }else{
-			  response +=  map.get(item).getName() + " " + Customization.CITY_ERROR + "\n";
+				if(!isExist){
+			 		saveRestaurant(r, true);
 			 }	
-			  
-			 
-			  
+			  }else if(validate(r.getCity())){ //case when city does not exist but the name is correct with '-' in name
+					City c = new City();
+					c.setCity(r.getCity());
+					c.setCountry("Poland");
+					c.setNormalizedCityName(normalizeName(c.getCity()));
+					dao.ofy().put(c);
+					city.add(c.getCity());
+					Long id = c.getId();
+					r.setCityId(id);
+
+					
+					saveRestaurant(r, true);
+			  }
 		  }
 		}
 		catch (Exception e) {
-			// TODO: handle exception
 			return e.toString();
 		}
 		return response;
 	}
 
+	private boolean validate(String nameCity){
+		String matcher =".*[^-]-.*[^-]";
+		if(nameCity.matches(matcher)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private Long findCityId(String cityName){
+		
+		List<City> cities = loadCitiesEntity();
+
+		
+		Long id = (long) 0;
+		
+		for (City city : cities) {
+			if(city.getCity().equals(cityName)){
+				
+				id = city.getId();
+				
+				break;
+			}
+		}
+		
+		return id;
+	}
 
 	@Override
 	public City addCity(String cityName, String country) {
@@ -1316,6 +1419,18 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	@Override
+	public void addUserToTests(User user) {
+		UserToAdd userToAdd = new UserToAdd(user.getEmail());
+		userToAdd.setConfirmId(getConfirmId());
+		
+		dao.ofy().put(user);
+		dao.ofy().put(userToAdd);
+		
+		sendMailToNewUser(user, userToAdd, "agnieszka.slusarczyk@applisoleil.com");
+		
+	}
+	
+	@Override
 	public ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd){
 		
 		ResponseUserWrapper responseUserWrapper = new ResponseUserWrapper();
@@ -1328,21 +1443,26 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			errorCodes.add(ErrorCodes.SERVER_ERROR);
 		}
 		
+		if( errorCodes.isEmpty() && userToAdd.getConfirmId() == null){
+			log.severe("userToAdd.getConfirmId(): is null");
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
+		}
+		
 		User userFromServer = loadUser(user.getEmail());
 		UserToAdd userToAddFromServer = loadUserToAdd(userToAdd.getEmail());
 		
-		if(userFromServer == null ){
+		if( errorCodes.isEmpty() && userFromServer == null ){
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 			log.severe("userFromServer: is null");
-			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 		}
-		if(userToAddFromServer == null && !errorCodes.isEmpty()){
+		if( errorCodes.isEmpty() && userToAddFromServer == null){
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 			log.severe("userToAddFromServer: is null");
-			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 		}
-		if(!userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())  && !errorCodes.isEmpty()){
+		if( errorCodes.isEmpty() && !userToAdd.getConfirmId().equals(userToAddFromServer.getConfirmId())){
+			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 			log.severe("ConfirmId is not valid. confirmId from server: " + userToAddFromServer.getConfirmId() + ". ConfirmId from user: " + userToAdd.getConfirmId() +
 					"email from server: " + userFromServer.getEmail() + ", email from user: " + user.getEmail());
-			errorCodes.add(ErrorCodes.ERROR_WHILE_CREATE_NEW_USER);
 		}
 		
 		if(errorCodes.isEmpty()){
@@ -1541,6 +1661,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * 
 	 * @param imageBlob - {@link ImageBlob} to save
 	 */
+	
 	public void saveImageBlob( ImageBlob imageBlob) {
 		if(imageBlob != null) dao.ofy().put(imageBlob);
 	}
