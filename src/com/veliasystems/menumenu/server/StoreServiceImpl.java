@@ -173,8 +173,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restaurantQuery == null ) return new ArrayList<Restaurant>();
 		
 		List<Restaurant> restaurantsList = restaurantQuery.filter("id IN", restaurantsId).list();
+		
 		if(restaurantsList == null || restaurantsList.isEmpty()) return new ArrayList<Restaurant>();
-		return restaurantsList;
+		
+		return getImageLists(restaurantsList);
 	}
 	
 	private List<City> loadCities(List<Long> cityIdsList){
