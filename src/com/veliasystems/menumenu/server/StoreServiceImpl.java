@@ -858,10 +858,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		 Query <ImageBlob>imgQuery =  dao.ofy().query(ImageBlob.class);
 				return imgQuery.list();
 	}
-	public List <ImageType> loadImageType(){
-		Query <ImageType>imgTQuerry = dao.ofy().query(ImageType.class);
-		return imgTQuerry.list();
-	}
+	
 	public List <BackUpBlobKey> loadBUBK(){
 		Query <BackUpBlobKey>bubkQuery = dao.ofy().query(BackUpBlobKey.class);
 		return bubkQuery.list();
@@ -1193,17 +1190,22 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return false;
 	}
 	
-	private Long findCityId(String cityName){
+	private long findCityId(String cityName){
 		
 		List<City> cities = loadCitiesEntity();
+		cityName = cityName.trim();
+		cityName = cityName.replaceAll("\\s\\+", "");
 
+		long id = 0;
 
-		
-		Long id = (long) 0;
-		
 		for (City city : cities) {
-			if(city.getCity().equals(cityName)){
+		
+			String curentCityName = city.getCity();
+			curentCityName = curentCityName.trim();
+		
+			curentCityName.replaceAll("\\s\\+", "");
 				
+			if(curentCityName.equalsIgnoreCase(cityName)){
 				id = city.getId();
 				
 				break;
@@ -1324,7 +1326,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 			@Override
 			public int compare(Restaurant o1, Restaurant o2) {
-				 	return o1.getNormalizedName().toLowerCase().compareTo(o2.getNormalizedName().toLowerCase());
+					if(o1.getNormalizedName() != null && o2.getNormalizedName()!=null){
+						return o1.getNormalizedName().compareToIgnoreCase(o2.getNormalizedName());
+					}
+					return o1.getName().compareToIgnoreCase(o2.getName());
+				 	
 				}
 			
 		});
@@ -1337,7 +1343,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 
 			@Override
 			public int compare(City o1, City o2) {
-				 	return o1.getNormalizedCityName().toLowerCase().compareTo(o2.getNormalizedCityName().toLowerCase());
+					if(o1.getNormalizedCityName() != null && o2.getNormalizedCityName()!=null){
+						return o1.getNormalizedCityName().compareToIgnoreCase(o2.getNormalizedCityName());
+					}
+					return o1.getCity().compareToIgnoreCase(o2.getCity());
 				}
 			
 		});
@@ -1374,22 +1383,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(user == null) return null;
 		Map<String, Object> allData = new HashMap<String, Object>();
 		
-//		if(user.isAdmin()){
-//			allData.put("Restaurants", loadRestaurants());
-//			allData.put("Cities", loadCitiesEntity());
-//			allData.put("DefaultEmptyProfile", blobService.getEmptyList());
-//		}
-//		else if(user.getRestaurantsId() != null && user.getCitiesId() == null){
-//			List<Restaurant> tmp = loadRestaurants(user);
-//			allData.put("Restaurants", tmp);	
-//			allData.put("Cities", loadCitiesByRestaurant(tmp));
-//			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-//		}else if(user.getCitiesId() != null && user.getRestaurantsId() == null){
-//			List<City> tmp = loadCities(user);
-//			allData.put("Cities", tmp);
-//			allData.put("Restaurants", loadRestaurantsByCities(tmp));
-//			allData.put("DefaultEmptyProfile", blobService.getDefaultEmptyMenu());
-//		}
 		
 		allData.put("Restaurants", loadRestaurants(user));
 		allData.put("Cities", loadCities(user));
@@ -1639,27 +1632,65 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			return null;
 		}
 		
-
-		City city = findCity(cityIdToLong);
+		City cityFrom = dao.ofy().find(City.class, cityIdFromLong);
 		
-		if(city == null){
+		if(cityFrom == null){
 			return null;
 		}
 		
 		List<Restaurant> restaurants = loadRestaurants(cityIdFromLong);
 		
-		if(restaurants == null){
+		if(restaurants == null || restaurants.isEmpty()){
+			return null;
+		}
+		
+		City cityTo = null;
+		if(Customization.NEW_CITY == cityIdToLong){
+			System.out.println("Customization.NEW_CITY == cityIdToLong");
+			String newCityName = createNewCityNameToCopy(cityFrom);
+			System.out.println("newCityName " +newCityName);
+			cityTo = new City();
+			cityTo.setCity(newCityName);
+			cityTo.setCountry(cityFrom.getCountry());
+			cityTo.setNormalizedCityName(newCityName);
+			dao.ofy().put(cityTo);
+			
+		}else{
+			cityTo = findCity(cityIdToLong);
+		}
+		
+		if(cityTo == null){
 			return null;
 		}
 		
 		Queue queue = QueueFactory.getDefaultQueue();
-	    queue.add(withUrl("/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityIdTo).param("emailAddress", email));
+	    queue.add(withUrl("/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityTo.getId()+"").param("emailAddress", email));
 		
 	    Map<String, String> response = new HashMap<String, String>();
 	     
 	    response.put("cityIdFrom", cityIdFrom);
 	    response.put("cityIdTo", cityIdTo);
 	    return response;
+	}
+	
+	private String createNewCityNameToCopy(City city){
+		if(city == null || city.getCity() == null || city.getCity().isEmpty()){
+			return null;
+		}
+		String ciurrentCityName = city.getCity().split("-")[0];
+		System.out.println("ciurrentCityName " + ciurrentCityName);
+		String newName = "Testy - " + ciurrentCityName;
+		System.out.println("newName " + newName);
+		long id = findCityId(newName);
+		System.out.println("id " + id);
+		int counter = 0;
+		while(id != 0){
+			counter++;
+			id = findCityId(newName+counter);
+			if(id == 0) newName = newName+counter;
+		}
+		
+		return newName;
 	}
 	/**
 	 * 

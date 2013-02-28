@@ -83,7 +83,7 @@ public class GetBackup extends HttpServlet {
 		List <User>user = storService.getUsers();
 		List <City>cities = storService.loadCitiesEntity();
 		List <ImageBlob> imgBlob = storService.loadImageBlob();
-		List <ImageType> imgType = storService.loadImageType();
+		
 		List <BackUpBlobKey> Bubk= storService.loadBUBK();
 		
 //		map of list 
@@ -92,7 +92,6 @@ public class GetBackup extends HttpServlet {
 		hm.put(Restaurant.class.getSimpleName(),rest);
 		hm.put(City.class.getSimpleName(),cities);
 		hm.put(ImageBlob.class.getSimpleName(), imgBlob);
-		hm.put(ImageType.class.getSimpleName(), imgType);
 		hm.put(BackUpBlobKey.class.getSimpleName(), Bubk);
 
 		
