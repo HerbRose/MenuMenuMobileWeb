@@ -120,7 +120,7 @@ public class CityListScreen extends MyPage implements IObserver{
 					JQMContext.changePage(PagesController.getPage(Pages.PAGE_ADMINISTRATION), Transition.SLIDE);	
 				}
 			});
-	    	adminLabel.addStyleName("adminLabel noFocus");
+	    	adminLabel.addStyleName("adminLabel noFocus pointer");
 	    	
 	    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
 	 	    
