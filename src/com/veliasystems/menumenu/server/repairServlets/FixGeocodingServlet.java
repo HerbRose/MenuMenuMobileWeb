@@ -1,4 +1,4 @@
-package com.veliasystems.menumenu.server.api;
+package com.veliasystems.menumenu.server.repairServlets;
 
 import java.io.IOException;
 
@@ -8,14 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
-public class AddAdmin extends HttpServlet {
+public class FixGeocodingServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 2566472678914274709L;
 	
-	private StoreService storeService = new StoreServiceImpl();
+	private StoreServiceImpl storeService = new StoreServiceImpl();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -29,10 +28,10 @@ public class AddAdmin extends HttpServlet {
 			return;
 		}
 		
-//		User user = new User("agnieszka.slusarczyk@applisoleil.com");
-//		user.setPassword("agnieszka");
-//		user.setAdmin(true);
-//		storeService.addUser(user);
+		storeService.fixGeocoding();
+		
+		resp.getWriter().write("Done");
+		resp.flushBuffer();
 	}
 	
 	

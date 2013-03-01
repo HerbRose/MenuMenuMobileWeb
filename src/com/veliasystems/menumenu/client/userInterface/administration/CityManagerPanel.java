@@ -260,16 +260,21 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		cityInfoPanel.addItem(countryLabel, countryListCombo);
 		cityInfoPanel.addItem(copyLabel, citiesListComboToCopy);
 		if(!city.getDistrictImageURL().isEmpty()){
-			myUploadForm.getElement().getStyle().setDisplay(Display.NONE);
-			add(myUploadForm);
+			//myUploadForm.getElement().getStyle().setDisplay(Display.NONE);
+			//add(myUploadForm);
 			
 			final Image image = createImage(city.getDistrictImageURL(), myUploadForm.getFileUpload() );
-			final MyInfoPanelRow imageRow = cityInfoPanel.addItem(districtImageLabel, image);
+			myUploadForm.getElement().getStyle().setLineHeight(0, Unit.PX);
+			FlowPanel imagePanelWithFileUpload = new FlowPanel();
+			imagePanelWithFileUpload.add(image);
+			imagePanelWithFileUpload.add(myUploadForm);
+			
+			final MyInfoPanelRow imageRow = cityInfoPanel.addItem(districtImageLabel, imagePanelWithFileUpload);
 			image.addLoadHandler(new LoadHandler() {
 				
 				@Override
 				public void onLoad(LoadEvent event) {
-					imageRow.setHeight(image.getHeight() + 20);
+					imageRow.setHeight(image.getHeight() + 40);
 				}
 			});
 			

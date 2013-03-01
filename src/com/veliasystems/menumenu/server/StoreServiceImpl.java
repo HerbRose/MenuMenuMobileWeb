@@ -103,7 +103,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param cityId - id of {@link City} to find
 	 * @return Single {@link City} object or null if is not found
 	 */ 
-	public City findCity(Long cityId){
+	public City findCity(long cityId){
+		if(cityId <= 0) return null;
 		return dao.ofy().find(City.class, cityId);
 	}
 	public User findUser(String email){
@@ -807,20 +808,23 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		final Geocoder geocoder = new Geocoder();
 		
 		GeocoderRequest geocoderRequest;
-		
+		long cityId = r.getCityId();
+		City city = findCity(cityId);
+		if(city == null){
+			log.severe("city not found. cityId: " + cityId);
+			return;
+		}
+		String cityName = city.getCity();
 		if (trimCity) {
-			String[] split = r.getCity().split("-");
-			String city = split[0].trim();
+			String[] split = cityName.split("-");
+			cityName = split[0].trim();
 			//System.out.println("City set to: " + city);
 			
-			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + city).setLanguage("en").getGeocoderRequest();
+			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + cityName).setLanguage("en").getGeocoderRequest();
 		} else {
-			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + r.getCity()).setLanguage("en").getGeocoderRequest();
+			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + cityName).setLanguage("en").getGeocoderRequest();
 		}
-		
-		
-		
-		
+
 		GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
 		
 		List<GeocoderResult> results = geocoderResponse.getResults();
@@ -866,7 +870,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			}
 			
 		}
-		else log.warning("No Geocoding results for " + r.getAddress() + ", " + r.getCity());
+		else log.warning("No Geocoding results for " + r.getAddress() + ", " + cityName);
 		
 		
 	}
@@ -1852,6 +1856,24 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 	}
 	
-
+	public void fixGeocoding(){
+		Query<Restaurant> query = dao.ofy().query(Restaurant.class);
+		if(query == null) return;
+		
+		List<Restaurant> restaurants = query.filter("lat =", null).list();
+		if(restaurants == null || restaurants.isEmpty()){
+			log.info("no restaurants found");
+			return;
+		}
+		try {
+			for (Restaurant restaurant : restaurants) {
+					getGeocoding(restaurant, false);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		dao.ofy().put(restaurants);
+	}
 	
 }
