@@ -14,6 +14,7 @@ public class R {
 //	public static final String HOST_URL = "http://menutester.appspot.com/";
 //	public static final String HOST_URL = "http://mymenumenu.appspot.com/";
 	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
+//	public static final String HOST_URL = "127.0.0.1:8888/";
 //	public static final String HOST_URL = "http://bacupdatastoretester.appspot.com/";
 	
 	public static final String FIX_IMAGE_QUEUE_NAME = "imageResizeQueue";
