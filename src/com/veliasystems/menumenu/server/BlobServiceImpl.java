@@ -257,6 +257,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 				restaurant = dao.ofy().find(Restaurant.class, restaurantId);
 				if(restaurant!= null && restaurant.getMainMenuImageString() != null && restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
 					restaurant.setMainMenuImageString("");
+					restaurant.setMainMenuScaleSizeImageString("");
+					restaurant.setMainMenuScreenSizeImageString("");
 					dao.ofy().put(restaurant);
 				}
 				break;
