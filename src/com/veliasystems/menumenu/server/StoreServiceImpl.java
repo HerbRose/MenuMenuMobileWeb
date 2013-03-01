@@ -520,10 +520,39 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
 		}
+		
+		String grantedPrivileges = "";
+		
+		if(user.isAdmin()){
+			grantedPrivileges = "You are invited to become an admin. Now you have granted acces to all restaurants and cities";
+		}
+		
+		if(!user.isAdmin() && !user.isAgent() && user.isRestaurator()){
+			grantedPrivileges = "You are invited to become a operator for your restauarant profile(s): ";
+			List<Restaurant> restaurants = loadRestaurants(user);
+			
+			for (Restaurant restaurant : restaurants) {
+				grantedPrivileges += "\n" + restaurant.getName() + ", " + restaurant.getAddress() ;
+			}
+			
+		}
+		
+		if(user.isAgent() && !user.isAdmin() && !user.isRestaurator()){
+			grantedPrivileges = "You are invited to become an agent, now you have access to following cities:  ";
+			List<City> cities = loadCities(user);
+			
+			for (City city : cities) {
+				grantedPrivileges += "\n" + city.getCity();
+			}
+		}
+		
+		
+		
 		String subject = "Message from website MenuMenu";
 		String message = "Hello "+userName+". \n\n";
 		
-		message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
+		message += "This email address has been given during registration process on MenuMenu website: " + R.HOST_URL + ".\n\n"+
+					grantedPrivileges + "\n\n" + 
 				   "Click on the link below to finish this process:\n\n"+
 				   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
 				   "or ignore this message if you do not want participate in our project. \n\n"+
@@ -539,15 +568,42 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
 		}
+		
+		String grantedPrivileges = "";
+		
+		if(user.isAdmin()){
+			grantedPrivileges = "You are invited to become an admin. Now you have granted acces to all restaurants and cities";
+		}
+		
+		if(!user.isAdmin() && !user.isAgent() && user.isRestaurator()){
+			grantedPrivileges = "You are invited to become a operator for your restauarant profile(s): ";
+			List<Restaurant> restaurants = loadRestaurants(user);
+			
+			for (Restaurant restaurant : restaurants) {
+				grantedPrivileges += "\n" + restaurant.getName() + ", " + restaurant.getAddress() ;
+			}
+			
+		}
+		
+		if(user.isAgent() && !user.isAdmin() && !user.isRestaurator()){
+			grantedPrivileges = "You are invited to become an agent, now you have access to following cities:  ";
+			List<City> cities = loadCities(user);
+			
+			for (City city : cities) {
+				grantedPrivileges += "\n" + city.getCity();
+			}
+		}
+		
 		String subject = "Message from website MenuMenu";
 		String message = "Hello "+userName+". \n\n";
 		
-		message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
-				   "Click on the link below to finish this process:\n\n"+
-				   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
-				   "or ignore this message if you do not want participate in our project. \n\n"+
-				   "Thank you: MenuMenu team.\n\n"+
-				   "This email has been generated automatically. Please do not reply to this email address."; 
+		message += "This email address has been given during registration process on MenuMenu website: " + R.HOST_URL + ".\n\n"+
+				grantedPrivileges + "\n\n" + 
+			   "Click on the link below to finish this process:\n\n"+
+			   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
+			   "or ignore this message if you do not want participate in our project. \n\n"+
+			   "Thank you: MenuMenu team.\n\n"+
+			   "This email has been generated automatically. Please do not reply to this email address."; 
 		List<String> toAddress = new ArrayList<String>();
 		toAddress.add(recipient);
 		emailService.sendEmail(toAddress, userName, message, subject);
