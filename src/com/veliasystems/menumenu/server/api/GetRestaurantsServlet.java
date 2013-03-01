@@ -156,7 +156,10 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put("openHours", r.getOpenHours());
 				
 				for (ImageBlob imageBlob : imageBlobs) {
-					if(imageBlob != null) map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+					if(imageBlob != null) {
+						map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+						map.put(imageBlob.getImageType()+"DateCreateInMiliS", imageBlob.getDateCreated().getTime()+"");
+					}
 				}
 				
 				attributes.add(map);
