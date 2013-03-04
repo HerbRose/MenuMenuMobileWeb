@@ -47,6 +47,10 @@ import com.veliasystems.menumenu.client.userInterface.myWidgets.TouchGetter.Hide
  */
 public class MyListCombo extends FocusPanel {
 
+	public interface IMyChangeHendler{
+		public void onChange();
+	}
+	
 	private ScrollPanel scrollPanel = new ScrollPanel();
 	
 	private FlowPanel mainPanel = new FlowPanel();
@@ -64,6 +68,7 @@ public class MyListCombo extends FocusPanel {
 	private boolean isCheck = false;
 	
 	private TouchGetter touchGetter = PagesController.TOUCH_GETTER;
+	private IMyChangeHendler myChangeHendler = null;
 	
 	public MyListCombo(boolean isChecked) {
 		isCheck = isChecked;
@@ -156,6 +161,9 @@ public class MyListCombo extends FocusPanel {
 			
 		}else selectedItem = -1;
 		
+		if(myChangeHendler != null){
+			myChangeHendler.onChange();
+		}
 	}
 	
 	private void selectPanel(MyListItem panel, boolean select){
@@ -264,4 +272,8 @@ public class MyListCombo extends FocusPanel {
 		itemController(order, select);
 	}
 
+	public void addMyChangeHendler(IMyChangeHendler changeHendler){
+		myChangeHendler = changeHendler;
+	}
+	
 }

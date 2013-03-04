@@ -132,7 +132,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		citiesListComboToCopy.selectItem(0);
 		citiesListComboToCopy.addMyChangeHendler(new IMyChangeHendler() {
 				
-		
 			@Override
 			public void onChange() {
 				if(citiesListComboToCopy.getSelectedOrder() == Customization.DO_NOTHING){
