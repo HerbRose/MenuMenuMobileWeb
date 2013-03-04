@@ -1724,7 +1724,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		Queue queue = QueueFactory.getDefaultQueue();
-	    queue.add(withUrl("/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityTo.getId()+"").param("emailAddress", email));
+	    queue.add(withUrl("/tasks/copyDataTask").param("token", "a1b2c3").param("cityIdFrom", cityIdFrom).param("cityIdTo", cityTo.getId()+"").param("emailAddress", email));
 		
 	    Map<String, String> response = new HashMap<String, String>();
 	     
