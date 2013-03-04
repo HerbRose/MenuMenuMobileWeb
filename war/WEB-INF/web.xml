@@ -208,6 +208,27 @@
      <url-pattern>/fixedImagesTask</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+     <servlet-name>RestoreTask</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.tasks.RestoreTask</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>RestoreTask</servlet-name>
+     <url-pattern>/RestoreTask</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+     <servlet-name>BackUpTask</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.tasks.BackUpTask</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>BackUpTask</servlet-name>
+     <url-pattern>/BackUpTask</url-pattern>
+  </servlet-mapping>
+  
+  
    <servlet>
      <servlet-name>GetLogsServlet</servlet-name>
      <servlet-class>com.veliasystems.menumenu.server.api.GetLogsServlet</servlet-class>
