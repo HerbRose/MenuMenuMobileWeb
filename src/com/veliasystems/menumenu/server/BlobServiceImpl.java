@@ -793,10 +793,12 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		BlobInfo blobInfoScaleSize = getBlobInfo(blobKeyScaleSize);
 		BlobInfo blobInfoScreenSize = getBlobInfo(blobKeyScreenSize);
 
+
 		BlobKey newBlobKey = null;
 		BlobKey newBlobKeyOrginalSize = null;
 		BlobKey newBlobKeyScaleSize = null;
 		BlobKey newBlobKeyScreenSize = null;
+
 
 		ImageBlob newImageBlob = null;
 		try {
@@ -822,6 +824,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 		return newImageBlob !=null?newImageBlob.getImageUrl():"";
 	}
+
 	private BlobInfo getBlobInfo(BlobKey blobKey) {
 		
 		if(blobKey == null) return null;
@@ -842,9 +845,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			}
 			
 		}
-
+		
 		return blobInfo;
 	}
+
+
 	/**
 	 * 
 	 * @param blobKey - {@link BlobKey} of image
@@ -1151,10 +1156,6 @@ public 	String restoreBackuoDB(List<String> JSON,List<BackUpBlobKey> blobkey) th
 			parseJSONStringToObjects(jsonString);
 			return jsonString;
 }
-
-
-	
-	
 /***
  * 
  * Comparator class used to compare image blobs by creation date

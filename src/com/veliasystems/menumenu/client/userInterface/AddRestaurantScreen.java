@@ -633,6 +633,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 			if(restaurantNewName.equals(restaurantExistName)){
 				return true;
 			}
+			
 		}
 
 		return false;

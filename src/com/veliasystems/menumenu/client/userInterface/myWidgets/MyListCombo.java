@@ -71,6 +71,7 @@ public class MyListCombo extends FocusPanel {
 	private IMyChangeHendler myChangeHendler = null;
 	
 	public MyListCombo(boolean isChecked) {
+		
 		isCheck = isChecked;
 
 		setStyleName("listCombo noFocus", true);
@@ -187,7 +188,6 @@ public class MyListCombo extends FocusPanel {
 			panel.setStyleName("selected", select);
 			textLabel.setText(panel.getText());
 		}
-		
 	}
 	
 	public MyListItem getNewItem(String text){

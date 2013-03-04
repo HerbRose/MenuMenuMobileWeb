@@ -103,6 +103,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param cityId - id of {@link City} to find
 	 * @return Single {@link City} object or null if is not found
 	 */
+
 	public City findCity(long cityId){
 		if(cityId <= 0) return null;
 		return dao.ofy().find(City.class, cityId);
@@ -174,6 +175,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(restaurantQuery == null ) return new ArrayList<Restaurant>();
 		
 		List<Restaurant> restaurantsList = restaurantQuery.filter("id IN", restaurantsId).list();
+		
 		if(restaurantsList == null || restaurantsList.isEmpty()) return new ArrayList<Restaurant>();
 		
 		return getImageLists(restaurantsList);
@@ -823,10 +825,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		} else {
 			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + cityName).setLanguage("en").getGeocoderRequest();
 		}
-		
-		
-		
-		
+
 		GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
 		
 		List<GeocoderResult> results = geocoderResponse.getResults();
@@ -1261,20 +1260,15 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		List<City> cities = loadCitiesEntity();
 		cityName = cityName.trim();
-		cityName = cityName.replaceAll("\\s\\+", "");
-
+		cityName = cityName.replaceAll("\\s\\+", "");	
 		long id = 0;
-
-		for (City city : cities) {
-		
+		for (City city : cities) {		
 			String curentCityName = city.getCity();
 			curentCityName = curentCityName.trim();
-		
+			
 			curentCityName.replaceAll("\\s\\+", "");
-				
 			if(curentCityName.equalsIgnoreCase(cityName)){
 				id = city.getId();
-				
 				break;
 			}
 		}
@@ -1396,9 +1390,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 					if(o1.getNormalizedName() != null && o2.getNormalizedName()!=null){
 						return o1.getNormalizedName().compareToIgnoreCase(o2.getNormalizedName());
 					}
-					return o1.getName().compareToIgnoreCase(o2.getName());
-				 	
-				}
+					return o1.getName().compareToIgnoreCase(o2.getName());		 	
+
+			}
 			
 		});
 		
@@ -1449,7 +1443,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		User user = authorization(login);
 		if(user == null) return null;
 		Map<String, Object> allData = new HashMap<String, Object>();
-		
 		
 		allData.put("Restaurants", loadRestaurants(user));
 		allData.put("Cities", loadCities(user));

@@ -6,3 +6,5 @@
 *.rpc
 *.nocache.js
 *.cache.html
+/.classpath
+/.gitignore

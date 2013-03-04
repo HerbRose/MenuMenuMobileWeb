@@ -131,7 +131,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		}
 		citiesListComboToCopy.selectItem(0);
 		citiesListComboToCopy.addMyChangeHendler(new IMyChangeHendler() {
-				
 			@Override
 			public void onChange() {
 				if(citiesListComboToCopy.getSelectedOrder() == Customization.DO_NOTHING){
@@ -245,13 +244,13 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.POLAND), 1);
 		countryListCombo.addListItem(countryListCombo.getNewItem(Customization.FRANCE), 2);
 		
-		
 		if(city.getCountry().equals(Customization.POLAND)){
 			countryListCombo.selectItem(1);
 		}else if(city.getCountry().equals(Customization.FRANCE)){
 			countryListCombo.selectItem(2);
 		}
-
+		
+		
 		final MyUploadForm myUploadForm = createUpload(city.getId());
 		
 		cityInfoPanel.addItem(nameLabel, nameTextBox);
@@ -431,7 +430,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 
 	@Override
 	public void onChange() {
-		
 	}
 
 	@Override
@@ -445,21 +443,23 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 		PagesController.hideWaitPanel();	
 	}
 	
+	
+
 	private IObserver getMe() {
 		return this;
 	}
 
 	
 	private native int getHeight(String elementId)/*-{
-		
-		var children = $wnd.document.getElementById(elementId).childNodes;
-		var length = children.length;
-		var height = 0;
-		for( i=0; i<=length-1; i++ ){
-			height+= children[i].offsetHeight;
-		}
-		
-		return height;
+	
+	var children = $wnd.document.getElementById(elementId).childNodes;
+	var length = children.length;
+	var height = 0;
+	for( i=0; i<=length-1; i++ ){
+		height+= children[i].offsetHeight;
+	}
+	
+	return height;
 	}-*/;
 	
 	private native String getUserAgent()/*-{
@@ -469,6 +469,6 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 	private static native void clickOnInputFile(Element elem) /*-{
 		elem.click();
 	}-*/;
-	}
+}
 
-	
+

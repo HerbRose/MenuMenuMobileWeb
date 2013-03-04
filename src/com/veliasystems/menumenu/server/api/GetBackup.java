@@ -76,26 +76,26 @@ public class GetBackup extends HttpServlet {
 		long day = new Date().getDate();
 		long hour = new Date().getHours()+1;
 		long minut = new Date().getMinutes(); 
-		String today = day+" "+hour+" "+minut;
+		long month = new Date().getMonth()+1;
+		String today = day+"."+month+" "+hour+":"+minut;
 		
 //		List of enties
 		List <Restaurant>rest = storService.loadbcRestaurants();
 		List <User>user = storService.getUsers();
 		List <City>cities = storService.loadCitiesEntity();
 		List <ImageBlob> imgBlob = storService.loadImageBlob();
-		
 		List <BackUpBlobKey> Bubk= storService.loadBUBK();
 		
 //		map of list 
 		HashMap hm = new HashMap();
-		hm.put(User.class.getSimpleName(), user);
-		hm.put(Restaurant.class.getSimpleName(),rest);
-		hm.put(City.class.getSimpleName(),cities);
-		hm.put(ImageBlob.class.getSimpleName(), imgBlob);
-		hm.put(BackUpBlobKey.class.getSimpleName(), Bubk);
+			hm.put(User.class.getSimpleName(), user);
+			hm.put(Restaurant.class.getSimpleName(),rest);
+			hm.put(City.class.getSimpleName(),cities);
+			hm.put(ImageBlob.class.getSimpleName(), imgBlob);
+			hm.put(BackUpBlobKey.class.getSimpleName(), Bubk);
 
 		
-BSI.writeBackupDB("tekst/txt", "Backup "+today, gson.toJson(hm).getBytes());
+		BSI.writeBackupDB("tekst/txt", "Backup "+today, gson.toJson(hm).getBytes());
 	
 
 			if(jsonp != null) {
