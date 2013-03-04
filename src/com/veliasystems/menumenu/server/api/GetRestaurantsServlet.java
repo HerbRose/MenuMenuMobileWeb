@@ -147,7 +147,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "city", getCityName(r.getCityId()) );
 				map.put( "district", r.getDistrict());
 				map.put( "address", r.getAddress());
-				map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
+				
+				
+				map.put( "logoImage", (r.getMainLogoImageString()== null || r.getMainLogoImageString().isEmpty()) ? "EMPTY" : addHostToUrl(r.getMainLogoImageString()) );
 				
 //				if(r.getMainMenuImageString()!=null){
 //					map.put("menuImage", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
@@ -207,7 +209,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 					
 				}
 				
-				map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
+				map.put( "profileImage", (r.getMainProfileImageString()==null || r.getMainProfileImageString().isEmpty()) ?  "EMPTY" : addHostToUrl(r.getMainProfileImageString()) );
 				map.put( "lat", "" + r.getLat());
 				map.put( "lng", "" + r.getLng());
 				map.put("phoneRestaurant", r.getPhoneRestaurant());

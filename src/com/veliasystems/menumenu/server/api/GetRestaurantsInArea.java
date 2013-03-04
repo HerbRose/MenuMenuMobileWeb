@@ -191,21 +191,30 @@ public class GetRestaurantsInArea extends HttpServlet {
 					map.put("city", getCityName(restaurant.getCityId()));
 					map.put("district", restaurant.getDistrict());
 					map.put("address", restaurant.getAddress());
-					map.put("logoImage",
-							(restaurant.getMainLogoImageString() != null) ? addHostToUrl(restaurant
-									.getMainLogoImageString()) : "EMPTY");
-//					if(restaurant.getMainMenuImageString()!=null){
-//						map.put("menuImage", addHostToUrl(restaurant.getMainMenuImageString()));
+					map.put( "logoImage", (restaurant.getMainLogoImageString()== null || restaurant.getMainLogoImageString().isEmpty()) ? "EMPTY" : addHostToUrl(restaurant.getMainLogoImageString()) );
+					
+//					if(r.getMainMenuImageString()!=null){
+//						map.put("menuImage", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
 //						map.put("menuImageDefault", false);
 //					}else{
 //						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 //						map.put("menuImageDefault", true);
 //					}
+//					//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+////					map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
+////					map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
+//					if(r.getMainMenuScaleSizeImageString()!=null){
+//						map.put("menuImageScreenSize", (r.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
+//					}else{
+//						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					}
 //					
-//					//map.put( "menuImage", (restaurant.getMainMenuImageString()!=null) ? addHostToUrl(restaurant.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//					map.put("menuImageScreenSize", (restaurant.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(restaurant.getMainMenuScreenSizeImageString()) : "EMPTY");
-//					map.put("menuImageScaleSize", (restaurant.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(restaurant.getMainMenuScaleSizeImageString()) : "EMPTY");
-					
+//					
+//					if(r.getMainMenuScreenSizeImageString()!=null){
+//						map.put("menuImageScaleSize", (r.getMainMenuScreenSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
+//					}else{
+//						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					}
 					
 					if(restaurant.getMainMenuImageString()!=null){
 						map.put("menuImage", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
@@ -242,9 +251,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 						
 					}
 					
-					map.put("profileImage",
-							(restaurant.getMainProfileImageString() != null) ? addHostToUrl(restaurant
-									.getMainProfileImageString()) : "EMPTY");
+					map.put( "profileImage", (restaurant.getMainProfileImageString()==null || restaurant.getMainProfileImageString().isEmpty()) ?  "EMPTY" : addHostToUrl(restaurant.getMainProfileImageString()) );
 					map.put("lat", "" + restaurant.getLat());
 					map.put("lng", "" + restaurant.getLng());
 					map.put("phoneRestaurant", restaurant.getPhoneRestaurant());
