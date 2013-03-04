@@ -86,7 +86,7 @@ public class CityListScreen extends MyPage implements IObserver{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					Document.get().getElementById("load").setClassName(R.LOADING);
+					PagesController.showWaitPanel();
 					JQMContext.changePage(new AddCity(), Transition.SLIDE);
 				}
 			});
@@ -108,7 +108,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	 			
 	 			@Override
 	 			public void onClick(ClickEvent event) {
-	 				Document.get().getElementById("load").setClassName(R.LOADING);
+	 				PagesController.showWaitPanel();
 	 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_ADMINISTRATION), Transition.SLIDE);	
 	 			}
 	 		});
@@ -116,11 +116,11 @@ public class CityListScreen extends MyPage implements IObserver{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					Document.get().getElementById("load").setClassName(R.LOADING);
+					PagesController.showWaitPanel();
 					JQMContext.changePage(PagesController.getPage(Pages.PAGE_ADMINISTRATION), Transition.SLIDE);	
 				}
 			});
-	    	adminLabel.addStyleName("adminLabel noFocus");
+	    	adminLabel.addStyleName("adminLabel noFocus pointer");
 	    	
 	    	adminLabel.add(new Label(Customization.ADMIN_PANEL));
 	 	    
@@ -188,7 +188,7 @@ public class CityListScreen extends MyPage implements IObserver{
 	}
 	
 	private native int getOffsetWidth(Element element)/*-{
-		$wnd.console.log(element);
+		//$wnd.console.log(element);
 		return element.offsetWidth;
 	}-*/;
 

@@ -143,7 +143,10 @@ public class RestaurantController {
 		Collections.sort(restaurantsList, new Comparator<Restaurant>() {
 			@Override
 			public int compare(Restaurant o1, Restaurant o2) {
-				return o1.getNormalizedName().toLowerCase().compareTo(o2.getNormalizedName().toLowerCase());
+				if(o1.getNormalizedName() != null && o2.getNormalizedName()!=null){
+					return o1.getNormalizedName().compareToIgnoreCase(o2.getNormalizedName());
+				}
+				return o1.getName().compareToIgnoreCase(o2.getName());
 			}
 		});
 		

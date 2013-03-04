@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -34,6 +35,7 @@ import com.google.appengine.api.files.FileReadChannel;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
+import com.google.appengine.api.files.FinalizationException;
 import com.google.appengine.api.images.CompositeTransform;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
@@ -58,6 +60,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapper;
 import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
@@ -256,6 +259,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 				restaurant = dao.ofy().find(Restaurant.class, restaurantId);
 				if(restaurant!= null && restaurant.getMainMenuImageString() != null && restaurant.getMainMenuImageString().equals("/blobServe?blob-key=" + imageBlob.getBlobKey())){
 					restaurant.setMainMenuImageString("");
+					restaurant.setMainMenuScaleSizeImageString("");
+					restaurant.setMainMenuScreenSizeImageString("");
 					dao.ofy().put(restaurant);
 				}
 				break;
@@ -359,8 +364,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			throw new NullPointerException() ;
 		}
 		
-		int profileWidth = 450;
-		int profileHeight = 260;
+		int profileWidth = R.PROFILE_WIDTH;
+		int profileHeight = R.PROFILE_HEIGHT;
 		int logoWidth = 220;
 		int menuWidth = 220;
 		int menuScreenWidth = 440;
@@ -754,95 +759,91 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 * 
 	 * @param imageBlob - image to copy
 	 * @param newRestaurantId - id of {@link Restaurant}, the image will be copied to this {@link Restaurant} 
+	 * @return new image url or empty string
 	 */
-	public void copyBlob(ImageBlob imageBlob, String newRestaurantId) {
+	public String copyBlob(ImageBlob imageBlob, String newRestaurantId) {
 
-		BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
+			if(imageBlob == null){
+				log.severe("imageBlob is null.");
+				return "";
+			}
+			if(newRestaurantId == null || newRestaurantId.isEmpty()){
+				log.severe("newRestaurantId is null or empty: " + newRestaurantId);
+				return "";
+			}
+			
+			String blobKeyString = imageBlob.getBlobKey();
+			String blobKeyOriginalSizeString = imageBlob.getBlobKeyOriginalSize();
+			String blobKeyScaleSizeString = imageBlob.getBlobKeyScaleSize();
+			String blobKeyScreenSizeString = imageBlob.getBlobKeyScreenSize();
+			
+			BlobKey blobKey =  blobKeyString!=null? new BlobKey(imageBlob.getBlobKey()):null;
+			
+			if(blobKey == null){
+				log.severe("blobKey is null. newRestaurantId= "+ newRestaurantId);
+				return "";
+			}
+
+		BlobKey blobKeyOriginalSize = blobKeyOriginalSizeString!=null ? new BlobKey(imageBlob.getBlobKeyOriginalSize()) : null;
+		BlobKey blobKeyScaleSize = blobKeyScaleSizeString!=null ? new BlobKey(imageBlob.getBlobKeyScaleSize()) : null;
+		BlobKey blobKeyScreenSize = blobKeyScreenSizeString!=null ? new BlobKey(imageBlob.getBlobKeyScreenSize()) : null;
+
+		BlobInfo blobInfo = getBlobInfo(blobKey);
+		BlobInfo blobInfoOriginalSize = getBlobInfo(blobKeyOriginalSize);
+		BlobInfo blobInfoScaleSize = getBlobInfo(blobKeyScaleSize);
+		BlobInfo blobInfoScreenSize = getBlobInfo(blobKeyScreenSize);
+
 		BlobKey newBlobKey = null;
+		BlobKey newBlobKeyOrginalSize = null;
+		BlobKey newBlobKeyScaleSize = null;
+		BlobKey newBlobKeyScreenSize = null;
 
-		BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
-		BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
-		// Transform cropTransform = ImagesServiceFactory.makeRotate(0);
-		// Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
-
-		// Image newImage = imagesService.applyTransform(cropTransform,
-		// oldImage);
-
-		// byte[] newImageData = getImageBytes(newBlobKey, blobInfo.getSize());
-		log.info("Start copy imageBlob: " + imageBlob.getBlobKey() + " blobSize: " + blobInfo.getSize());
+		ImageBlob newImageBlob = null;
 		try {
-			newBlobKey = writeToBlobstore("image/jpeg", "imageCopy.jpg",
-					getImageBytes(blobKey, blobInfo.getSize()));
-			ImageBlob newImageBlob = new ImageBlob(newRestaurantId,
-					newBlobKey.getKeyString(), new Date(),
-					imageBlob.getImageType());
+			newBlobKey = blobInfo!=null ? writeToBlobstore("image/jpeg", "CopyCity"+blobInfo.getFilename(), getImageBytes(blobKey, blobInfo.getSize())) : null;
+			if(newBlobKey == null) return "";
+			newBlobKeyOrginalSize = blobInfoOriginalSize!=null ? writeToBlobstore("image/jpeg", "CopyCity"+blobInfoOriginalSize.getFilename(), getImageBytes(blobKeyOriginalSize, blobInfoOriginalSize.getSize())) : null ;  
+			newBlobKeyScaleSize = blobInfoScaleSize!=null ? writeToBlobstore("image/jpeg", "CopyCity"+blobInfoScaleSize.getFilename(), getImageBytes(blobKeyScaleSize, blobInfoScaleSize.getSize())) : null ; 
+			newBlobKeyScreenSize = blobInfoScreenSize!=null ? writeToBlobstore("image/jpeg", "CopyCity"+blobInfoScreenSize.getFilename(), getImageBytes(blobKeyScreenSize, blobInfoScreenSize.getSize())) : null ; 
+			
+			newImageBlob = new ImageBlob(newRestaurantId, newBlobKey.getKeyString(), new Date(), imageBlob.getImageType());
 			newImageBlob.setWidth(imageBlob.getWidth());
 			newImageBlob.setHeight(imageBlob.getHeight());
+			
+			newImageBlob.setBlobKeyOriginalSize(newBlobKeyOrginalSize!=null ? newBlobKeyOrginalSize.getKeyString() : null);
+			newImageBlob.setBlobKeyScaleSize(newBlobKeyScaleSize!=null ? newBlobKeyScaleSize.getKeyString() : null);
+			newImageBlob.setBlobKeyScreenSize(newBlobKeyScreenSize!=null ? newBlobKeyScreenSize.getKeyString() : null);
+			
+			newImageBlob.setDateCreated(imageBlob.getDateCreated());
+			
 			dao.ofy().put(newImageBlob);
 		} catch (IOException e) {
-			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
-					+ e.getStackTrace());
-			// e.printStackTrace();
+			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n" + e.getStackTrace());
+		}
+		return newImageBlob !=null?newImageBlob.getImageUrl():"";
+	}
+	private BlobInfo getBlobInfo(BlobKey blobKey) {
+		
+		if(blobKey == null) return null;
+		
+		BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
+		BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+		if(blobInfo == null){
+			blobInfo = blobInfoFactory.loadBlobInfo(blobKey); //Second try ...
+			if(blobInfo == null){
+				blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+				if(blobInfo == null){
+					blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+					if(blobInfo == null){
+						log.severe("Could not loadBlobInfo() for blobKey: " + blobKey);
+						return null;
+					}
+				}
+			}
+			
 		}
 
-		// BlobKey blobKey = new BlobKey(imageBlob.getBlobKey());
-		// ImagesService imagesService =
-		// ImagesServiceFactory.getImagesService();
-		// Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
-		//
-		// // Transform cropTransform = ImagesServiceFactory.makeRotate(0);
-		// // Image newImage = imagesService.applyTransform(cropTransform,
-		// // oldImage);
-		//
-		// byte[] newImageData = oldImage.getImageData();
-		//
-		// if (newImageData == null) {
-		// return;
-		// }
-		//
-		// String url = BlobstoreServiceFactory.getBlobstoreService()
-		// .createUploadUrl(
-		// "/blobUpload?restId=" + newRestaurantId + "&imageType="
-		// + imageBlob.getImageType().name());
-		// URLFetchService urlFetch =
-		// URLFetchServiceFactory.getURLFetchService();
-		// try {
-		// String id = imageBlob.getId();
-		// HTTPRequest request = new HTTPRequest(new URL(url),
-		// HTTPMethod.POST, FetchOptions.Builder.withDeadline(20.0));
-		// String boundary = makeBoundary();
-		//
-		// request.setHeader(new HTTPHeader("Content-Type",
-		// "multipart/form-data; boundary=" + boundary));
-		// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		//
-		// try {
-		// write(baos, "--" + boundary + "\r\n");
-		// writeParameter(baos, "id", id);
-		// write(baos, "--" + boundary + "\r\n");
-		// writeImage(baos, "save", newImageData);
-		// write(baos, "--" + boundary + "--\r\n");
-		// } catch (IOException e1) {
-		// e1.printStackTrace();
-		// }
-		// request.setPayload(baos.toByteArray());
-		// try {
-		// urlFetch.fetch(request);
-		// } catch (RequestTooLargeException e) {
-		// log.log(Level.SEVERE,
-		// "RequestTooLargeException- ImageBlobKey: "
-		// + imageBlob.getBlobKey()
-		// + " newImageData length: "
-		// + newImageData.length + "\n" + e);
-		// } catch (IOException e) {
-		// // Need a better way of handling Timeout exceptions here - 20
-		// // second deadline
-		// }
-		//
-		// } catch (MalformedURLException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		return blobInfo;
 	}
 	/**
 	 * 
@@ -995,13 +996,10 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 //		
 //	}
 	
-
+// backup database
 public BlobKey writeBackupDB(String contentType, String fileName,
 		byte[] filebytes) throws IOException {
 	// Get a file service
-	
-	
-	
 	BackUpBlobKey BUBK = new BackUpBlobKey();
 	FileService fileService = FileServiceFactory.getFileService();
 	AppEngineFile file = fileService.createNewBlobFile(contentType,
@@ -1010,14 +1008,9 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 	boolean lock = true;
 	FileWriteChannel writeChannel = null;
 	writeChannel = fileService.openWriteChannel(file, lock);
-	
 	// lets buffer the bitch
+	
 	BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(filebytes));
-	
-	
-	
-	
-	
 	byte[] buffer;
 	if(filebytes.length > 524288){
 		buffer = new byte[524288]; // 0.5 MB buffers
@@ -1030,18 +1023,15 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 		writeChannel.write(bb);
 	}
 	
-	
-	
-	
 	writeChannel.closeFinally();
 	
 	String path = file.getFullPath();
-	BlobKey cos = fileService.getBlobKey(file);
+	BlobKey blobkey = fileService.getBlobKey(file);
 	BUBK.setCreateDate(new Date());
 	BUBK.setFileBlobKey(fileService.getBlobKey(file).getKeyString());
 	BUBK.setAddress(path);
 	dao.ofy().put(BUBK);
-	return cos;
+	return blobkey;
 	
 }
 
@@ -1064,6 +1054,7 @@ private void parseJSONStringToObjects(String json){
 		users.add(value);
 	}
 	backupWrapper.setUsers(users);
+	dao.ofy().put(users);
 	}
 	if(entry.getKey().equalsIgnoreCase("Restaurant")){
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
@@ -1075,6 +1066,7 @@ private void parseJSONStringToObjects(String json){
 			restaurants.add(value);
 		}
 		backupWrapper.setRestaurants(restaurants);
+		dao.ofy().put(restaurants);
 		}
 	if(entry.getKey().equalsIgnoreCase("City")){
 		List<City> cities = new ArrayList<City>();
@@ -1084,7 +1076,7 @@ private void parseJSONStringToObjects(String json){
 			cities.add(value);
 				}
 		backupWrapper.setCities(cities);
-
+		dao.ofy().put(cities);
 	}
 	if(entry.getKey().equalsIgnoreCase("ImageBlob")){
 		List<ImageBlob> images = new ArrayList<ImageBlob>();
@@ -1092,8 +1084,10 @@ private void parseJSONStringToObjects(String json){
 	for (JsonElement image : restaurantsArray) {
 		ImageBlob value = new Gson().fromJson(image.getAsJsonObject(),ImageBlob.class);
 		images.add(value);
+		dao.ofy().put(images);
 	}
 	backupWrapper.setImageBlobs(images);
+	
 	}
 	if(entry.getKey().equalsIgnoreCase("BackUpBlobKey")){
 		List<BackUpBlobKey> backups = new ArrayList<BackUpBlobKey>();
@@ -1101,8 +1095,10 @@ private void parseJSONStringToObjects(String json){
 	for (JsonElement backup : restaurantsArray) {
 		BackUpBlobKey value = new Gson().fromJson(backup.getAsJsonObject(),BackUpBlobKey.class);
 		backups.add(value);
+		dao.ofy().put(value);
 	}
 	backupWrapper.setBackups(backups);
+		dao.ofy().put(backups);
 
 	}
 }	 
@@ -1110,22 +1106,42 @@ private void parseJSONStringToObjects(String json){
 }
 
 
-
-	public 	String restoreBackuoDB(String JSON) throws IOException {
+// restore database
+public 	String restoreBackuoDB(List<String> JSON,List<BackUpBlobKey> blobkey) throws IOException, FileNotFoundException {
 		
+		String jsonString = "";
+		FileService fileservice = FileServiceFactory.getFileService();
+		AppEngineFile file ;
+		FileReadChannel readChannel = null;
+//		for (String json :JSON){
+			for(BackUpBlobKey bubk : blobkey){
 			
-			Gson gson = new Gson();
-			FileService fileservice = FileServiceFactory.getFileService();
-			AppEngineFile file = new AppEngineFile(JSON);
-			//String path = file.getFullPath();
-			String response = " ";
+			file = new AppEngineFile(bubk.getAddress());
 			
-			
-			boolean lock = false;
-			FileReadChannel readChannel = fileservice.openReadChannel(file, lock);
-			BufferedReader reader = new BufferedReader(Channels.newReader(readChannel,"UTF-8"));
-			String line = "";
-			String jsonString = "";
+		boolean lock = true;
+		try{
+			readChannel = fileservice.openReadChannel(file, lock);	
+			if (readChannel !=null) break;
+		}catch(FileNotFoundException ex){
+			log.severe("file not found");
+			jsonString+="file not found";
+			dao.ofy().delete(bubk);
+		}catch (FinalizationException exp) {
+			log.severe("FinalizationException");
+			jsonString+="FinalizationException";
+			dao.ofy().delete(bubk);
+
+		}catch (Exception e) {
+			log.severe(e.getMessage());
+			jsonString+=e.getMessage();
+			dao.ofy().delete(bubk);
+		}
+		
+}if(readChannel == null) return jsonString;
+		BufferedReader reader = new BufferedReader(Channels.newReader(readChannel,"UTF-8"));
+		String line = "";
+		jsonString="";
+		
 			
 			while ( (line = reader.readLine())!=null) {
 				jsonString += line+ "\n";	

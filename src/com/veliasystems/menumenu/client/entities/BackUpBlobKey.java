@@ -5,8 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Id;
 
-import com.google.gwt.user.client.ui.Image;
-
 public class BackUpBlobKey implements Serializable{
 
 	/**
@@ -26,15 +24,7 @@ public class BackUpBlobKey implements Serializable{
 	public BackUpBlobKey() {
 		// TODO Auto-generated constructor stub
 	}
-//	public BackUpBlobKey(String FileBlobKey, Date CreateDate, String address) {
-//		// TODO Auto-generated constructor stub
-//		setFileBlobKey(FileBlobKey);
-//		setCreateDate(CreateDate);
-//		setAddress(address);
-//	}
-	
-	
-	
+
 	public Date getCreateDate() {
 		return CreateDate;
 	}

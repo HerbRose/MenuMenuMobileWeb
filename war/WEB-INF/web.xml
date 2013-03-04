@@ -228,6 +228,28 @@
      <url-pattern>/getBackp</url-pattern>
   </servlet-mapping>
   
+  
+  
+   <servlet>
+     <servlet-name>Restore</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.Restore</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>Restore</servlet-name>
+     <url-pattern>/restore</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+     <servlet-name>FixGeocodingServlet</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.repairServlets.FixGeocodingServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>FixGeocodingServlet</servlet-name>
+     <url-pattern>/fixGeocodingServlet</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>
     <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>

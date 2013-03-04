@@ -1,6 +1,10 @@
 package com.veliasystems.menumenu.server.api;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpRequest;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.veliasystems.menumenu.client.R;
@@ -18,8 +24,8 @@ import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.server.BlobServiceImpl;
+import com.veliasystems.menumenu.server.DAO;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class GetRestaurantsServlet extends HttpServlet {
@@ -28,9 +34,13 @@ public class GetRestaurantsServlet extends HttpServlet {
 	
 	private StoreServiceImpl storeService = new StoreServiceImpl();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
+	
+	private DAO dao = new DAO();
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+//		fixAllLinksInRestaurant();
 		
 		String token = req.getParameter("token");
 		String test = req.getParameter("test");
@@ -140,15 +150,28 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "logoImage", (r.getMainLogoImageString()!=null) ? addHostToUrl(r.getMainLogoImageString()) : "EMPTY");
 				
 				if(r.getMainMenuImageString()!=null){
-					map.put("menuImage", addHostToUrl(r.getMainMenuImageString()));
+					map.put("menuImage", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
 					map.put("menuImageDefault", false);
 				}else{
 					map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 					map.put("menuImageDefault", true);
 				}
 				//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-				map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
-				map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
+//				map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
+//				map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
+				if(r.getMainMenuScaleSizeImageString()!=null){
+					map.put("menuImageScreenSize", (r.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
+				}else{
+					map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+				}
+				
+				
+				if(r.getMainMenuScreenSizeImageString()!=null){
+					map.put("menuImageScaleSize", (r.getMainMenuScreenSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
+				}else{
+					map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+				}
+				
 				map.put( "profileImage", (r.getMainProfileImageString()!=null) ? addHostToUrl(r.getMainProfileImageString()) : "EMPTY");
 				map.put( "lat", "" + r.getLat());
 				map.put( "lng", "" + r.getLng());
@@ -156,7 +179,10 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put("openHours", r.getOpenHours());
 				
 				for (ImageBlob imageBlob : imageBlobs) {
-					if(imageBlob != null) map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+					if(imageBlob != null) {
+						map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+						map.put(imageBlob.getImageType()+"DateCreateInMiliS", imageBlob.getDateCreated().getTime()+"");
+					}
 				}
 				
 				attributes.add(map);
@@ -309,4 +335,48 @@ private Map<Long, String> cityMap = new HashMap<Long, String>();
 		super.doPost(req, resp);
 	}
 	
+	
+//	private void fixAllLinksInRestaurant(){
+//		List<Restaurant> rests = storeService.loadRestaurants();
+//		
+//		for (Restaurant restaurant : rests) {
+//			
+//			
+//					try {
+//						if(restaurant.getMainMenuScaleSizeImageString() != null){
+//							URL url1 = new URL(R.HOST_URL  + restaurant.getMainMenuScaleSizeImageString());
+//							System.out.println(url1);
+//							HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
+//							
+//							if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND || connection.getResponseCode() == HttpURLConnection.HTTP_SERVER_ERROR){
+//								restaurant.setMainMenuScaleSizeImageString("");
+//							}
+//						}
+//					
+//						if(restaurant.getMainMenuScreenSizeImageString() != null){
+//							URL url2 = new URL(R.HOST_URL + restaurant.getMainMenuScreenSizeImageString());
+//							HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
+//							System.out.println(url2);
+//							if(conn2.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND || conn2.getResponseCode() == HttpURLConnection.HTTP_SERVER_ERROR){
+//								restaurant.setMainMenuScreenSizeImageString("");
+//							}
+//						}
+//						
+//						restaurant.setLogoImages(null);
+//						restaurant.setMenuImages(null);
+//						restaurant.setProfileImages(null);
+//						dao.ofy().put(restaurant);
+//						
+//					} catch (MalformedURLException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//		
+//			
+//			
+//		}
+//	}
 }

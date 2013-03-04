@@ -26,6 +26,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -71,7 +72,8 @@ public class CropImage extends MyPage implements IObserver{
 	private PickupDragController dragController;
 	private DropController dropController;
 
-	private final double ratioProfile = 450.0/260.0;
+//	private final double ratioProfile = 460.0/245.0;
+	private final double ratioProfile = (double) R.PROFILE_WIDTH/ (double) R.PROFILE_HEIGHT;
 	private final double ratioCity = 246d/290d;
 	private final double minLogoRatio = 220d/75d;
 	private final double maxLogoRatio = 220d/55d;

@@ -200,6 +200,9 @@ public class ImageBlob implements Serializable {
 	 * @param dateCreated - date of creation of image
 	 */
 	public void setDateCreated(Date dateCreated) {
+		if(dateCreated == null){
+			dateCreated = new Date();
+		}
 		this.dateCreated = dateCreated;
 		setTimeInMiliSec(dateCreated.getTime());
 	}

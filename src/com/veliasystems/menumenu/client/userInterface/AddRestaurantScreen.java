@@ -615,10 +615,22 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 				.getRestaurantsInCity(city.getId());
 
 		for (Restaurant restaurant : restaurants) {
-			if ((restaurant.getName().replaceAll(" ", "").equals(nameText
-					.getText().replaceAll(" ", "")))
-					&& (restaurant.getAddress().replaceAll(" ", "")
-							.equals(adressText.getText().replaceAll(" ", "")))) {
+//			if ((restaurant.getName().replaceAll("\\s\\+", "").equals(nameText.getText().replaceAll("\\s\\+", "")))
+//					&& (restaurant.getAddress().replaceAll("\\s\\+", "").equals(adressText.getText().replaceAll("\\s\\+", "")))) {
+//				return true;
+//			}
+			
+			String restaurantExistName = restaurant.getName();
+			
+			restaurantExistName= restaurantExistName.trim();	
+			restaurantExistName = restaurantExistName.replaceAll("\\s\\+", "");
+			
+			String restaurantNewName = nameText.getText();
+			
+			restaurantNewName= restaurantNewName.trim();
+			restaurantNewName = restaurantNewName.replaceAll("\\s\\+", "");
+			
+			if(restaurantNewName.equals(restaurantExistName)){
 				return true;
 			}
 		}

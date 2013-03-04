@@ -103,7 +103,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param cityId - id of {@link City} to find
 	 * @return Single {@link City} object or null if is not found
 	 */
-	public City findCity(Long cityId){
+	public City findCity(long cityId){
+		if(cityId <= 0) return null;
 		return dao.ofy().find(City.class, cityId);
 	}
 	public User findUser(String email){
@@ -174,7 +175,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		List<Restaurant> restaurantsList = restaurantQuery.filter("id IN", restaurantsId).list();
 		if(restaurantsList == null || restaurantsList.isEmpty()) return new ArrayList<Restaurant>();
-		return restaurantsList;
+		
+		return getImageLists(restaurantsList);
 	}
 	
 	private List<City> loadCities(List<Long> cityIdsList){
@@ -518,10 +520,39 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
 		}
+		
+		String grantedPrivileges = "";
+		
+		if(user.isAdmin()){
+			grantedPrivileges = "You are invited to become an admin. Now you have granted acces to all restaurants and cities";
+		}
+		
+		if(!user.isAdmin() && !user.isAgent() && user.isRestaurator()){
+			grantedPrivileges = "You are invited to become a operator for your restauarant profile(s): ";
+			List<Restaurant> restaurants = loadRestaurants(user);
+			
+			for (Restaurant restaurant : restaurants) {
+				grantedPrivileges += "\n" + restaurant.getName() + ", " + restaurant.getAddress() ;
+			}
+			
+		}
+		
+		if(user.isAgent() && !user.isAdmin() && !user.isRestaurator()){
+			grantedPrivileges = "You are invited to become an agent, now you have access to following cities:  ";
+			List<City> cities = loadCities(user);
+			
+			for (City city : cities) {
+				grantedPrivileges += "\n" + city.getCity();
+			}
+		}
+		
+		
+		
 		String subject = "Message from website MenuMenu";
 		String message = "Hello "+userName+". \n\n";
 		
-		message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
+		message += "This email address has been given during registration process on MenuMenu website: " + R.HOST_URL + ".\n\n"+
+					grantedPrivileges + "\n\n" + 
 				   "Click on the link below to finish this process:\n\n"+
 				   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
 				   "or ignore this message if you do not want participate in our project. \n\n"+
@@ -537,10 +568,37 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
 		}
+		
+		String grantedPrivileges = "";
+		
+		if(user.isAdmin()){
+			grantedPrivileges = "You are invited to become an admin. Now you have granted acces to all restaurants and cities";
+		}
+		
+		if(!user.isAdmin() && !user.isAgent() && user.isRestaurator()){
+			grantedPrivileges = "You are invited to become a operator for your restauarant profile(s): ";
+			List<Restaurant> restaurants = loadRestaurants(user);
+			
+			for (Restaurant restaurant : restaurants) {
+				grantedPrivileges += "\n" + restaurant.getName() + ", " + restaurant.getAddress() ;
+			}
+			
+		}
+		
+		if(user.isAgent() && !user.isAdmin() && !user.isRestaurator()){
+			grantedPrivileges = "You are invited to become an agent, now you have access to following cities:  ";
+			List<City> cities = loadCities(user);
+			
+			for (City city : cities) {
+				grantedPrivileges += "\n" + city.getCity();
+			}
+		}
+		
 		String subject = "Message from website MenuMenu";
 		String message = "Hello "+userName+". \n\n";
 		
-		message += "This email address has been given during registration process on MenuMenu website: http://menumenu-cms.appspot.com/.\n\n"+
+		message += "This email address has been given during registration process on MenuMenu website: " + R.HOST_URL + ".\n\n"+
+				grantedPrivileges + "\n\n" + 
 				   "Click on the link below to finish this process:\n\n"+
 				   R.HOST_URL+"newUser.html?email="+user.getEmail()+"&id="+userToAdd.getConfirmId()+"\n\n"+
 				   "or ignore this message if you do not want participate in our project. \n\n"+
@@ -749,15 +807,21 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		final Geocoder geocoder = new Geocoder();
 		
 		GeocoderRequest geocoderRequest;
-		
+		long cityId = r.getCityId();
+		City city = findCity(cityId);
+		if(city == null){
+			log.severe("city not found. cityId: " + cityId);
+			return;
+		}
+		String cityName = city.getCity();
 		if (trimCity) {
-			String[] split = r.getCity().split("-");
-			String city = split[0].trim();
+			String[] split = cityName.split("-");
+			cityName = split[0].trim();
 			//System.out.println("City set to: " + city);
 			
-			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + city).setLanguage("en").getGeocoderRequest();
+			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + cityName).setLanguage("en").getGeocoderRequest();
 		} else {
-			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + r.getCity()).setLanguage("en").getGeocoderRequest();
+			geocoderRequest = new GeocoderRequestBuilder().setAddress(r.getAddress() + "," + cityName).setLanguage("en").getGeocoderRequest();
 		}
 		
 		
@@ -808,7 +872,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			}
 			
 		}
-		else log.warning("No Geocoding results for " + r.getAddress() + ", " + r.getCity());
+		else log.warning("No Geocoding results for " + r.getAddress() + ", " + cityName);
 		
 		
 	}
@@ -858,7 +922,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		 Query <ImageBlob>imgQuery =  dao.ofy().query(ImageBlob.class);
 				return imgQuery.list();
 	}
-	
+	public List <ImageType> loadImageType(){
+		Query <ImageType>imgTQuerry = dao.ofy().query(ImageType.class);
+		return imgTQuerry.list();
+	}
 	public List <BackUpBlobKey> loadBUBK(){
 		Query <BackUpBlobKey>bubkQuery = dao.ofy().query(BackUpBlobKey.class);
 		return bubkQuery.list();
@@ -1791,6 +1858,24 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 	}
 	
+	public void fixGeocoding(){
+		Query<Restaurant> query = dao.ofy().query(Restaurant.class);
+		if(query == null) return;
 
+		List<Restaurant> restaurants = query.filter("lat =", null).list();
+		if(restaurants == null || restaurants.isEmpty()){
+			log.info("no restaurants found");
+			return;
+		}
+		try {
+			for (Restaurant restaurant : restaurants) {
+					getGeocoding(restaurant, false);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		dao.ofy().put(restaurants);
+	}
 	
 }
