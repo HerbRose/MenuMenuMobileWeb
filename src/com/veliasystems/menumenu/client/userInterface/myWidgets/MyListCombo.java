@@ -145,25 +145,37 @@ public class MyListCombo extends FocusPanel {
 		}
 	}
 	private void itemController(long orderToSelect){
-		MyListItem panel = null;
+		MyListItem panelToCheck = null;
+		MyListItem oldPanel = null;
 		if(!isCheck){
 			if(selectedItem >= 0){
-				panel = listItems.get(selectedItem);
+				oldPanel = listItems.get(selectedItem);
 			}
-			if(panel != null){
-				selectPanel(panel, false);
+			if(oldPanel != null){
+				selectPanel(oldPanel, false);
 			}
 		}
 		
-		panel=listItems.get(orderToSelect);
-		if(panel != null){
-			selectPanel(panel, true);
-			selectedItem = orderToSelect;
+		panelToCheck=listItems.get(orderToSelect);
+		if(panelToCheck != null){
+			selectPanel(panelToCheck, true);
+			selectedItem = orderToSelect ;
 			
 		}else selectedItem = -1;
 		
 		if(myChangeHendler != null){
-			myChangeHendler.onChange();
+			if(!isCheck){
+				if(oldPanel != null && panelToCheck != null){
+					if(oldPanel.getOrder() != panelToCheck.getOrder()){
+						myChangeHendler.onChange();
+					}
+				} else if(oldPanel == null && panelToCheck != null){
+					myChangeHendler.onChange();
+				}
+			} else {
+				myChangeHendler.onChange();
+			}
+			
 		}
 	}
 	
