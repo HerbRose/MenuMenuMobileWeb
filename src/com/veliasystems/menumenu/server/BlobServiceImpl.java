@@ -62,6 +62,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapper;
+import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapperSimply;
 import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
@@ -1039,6 +1040,12 @@ public BlobKey writeBackupDB(String contentType, String fileName,
 	return blobkey;
 	
 }
+
+private void parseJSONToObjectSimply(String json){
+	Gson gson = new Gson();
+	BackupWrapperSimply backupWrapperSimply = gson.fromJson(json, BackupWrapperSimply.class);		
+}
+
 
 private void parseJSONStringToObjects(String json){
 

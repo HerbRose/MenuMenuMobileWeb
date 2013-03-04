@@ -1,7 +1,9 @@
 package com.veliasystems.menumenu.client.controllers.responseWrappers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
@@ -9,13 +11,19 @@ import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 
-public class BackupWrapper implements IsSerializable {
+public class BackupWrapperSimply implements IsSerializable {
 	
+	@SerializedName("User")
 	private List<User> users;
+	@SerializedName("Restaurant")
 	private List<Restaurant> restaurants;
+	@SerializedName("ImageBlob")
 	private List<ImageBlob> imageBlobs;
+	@SerializedName("City")
 	private List<City> cities;
+	@SerializedName("BackUpBlobKey")
 	private List<BackUpBlobKey> backups;
+	
 	public List<User> getUsers() {
 		return users;
 	}
@@ -46,7 +54,12 @@ public class BackupWrapper implements IsSerializable {
 	public void setBackups(List<BackUpBlobKey> backups) {
 		this.backups = backups;
 	}
-	public BackupWrapper() {
+	public BackupWrapperSimply() {
+		users = new ArrayList<User>();
+		restaurants = new ArrayList<Restaurant>();
+		cities = new ArrayList<City>();
+		imageBlobs = new ArrayList<ImageBlob>();
+		backups = new ArrayList<BackUpBlobKey>();
 	}
 	
 }
