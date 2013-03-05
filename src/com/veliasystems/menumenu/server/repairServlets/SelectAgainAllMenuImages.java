@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.Restaurant;
-import com.veliasystems.menumenu.server.BlobServiceImpl;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class SelectAgainAllMenuImages extends HttpServlet{
