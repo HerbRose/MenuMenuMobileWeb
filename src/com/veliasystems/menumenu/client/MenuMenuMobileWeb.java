@@ -36,8 +36,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		
 		String logged = Cookies.getCookie(R.LOGGED_IN);
 		
-		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0
-				|| osType.toLowerCase().indexOf("iphone") >= 0;
+		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;
 		
 		if (logged != null && !logged.equals("null")) loggedIn = true; //it's weird, but it seems to be working

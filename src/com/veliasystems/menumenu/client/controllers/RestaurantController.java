@@ -19,6 +19,8 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
@@ -865,11 +867,23 @@ public class RestaurantController {
 
 	public void refreshRestaurants(final IObserver observer, long cityId) {
 		
-		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), cityId, new AsyncCallback<List<Restaurant>>() {
+		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), cityId, Util.RESTAURANT_LAST_DATE_SYNC, new AsyncCallback<Map<Long ,List<Restaurant>>>() {
 			
 			@Override
-			public void onSuccess(List<Restaurant> restaurants) {
-				updateRestaurantList(restaurants);
+			public void onSuccess(Map<Long ,List<Restaurant>> responseMap) {
+				Set<Long> isNewData = responseMap.keySet();
+				
+				for (Long lastSync : isNewData) {
+					JS.consolLog("Local last sync: " + Util.RESTAURANT_LAST_DATE_SYNC  );
+					JS.consolLog("Server last sync: " + lastSync );
+					JS.consolLog(" ");
+					List<Restaurant> restaurants = responseMap.get(lastSync);
+					
+					if( lastSync > Util.RESTAURANT_LAST_DATE_SYNC && restaurants != null ){
+						updateRestaurantList(responseMap.get(lastSync));
+						Util.setRestaurantLastDateSync(lastSync);
+					}
+				}
 				notifieObserver(observer);
 			}
 

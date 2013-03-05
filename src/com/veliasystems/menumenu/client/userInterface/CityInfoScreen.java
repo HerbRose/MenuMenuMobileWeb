@@ -144,8 +144,6 @@ public class CityInfoScreen extends MyPage implements IObserver{
 	@Override
 	public void newData() {
 		refreshRestaurantList();
-		
-		
 		PagesController.hideWaitPanel();
 	}
 }

@@ -88,7 +88,8 @@ public interface StoreServiceAsync {
 			AsyncCallback<ResponseUserWrapper> callback);
 
 	void getRestaurantsForUser(String email, long cityId,
-			AsyncCallback<List<Restaurant>> callback);
+			long lastRestaurantSyncDate,
+			AsyncCallback<Map<Long, List<Restaurant>>> callback);
 
 	void authorization(String login, AsyncCallback<User> callback);
 

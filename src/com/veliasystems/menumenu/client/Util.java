@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Focusable;
 public class Util
 {
 
-    private static String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private static final String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     
     private static long CITY_LAST_DATE_SYNC = 0;
 	public static long RESTAURANT_LAST_DATE_SYNC = 0;
@@ -37,13 +37,6 @@ public class Util
     }
 
     public static long getCityLastDateSync(){
-    	
-//    	if(GWT.isClient()){
-//    		if(CITY_LAST_DATE_SYNC == 0){
-//    			setCityLastDateSync();
-//    		}
-//    	}
-    	
     	return CITY_LAST_DATE_SYNC;
     }
     public static void setCityLastDateSync(){
@@ -52,6 +45,12 @@ public class Util
     public static void setCityLastDateSync(long dateTime){
     	CITY_LAST_DATE_SYNC = dateTime;
     }
+    public static void setRestaurantLastDateSync(){
+    	RESTAURANT_LAST_DATE_SYNC = new Date().getTime();
+    }
+	public static void setRestaurantLastDateSync(Long lastSync) {
+		RESTAURANT_LAST_DATE_SYNC = lastSync;
+	}
     /**
      * valid numbers example:
      * <ul>
@@ -186,5 +185,7 @@ public class Util
     	if(monthNo < 1 || monthNo >12) return month[0];
 		return month[monthNo-1];
 	}
+
+
     
 }

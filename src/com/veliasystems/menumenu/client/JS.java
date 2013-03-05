@@ -79,7 +79,9 @@ public class JS {
 		$wnd.console.log("JS::consolLog: " + elementId);
 	}-*/;
 
-
+	public static native String getUserAgent()/*-{
+		return navigator.userAgent;
+	}-*/;
 
 
 }

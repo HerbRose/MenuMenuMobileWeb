@@ -1,12 +1,8 @@
 package com.veliasystems.menumenu.client.entities;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Id;
-
-import com.google.gwt.user.client.ui.Image;
-import com.veliasystems.menumenu.client.Util;
 
 public class City implements Serializable{
 
@@ -36,7 +32,7 @@ public class City implements Serializable{
 	 }
 	
 	public City() {
-		setLastDateSync();
+//		setLastDateSync();
 	}
 	 
 	/**
@@ -53,7 +49,6 @@ public class City implements Serializable{
 	 */
 	public void setCity(String city) {
 		this.city = city;
-		setLastDateSync();
 	}
 	
 	/**
@@ -97,7 +92,6 @@ public class City implements Serializable{
 	public void setVisable(boolean isVisableForProducion, boolean isVisableForTests) {
 		this.isVisibleForTests = isVisableForTests;
 		isVisable = isVisableForProducion;
-		setLastDateSync();
 	}
 	
 	/**
@@ -113,7 +107,6 @@ public class City implements Serializable{
 	
 	public void setDistrictImageURL(String districtImageURL) {
 		this.districtImageURL = districtImageURL;
-		setLastDateSync();
 	}
 	
 	public String getDistrictImageURL() {
@@ -122,13 +115,9 @@ public class City implements Serializable{
 	
 	public void setCountry(String country) {
 		this.country = country;
-		setLastDateSync();
 	}
 	public String getCountry() {
 		return country;
 	}
-	
-	private void setLastDateSync(){
-		Util.setCityLastDateSync();
-	}
+
 }

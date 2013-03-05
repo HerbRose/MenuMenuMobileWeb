@@ -178,7 +178,7 @@ public interface StoreService extends RemoteService {
 
 	ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd);
 
-	List<Restaurant> getRestaurantsForUser(String email, long cityId);
+	Map<Long ,List<Restaurant>> getRestaurantsForUser(String email, long cityId, long lastRestaurantSyncDate);
 
 	User authorization(String login);
 }

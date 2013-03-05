@@ -63,7 +63,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private EmailServiceImpl emailService = new EmailServiceImpl();
 
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
-	
+	public StoreServiceImpl() {
+		Util.setCityLastDateSync();
+		Util.setRestaurantLastDateSync();
+	}
 	@Override
 	public List<String> loadCities() {
 		
@@ -101,6 +104,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return dao.ofy().find(City.class, cityId);
 	}
 	public User findUser(String email){
+		if(email == null) return null;
+		email = email.trim();
 		return dao.ofy().find(User.class, email);
 	}
 	public ImageBlob findImageBlob(BlobKey blobKey){
@@ -185,10 +190,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public Map<Long ,List<City>> getCitiesForUser(String email, long lastCitySyncDate){
 		Map<Long ,List<City>> response = new HashMap<Long, List<City>>();
-		log.info("lastCitySyncDate: " + lastCitySyncDate +"\n Util.CITY_LAST_DATE_SYNC: "+ Util.getCityLastDateSync());
+//		log.info("user email: " + email);
+//		log.info("Util.getCityLastDateSync() > lastCitySyncDate : " + Util.getCityLastDateSync() + " > " + lastCitySyncDate );
 		if(Util.getCityLastDateSync() > lastCitySyncDate){
 			User user = findUser(email);
-			response.put(Util.getCityLastDateSync(), loadCities(user));
+//			log.info("user: " + user);
+			List<City> cities = loadCities(user);
+//			log.info("cities count: " + (cities != null?cities.size():cities) );
+			response.put(Util.getCityLastDateSync(), cities);
 		}else{
 			response.put(Util.getCityLastDateSync(), null);
 		}
@@ -215,7 +224,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @return List of {@link Restaurant} available for the {@link User}
 	 */
 	@Override
-	public List<Restaurant> getRestaurantsForUser(String email, long cityId){
+	public Map<Long ,List<Restaurant>> getRestaurantsForUser(String email, long cityId, long lastRestaurantSyncDate){
+		Map<Long ,List<Restaurant>> response = new HashMap<Long, List<Restaurant>>();
+		
+		if(Util.RESTAURANT_LAST_DATE_SYNC > lastRestaurantSyncDate){
 		
 		User user = findUser(email);
 		List<Restaurant> restaurants = loadRestaurants(user);
@@ -224,9 +236,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			if(restaurant.getCityId() == cityId){
 				restaurantsInCity.add(restaurant);
 			}
+			
+			response.put(Util.RESTAURANT_LAST_DATE_SYNC, restaurantsInCity);
 		}
-		
-		return restaurantsInCity;
+		}else{
+			response.put(Util.RESTAURANT_LAST_DATE_SYNC, null);
+		}
+		return response;
 		
 	}
 	
@@ -339,7 +355,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			e.printStackTrace();
 		}
 		
-		dao.ofy().put(r);
+		//dao.ofy().put(r);
+		put(r);
 	}
 	/**
 	 * @deprecated
@@ -423,6 +440,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		dao.ofy().put(restaurants);
+		Util.setRestaurantLastDateSync();
 	}
 	
 	@Override
@@ -460,7 +478,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			}
 		}
 		
-		dao.ofy().put(r);
+		//dao.ofy().put(r);
+		put(r);
 		String responseMessage = "New restaurant added ";
 		if(isAdded){
 			responseMessage += "\nThe message was sent to added user"; 
@@ -657,7 +676,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setLogoImages(null);
 			r.setMenuImages(null);
 			r.setProfileImages(null);
-			dao.ofy().put(r);
+//			dao.ofy().put(r);
+			put(r);
 			if(usersToAdd != null) {
 				addUsersToRestaurant(usersToAdd, r, userEmail);
 			}
@@ -715,7 +735,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setMenuImages(null);
 			r.setProfileImages(null);
 			// r.setCityId(getCityId(r.getCity()));
-			dao.ofy().put(r);
+//			dao.ofy().put(r);
+			put(r);
 			return r;
 			// System.out.println("saved succes: " + r.getName());
 	}
@@ -1010,6 +1031,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		dao.ofy().delete(restaurantsList);
 		dao.ofy().delete(City.class, cityId);
+		Util.setCityLastDateSync();
 		return cityId;
 	}
 	
@@ -1045,7 +1067,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				break;
 		}
 		
-		dao.ofy().put(r);
+//		dao.ofy().put(r);
+		put(r);
 		return r;
 	}
 
@@ -1120,7 +1143,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		City c = new City();
 		c.setCity(cityName);
 		c.setCountry(country);
-		dao.ofy().put(c);
+		//dao.ofy().put(c);
+		put(c);
 		return c;
 	}
 	
@@ -1147,7 +1171,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			isOk = true; //there is empty list with cities, so add first one
 		}
 		if(isOk){
-			dao.ofy().put(city);		
+			put(city);
+			//dao.ofy().put(city);		
 		}
 		
 		responseSaveWrapper.setCity(city);
@@ -1156,6 +1181,28 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return responseSaveWrapper;
 	}
 	
+	private void put(Object object){
+		if(object == null) return;
+		
+		dao.ofy().put(object);
+		
+		if(object instanceof City) {
+			Util.setCityLastDateSync();
+		} else if(object instanceof Restaurant) {
+			Util.setRestaurantLastDateSync();
+		}
+	}
+	private void delete(Object object){
+		if(object == null) return;
+		
+		dao.ofy().delete(object);
+		
+		if(object instanceof City){
+			Util.setCityLastDateSync();
+		}else if(object instanceof Restaurant) {
+			Util.setRestaurantLastDateSync();
+		}
+	}
 	/**
 	 * saving existing user 
 	 * do not check if exist or is correct data
