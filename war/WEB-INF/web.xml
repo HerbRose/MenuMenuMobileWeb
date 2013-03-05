@@ -75,6 +75,15 @@
   </servlet-mapping>
 
 
+   <servlet>
+     <servlet-name>GetRestaurantsHTMLOutput</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.GetRestaurantsHTMLOutput</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetRestaurantsHTMLOutput</servlet-name>
+     <url-pattern>/getRestaurantsHTMLOutput</url-pattern>
+  </servlet-mapping>
 
 
 
@@ -268,6 +277,16 @@
   <servlet-mapping>
      <servlet-name>FixGeocodingServlet</servlet-name>
      <url-pattern>/fixGeocodingServlet</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+     <servlet-name>SelectAgainAllMenuImages</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.repairServlets.SelectAgainAllMenuImages</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>SelectAgainAllMenuImages</servlet-name>
+     <url-pattern>/selectAgainAllMenuImages</url-pattern>
   </servlet-mapping>
   
   <servlet>

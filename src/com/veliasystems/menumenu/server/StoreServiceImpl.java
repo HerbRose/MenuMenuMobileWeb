@@ -1871,4 +1871,18 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(restaurants);
 	}
 	
+	public ImageBlob getImageBlobByBlobKey(String blobKey){
+		
+//		List<ImageBlob> images = loadImageBlob();
+//		
+//		for (ImageBlob imageBlob : images) {
+//			if(imageBlob.getBlobKey().equals(blobKey)){
+//				return imageBlob;
+//			}
+//		}
+		
+		return loadImageBlob(blobKey);
+		
+	}
+	
 }
