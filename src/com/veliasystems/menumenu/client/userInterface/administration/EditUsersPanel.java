@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -35,10 +34,6 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	private List<User> userList = new ArrayList<User>();
 	private List<Restaurant> restaurantList = new ArrayList<Restaurant>();
 	private List<City> cityList = new ArrayList<City>();
-
-	
-//	private Map<String, FlowPanel> usersPanel = new HashMap<String, FlowPanel>();
-//	private MyRestaurantInfoPanel container;
 	
 	private MyRestaurantInfoPanel contentPanel = new MyRestaurantInfoPanel();
 	
@@ -69,27 +64,12 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		nameTextBox.addStyleName("myTextBox nameBox");
 		nameTextBox.setEnabled(false);
 		contentPanel.setStyleName("containerPanelAddRestaurant", true);
-
-		
-//		contentPanel.add(saveButton);
-//		contentPanel.add(deleteButton);
-		
 		
 		
 		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
 		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
 		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
-		
-		
-		
-		
-//		userListCombo.addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				showUserDetails((int) userListCombo.getSelectedOrder());
-//			}
-//		});
+
 		
 		userListCombo.addMyChangeHendler(new IMyChangeHendler() {
 			
@@ -107,19 +87,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 				if(user==null) return;
 				if(roleListCombo.getCheckedList().isEmpty()){
 					user.setRestaurator(true);
-				} else {
-//					for (Long userType : roleListCombo.getCheckedList()) {
-//						if(userType == (long) UserType.ADMIN.userTypeValue()){
-//							user.setAdmin(true);
-//						}
-//						if(userType == (long) UserType.AGENT.userTypeValue()){
-//							user.setAgent(true);
-//						}
-//						if(userType == (long) UserType.RESTAURATOR.userTypeValue()){
-//							user.setRestaurator(true);
-//						}
-//					}
-					
+				} else {					
 					if(roleListCombo.getCheckedList().contains((long) UserType.ADMIN.userTypeValue())){
 						user.setAdmin(true);
 					} else{
@@ -238,202 +206,6 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		}
 	}
 	
-//	private void setUsersList(){
-//		clear();
-//		for(final User user : userList){
-//			FlowPanel userDetails = new FlowPanel(); //div na detale miasta
-//			userDetails.setStyleName("cityTableDiv", true);
-//			userDetails.getElement().setId("userToEdit"+user.getEmail());
-//			
-//			FlowPanel userListDiv = new FlowPanel(); //div ze strzalka nazwa dzielnicy i detale miasta
-//			userListDiv.setStyleName("cityListDiv", true);
-//			
-//			FlowPanel userHeaderDiv = new FlowPanel(); //div na strzalke i nazwe uzytkownika
-//			userHeaderDiv.setStyleName("cityHeaderDiv", true);
-//			
-//			Image blackArrowImage = new Image("img/blackArrow.png"); //strzalka
-//			blackArrowImage.setStyleName("blackArrowImage", true);
-//			
-//			final ToggleButton arrowToggleButton = new ToggleButton(blackArrowImage);
-//			arrowToggleButton.setStyleName("arrowToggleButton", true);
-//			
-//			arrowToggleButton.addClickHandler(new ClickHandler() {
-//				
-//				@Override
-//				public void onClick(ClickEvent event) {
-//					if(arrowToggleButton.isDown()){
-//						showUserTable(usersPanel.get(user.getEmail()), arrowToggleButton, true);
-//					}else {
-//						showUserTable(usersPanel.get(user.getEmail()), arrowToggleButton, false);
-//					}
-//				}
-//			});
-//			
-//			
-//			Label userNameLabel = new Label(user.getEmail()); //nazwa uzytkownika
-//			userNameLabel.setStyleName("cityNameLabel", true);
-//			
-//			usersPanel.put(user.getEmail(), userDetails);
-//			
-//			userHeaderDiv.add(arrowToggleButton);
-//			userHeaderDiv.add(userNameLabel);
-//			userListDiv.add(userHeaderDiv);
-//			userListDiv.add(userDetails);
-//			add(userListDiv);
-//			
-//		}
-//	}
-
-//	public void showUserTable( final Widget widget, ToggleButton arrowToggleButton, boolean isVisable) {
-//		
-//		if(isVisable){
-//			int height = getHeight(widget.getElement().getId()); 
-//			widget.setHeight(height+20+ "px");
-//			Timer timer = new Timer() {
-//				
-//				@Override
-//				public void run() {
-//					widget.getElement().getStyle().setOverflow(Overflow.VISIBLE);
-//				}
-//			};
-//			timer.schedule(1000);
-//		}else{
-//			widget.setHeight("0px");
-//			widget.getElement().getStyle().setOverflow(Overflow.HIDDEN);
-//		}
-//		
-//		
-//		if(arrowToggleButton != null){
-//			arrowToggleButton.setStyleName("arrowToggleButtonShow", isVisable);
-//			arrowToggleButton.setStyleName("arrowToggleButtonHide", !isVisable);
-//		}
-//		
-//	}
-	
-//	private void fillUsersDetails(FlowPanel userDatails, final User user){
-//		
-//			Label emailLabel= new Label(Customization.USER_MAIL);
-//			TextBox emailTextBox;
-//			Label data = new Label(Customization.NAME);
-//			TextBox dataTextBox;
-//			 
-//			Label role = new Label(Customization.ROLE);
-//			final MyListCombo roleCombo = new MyListCombo(true);
-//			Label cities = new Label(Customization.CITY);
-//			final MyListCombo citiesCombo = new MyListCombo(true);
-//			Label restaurants = new Label(Customization.RESTAURANTS);
-//			final MyListCombo restaurantsCombo = new MyListCombo(true);
-//			 
-//			Button save = new Button();
-//			save.setText(Customization.SAVE);
-//			
-//			Button delete = new Button(); 
-//			delete.setText(Customization.DELETE);
-//
-//		
-//			emailTextBox = new TextBox();
-//			emailTextBox.setStyleName("myTextBox nameBox");
-//			emailTextBox.setText(user.getEmail());
-//			emailTextBox.setEnabled(false);
-//			emailTextBox.getElement().getStyle().setWidth(100, Unit.PCT);
-//			
-//			dataTextBox = new  TextBox();
-//			dataTextBox.setStyleName("myTextBox nameBox");
-//			dataTextBox.getElement().getStyle().setWidth(100, Unit.PCT);
-//			String dataText = "";
-//			if(user.getName() != null && user.getSurname() != null){
-//				dataText = user.getName() + " " + user.getSurname();
-//			}
-//			dataTextBox.setText(dataText);
-//			dataTextBox.setEnabled(false);
-//			
-//			
-//			for (UserType userType : UserType.values()) {
-//				roleCombo.addListItem(roleCombo.getNewCheckBoxItem(userType.toString()), userType.userTypeValue());
-//			}
-//			if(user.isAdmin()){
-//				roleCombo.selectItem(UserType.ADMIN.ordinal());
-//			}
-//			if(user.isAgent()){
-//				roleCombo.selectItem(UserType.AGENT.ordinal());
-//			}
-//			if(user.isRestaurator()){
-//				roleCombo.selectItem(UserType.RESTAURATOR.ordinal());
-//			}
-//			
-//
-//			for (City city : cityList) {
-//				citiesCombo.addListItem(citiesCombo.getNewCheckBoxItem(city.getCity() + " " + city.getCountry()), city.getId());
-//			}
-//			
-//			if(user.getCitiesId() != null){
-//				for (long cityId : user.getCitiesId()) {
-//					citiesCombo.selectItem(cityId);
-//				}
-//			}
-//			
-//			
-//			for (Restaurant restaurant : restaurantList) {
-//				restaurantsCombo.addListItem(restaurantsCombo.getNewCheckBoxItem(restaurant.getName() + " " + restaurant.getAddress()), restaurant.getId());
-//			}
-//			
-//			if(user.getRestaurantsId() != null){
-//				for (long restId : user.getRestaurantsId()) {
-//					restaurantsCombo.selectItem(restId);
-//				}
-//			}
-//			
-//			
-//			save.addClickHandler(new ClickHandler() {
-//				
-//				@Override
-//				public void onClick(ClickEvent event) {
-//					if(roleCombo.getCheckedList().contains((long) UserType.ADMIN.userTypeValue())){
-//						user.setAdmin(true);
-//					} else{
-//						user.setAdmin(false);
-//					}
-//					if(roleCombo.getCheckedList().contains((long) UserType.AGENT.userTypeValue())){
-//						user.setAgent(true);
-//						user.setCitiesId(citiesCombo.getCheckedList());
-//					}else{
-//						user.setAgent(false);
-//					}
-//					if(roleCombo.getCheckedList().contains((long) UserType.RESTAURATOR.userTypeValue())){
-//						user.setRestaurator(true);
-//						user.setRestaurantsId(restaurantsCombo.getCheckedList());
-//					} else{
-//						user.setRestaurator(false);
-//					}
-//				
-//					userController.saveUser(user);
-//				}
-//				
-//				
-//			});
-//			
-//			delete.addClickHandler(new ClickHandler() {
-//				
-//				@Override
-//				public void onClick(ClickEvent event) {
-//					removeUser(user.getEmail());
-//				}
-//			});
-//			
-//			container = new MyRestaurantInfoPanel();
-//			container.setStyleName("containerPanelAddRestaurant", true);
-//
-//			container.addItem(emailLabel, emailTextBox);
-//			container.addItem(data, dataTextBox);
-//			container.addItem(role, roleCombo);
-//			container.addItem(cities, citiesCombo);
-//			container.addItem(restaurants, restaurantsCombo);
-//			container.addItem(save, delete);
-//			container.setWidth( JS.getElementOffsetWidth(getParent().getElement())-40 );
-//			userDatails.add(container);
-//	}
-	
-	
 	@Override
 	public void onChange() {
 			cityListCombo.clear();
@@ -482,12 +254,6 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 			cityListCombo.addListItem(cityListCombo.getNewCheckBoxItem(city.getCity()), city.getId());
 		}
 		
-//		setUsersList();
-//		for (User user : userList) {
-//			fillUsersDetails(usersPanel.get(user.getEmail()), user);
-//		}
-		
-
 		PagesController.hideWaitPanel();
 	}
 	
