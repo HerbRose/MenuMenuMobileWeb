@@ -62,6 +62,8 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 			return;
 		}
 		
+		resp.setContentType("text/html; charset=UTF-8");
+		resp.setCharacterEncoding("UTF-8");
 		
 		List<Restaurant> rests = storeService.loadRestaurants(cityId);
 		
