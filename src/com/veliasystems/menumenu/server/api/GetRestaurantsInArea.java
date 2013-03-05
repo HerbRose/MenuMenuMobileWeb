@@ -216,40 +216,55 @@ public class GetRestaurantsInArea extends HttpServlet {
 //						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 //					}
 					
-					if(restaurant.getMainMenuImageString()!=null){
-						map.put("menuImage", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
+					if(restaurant.getMainMenuImageString()!=null && !restaurant.getMainMenuImageString().isEmpty()){
+						map.put("menuImage", addHostToUrl(restaurant.getMainMenuImageString()));
 						map.put("menuImageDefault", false);
+						if(restaurant.getMainMenuScreenSizeImageString()!=null && !restaurant.getMainMenuScreenSizeImageString().isEmpty()){
+							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
+						} else {
+							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuImageString()));
+						}
+						
+						if(restaurant.getMainMenuScaleSizeImageString()!=null && !restaurant.getMainMenuScaleSizeImageString().isEmpty()){
+							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
+						} else {
+							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuImageString()));
+						}
 					}else{
 						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 						map.put("menuImageDefault", true);
 					}
+					
+					
 					//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 //					map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
 //					map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
-					if(restaurant.getMainMenuScreenSizeImageString()!=null){
-						map.put("menuImageScreenSize", (restaurant.getMainMenuScreenSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
-					}else{
-//						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						
-						if(restaurant.getMainMenuImageString()!=null){
-							map.put("menuImageScreenSize", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
-						} else {
-							map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						}
-					}
+//					if(restaurant.getMainMenuScreenSizeImageString()!=null && !restaurant.getMainMenuScreenSizeImageString().isEmpty()){
+//						map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
+//					}else{
+////						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						
+//						if(restaurant.getMainMenuImageString()!=null){
+//							map.put("menuImageScreenSize", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
+//						} else {
+//							map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						}
+//					}
 					
-					
-					if(restaurant.getMainMenuScaleSizeImageString()!=null){
-						map.put("menuImageScaleSize", (restaurant.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
-					}else{				
-//						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						if(restaurant.getMainMenuImageString()!=null){
-							map.put("menuImageScaleSize", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
-						} else {
-							map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						}
-						
-					}
+//					
+//					if(restaurant.getMainMenuScaleSizeImageString()!=null){
+//						map.put("menuImageScaleSize", (restaurant.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
+//					}else{				
+////						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						if(restaurant.getMainMenuImageString()!=null){
+//							map.put("menuImageScaleSize", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
+//						} else {
+//							map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						}
+//						
+//					}
 					
 					map.put( "profileImage", (restaurant.getMainProfileImageString()==null || restaurant.getMainProfileImageString().isEmpty()) ?  "EMPTY" : addHostToUrl(restaurant.getMainProfileImageString()) );
 					map.put("lat", "" + restaurant.getLat());
@@ -258,6 +273,8 @@ public class GetRestaurantsInArea extends HttpServlet {
 					for (ImageBlob imageBlob : imageBlobs) {
 						map.put(imageBlob.getImageType() + "DateCreate",
 								imageBlob.getDateCreated() + "");
+						map.put(imageBlob.getImageType()+"Height", imageBlob.getHeight()+"");
+						map.put(imageBlob.getImageType()+"Width", imageBlob.getWidth()+"");
 					}
 					map.put("openHours", restaurant.getOpenHours());
 					attributes.add(map);

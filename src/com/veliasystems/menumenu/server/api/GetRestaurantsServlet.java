@@ -174,39 +174,61 @@ public class GetRestaurantsServlet extends HttpServlet {
 //					map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 //				}
 				
-				if(r.getMainMenuImageString()!=null){
-					map.put("menuImage", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
+//				if(r.getMainMenuImageString()!=null){
+//					map.put("menuImage", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
+//					map.put("menuImageDefault", false);
+//				}else{
+//					map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					map.put("menuImageDefault", true);
+//				}
+//				//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+////				map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
+////				map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
+//				if(r.getMainMenuScreenSizeImageString()!=null){
+//					map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScreenSizeImageString()));
+//				}else{
+////					map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					
+//					if(r.getMainMenuImageString()!=null){
+//						map.put("menuImageScreenSize", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
+//					} else {
+//						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					}
+//				}
+//				
+//				
+//				if(r.getMainMenuScaleSizeImageString()!=null){
+//					map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
+//				}else{				
+////					map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					if(r.getMainMenuImageString()!=null){
+//						map.put("menuImageScaleSize", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
+//					} else {
+//						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//					}
+//					
+//				}
+				
+				
+				if(r.getMainMenuImageString()!=null && !r.getMainMenuImageString().isEmpty()){
+					map.put("menuImage", addHostToUrl(r.getMainMenuImageString()));
 					map.put("menuImageDefault", false);
+					if(r.getMainMenuScreenSizeImageString()!=null && !r.getMainMenuScreenSizeImageString().isEmpty()){
+						map.put("menuImageScreenSize", addHostToUrl(r.getMainMenuScreenSizeImageString()));
+					} else {
+						map.put("menuImageScreenSize", addHostToUrl(r.getMainMenuImageString()));
+					}
+					
+					if(r.getMainMenuScaleSizeImageString()!=null && !r.getMainMenuScaleSizeImageString().isEmpty()){
+						map.put("menuImageScaleSize", addHostToUrl(r.getMainMenuScaleSizeImageString()));
+					} else {
+						map.put("menuImageScaleSize", addHostToUrl(r.getMainMenuImageString()));
+					}
 				}else{
 					map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+					map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+					map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 					map.put("menuImageDefault", true);
-				}
-				//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//				map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
-//				map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
-				if(r.getMainMenuScreenSizeImageString()!=null){
-					map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScreenSizeImageString()));
-				}else{
-//					map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-					
-					if(r.getMainMenuImageString()!=null){
-						map.put("menuImageScreenSize", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
-					} else {
-						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-					}
-				}
-				
-				
-				if(r.getMainMenuScaleSizeImageString()!=null){
-					map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
-				}else{				
-//					map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-					if(r.getMainMenuImageString()!=null){
-						map.put("menuImageScaleSize", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
-					} else {
-						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-					}
-					
 				}
 				
 				map.put( "profileImage", (r.getMainProfileImageString()==null || r.getMainProfileImageString().isEmpty()) ?  "EMPTY" : addHostToUrl(r.getMainProfileImageString()) );
@@ -219,6 +241,8 @@ public class GetRestaurantsServlet extends HttpServlet {
 					if(imageBlob != null) {
 						map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
 						map.put(imageBlob.getImageType()+"DateCreateInMiliS", imageBlob.getDateCreated().getTime()+"");
+						map.put(imageBlob.getImageType()+"Height", imageBlob.getHeight()+"");
+						map.put(imageBlob.getImageType()+"Width", imageBlob.getWidth()+"");
 					}
 				}
 				

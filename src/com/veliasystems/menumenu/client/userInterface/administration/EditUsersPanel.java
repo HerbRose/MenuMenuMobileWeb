@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -107,17 +108,34 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 				if(roleListCombo.getCheckedList().isEmpty()){
 					user.setRestaurator(true);
 				} else {
-					for (Long userType : roleListCombo.getCheckedList()) {
-						if(userType == (long) UserType.ADMIN.userTypeValue()){
-							user.setAdmin(true);
-						}
-						if(userType == (long) UserType.AGENT.userTypeValue()){
-							user.setAgent(true);
-						}
-						if(userType == (long) UserType.RESTAURATOR.userTypeValue()){
-							user.setRestaurator(true);
-						}
+//					for (Long userType : roleListCombo.getCheckedList()) {
+//						if(userType == (long) UserType.ADMIN.userTypeValue()){
+//							user.setAdmin(true);
+//						}
+//						if(userType == (long) UserType.AGENT.userTypeValue()){
+//							user.setAgent(true);
+//						}
+//						if(userType == (long) UserType.RESTAURATOR.userTypeValue()){
+//							user.setRestaurator(true);
+//						}
+//					}
+					
+					if(roleListCombo.getCheckedList().contains((long) UserType.ADMIN.userTypeValue())){
+						user.setAdmin(true);
+					} else{
+						user.setAdmin(false);
 					}
+					if(roleListCombo.getCheckedList().contains((long) UserType.AGENT.userTypeValue())){
+						user.setAgent(true);
+					}else{
+						user.setAgent(false);
+					}
+					if(roleListCombo.getCheckedList().contains((long) UserType.RESTAURATOR.userTypeValue())){
+						user.setRestaurator(true);
+					} else{
+						user.setRestaurator(false);
+					}
+					
 				}
 				
 				if(!cityListCombo.getCheckedList().isEmpty()){
@@ -195,6 +213,11 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		if(isVisable){
 			clear();
 			contentPanel.clear();
+			nameTextBox.setText("");
+			roleListCombo.clearSelection();
+			cityListCombo.clearSelection();
+			restaurantListCombo.clearSelection();
+			
 			numberOfNewDataSuccess = 0;
 			PagesController.showWaitPanel();
 			userController.getUsersFromServer(this);
