@@ -1,16 +1,13 @@
 package com.veliasystems.menumenu.client.userInterface.myWidgets;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
@@ -43,6 +40,7 @@ public class MyUploadForm extends FormPanel {
 		restaurantId = Long.parseLong(restId);
 		this.imageType = imageType;
 		setEncoding(FormPanel.ENCODING_MULTIPART);
+		
 		setMethod(FormPanel.METHOD_POST);
 		
 		this.fileUpload = fileUpload;

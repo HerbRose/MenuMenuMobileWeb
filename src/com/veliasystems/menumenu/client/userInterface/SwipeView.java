@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
@@ -286,7 +287,7 @@ public class SwipeView extends FlowPanel {
 
 							@Override
 							public void onSuccess(String result) {
-
+								
 								//result = "http://mymenumenu.appspot.com/fileUploadServer?token=a1b2c3";
 								formPanel.setAction(result);
 								

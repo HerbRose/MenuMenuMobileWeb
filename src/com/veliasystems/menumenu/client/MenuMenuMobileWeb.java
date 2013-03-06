@@ -1,14 +1,8 @@
 package com.veliasystems.menumenu.client;
 
-
-
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
@@ -53,8 +47,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		
 		String logged = cookieController.getCookie(CookieNames.LOGGED_IN); 
 		
-		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0
-				|| osType.toLowerCase().indexOf("iphone") >= 0;
+		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;
 		
 		if (logged != null && !logged.equals("null")) loggedIn = true; //it's weird, but it seems to be working
@@ -73,13 +66,7 @@ public class MenuMenuMobileWeb implements EntryPoint {
 				R.isMobile = false;
 				JQMContext.changePage( Pages.PAGE_LOGIN_OK );
 			}
-		}
-		
-		
-		
-		PagesController.hideWaitPanel();
-		
-		
+		}	
 	}
 	
 	private native boolean isMobile()/*-{

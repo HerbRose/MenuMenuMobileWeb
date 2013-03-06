@@ -56,45 +56,44 @@ public class BlobUploadServlet extends HttpServlet {
 //			res.getWriter().flush();
 			return;
 		}
-		log.info("Upload blob");
+		
 //		System.out.println("BlobUploadServlet::doPost: restId is: " + restId);
     	
             // this has to be used in an rpc call to get the url to be used with this request
             //String url = blobstoreService.createUploadUrl("/upload");
             
-            int len = request.getContentLength();
-            int mb = (1024 * 1024) * 1;
-            if (len > mb) { 
-              throw new RuntimeException("Sorry that file is too large. Try < 1024 or 1MB file"); }
-            
-            Map<String, List<BlobKey>> uploads = blobstoreService.getUploads(request);
-            
-
-            
-            BlobKey blobKey = null;
-            
-            Set<String> keys = uploads.keySet();
+        int len = request.getContentLength(); 
+        int mb = (1024 * 1024) * 1;
+        log.info("Upload blob, request.getContentLength(): " + len);
+        
+        if (len > mb) { 
+           throw new RuntimeException("Sorry that file is too large. Try < 1024 or 1MB file"); }
+        
+        
+        Map<String, List<BlobKey>> uploads = blobstoreService.getUploads(request);
+        
+        BlobKey blobKey = null;
+       
+        Set<String> keys = uploads.keySet();
+        log.info("Upload blob, uploads.keySet().size(): " + keys.size());
 //            System.out.println("BlobUploadServlet, list uploads:");
-            for (String key : keys) {
-            	List<BlobKey> blobkeys = uploads.get(key);
-            	for (BlobKey bkey : blobkeys) {
-            		if (bkey!=null) blobKey = bkey; // just pick the 1st one
-            	}
+        for (String key : keys) {
+            List<BlobKey> blobkeys = uploads.get(key);
+            for (BlobKey bkey : blobkeys) {
+            	if (bkey!=null) blobKey = bkey; // just pick the 1st one
             }
+         }
 
             
-            if (blobKey == null) {
+         if (blobKey == null) {
 //            	System.out.println("BlobUploadServlet, previous method returned shit, trying deprecated...");
-            	Map blobs = blobstoreService.getUploadedBlobs(request);
-            	blobKey = (BlobKey) blobs.get("image"); 
-            }
-            	
-            
-
-            if (blobKey == null) {
-//            		System.out.println("BlobUploadServlet::doPost: blobKey is null");
-                    res.sendRedirect("/");
-            } else {
+            Map blobs = blobstoreService.getUploadedBlobs(request);
+            blobKey = (BlobKey) blobs.get("image"); 
+         }
+         if (blobKey == null) {
+//            	System.out.println("BlobUploadServlet::doPost: blobKey is null");
+                res.sendRedirect("/");
+         } else {
 //            	  System.out.println("BlobUploadServlet::doPost: blobKey is " + blobKey.getKeyString() + ", storing.."); 
             		
 //            		ImagesService imageService = ImagesServiceFactory.getImagesService();
@@ -119,8 +118,9 @@ public class BlobUploadServlet extends HttpServlet {
 //            		
 //            		Image resizeImage = imageService.applyTransform( resize, image, ImagesService.OutputEncoding.JPEG );
             		
-            		blobKey = storeImageBlob(restId, imageType, blobKey);
-                    res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
+            	blobKey = storeImageBlob(restId, imageType, blobKey);
+            	log.info("Upload blob, image link: " + "/blobServe?blob-key=" + blobKey.getKeyString());
+                res.sendRedirect("/blobServe?blob-key=" + blobKey.getKeyString());
             }
             
     }
