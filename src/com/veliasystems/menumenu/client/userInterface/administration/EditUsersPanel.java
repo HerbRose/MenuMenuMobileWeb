@@ -87,6 +87,8 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 				if(user==null) return;
 				if(roleListCombo.getCheckedList().isEmpty()){
 					user.setRestaurator(true);
+					user.setAgent(false);
+					user.setAdmin(false);
 				} else {					
 					if(roleListCombo.getCheckedList().contains((long) UserType.ADMIN.userTypeValue())){
 						user.setAdmin(true);
@@ -109,10 +111,14 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 				if(!cityListCombo.getCheckedList().isEmpty()){
 					user.setCitiesId(cityListCombo.getCheckedList());
 					user.setAgent(true);
+				} else {
+					user.setCitiesId(null);
 				}
 				if(!restaurantListCombo.getCheckedList().isEmpty()){
 					user.setRestaurantsId(restaurantListCombo.getCheckedList());
 					user.setRestaurator(true);
+				} else {
+					user.setRestaurantsId(null);
 				}
 				
 				userController.saveUser(user);
@@ -131,9 +137,15 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	}
 	
 	private void showUserDetails(int id){
+		
+		nameTextBox.setText("");
 		user = userList.get(id);
 		if(user.getName() != null){
-			nameTextBox.setText(user.getName());
+			nameTextBox.setText(user.getName() + " ");
+		} 
+		
+		if(user.getSurname() != null){
+			nameTextBox.setText(nameTextBox.getText() + user.getSurname());
 		}
 		
 		if(user.isAdmin()){
@@ -141,23 +153,24 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		} 
 		
 		if(user.isAgent()){
-			roleListCombo.selectItem(UserType.AGENT.userTypeValue());
-			if(user.getCitiesId()!=null){
-				for (Long cityId : user.getCitiesId()) {
-					cityListCombo.selectItem(cityId);
-				}
-			}
-			
+			roleListCombo.selectItem(UserType.AGENT.userTypeValue());	
 		}
 		
 		if(user.isRestaurator()){
 			roleListCombo.selectItem(UserType.RESTAURATOR.userTypeValue());
-			if(user.getRestaurantsId()!=null){
-				for (Long restaurantId : user.getRestaurantsId()) {
-					restaurantListCombo.selectItem(restaurantId);
-				}
-			}	
 		}	
+		
+		if(user.getRestaurantsId()!=null){
+			for (Long restaurantId : user.getRestaurantsId()) {
+				restaurantListCombo.selectItem(restaurantId);
+			}
+		}	
+		
+		if(user.getCitiesId()!=null){
+			for (Long cityId : user.getCitiesId()) {
+				cityListCombo.selectItem(cityId);
+			}
+		}
 	}
 	
 	private void removeUser(String userEmail){
@@ -208,16 +221,22 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	
 	@Override
 	public void onChange() {
+			PagesController.showWaitPanel();
 			cityListCombo.clear();
 			restaurantListCombo.clear();
 			roleListCombo.clear();
-			fillContent();
+			
+			userController.getUsersFromServer(this);
+			cityController.refreshCities(this);
+			restaurantController.refreshRestaurants(this);
+		
 	}
 
 	@Override
 	public void newData() {
 		numberOfNewDataSuccess ++;
 		if(numberOfNewDataSuccess == 3){
+			numberOfNewDataSuccess = 0;
 			fillContent();
 		}
 		
