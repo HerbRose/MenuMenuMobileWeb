@@ -265,7 +265,7 @@ public class GetRestaurantsInArea extends HttpServlet {
 //						}
 //						
 //					}
-					
+					map.put("menuPublishTime", restaurant.getMenuPublishTimeInMiliSec());
 					map.put( "profileImage", (restaurant.getMainProfileImageString()==null || restaurant.getMainProfileImageString().isEmpty()) ?  "EMPTY" : addHostToUrl(restaurant.getMainProfileImageString()) );
 					map.put("lat", "" + restaurant.getLat());
 					map.put("lng", "" + restaurant.getLng());

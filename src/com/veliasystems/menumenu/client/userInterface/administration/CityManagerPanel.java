@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.Pages;
@@ -209,12 +210,16 @@ public class CityManagerPanel extends FlowPanel implements IManager, IObserver {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				city.setCountry(countryListCombo.getSelectedItem().getText());
+				if(countryListCombo.getSelectedItem() != null){
+					city.setCountry(countryListCombo.getSelectedItem().getText());
+				}
+	
 				city.setCity(nameTextBox.getText());
+				
+				
 				if(validData(city)){
 					cityController.saveCity(getMe(), city, false);
 				}else{
-//					Window.alert(Customization.WRONG_DATA_ERROR);
 					PagesController.MY_POP_UP.showError(new Label(Customization.WRONG_DATA_ERROR), new IMyAnswer() {
 						
 						@Override
