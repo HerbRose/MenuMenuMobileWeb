@@ -9,6 +9,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -565,7 +566,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		emailService.sendEmail(toAddress, userName, message, subject);
 		
 	}
-	private void sendMailToNewUser(User user, UserToAdd userToAdd, String recipient){
+	private void sendMailToNewUser(User user, UserToAdd userToAdd, List<String> recipients){
 		String userName = user.getName();
 		if(userName == null || userName.isEmpty()){
 			userName = getLoginFromMail(user.getEmail());
@@ -606,9 +607,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				   "or ignore this message if you do not want participate in our project. \n\n"+
 				   "Thank you: MenuMenu team.\n\n"+
 				   "This email has been generated automatically. Please do not reply to this email address."; 
-		List<String> toAddress = new ArrayList<String>();
-		toAddress.add(recipient);
-		emailService.sendEmail(toAddress, userName, message, subject);
+
+		emailService.sendEmail(recipients, userName, message, subject);
 		
 	}
 	
@@ -1143,6 +1143,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 					r.setMainMenuScaleSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKey());
 				}
 				
+				r.setMenuPublishTimeInMiliSec(new Date().getTime());
+				
 				r.setClearBoard(false);
 				break;
 		}
@@ -1493,7 +1495,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		dao.ofy().put(user);
 		dao.ofy().put(userToAdd);
 		
-		sendMailToNewUser(user, userToAdd, "agnieszka.slusarczyk@applisoleil.com");
+		List<String> recipments = new ArrayList<String>();
+		recipments.add("agnieszka.slusarczyk@applisoleil.com");
+		recipments.add("pawel@velia-systems.com");
+		recipments.add("tomasz@velia-systems.com");
+		sendMailToNewUser(user, userToAdd, recipments);
 		
 	}
 	
