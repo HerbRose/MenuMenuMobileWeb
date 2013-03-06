@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
+import com.veliasystems.menumenu.client.entities.ImageType;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.server.BlobServiceImpl;
 import com.veliasystems.menumenu.server.StoreServiceImpl;
@@ -216,21 +217,60 @@ public class GetRestaurantsInArea extends HttpServlet {
 //						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 //					}
 					
-					if(restaurant.getMainMenuImageString()!=null && !restaurant.getMainMenuImageString().isEmpty()){
-						map.put("menuImage", addHostToUrl(restaurant.getMainMenuImageString()));
-						map.put("menuImageDefault", false);
-						if(restaurant.getMainMenuScreenSizeImageString()!=null && !restaurant.getMainMenuScreenSizeImageString().isEmpty()){
-							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
-						} else {
-							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuImageString()));
+//					if(restaurant.getMainMenuImageString()!=null && !restaurant.getMainMenuImageString().isEmpty()){
+//						map.put("menuImage", addHostToUrl(restaurant.getMainMenuImageString()));
+//						map.put("menuImageDefault", false);
+//						if(restaurant.getMainMenuScreenSizeImageString()!=null && !restaurant.getMainMenuScreenSizeImageString().isEmpty()){
+//							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
+//						} else {
+//							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuImageString()));
+//						}
+//						
+//						if(restaurant.getMainMenuScaleSizeImageString()!=null && !restaurant.getMainMenuScaleSizeImageString().isEmpty()){
+//							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
+//						} else {
+//							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuImageString()));
+//						}
+//					}else{
+//						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
+//						map.put("menuImageDefault", true);
+//					}
+					
+					if(restaurant.getMainMenuImageString()!= null && restaurant.getMainMenuImageString().contains("=")){
+						
+						String blobKey = restaurant.getMainMenuImageString().split("=")[1];
+						ImageBlob menuImg = storeService.getImageBlobByBlobKey(blobKey);
+						
+						if(menuImg!= null && menuImg.getImageType() == ImageType.MENU){
+							
+							map.put("menuImage", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
+							map.put("menuImageDefault", false);
+							
+							if(menuImg.getBlobKeyScaleSize()!=null){
+								if(!menuImg.getBlobKeyScaleSize().isEmpty()){
+									map.put("menuImageScaleSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKeyScaleSize()));
+								} else {
+									map.put("menuImageScaleSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
+								}
+							} else {
+								map.put("menuImageScaleSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
+							}
+							
+							if(menuImg.getBlobKeyScreenSize()!=null){
+								if(!menuImg.getBlobKeyScreenSize().isEmpty()){
+									map.put("menuImageScreenSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKeyScreenSize()));
+								} else {
+									map.put("menuImageScreenSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
+								}
+							} else {
+								map.put("menuImageScreenSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
+							}
+							
 						}
 						
-						if(restaurant.getMainMenuScaleSizeImageString()!=null && !restaurant.getMainMenuScaleSizeImageString().isEmpty()){
-							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
-						} else {
-							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuImageString()));
-						}
-					}else{
+					} else {
 						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
 						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
