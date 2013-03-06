@@ -236,7 +236,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 				map.put( "lng", "" + r.getLng());
 				map.put("phoneRestaurant", r.getPhoneRestaurant());
 				map.put("openHours", r.getOpenHours());
-				
+				map.put("menuPublishTime", r.getMenuPublishTimeInMiliSec());
 				for (ImageBlob imageBlob : imageBlobs) {
 					if(imageBlob != null) {
 						map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");

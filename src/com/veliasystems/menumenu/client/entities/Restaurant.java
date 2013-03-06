@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,9 +75,19 @@ public class Restaurant implements Serializable {
 	private String mainMenuScreenSizeImageString = null;
 	private String mainMenuScaleSizeImageString = null;
 	
+	private Long menuPublishTimeInMiliSec = new Date().getTime();
+	
 	{
 		id = Util.getRandom(9999999);
 	}
+	public Long getMenuPublishTimeInMiliSec() {
+		return menuPublishTimeInMiliSec;
+	}
+
+	public void setMenuPublishTimeInMiliSec(Long logoPublishTimeInMiliSec) {
+		this.menuPublishTimeInMiliSec = logoPublishTimeInMiliSec;
+	}
+
 	/**
 	 * default constructor
 	 */

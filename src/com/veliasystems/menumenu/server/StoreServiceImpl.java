@@ -9,6 +9,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -1142,6 +1143,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				}else{
 					r.setMainMenuScaleSizeImageString("/blobServe?blob-key="+imageBlob.getBlobKey());
 				}
+				
+				r.setMenuPublishTimeInMiliSec(new Date().getTime());
 				
 				r.setClearBoard(false);
 				break;
