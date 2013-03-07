@@ -177,8 +177,9 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 				imageContent += liEnd;
 			
 				imageContent += "</div>";
-				thumbContent += liThumbStart + aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 + liThumbEnd;
-	
+//				thumbContent += liThumbStart + aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 + liThumbEnd;
+				thumbContent += liThumbStart + "<div class='imgThumbWrapper'>" +  aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 +"</div>" +liThumbEnd;
+				
 				counter++;
 		
 			}
