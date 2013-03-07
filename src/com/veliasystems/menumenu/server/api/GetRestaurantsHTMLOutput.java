@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.server.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -76,6 +77,7 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 		String thumbEnd = "</ul>";
 		
 		String liStart = "<li class='liItem'";
+		String liStartLastImage = "<li class='liItem lastImage'";
 		String liIdStart = " id=";
 		String liIdEnd = ">";
 		String liEnd = "</li>";
@@ -106,8 +108,43 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 				emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
 			}
 		 
-		for (Restaurant restaurant : rests) {
-			if(restaurant.isVisibleForApp()){
+			
+			List<Restaurant> properRests = new ArrayList<Restaurant>();
+			
+			for (Restaurant restaurant : rests) {
+				if(restaurant.isVisibleForApp()){
+					
+					String menuImage = "";
+			    	String logoImage = "";
+			    	String profileImage = "";
+					
+					if(restaurant.getMainMenuImageString()!=null && !restaurant.getMainMenuImageString().isEmpty()){
+						menuImage = addHostToUrl(restaurant.getMainMenuImageString());					
+					}else{
+						menuImage = (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" );
+					}
+			    	
+					if(restaurant.getMainLogoImageString()!=null && !restaurant.getMainLogoImageString().isEmpty()){
+						logoImage = addHostToUrl(restaurant.getMainLogoImageString());
+					} else {
+						logoImage = "EMPTY";
+					} 
+					
+					if(restaurant.getMainProfileImageString()!=null && !restaurant.getMainProfileImageString().isEmpty()){
+						profileImage = addHostToUrl(restaurant.getMainProfileImageString());
+					} else {
+						profileImage = "EMPTY";
+					}
+					
+					if(menuImage.equalsIgnoreCase("EMPTY") || logoImage.equalsIgnoreCase("EMPTY") || profileImage.equalsIgnoreCase("EMPTY")){
+						continue;
+					}
+					properRests.add(restaurant);
+				}
+			}
+			
+		for (Restaurant restaurant : properRests) {
+//			if(restaurant.isVisibleForApp()){
 				String restuarantName = restaurant.getName();
 		    	String address = restaurant.getAddress();
 		    	String phone = restaurant.getPhoneRestaurant();
@@ -161,11 +198,16 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 					profileImage = "EMPTY";
 				}
 				
-				if(menuImage.equalsIgnoreCase("EMPTY") || logoImage.equalsIgnoreCase("EMPTY") || profileImage.equalsIgnoreCase("EMPTY")){
-					continue;
-				}
-				imageContent += liStart;
+//				if(menuImage.equalsIgnoreCase("EMPTY") || logoImage.equalsIgnoreCase("EMPTY") || profileImage.equalsIgnoreCase("EMPTY")){
+//					continue;
+//				}
+			
 				
+				if(!(counter < properRests.size())){
+					imageContent += liStartLastImage;
+				} else {
+					imageContent += liStart;
+				}
 				imageContent += liIdStart + counter + liIdEnd;
 				imageContent += "<div class='wrapper'>";
 				
@@ -178,11 +220,17 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 			
 				imageContent += "</div>";
 //				thumbContent += liThumbStart + aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 + liThumbEnd;
-				thumbContent += liThumbStart + "<div class='imgThumbWrapper'>" +  aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 +"</div>" +liThumbEnd;
+				
+//				if(!(counter < properRests.size())){
+//					thumbContent += liThumbStart + "<div class='imgThumbWrapper' id='lastImage'>" +  aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 +"</div>" +liThumbEnd;
+//				} else {
+					thumbContent += liThumbStart + "<div class='imgThumbWrapper'>" +  aHrefStart + "#" + counter + aHrefEnd1 + imgStart + logoImage + imgEnd + aHrefEnd2 +"</div>" +liThumbEnd;
+//				}
+				
 				
 				counter++;
 		
-			}
+//			}
 		}
 		
 		slider += imageContent + sliderEnd;
