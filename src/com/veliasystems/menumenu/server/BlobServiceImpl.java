@@ -354,7 +354,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		
 		if(imageBlob2 == null){ //second try
 			Query<ImageBlob> query2 = dao.ofy().query(ImageBlob.class);
-			if (query == null) {
+			if (query2 == null) {
 				imageBlob2 = new ImageBlob();
 			}else{
 				imageBlob2 = query2.filter("blobKey", imageBlob.getBlobKey()).get();
