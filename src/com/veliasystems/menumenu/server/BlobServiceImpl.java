@@ -245,8 +245,16 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return r;
 	}
 
+
+	
+	/**
+	 * 
+	 * @param imageBlob
+	 * @param isMinImage if true original blob will not be deleted, otherwise will
+	 * @return
+	 */
 	@Override
-	public boolean deleteBlob(ImageBlob imageBlob) {
+	public boolean deleteBlob(ImageBlob imageBlob, boolean isMinImage) {
 		if (imageBlob == null) {
 			return false;
 		}
@@ -290,11 +298,13 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 				break;
 		}
 		
-		
-//		if(imageBlob.getBlobKeyOriginalSize() != null && !imageBlob.getBlobKeyOriginalSize().isEmpty()){
-//			BlobstoreServiceFactory.getBlobstoreService().delete(
-//					new BlobKey(imageBlob.getBlobKeyOriginalSize()));
-//		}
+		if(!isMinImage){
+			if(imageBlob.getBlobKeyOriginalSize() != null && !imageBlob.getBlobKeyOriginalSize().isEmpty()){
+				BlobstoreServiceFactory.getBlobstoreService().delete(
+						new BlobKey(imageBlob.getBlobKeyOriginalSize()));
+			}
+		}
+	
 		BlobstoreServiceFactory.getBlobstoreService().delete(
 				new BlobKey(imageBlob.getBlobKey()));
 		
@@ -573,7 +583,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 //			BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
 			
 			//this method will remove imageMin.jpg which was used to display to user in browser and will keep the original image in blobstore
-			removeImageBlobByBlobKey(imageBlob.getBlobKey());
+			removeImageBlobByBlobKey(imageBlob.getBlobKey(), true);
 			dao.ofy().delete(imageBlob);
 			//END - remove old image and image's data
 		} catch (IOException e) {
@@ -590,13 +600,18 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 		return newImageBlob;
 	}
+	/**
+	 * 
+	 * @param blobKey
+	 * @param isMinImage if true original blob will not be deleted
+	 */
 	@Override
-	public void removeImageBlobByBlobKey(String blobKey){
+	public void removeImageBlobByBlobKey(String blobKey, boolean isMinImage){
 		Query<ImageBlob> blobQuery = dao.ofy().query(ImageBlob.class);
 		if(blobQuery == null) return;
 		ImageBlob imgBlob = blobQuery.filter("blobKey =", blobKey).get();
 		if(imgBlob == null) return;
-		deleteBlob(imgBlob);
+		deleteBlob(imgBlob, isMinImage);
 		
 	}
 

@@ -110,7 +110,7 @@ public class LastUploadedImages extends FlowPanel implements IManager, IObserver
 					
 						PagesController.showWaitPanel();
 						
-						blobService.deleteBlob(imageBlob, new AsyncCallback<Boolean>() {
+						blobService.deleteBlob(imageBlob, false, new AsyncCallback<Boolean>() {
 							
 							@Override
 							public void onSuccess(Boolean result) {

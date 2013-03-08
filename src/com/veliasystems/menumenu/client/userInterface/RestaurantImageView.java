@@ -344,7 +344,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 					}
 					else if(isDeleteImage && !isDeleteBoard){
 						PagesController.showWaitPanel();
-						blobService.deleteBlob(imageBlobClickedToDelete, new AsyncCallback<Boolean>() {
+						blobService.deleteBlob(imageBlobClickedToDelete, false, new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(Throwable caught) {	
@@ -375,7 +375,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 						
 						if(restaurant.getMainLogoImageString().isEmpty() || restaurant.getMainLogoImageString() == null) return;
 						PagesController.showWaitPanel();
-						blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), new AsyncCallback<Void>() {
+						blobService.removeImageBlobByBlobKey(parseURLtoBlobKey(restaurant.getMainLogoImageString()), false, new AsyncCallback<Void>() {
 
 							public void onFailure(Throwable caught) {
 								PagesController.hideWaitPanel();

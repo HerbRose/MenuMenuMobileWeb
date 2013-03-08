@@ -178,7 +178,7 @@ public class AddRestaurantScreen extends MyPage implements IObserver {
 			@Override
 			public void onClick(ClickEvent event) {
 				PagesController.showWaitPanel();
-				blobService.removeImageBlobByBlobKey(logoBlobString,
+				blobService.removeImageBlobByBlobKey(logoBlobString, false,
 						new AsyncCallback<Void>() {
 
 							@Override

@@ -27,7 +27,6 @@ public interface BlobService extends RemoteService {
          */
         List<ImageBlob> getHeaderImages( Restaurant r ); // loga/naglowki restauracji
         /**
-         * 
          * @param restaurantId - id of {@link Restaurant}
          * @return List<ImageBlob> which contains all logos images in specified {@link Restaurant}
          */
@@ -82,7 +81,7 @@ public interface BlobService extends RemoteService {
          * @param imageBlob - image to delete
          * @return true if image has been deleted or false if {@link ImageBlob} was null
          */
-        boolean deleteBlob(ImageBlob imageBlob);
+        boolean deleteBlob(ImageBlob imageBlob, boolean isMinImage);
         /**
     	 * 
     	 * @param imageBlob - image to crop
@@ -128,6 +127,6 @@ public interface BlobService extends RemoteService {
 		 * @return List of all images which were uploaded to server in last 24h
 		 */
 		List<ImageBlob> getLast24hImages();
-		void removeImageBlobByBlobKey(String blobKey);
+		void removeImageBlobByBlobKey(String blobKey, boolean isMinImage);
 
 }

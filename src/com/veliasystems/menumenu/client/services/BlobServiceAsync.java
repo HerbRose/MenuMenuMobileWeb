@@ -15,7 +15,7 @@ public interface BlobServiceAsync {
 	void getBlobStoreUrl(String sectionKey, ImageType imageType,
 			AsyncCallback<String> callback);
 
-	void deleteBlob(ImageBlob imageBlob, AsyncCallback<Boolean> callback);
+	void deleteBlob(ImageBlob imageBlob, boolean isMinImage, AsyncCallback<Boolean> callback);
 
 	void getHeaderImages(Restaurant r, AsyncCallback<List<ImageBlob>> callback);
 
@@ -56,7 +56,7 @@ public interface BlobServiceAsync {
 
 	void getLast24hImages(AsyncCallback<List<ImageBlob>> callback);
 
-	void removeImageBlobByBlobKey(String blobKey, AsyncCallback<Void> callback);
+	void removeImageBlobByBlobKey(String blobKey, boolean isMinImage, AsyncCallback<Void> callback);
 
 
 }

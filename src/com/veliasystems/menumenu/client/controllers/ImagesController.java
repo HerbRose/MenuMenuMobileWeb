@@ -221,7 +221,7 @@ public class ImagesController {
 	
 	public void deleteImage(ImageBlob imageBlob){
 		
-		blobService.deleteBlob(imageBlob, new AsyncCallback<Boolean>() {
+		blobService.deleteBlob(imageBlob, false, new AsyncCallback<Boolean>() {
 
 			@Override
 			public void onFailure(Throwable caught) {	
