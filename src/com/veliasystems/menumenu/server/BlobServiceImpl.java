@@ -354,6 +354,11 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	 */
 	private ImageBlob cropImage(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String newName) {
 		
+		if(imageBlob == null){
+			log.severe("imageBlob is null !!! ");
+			throw new NullPointerException() ;
+		}
+		
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
 		if (query == null) {
@@ -363,6 +368,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 		
 		if(imageBlob2 == null){ //second try
+			log.warning("ImageBlob not found. Try again. blobKey: " + imageBlob.getBlobKey());
 			Query<ImageBlob> query2 = dao.ofy().query(ImageBlob.class);
 			if (query2 == null) {
 				imageBlob2 = new ImageBlob();
@@ -372,6 +378,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		}
 		
 		if(imageBlob2 == null){
+			log.severe("ImageBlob not found. blobKey: " + imageBlob.getBlobKey());
 			throw new NullPointerException() ;
 		}
 		

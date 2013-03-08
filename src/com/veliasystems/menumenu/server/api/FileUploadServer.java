@@ -28,6 +28,8 @@ import com.veliasystems.menumenu.server.StoreServiceImpl;
 
 public class FileUploadServer extends HttpServlet {
 
+	private static final long serialVersionUID = -369397910846389457L;
+
 	private static final Logger log = Logger.getLogger(FileUploadServer.class.getName());
 
 	private BlobServiceImpl blobService = new BlobServiceImpl();
@@ -98,14 +100,14 @@ public class FileUploadServer extends HttpServlet {
 						log.warning("FileUploadServer::doPost: new blobKey not defined" );
 						return;
 					}
-					
+					resp.getWriter().print(gson.toJson(newImageBlob.getBlobKey()));
 				}
 			}
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
 		
-		resp.getWriter().print(gson.toJson(newImageBlob.getBlobKey()));
+		
 		if (jsonp != null) {
 			resp.getWriter().print(")");
 		}
