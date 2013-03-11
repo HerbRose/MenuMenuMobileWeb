@@ -420,6 +420,7 @@ public class UserController {
 			public void onSuccess(User result) {
 				PagesController.hideWaitPanel();
 //				Window.alert(Customization.OK);
+				users.put(result.getEmail(), result);
 				PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
 					
 					@Override
@@ -430,6 +431,40 @@ public class UserController {
 		});
 	}
 	
+	
+	public void saveUser(User user, final IObserver iObserver){
+		PagesController.showWaitPanel();
+		storeService.saveUser(user, new AsyncCallback<User>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+//				Window.alert(Customization.ERROR);	
+				PagesController.MY_POP_UP.showError(new Label(Customization.ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
+			}
+
+			@Override
+			public void onSuccess(User result) {
+				users.put(result.getEmail(), result);
+				notifyObserver(iObserver, false);
+				PagesController.hideWaitPanel();
+//				Window.alert(Customization.OK);
+				PagesController.MY_POP_UP.showSuccess(new Label(Customization.OK), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});
+			}
+		});
+	}
 	private void notifyObserver(IObserver iObserver, boolean isNewData){
 		if(isNewData) iObserver.newData();
 		else iObserver.onChange();

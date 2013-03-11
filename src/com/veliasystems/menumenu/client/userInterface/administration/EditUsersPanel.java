@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -59,18 +60,9 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		setStyleName("barPanel", true);
 		show(false);
 		userController.addObserver(this);
-		
-		
 		nameTextBox.addStyleName("myTextBox nameBox");
 		nameTextBox.setEnabled(false);
 		contentPanel.setStyleName("containerPanelAddRestaurant", true);
-		
-		
-		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
-		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
-		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
-
-		
 		userListCombo.addMyChangeHendler(new IMyChangeHendler() {
 			
 			@Override
@@ -89,6 +81,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 					user.setRestaurator(true);
 					user.setAgent(false);
 					user.setAdmin(false);
+					user.setCitiesId(null);
 				} else {					
 					if(roleListCombo.getCheckedList().contains((long) UserType.ADMIN.userTypeValue())){
 						user.setAdmin(true);
@@ -121,7 +114,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 					user.setRestaurantsId(null);
 				}
 				
-				userController.saveUser(user);
+				userController.saveUser(user, getMe());
 			}
 		});
 		
@@ -137,9 +130,18 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	}
 	
 	private void showUserDetails(int id){
-		
-		nameTextBox.setText("");
 		user = userList.get(id);
+		nameTextBox.setText("");
+		
+		
+		roleListCombo.clearSelection();
+		cityListCombo.clearSelection();
+		restaurantListCombo.clearSelection();
+		
+		roleListCombo.getCheckedList().clear();
+		cityListCombo.getCheckedList().clear();
+		restaurantListCombo.getCheckedList().clear();
+		
 		if(user.getName() != null){
 			nameTextBox.setText(user.getName() + " ");
 		} 
@@ -174,7 +176,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	}
 	
 	private void removeUser(String userEmail){
-		userController.removeUser(userEmail, this);
+		userController.removeUser(userEmail, getMe());
 	}
 	
 	@Override
@@ -225,15 +227,22 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 			cityListCombo.clear();
 			restaurantListCombo.clear();
 			roleListCombo.clear();
+			userListCombo.clear();
+			userListCombo.clearSelection();
+			userList.clear();
+			user = null;
+			fillContent();
+		
 			
-			userController.getUsersFromServer(this);
-			cityController.refreshCities(this);
-			restaurantController.refreshRestaurants(this);
+//			userController.getUsersFromServer(this);
+//			cityController.refreshCities(this);
+//			restaurantController.refreshRestaurants(this);
 		
 	}
 
 	@Override
 	public void newData() {
+		
 		numberOfNewDataSuccess ++;
 		if(numberOfNewDataSuccess == 3){
 			numberOfNewDataSuccess = 0;
@@ -243,14 +252,23 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	}
 	
 	private void fillContent(){
-		userList.clear();
-		restaurantList.clear();
-		cityList.clear();
+		
+		
+//		userList.clear();
+//		restaurantList.clear();
+//		cityList.clear();
+//		roleListCombo.clear();
+		
 		
 		restaurantList = restaurantController.getRestaurantsList();
 		cityList = cityController.getCitiesList();
 		
-		userListCombo.clear();
+//		userListCombo.clear();
+		
+		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
+		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
+		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
+		
 		
 		String userName = userController.getLoggedUser().getEmail();
 		for (User user : userController.getUserList()) {
@@ -289,5 +307,9 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		return height;
 	}-*/;
 
+	
+	private IObserver getMe(){
+		return this;
+	}
 
 }
