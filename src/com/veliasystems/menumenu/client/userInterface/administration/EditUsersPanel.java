@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -133,7 +132,6 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		user = userList.get(id);
 		nameTextBox.setText("");
 		
-		
 		roleListCombo.clearSelection();
 		cityListCombo.clearSelection();
 		restaurantListCombo.clearSelection();
@@ -190,6 +188,15 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 
 	@Override
 	public void show(boolean isVisable) {
+		
+		cityListCombo.clear();
+		restaurantListCombo.clear();
+		roleListCombo.clear();
+		userListCombo.clear();
+		userListCombo.clearSelection();
+		userList.clear();
+		user = null;
+		
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);	
 	
@@ -224,52 +231,34 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	@Override
 	public void onChange() {
 			PagesController.showWaitPanel();
-			cityListCombo.clear();
-			restaurantListCombo.clear();
-			roleListCombo.clear();
-			userListCombo.clear();
-			userListCombo.clearSelection();
-			userList.clear();
-			user = null;
-			fillContent();
-		
-			
-//			userController.getUsersFromServer(this);
-//			cityController.refreshCities(this);
-//			restaurantController.refreshRestaurants(this);
-		
+			fillContent();			
 	}
 
 	@Override
 	public void newData() {
-		
 		numberOfNewDataSuccess ++;
 		if(numberOfNewDataSuccess == 3){
 			numberOfNewDataSuccess = 0;
 			fillContent();
-		}
-		
+		}	
 	}
 	
 	private void fillContent(){
-		
-		
-//		userList.clear();
-//		restaurantList.clear();
-//		cityList.clear();
-//		roleListCombo.clear();
-		
-		
+		cityListCombo.clear();
+		restaurantListCombo.clear();
+		roleListCombo.clear();
+		userListCombo.clear();
+		userListCombo.clearSelection();
+		userList.clear();
+		user = null;
+
 		restaurantList = restaurantController.getRestaurantsList();
 		cityList = cityController.getCitiesList();
-		
-//		userListCombo.clear();
 		
 		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
 		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
 		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
-		
-		
+				
 		String userName = userController.getLoggedUser().getEmail();
 		for (User user : userController.getUserList()) {
 			if(!user.getEmail().equalsIgnoreCase(userName)) userList.add(user);
@@ -296,14 +285,12 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	
 	
 	private native int getHeight(String elementId)/*-{
-		
 		var children = $wnd.document.getElementById(elementId).childNodes;
 		var length = children.length;
 		var height = 0;
 		for( i=0; i<=length-1; i++ ){
 			height+= children[i].offsetHeight;
 		}
-		
 		return height;
 	}-*/;
 
