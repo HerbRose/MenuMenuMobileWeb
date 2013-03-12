@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
@@ -50,9 +51,11 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;
 		
-		if (logged != null && !logged.equals("null")) loggedIn = true; //it's weird, but it seems to be working
 		
-		if (loggedIn) {
+		
+		if (logged != null && !logged.equals("null") && !logged.isEmpty()) loggedIn = true; //it's weird, but it seems to be working
+		
+		if (loggedIn) {	
 			if(isMobile()) JQMContext.changePage( new LoadDataScreen(logged) );
 			else {
 				R.isMobile = false;
