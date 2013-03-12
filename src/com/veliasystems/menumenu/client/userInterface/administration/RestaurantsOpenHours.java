@@ -7,18 +7,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.Widget;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.Days;
 import com.veliasystems.menumenu.client.JS;
@@ -28,6 +23,7 @@ import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyInfoPanelRow;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo.IMyChangeHendler;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
@@ -139,20 +135,7 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 		sunWrapper.add(sunCombo);
 		sunWrapper.add(sunTextBox);
 		
-		monCombo.addListItem(monCombo.getNewItem(Customization.CLOSED), 1);
-		monCombo.addListItem(monCombo.getNewItem(Customization.OPEN), 2);
-		tueCombo.addListItem(tueCombo.getNewItem(Customization.CLOSED), 1);
-		tueCombo.addListItem(tueCombo.getNewItem(Customization.OPEN), 2);
-		wedCombo.addListItem(wedCombo.getNewItem(Customization.CLOSED), 1);
-		wedCombo.addListItem(wedCombo.getNewItem(Customization.OPEN), 2);
-		thurCombo.addListItem(thurCombo.getNewItem(Customization.CLOSED), 1);
-		thurCombo.addListItem(thurCombo.getNewItem(Customization.OPEN), 2);
-		friCombo.addListItem(friCombo.getNewItem(Customization.CLOSED), 1);
-		friCombo.addListItem(friCombo.getNewItem(Customization.OPEN), 2);
-		satCombo.addListItem(satCombo.getNewItem(Customization.CLOSED), 1);
-		satCombo.addListItem(satCombo.getNewItem(Customization.OPEN), 2);
-		sunCombo.addListItem(sunCombo.getNewItem(Customization.CLOSED), 1);
-		sunCombo.addListItem(sunCombo.getNewItem(Customization.OPEN), 2);
+		
 		
 		addressTextBox.setEnabled(false);
 		addressTextBox.addStyleName("myTextBox nameBox");
@@ -182,6 +165,7 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 
 	@Override
 	public void show(boolean isVisable) {
+		clearTableAndFillDaysCombo();
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);
 		
@@ -206,14 +190,16 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 	
 	private void fillContentTable(){
 				
+		
 		restaurantInfoPanel.setStyleName("containerPanelAddRestaurant", true);
 		restaurantInfoPanel.setWidth(JS.getElementOffsetWidth(getParent().getElement())-20 );
 		for (Restaurant restaurantItem : restaurantList) {
 			restaurantCombo.addListItem(restaurantCombo.getNewItem(restaurantItem.getName()), restaurantItem.getId());
 		}
-		restaurantCombo.addClickHandler(new ClickHandler() {
+		restaurantCombo.addMyChangeHendler(new IMyChangeHendler() {
+			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onChange() {
 				restaurant = restaurantController.getRestaurant(restaurantCombo.getSelectedOrder());
 				if(restaurant!= null) fillDetail();
 			}
@@ -286,6 +272,48 @@ public class RestaurantsOpenHours extends FlowPanel implements IManager, IObserv
 				sunTextBox.setWidth(widthOfTextBox);
 
 				add(restaurantInfoPanel);	
+		
+		
+	}
+	
+	private void clearTableAndFillDaysCombo(){
+		restaurant = null;
+		restaurantList.clear();
+		restaurantCombo.clear();
+		restaurantCombo.selectItem(-1);
+		addressTextBox.setText("");
+		
+		setPlaceholderAndEnable(monTextBox, "", false);
+		setPlaceholderAndEnable(tueTextBox, "", false);
+		setPlaceholderAndEnable(wedTextBox, "", false);
+		setPlaceholderAndEnable(thurTextBox, "", false);
+		setPlaceholderAndEnable(friTextBox, "", false);
+		setPlaceholderAndEnable(satTextBox, "", false);
+		setPlaceholderAndEnable(sunTextBox, "", false);
+		
+		monCombo.clear();
+		wedCombo.clear();
+		tueCombo.clear();
+		thurCombo.clear();
+		friCombo.clear();
+		satCombo.clear();
+		sunCombo.clear();
+		
+		
+		monCombo.addListItem(monCombo.getNewItem(Customization.CLOSED), 1);
+		monCombo.addListItem(monCombo.getNewItem(Customization.OPEN), 2);
+		tueCombo.addListItem(tueCombo.getNewItem(Customization.CLOSED), 1);
+		tueCombo.addListItem(tueCombo.getNewItem(Customization.OPEN), 2);
+		wedCombo.addListItem(wedCombo.getNewItem(Customization.CLOSED), 1);
+		wedCombo.addListItem(wedCombo.getNewItem(Customization.OPEN), 2);
+		thurCombo.addListItem(thurCombo.getNewItem(Customization.CLOSED), 1);
+		thurCombo.addListItem(thurCombo.getNewItem(Customization.OPEN), 2);
+		friCombo.addListItem(friCombo.getNewItem(Customization.CLOSED), 1);
+		friCombo.addListItem(friCombo.getNewItem(Customization.OPEN), 2);
+		satCombo.addListItem(satCombo.getNewItem(Customization.CLOSED), 1);
+		satCombo.addListItem(satCombo.getNewItem(Customization.OPEN), 2);
+		sunCombo.addListItem(sunCombo.getNewItem(Customization.CLOSED), 1);
+		sunCombo.addListItem(sunCombo.getNewItem(Customization.OPEN), 2);
 		
 		
 	}
