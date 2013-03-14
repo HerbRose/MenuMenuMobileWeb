@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpRequest;
+import org.mortbay.log.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,6 +43,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
+		long start = new Date().getTime();
 //		fixAllLinksInRestaurant();
 		
 		String token = req.getParameter("token");
@@ -289,8 +292,10 @@ public class GetRestaurantsServlet extends HttpServlet {
 			}
 		}
 		
-		resp.getWriter().print(gson.toJson(attributes));
 		
+		
+		resp.getWriter().print(gson.toJson(attributes));
+		Log.info("Time of getting restaurant: " + ((new Date().getTime() - start) * 1000) + " seconds" );
 		if(jsonp != null) {
 			resp.getWriter().print(")");
 		}
