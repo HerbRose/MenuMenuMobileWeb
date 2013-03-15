@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,8 +38,8 @@ public class GetRestaurantsServlet extends HttpServlet {
 	
 	private StoreServiceImpl storeService = new StoreServiceImpl();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
-	
-	private DAO dao = new DAO();
+	private static final Logger log = Logger.getLogger(GetRestaurantsServlet.class.getName());
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -292,10 +293,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 			}
 		}
 		
-		
-		
+	
 		resp.getWriter().print(gson.toJson(attributes));
-		Log.info("Time of getting restaurant: " + ((new Date().getTime() - start) * 1000) + " seconds" );
+		log.warning("Time of getting restaurant: " + ((new Date().getTime() - start) * 1000) + " seconds" );
 		if(jsonp != null) {
 			resp.getWriter().print(")");
 		}
@@ -425,7 +425,7 @@ private Map<Long, String> cityMap = new HashMap<Long, String>();
 		}
 		
 		resp.getWriter().print(gson.toJson(attributes));
-		
+	
 		if(jsonp != null) {
 			resp.getWriter().print(")");
 		}
