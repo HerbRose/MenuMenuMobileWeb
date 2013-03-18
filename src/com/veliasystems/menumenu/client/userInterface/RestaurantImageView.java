@@ -867,7 +867,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 											@Override
 											public void onSuccess(String result) {
 												String callbackURL = R.HOST_URL + "picupCallback.html" ;
-												
 												cookieController.setCookie(CookieNames.IMAGE_TYPE_PICUP, ImageType.LOGO.name());
 												cookieController.setCookie(CookieNames.RESTAURANT_ID_PICUP, restaurant.getId()+"");
 												
@@ -1016,7 +1015,7 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	}
 	
 	private void setEditData(){
-		
+		 
 	}
 	
 	private void setPlaceHolder(Widget element, String placeHolder) {
@@ -1034,7 +1033,6 @@ public class RestaurantImageView extends MyPage implements IObserver {
 	
 	private static native void onUploadFormLoaded(Element fileUpload, String blobStoreUrl, String callbackURL, String cancelURL) /*-{
 		window.name = "picup";
-
 		var url = "fileupload2://new?postValues=&postFileParamName=multipart/form-data&shouldIncludeEXIFData=true&postURL="
 				+ encodeURI(blobStoreUrl)
 				+ "&callbackURL="
