@@ -6,9 +6,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpRequest;
+import org.mortbay.log.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,12 +38,13 @@ public class GetRestaurantsServlet extends HttpServlet {
 	
 	private StoreServiceImpl storeService = new StoreServiceImpl();
 	private BlobServiceImpl blobService = new BlobServiceImpl();
-	
-	private DAO dao = new DAO();
+	private static final Logger log = Logger.getLogger(GetRestaurantsServlet.class.getName());
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
+		long start = new Date().getTime();
 //		fixAllLinksInRestaurant();
 		
 		String token = req.getParameter("token");
@@ -289,8 +293,9 @@ public class GetRestaurantsServlet extends HttpServlet {
 			}
 		}
 		
+	
 		resp.getWriter().print(gson.toJson(attributes));
-		
+		log.warning("Time of getting restaurant: " + ((new Date().getTime() - start) * 1000) + " seconds" );
 		if(jsonp != null) {
 			resp.getWriter().print(")");
 		}
@@ -420,7 +425,7 @@ private Map<Long, String> cityMap = new HashMap<Long, String>();
 		}
 		
 		resp.getWriter().print(gson.toJson(attributes));
-		
+	
 		if(jsonp != null) {
 			resp.getWriter().print(")");
 		}

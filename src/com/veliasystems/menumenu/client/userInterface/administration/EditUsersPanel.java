@@ -59,18 +59,9 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		setStyleName("barPanel", true);
 		show(false);
 		userController.addObserver(this);
-		
-		
 		nameTextBox.addStyleName("myTextBox nameBox");
 		nameTextBox.setEnabled(false);
 		contentPanel.setStyleName("containerPanelAddRestaurant", true);
-		
-		
-		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
-		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
-		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
-
-		
 		userListCombo.addMyChangeHendler(new IMyChangeHendler() {
 			
 			@Override
@@ -89,6 +80,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 					user.setRestaurator(true);
 					user.setAgent(false);
 					user.setAdmin(false);
+					user.setCitiesId(null);
 				} else {					
 					if(roleListCombo.getCheckedList().contains((long) UserType.ADMIN.userTypeValue())){
 						user.setAdmin(true);
@@ -121,7 +113,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 					user.setRestaurantsId(null);
 				}
 				
-				userController.saveUser(user);
+				userController.saveUser(user, getMe());
 			}
 		});
 		
@@ -137,9 +129,17 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	}
 	
 	private void showUserDetails(int id){
-		
-		nameTextBox.setText("");
 		user = userList.get(id);
+		nameTextBox.setText("");
+		
+		roleListCombo.clearSelection();
+		cityListCombo.clearSelection();
+		restaurantListCombo.clearSelection();
+		
+		roleListCombo.getCheckedList().clear();
+		cityListCombo.getCheckedList().clear();
+		restaurantListCombo.getCheckedList().clear();
+		
 		if(user.getName() != null){
 			nameTextBox.setText(user.getName() + " ");
 		} 
@@ -174,7 +174,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	}
 	
 	private void removeUser(String userEmail){
-		userController.removeUser(userEmail, this);
+		userController.removeUser(userEmail, getMe());
 	}
 	
 	@Override
@@ -188,6 +188,15 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 
 	@Override
 	public void show(boolean isVisable) {
+		
+		cityListCombo.clear();
+		restaurantListCombo.clear();
+		roleListCombo.clear();
+		userListCombo.clear();
+		userListCombo.clearSelection();
+		userList.clear();
+		user = null;
+		
 		setStyleName("show", isVisable);
 		setStyleName("hide", !isVisable);	
 	
@@ -222,14 +231,7 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	@Override
 	public void onChange() {
 			PagesController.showWaitPanel();
-			cityListCombo.clear();
-			restaurantListCombo.clear();
-			roleListCombo.clear();
-			
-			userController.getUsersFromServer(this);
-			cityController.refreshCities(this);
-			restaurantController.refreshRestaurants(this);
-		
+			fillContent();			
 	}
 
 	@Override
@@ -238,20 +240,25 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 		if(numberOfNewDataSuccess == 3){
 			numberOfNewDataSuccess = 0;
 			fillContent();
-		}
-		
+		}	
 	}
 	
 	private void fillContent(){
+		cityListCombo.clear();
+		restaurantListCombo.clear();
+		roleListCombo.clear();
+		userListCombo.clear();
+		userListCombo.clearSelection();
 		userList.clear();
-		restaurantList.clear();
-		cityList.clear();
-		
+		user = null;
+
 		restaurantList = restaurantController.getRestaurantsList();
 		cityList = cityController.getCitiesList();
 		
-		userListCombo.clear();
-		
+		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.ADMIN.toString()), UserType.ADMIN.userTypeValue());
+		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.AGENT.toString()), UserType.AGENT.userTypeValue());
+		roleListCombo.addListItem(roleListCombo.getNewCheckBoxItem(UserType.RESTAURATOR.toString()), UserType.RESTAURATOR.userTypeValue());
+				
 		String userName = userController.getLoggedUser().getEmail();
 		for (User user : userController.getUserList()) {
 			if(!user.getEmail().equalsIgnoreCase(userName)) userList.add(user);
@@ -278,16 +285,18 @@ public class EditUsersPanel extends FlowPanel implements IManager, IObserver{
 	
 	
 	private native int getHeight(String elementId)/*-{
-		
 		var children = $wnd.document.getElementById(elementId).childNodes;
 		var length = children.length;
 		var height = 0;
 		for( i=0; i<=length-1; i++ ){
 			height+= children[i].offsetHeight;
 		}
-		
 		return height;
 	}-*/;
 
+	
+	private IObserver getMe(){
+		return this;
+	}
 
 }

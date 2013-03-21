@@ -1780,6 +1780,10 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	public void saveImageBlob( ImageBlob imageBlob) {
 		if(imageBlob != null) dao.ofy().put(imageBlob);
 	}
+	
+	public void saveImageBlobAsync(ImageBlob imageBlob){
+		if(imageBlob != null) dao.ofy().async().put(imageBlob);
+	}
 	/**
 	 * 
 	 * @param latitude - latitude of device 
