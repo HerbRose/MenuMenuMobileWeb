@@ -92,9 +92,11 @@ public class FileUploadServer extends HttpServlet {
 					newImageBlob = new ImageBlob(restId, blobKey.getKeyString(), new Date(), imageType);
 					newImageBlob.setBlobKeyOriginalSize(blobKeyOrginalSize.getKeyString());
 					
-					storService.saveImageBlob(newImageBlob);
-					Map<String, ImageBlob> returnedMap =  blobService.cropImage(newImageBlob, 0, 0, 1, 1);
-					ImageBlob tmpImageBlob = returnedMap.get("new");
+//					storService.saveImageBlob(newImageBlob);
+					storService.saveImageBlobAsync(newImageBlob);
+					ImageBlob tmpImageBlob = blobService.cropImageAsync(newImageBlob, 0, 0, 1, 1, "imageCrop");
+//					Map<String, ImageBlob> returnedMap =  blobService.cropImage(newImageBlob, 0, 0, 1,1);
+//					ImageBlob tmpImageBlob = returnedMap.get("new");
 					if(tmpImageBlob != null) newImageBlob.setBlobKey(tmpImageBlob.getBlobKey());
 					else{
 						log.warning("FileUploadServer::doPost: new blobKey not defined" );

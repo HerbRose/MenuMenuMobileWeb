@@ -60,6 +60,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Query;
+import com.googlecode.objectify.Result;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapper;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.BackupWrapperSimply;
@@ -337,6 +338,219 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	//
 	// }
 
+	public ImageBlob cropImageAsync(ImageBlob imageBlob, double leftX, double topY, double rightX, double bottomY, String newName){
+		if(imageBlob == null){
+			log.severe("imageBlob is null !!! ");
+			throw new NullPointerException() ;
+		}
+		try {
+			synchronized (dao.ofy()) {
+				dao.ofy().wait(2000);
+			}
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Result<ImageBlob> result = dao.ofy().async().get(ImageBlob.class, imageBlob.getId());
+		
+		ImageBlob i = result.get();
+		
+		log.info((i==null) ? "get async null" : "get async not null"); 
+		
+		
+		if(i==null){
+			throw new NullPointerException();
+		}
+		
+		int profileWidth = R.PROFILE_WIDTH;
+		int profileHeight = R.PROFILE_HEIGHT;
+		int logoWidth = 220;
+		int menuWidth = 220;
+		int menuScreenWidth = 440;
+		int menuScaleWidth = 880;
+		
+		ImageBlob imageBlob2 = i;
+		
+		BlobKey blobKey ;
+		if(imageBlob2.getBlobKeyOriginalSize() != null){
+			blobKey = new BlobKey(imageBlob2.getBlobKeyOriginalSize());
+			log.info("used getBlobKeyOriginalSize()");
+		}else{ 
+			blobKey = new BlobKey(imageBlob.getBlobKey());
+			log.info("used getBlobKey()");
+		}
+		 
+		ImagesService imagesService = ImagesServiceFactory.getImagesService();
+		
+		Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+		
+		if(oldImage == null){
+			log.severe("Picture not found in database:\n blobKey: " + blobKey);
+			return null;
+		}
+		/**
+		 * check if the range is ok
+		 */
+		
+		
+		if(leftX <= 0) leftX = 0;
+		if(rightX >= 1) rightX = 1;
+		if(bottomY >= 1) bottomY = 1;
+		if(topY <= 0) topY = 0;
+		
+		if(leftX >=1) leftX = 1-0.1;
+		if(rightX <=0) rightX = 0 + 0.1;
+		if(bottomY <=0) bottomY = 0 + 0.1;
+		if(topY >=1) topY = 1 -0.1;
+		
+		CompositeTransform compositeTransformForScaleImage = ImagesServiceFactory.makeCompositeTransform();
+		CompositeTransform compositeTransformForScreenSize = ImagesServiceFactory.makeCompositeTransform();
+		CompositeTransform compositeTransformForScaleSizeMenuImage = ImagesServiceFactory.makeCompositeTransform();
+		
+//		Transform cropTransform = ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY);
+		
+		compositeTransformForScaleImage.concatenate(ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY));
+		compositeTransformForScreenSize.concatenate(ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY));
+		compositeTransformForScaleSizeMenuImage.concatenate(ImagesServiceFactory.makeCrop(leftX, topY, rightX, bottomY));
+		
+		InputSettings inputSettings = new InputSettings();
+		inputSettings.setOrientationCorrection(OrientationCorrection.CORRECT_ORIENTATION);
+		
+		
+		OutputSettings outputSettings = new OutputSettings(OutputEncoding.JPEG);
+		outputSettings.setQuality(100);
+		
+		
+//		Image newImage = imagesService.applyTransform(cropTransform, oldImage, OutputEncoding.JPEG);
+//		Image newImage = null;
+//		try{
+//			newImage = imagesService.applyTransform(cropTransform, oldImage, inputSettings, outputSettings);
+//		}catch(ImagesServiceFailureException e){
+//			log.log(Level.SEVERE, "\noldImage: "+oldImage.getBlobKey()+"\n", e);
+//			return null;
+//		}
+		Transform scaleTransform = null;
+		
+		//for only menu images
+		Transform screenSizeTransform = null;
+		Transform scaleSizeTransform = null;
+		
+		switch (imageBlob.getImageType()) {
+		case PROFILE:
+			scaleTransform = ImagesServiceFactory.makeResize(profileWidth, profileHeight);
+			break;
+		case LOGO:
+			scaleTransform = ImagesServiceFactory.makeResize(logoWidth,4000);//newImage.getHeight());
+			break;
+		case MENU:
+			scaleTransform = ImagesServiceFactory.makeResize(menuWidth,4000);//newImage.getHeight());
+			break;
+		case CITY:
+			scaleTransform = ImagesServiceFactory.makeResize(246,290);//newImage.getHeight());
+			break;
+		default:
+			log.severe("Unknow image type: " + imageBlob.getImageType());
+			return null;
+		}
+		
+		Image screenSizeMenuImage = null;
+		Image scaleSizeMenuImage = null;
+		BlobKey screenSizeBlobKey = null;
+		BlobKey scaleSizeBlobKey = null;
+		if(imageBlob.getImageType() == ImageType.MENU){
+
+			screenSizeTransform = ImagesServiceFactory.makeResize(menuScreenWidth, 4000);
+			scaleSizeTransform = ImagesServiceFactory.makeResize(menuScaleWidth, 4000);
+//			Image tmp1 = newImage;
+//			Image tmp2 = newImage;
+			Image tmp1 = ImagesServiceFactory.makeImageFromBlob(blobKey);
+			Image tmp2 = ImagesServiceFactory.makeImageFromBlob(blobKey);
+		
+			
+			try {
+				
+				compositeTransformForScreenSize.concatenate(ImagesServiceFactory.makeResize(menuScreenWidth, 4000));
+				
+				
+			//	screenSizeMenuImage = imagesService.applyTransform(screenSizeTransform, tmp1, inputSettings, outputSettings);
+				screenSizeMenuImage = imagesService.applyTransform(compositeTransformForScreenSize, tmp1, inputSettings, outputSettings);
+				screenSizeBlobKey = writeToBlobstore("image/jpeg", "screenSizeMenuImage.jpg", screenSizeMenuImage.getImageData());
+				
+				OutputSettings outScale = new OutputSettings(OutputEncoding.JPEG);
+				outScale.setQuality(100);
+				
+				
+				compositeTransformForScaleSizeMenuImage.concatenate(ImagesServiceFactory.makeResize(menuScaleWidth, 4000));
+//				scaleSizeMenuImage = imagesService.applyTransform(scaleSizeTransform, tmp2, inputSettings, outScale);
+				scaleSizeMenuImage = imagesService.applyTransform(compositeTransformForScaleSizeMenuImage, tmp2, inputSettings, outScale);
+				scaleSizeBlobKey = writeToBlobstore("image/jpeg", "scaleSizeBlobKey.jpg", scaleSizeMenuImage.getImageData());
+					
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		//System.out.println(scaleImage.getHeight() + "  " +scaleImage.getWidth());
+		compositeTransformForScaleImage.concatenate(scaleTransform);
+		Image newImage = oldImage;
+//		Image scaleImage = imagesService.applyTransform(scaleTransform, newImage, inputSettings, outputSettings);
+		Image scaleImage = imagesService.applyTransform(compositeTransformForScaleImage, newImage, inputSettings, outputSettings);
+		BlobKey newBlobKey = null;
+		ImageBlob newImageBlob = null;
+		try {
+			newBlobKey = writeToBlobstore("image/jpeg", imageBlob.getImageType().name()+newName+".jpg",
+					scaleImage.getImageData());
+			newImageBlob = new ImageBlob(imageBlob.getRestaurantId(),
+					newBlobKey.getKeyString(), imageBlob.getDateCreated(),
+					imageBlob.getImageType());
+			newImageBlob.setWidth(scaleImage.getWidth());
+			newImageBlob.setHeight(scaleImage.getHeight());
+			newImageBlob.setBlobKeyOriginalSize(imageBlob2.getBlobKeyOriginalSize());
+			
+			if(imageBlob.getImageType() == ImageType.MENU){
+				newImageBlob.setBlobKeyScreenSize(screenSizeBlobKey.getKeyString());
+				newImageBlob.setBlobKeyScaleSize(scaleSizeBlobKey.getKeyString());	
+			}
+			dao.ofy().put(newImageBlob);
+			
+			if(newImageBlob.getImageType() == ImageType.CITY){
+				String cityIdString = newImageBlob.getRestaurantId(); //in this case restaurantId is a cityId
+				
+				try {
+					long cityId = Long.parseLong(cityIdString);
+					City city = dao.ofy().find(City.class, cityId );
+					if(city != null){
+						city.setDistrictImageURL(newImageBlob.getImageUrl());
+						dao.ofy().put(city);
+					}
+				} catch (NumberFormatException e) {
+					log.severe("NumberFormatException when try find city to add image for this city");
+				}
+				
+			}
+			
+			//remove old image and image's data
+//			BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
+			
+			//this method will remove imageMin.jpg which was used to display to user in browser and will keep the original image in blobstore
+			removeImageBlobByBlobKey(imageBlob.getBlobKey(), true);
+			dao.ofy().delete(imageBlob);
+			//END - remove old image and image's data
+		} catch (IOException e) {
+			log.severe("imageBlobKey: " + imageBlob.getBlobKey() + " \n"
+					+ e.getStackTrace());
+			// e.printStackTrace();
+		}
+
+//		try {
+//			sendToBlobstore(imageBlob, "save", scaleImage.getImageData());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+
+		return newImageBlob;
+		
+	}
 	/**
 	 * <h1>Short description</h1>
 	 * <ul>
@@ -359,6 +573,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			throw new NullPointerException() ;
 		}
 		
+				
 		Query<ImageBlob> query = dao.ofy().query(ImageBlob.class);
 		ImageBlob imageBlob2;
 		if (query == null) {
@@ -381,6 +596,8 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 			log.severe("ImageBlob not found. blobKey: " + imageBlob.getBlobKey());
 			throw new NullPointerException() ;
 		}
+		
+		
 		
 		int profileWidth = R.PROFILE_WIDTH;
 		int profileHeight = R.PROFILE_HEIGHT;
