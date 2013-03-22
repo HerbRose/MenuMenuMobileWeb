@@ -5,6 +5,7 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -39,7 +40,6 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
-import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.ErrorCodes;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
@@ -47,6 +47,7 @@ import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUse
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.LastModified;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.entities.UserToAdd;
@@ -63,10 +64,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	private EmailServiceImpl emailService = new EmailServiceImpl();
 
 	private static final Logger log = Logger.getLogger(StoreServiceImpl.class.getName()); 
-	public StoreServiceImpl() {
-		Util.setCityLastDateSync();
-		Util.setRestaurantLastDateSync();
-	}
+	public StoreServiceImpl() {}
 	@Override
 	public List<String> loadCities() {
 		
@@ -182,6 +180,31 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return cityQuery.filter("id IN", cityIdsList).list();
 	}
 	
+	private long getLastChangeTime(String entityIdString){
+		if(entityIdString == null || entityIdString.isEmpty()) return -1;
+		
+		LastModified lastModyfied = dao.ofy().find(LastModified.class, entityIdString);
+		if(lastModyfied == null) return new Date().getTime();
+		return lastModyfied.getTime();
+	}
+	
+	private void setLastChangeTime(String entityIdString){
+		if(entityIdString == null || entityIdString.isEmpty()) return;
+		
+		LastModified lastModyfied = dao.ofy().find(LastModified.class, entityIdString);
+		if(lastModyfied == null){
+			lastModyfied = new LastModified(entityIdString, new Date().getTime());
+		}else{
+			lastModyfied.setTime(new Date().getTime());
+		}
+		saveLastModified(lastModyfied);
+	}
+	private void saveLastModified(LastModified lastModyfied){
+		dao.ofy().put(lastModyfied);
+	}
+	public void deleteLastModified(String id){
+		dao.ofy().delete(LastModified.class, id);
+	}
 	/**
 	 * 
 	 * @param email the {@link User#email}
@@ -190,16 +213,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public Map<Long ,List<City>> getCitiesForUser(String email, long lastCitySyncDate){
 		Map<Long ,List<City>> response = new HashMap<Long, List<City>>();
-//		log.info("user email: " + email);
-//		log.info("Util.getCityLastDateSync() > lastCitySyncDate : " + Util.getCityLastDateSync() + " > " + lastCitySyncDate );
-		if(Util.getCityLastDateSync() > lastCitySyncDate){
+
+		long lastDateSync = getLastChangeTime(LastModified.cityListIdString) ;
+		if(lastDateSync > lastCitySyncDate){
 			User user = findUser(email);
-//			log.info("user: " + user);
 			List<City> cities = loadCities(user);
-//			log.info("cities count: " + (cities != null?cities.size():cities) );
-			response.put(Util.getCityLastDateSync(), cities);
+			response.put(lastDateSync, cities);
 		}else{
-			response.put(Util.getCityLastDateSync(), null);
+			response.put(lastDateSync, null);
 		}
 
 		return response;
@@ -226,21 +247,19 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public Map<Long ,List<Restaurant>> getRestaurantsForUser(String email, long cityId, long lastRestaurantSyncDate){
 		Map<Long ,List<Restaurant>> response = new HashMap<Long, List<Restaurant>>();
-		
-		if(Util.RESTAURANT_LAST_DATE_SYNC > lastRestaurantSyncDate){
-		
-		User user = findUser(email);
-		List<Restaurant> restaurants = loadRestaurants(user);
-		List<Restaurant> restaurantsInCity = new ArrayList<Restaurant>();
-		for (Restaurant restaurant : restaurants) {
-			if(restaurant.getCityId() == cityId){
-				restaurantsInCity.add(restaurant);
+		long lastDateSync = getLastChangeTime(LastModified.restaurantListPrefix+cityId);
+		if(lastDateSync > lastRestaurantSyncDate){
+			User user = findUser(email);
+			List<Restaurant> restaurants = loadRestaurants(user);
+			List<Restaurant> restaurantsInCity = new ArrayList<Restaurant>();
+			for (Restaurant restaurant : restaurants) {
+				if(restaurant.getCityId() == cityId){
+					restaurantsInCity.add(restaurant);
+				}
+				response.put(lastDateSync, restaurantsInCity);
 			}
-			
-			response.put(Util.RESTAURANT_LAST_DATE_SYNC, restaurantsInCity);
-		}
 		}else{
-			response.put(Util.RESTAURANT_LAST_DATE_SYNC, null);
+			response.put(lastDateSync, null);
 		}
 		return response;
 		
@@ -432,7 +451,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public void saveRestaurants(List <Restaurant> restaurants){
-		
+		long cityId = restaurants.get(0).getCityId();
 		for (Restaurant restaurant : restaurants) {
 			restaurant.setLogoImages(null);
 			restaurant.setMenuImages(null);
@@ -440,7 +459,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		dao.ofy().put(restaurants);
-		Util.setRestaurantLastDateSync();
+//		Util.setRestaurantLastDateSync();
+		setLastChangeTime(LastModified.restaurantListPrefix+cityId);
 	}
 	
 	@Override
@@ -1013,25 +1033,37 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public Long deleteRestaurants(long cityId){
+		System.out.println("StoreServiceImpl::deleteRestaurants(long cityId)");
+		
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		List<ImageBlob> imageBlobList;
 		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
 		if(restaurantQuery != null){
-			restaurantsList= restaurantQuery.filter("cityId =", cityId).list();
+			restaurantsList = restaurantQuery.filter("cityId", cityId).list();
+			System.out.println("restaurants count to delete: " + restaurantsList.size());
 			for (Restaurant restaurant : restaurantsList) {
 				Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
 				if(imageBlobQuery!=null){
-						 imageBlobList = imageBlobQuery.filter("restId =", restaurant.getId()).list();
-						 for (ImageBlob imageBlob : imageBlobQuery) {
+						 imageBlobList = imageBlobQuery.filter("restId", restaurant.getId()).list();
+						 if(imageBlobList == null || imageBlobList.isEmpty()){
+							 System.out.println("not found images to delete for restaurant: " + restaurant.getId());
+							 continue;
+						 }
+						 System.out.println("images count to delete: " + imageBlobList.size());
+						 for (ImageBlob imageBlob : imageBlobList) {
 								BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
 						 }
+						 dao.ofy().delete(imageBlobList);
 				}
 			}
+		}else{
+			System.out.println("restaurantQuery is: " + restaurantQuery);
 		}
 		
 		dao.ofy().delete(restaurantsList);
 		dao.ofy().delete(City.class, cityId);
-		Util.setCityLastDateSync();
+		setLastChangeTime(LastModified.cityListIdString);
+		deleteLastModified(LastModified.restaurantListPrefix+cityId);
 		return cityId;
 	}
 	
@@ -1186,21 +1218,28 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		dao.ofy().put(object);
 		
-		if(object instanceof City) {
-			Util.setCityLastDateSync();
-		} else if(object instanceof Restaurant) {
-			Util.setRestaurantLastDateSync();
+		if(object instanceof City){
+//			Util.setCityLastDateSync();
+			setLastChangeTime(LastModified.cityListIdString);
+		}else if(object instanceof Restaurant) {
+//			Util.setRestaurantLastDateSync();
+			Restaurant restaurant = (Restaurant) object;
+			setLastChangeTime(LastModified.restaurantListPrefix+restaurant.getCityId());
 		}
 	}
+	
 	private void delete(Object object){
 		if(object == null) return;
 		
 		dao.ofy().delete(object);
 		
 		if(object instanceof City){
-			Util.setCityLastDateSync();
+//			Util.setCityLastDateSync();
+			setLastChangeTime(LastModified.cityListIdString);
 		}else if(object instanceof Restaurant) {
-			Util.setRestaurantLastDateSync();
+//			Util.setRestaurantLastDateSync();
+			Restaurant restaurant = (Restaurant) object;
+			setLastChangeTime(LastModified.restaurantListPrefix+restaurant.getCityId());
 		}
 	}
 	/**

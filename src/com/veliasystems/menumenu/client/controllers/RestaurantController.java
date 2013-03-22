@@ -24,6 +24,7 @@ import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.LastModified;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
@@ -46,6 +47,7 @@ public class RestaurantController {
 
 	private List<IObserver> observers = new ArrayList<IObserver>();
 	private static final Logger log = Logger.getLogger(RestaurantController.class.getName());
+	
 	public static Map<Long, RestaurantImageView> restMapView = new HashMap<Long, RestaurantImageView>();
 	
 	private static RestaurantController instance = null ; //instance of controller
@@ -865,23 +867,20 @@ public class RestaurantController {
 		
 	}
 
-	public void refreshRestaurants(final IObserver observer, long cityId) {
+	public void refreshRestaurants(final IObserver observer, final long cityId) {
 		
-		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), cityId, Util.RESTAURANT_LAST_DATE_SYNC, new AsyncCallback<Map<Long ,List<Restaurant>>>() {
+		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), cityId, Util.getLastModifieTime(LastModified.restaurantListPrefix+cityId), new AsyncCallback<Map<Long ,List<Restaurant>>>() {
 			
 			@Override
 			public void onSuccess(Map<Long ,List<Restaurant>> responseMap) {
 				Set<Long> isNewData = responseMap.keySet();
 				
 				for (Long lastSync : isNewData) {
-					JS.consolLog("Local last sync: " + Util.RESTAURANT_LAST_DATE_SYNC  );
-					JS.consolLog("Server last sync: " + lastSync );
-					JS.consolLog(" ");
 					List<Restaurant> restaurants = responseMap.get(lastSync);
 					
-					if( lastSync > Util.RESTAURANT_LAST_DATE_SYNC && restaurants != null ){
+					if(restaurants != null){
 						updateRestaurantList(responseMap.get(lastSync));
-						Util.setRestaurantLastDateSync(lastSync);
+						Util.setLastModifieTime(LastModified.restaurantListPrefix+cityId, lastSync);
 					}
 				}
 				notifieObserver(observer);

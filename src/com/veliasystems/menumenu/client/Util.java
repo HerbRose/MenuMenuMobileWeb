@@ -1,24 +1,29 @@
 package com.veliasystems.menumenu.client;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Focusable;
 
-
-public class Util
-{
+public class Util{
 
     private static final String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
     
-    private static long CITY_LAST_DATE_SYNC = 0;
-	public static long RESTAURANT_LAST_DATE_SYNC = 0;
+    private static Map<String, Long> lastModyfieMap = new HashMap<String, Long>();
+	public static long getLastModifieTime( String id ){
+		Long time = lastModyfieMap.get(id);
+		if(time == null) return 0;
+		return time;
+	}
+	public static void setLastModifieTime(String id, long time){
+		lastModyfieMap.put(id, time);
+	}
+    
     
 	public static long getRandom() {
 	   return (long) (Math.random() * 999999999);
@@ -36,21 +41,6 @@ public class Util
                 return false;
     }
 
-    public static long getCityLastDateSync(){
-    	return CITY_LAST_DATE_SYNC;
-    }
-    public static void setCityLastDateSync(){
-    	CITY_LAST_DATE_SYNC = new Date().getTime();
-    }
-    public static void setCityLastDateSync(long dateTime){
-    	CITY_LAST_DATE_SYNC = dateTime;
-    }
-    public static void setRestaurantLastDateSync(){
-    	RESTAURANT_LAST_DATE_SYNC = new Date().getTime();
-    }
-	public static void setRestaurantLastDateSync(Long lastSync) {
-		RESTAURANT_LAST_DATE_SYNC = lastSync;
-	}
     /**
      * valid numbers example:
      * <ul>
@@ -70,8 +60,7 @@ public class Util
      */
     public static boolean isValidPhoneNumber(String phoneNumber){
     	if (phoneNumber == null || phoneNumber.isEmpty()) return false;
-    	
-    	
+    		
     	if(phoneNumber.matches("\\+?(\\s|[0-9])+((\\s|[0-9])+(:|-|\\.)?)+[0-9]"))
     		return true;
         else

@@ -19,6 +19,7 @@ import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.LastModified;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -42,9 +43,9 @@ public class CityController{
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private Map<Long, City> cities = new HashMap<Long, City>(); //key is a cityId
 
-	
 	private CityController() {
 	}
+	
 	
 	public static CityController getInstance(){
 		if(instance == null){
@@ -213,11 +214,11 @@ public class CityController{
 			public void onFailure(Throwable caught) {
 //				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.hideWaitPanel();
-				
 				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
 					
 					@Override
 					public void answer(Boolean answer) {
+						
 					}
 				});
 			}
@@ -318,7 +319,7 @@ public class CityController{
 
 	public void refreshCities(final IObserver observer) {
 		PagesController.showWaitPanel();
-		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), Util.getCityLastDateSync(), new AsyncCallback< Map<Long ,List<City>> >() {
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), Util.getLastModifieTime(LastModified.cityListIdString), new AsyncCallback< Map<Long ,List<City>> >() {
 			
 			@Override
 			public void onSuccess(Map<Long ,List<City>> responseMap) {
@@ -327,9 +328,9 @@ public class CityController{
 				
 				for (Long lastSync : isNewData) {
 					List<City> cities = responseMap.get(lastSync);
-					if(lastSync > Util.getCityLastDateSync() && cities!=null ){
+					if(cities != null){
 						refreshCities(cities);
-						Util.setCityLastDateSync(lastSync);
+						Util.setLastModifieTime(LastModified.cityListIdString, lastSync);
 					}
 				}
 				notifyObserver(observer);
