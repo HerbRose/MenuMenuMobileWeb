@@ -79,6 +79,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	
 	public List<ImageBlob> getAllImages(Restaurant r) {
+		System.out.println("BlobServiceImpl::getAllImages");
 		return getAllImages("" + r.getId());
 	}
 

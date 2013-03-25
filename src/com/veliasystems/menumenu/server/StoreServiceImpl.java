@@ -1042,11 +1042,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			restaurantsList = restaurantQuery.filter("cityId", cityId).list();
 			System.out.println("restaurants count to delete: " + restaurantsList.size());
 			for (Restaurant restaurant : restaurantsList) {
-				Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
-				if(imageBlobQuery!=null){
-						 imageBlobList = imageBlobQuery.filter("restId", restaurant.getId()).list();
+//				Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
+//				if(imageBlobQuery!=null){
+						 imageBlobList = blobService.getAllImages(restaurant); //imageBlobQuery.filter("restId", restaurant.getId()+"").list();
 						 if(imageBlobList == null || imageBlobList.isEmpty()){
-							 System.out.println("not found images to delete for restaurant: " + restaurant.getId());
+							 System.out.println("not found images to delete for restaurant: " + restaurant.getId() + ", imageBlobList.size() = " + (imageBlobList==null?null:imageBlobList.size()));
 							 continue;
 						 }
 						 System.out.println("images count to delete: " + imageBlobList.size());
@@ -1054,7 +1054,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 								BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
 						 }
 						 dao.ofy().delete(imageBlobList);
-				}
+//				}
 			}
 		}else{
 			System.out.println("restaurantQuery is: " + restaurantQuery);
