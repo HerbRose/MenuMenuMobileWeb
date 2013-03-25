@@ -1033,25 +1033,32 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public Long deleteRestaurants(long cityId){
-		System.out.println("StoreServiceImpl::deleteRestaurants(long cityId)");
-		
 		List<Restaurant> restaurantsList = new ArrayList<Restaurant>();
 		List<ImageBlob> imageBlobList;
 		Query<Restaurant> restaurantQuery = dao.ofy().query(Restaurant.class);
 		if(restaurantQuery != null){
 			restaurantsList = restaurantQuery.filter("cityId", cityId).list();
-			System.out.println("restaurants count to delete: " + restaurantsList.size());
 			for (Restaurant restaurant : restaurantsList) {
 //				Query<ImageBlob> imageBlobQuery = dao.ofy().query(ImageBlob.class);
 //				if(imageBlobQuery!=null){
 						 imageBlobList = blobService.getAllImages(restaurant); //imageBlobQuery.filter("restId", restaurant.getId()+"").list();
 						 if(imageBlobList == null || imageBlobList.isEmpty()){
-							 System.out.println("not found images to delete for restaurant: " + restaurant.getId() + ", imageBlobList.size() = " + (imageBlobList==null?null:imageBlobList.size()));
 							 continue;
 						 }
-						 System.out.println("images count to delete: " + imageBlobList.size());
 						 for (ImageBlob imageBlob : imageBlobList) {
 								BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKey()));
+								
+								if(imageBlob.getBlobKeyOriginalSize() != null){
+									BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKeyOriginalSize()));
+								}
+								if(imageBlob.getImageType() == ImageType.MENU){
+									if(imageBlob.getBlobKeyScaleSize() != null){
+										BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKeyScaleSize()));
+									}
+									if(imageBlob.getBlobKeyScreenSize() != null){
+										BlobstoreServiceFactory.getBlobstoreService().delete(new BlobKey(imageBlob.getBlobKeyScreenSize()));
+									}
+								}
 						 }
 						 dao.ofy().delete(imageBlobList);
 //				}
