@@ -99,4 +99,5 @@ public class MenuMenuMobileWeb implements EntryPoint {
     	return isMobile.any();
     	
 	}-*/;
+
 }

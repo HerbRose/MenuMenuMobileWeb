@@ -47,7 +47,6 @@ public class RestaurantController {
 
 	private List<IObserver> observers = new ArrayList<IObserver>();
 	private static final Logger log = Logger.getLogger(RestaurantController.class.getName());
-	
 	public static Map<Long, RestaurantImageView> restMapView = new HashMap<Long, RestaurantImageView>();
 	
 	private static RestaurantController instance = null ; //instance of controller

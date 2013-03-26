@@ -45,9 +45,9 @@ public class CityController{
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private Map<Long, City> cities = new HashMap<Long, City>(); //key is a cityId
 
+	
 	private CityController() {
 	}
-	
 	
 	public static CityController getInstance(){
 		if(instance == null){
@@ -105,6 +105,7 @@ public class CityController{
 			citiesList.add(cities.get(cityId));
 		}
 		
+	
 		Collections.sort(citiesList, new Comparator<City>() {
 
 			@Override
@@ -118,7 +119,6 @@ public class CityController{
 		});
 		return citiesList;
 	}
-	
 	
 	/**
 	 *Saving city in datastore and put to local map with cities
@@ -184,7 +184,6 @@ public class CityController{
 					});
 				}
 				observer.newData();
-			
 		
 			}
 			
@@ -224,11 +223,11 @@ public class CityController{
 			public void onFailure(Throwable caught) {
 //				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.hideWaitPanel();
+				
 				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
 					
 					@Override
 					public void answer(Boolean answer) {
-						
 					}
 				});
 			}
@@ -361,7 +360,7 @@ public class CityController{
 	
 	
 	public void refreshCitiesAndNotifyAll(final IObserver observer){
-	
+		
 		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
 			
 			@Override

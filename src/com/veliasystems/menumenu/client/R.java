@@ -7,7 +7,7 @@ package com.veliasystems.menumenu.client;
 public class R {
 
 	public static boolean isMobile = true;
-
+	
 	public final static String TOKEN = "a1b2c3";
 	public final static String GEOCODING_URL = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=";
 	public final static String DIRECTIONS_MAPS_URL = "http://maps.googleapis.com/maps/api/directions/json?sensor=false";
@@ -18,16 +18,16 @@ public class R {
 //	public static final String HOST_URL = "http://bacupdatastoretester.appspot.com/";
 	
 	public static final String FIX_IMAGE_QUEUE_NAME = "imageResizeQueue";
-
+	
 	public static final String EMAIL_ADDRES = "mateusz@velia-systems.com";
-	// public static final String EMAIL_ADDRES = "applisoleil@gmail.com";
-
+//	public static final String EMAIL_ADDRES = "applisoleil@gmail.com";
+	
 	public final static String UTF8 = "UTF-8";
 	public static final String LOADING = "loading";
 	public static final String LOADED = "loaded";
 	public static final String SHOW = "show";
 	public static final String HIDE = "hide";
-
+	
 	// languages
 	public static final String ARABIC_NAME = "Arabic";
 	public static final String ARABIC_CODE = "ar";

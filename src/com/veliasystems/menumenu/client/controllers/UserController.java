@@ -276,7 +276,6 @@ public class UserController {
 		}
 		
 	}
-	
 	/**
 	 * @deprecated
 	 * @param login
