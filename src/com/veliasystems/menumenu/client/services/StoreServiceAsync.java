@@ -93,4 +93,5 @@ public interface StoreServiceAsync {
 
 	void authorization(String login, AsyncCallback<User> callback);
 
+	void addUserToTests(User user, AsyncCallback<Void> asyncCallback);
 }

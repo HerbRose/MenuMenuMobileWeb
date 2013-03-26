@@ -1,9 +1,8 @@
 package com.veliasystems.menumenu.client;
-
 /**
  * 
  * class with constants
- * 
+ *
  */
 public class R {
 
@@ -12,15 +11,18 @@ public class R {
 	public final static String TOKEN = "a1b2c3";
 	public final static String GEOCODING_URL = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=";
 	public final static String DIRECTIONS_MAPS_URL = "http://maps.googleapis.com/maps/api/directions/json?sensor=false";
-//	 public static final String HOST_URL = "http://menutester.appspot.com/";
-	 public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
+//	public static final String HOST_URL = "http://menutester.appspot.com/";
+//	public static final String HOST_URL = "http://mymenumenu.appspot.com/";
+	public static final String HOST_URL = "http://menumenu-cms.appspot.com/";
+//	public static final String HOST_URL = "127.0.0.1:8888/";
+//	public static final String HOST_URL = "http://bacupdatastoretester.appspot.com/";
+	
 	public static final String FIX_IMAGE_QUEUE_NAME = "imageResizeQueue";
 
 	public static final String EMAIL_ADDRES = "mateusz@velia-systems.com";
 	// public static final String EMAIL_ADDRES = "applisoleil@gmail.com";
 
 	public final static String UTF8 = "UTF-8";
-	public final static String LOGGED_IN = "loggedIn";
 	public static final String LOADING = "loading";
 	public static final String LOADED = "loaded";
 	public static final String SHOW = "show";
@@ -40,7 +42,6 @@ public class R {
 	public static final String POLISH_NAME = "Polski";
 	public static final String POLISH_CODE = "pl";
 	public static final String LANGUAGE = "gwtLocale";
-	public static final String LOGIN = "Login";
 
 	// results from server side
 
@@ -59,6 +60,10 @@ public class R {
 
 	public static final String WARNING_IMAGE_URL = IMAGE_PATH + "warning.png";
 
+	public static final int PROFILE_HEIGHT = 245;
+	
+	public static final int PROFILE_WIDTH = 460;
+	
 	private native static String getUserAgent()/*-{
 		return navigator.userAgent;
 	}-*/;

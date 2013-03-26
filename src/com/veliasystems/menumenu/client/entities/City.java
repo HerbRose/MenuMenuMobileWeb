@@ -13,6 +13,7 @@ public class City implements Serializable{
 
 	@Id private Long id;
 	private String city;
+	private String normalizedCityName = null;
 	
 	private String districtImageURL = "";
 	
@@ -31,9 +32,7 @@ public class City implements Serializable{
 			id = ((long) (Math.random() * 999999999));
 	 }
 	
-	public City() {
-//		setLastDateSync();
-	}
+	public City() {}
 	 
 	/**
 	 * Return the city name
@@ -51,6 +50,21 @@ public class City implements Serializable{
 		this.city = city;
 	}
 	
+	/**
+	 * 
+	 * @return {@link String} normalized city name
+	 */
+	public String getNormalizedCityName() {
+		return normalizedCityName;
+	}
+	
+	/**
+	 * should be used only on <b>server</b> side
+	 * @param normalizedCityName {@link String} with normalized city name
+	 */
+	public void setNormalizedCityName(String normalizedCityName) {
+		this.normalizedCityName = normalizedCityName;
+	}
 	/**
 	 * Return the id of the city
 	 * @return id of the city

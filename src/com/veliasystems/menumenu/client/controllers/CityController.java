@@ -9,13 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.thirdparty.guava.common.collect.Ordering;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.entities.City;
@@ -107,7 +109,10 @@ public class CityController{
 
 			@Override
 			public int compare(City o1, City o2) {
-				 return o1.getCity().toLowerCase().compareTo(o2.getCity().toLowerCase());
+				if(o1.getNormalizedCityName() != null && o2.getNormalizedCityName()!=null){
+					return o1.getNormalizedCityName().compareToIgnoreCase(o2.getNormalizedCityName());
+				}
+				return o1.getCity().compareToIgnoreCase(o2.getCity());
 			}
 			
 		});
@@ -153,13 +158,13 @@ public class CityController{
 	 * @param cityIdFrom - id of {@link City} - source of data
 	 * @param cityIdTo - id of {@link City} - destination of copying data
 	 */
-	public void copyAllDataFromCity(String cityIdFrom, String cityIdTo){
+	public void copyAllDataFromCity(String cityIdFrom, String cityIdTo, final IObserver observer){
 		PagesController.showWaitPanel();
 		storeService.copyCityData(cityIdFrom, cityIdTo, userController.getLoggedUser().getEmail() , new AsyncCallback<Map<String, String>>() {
 			
 			@Override
 			public void onSuccess(Map<String, String> result) {
-				PagesController.hideWaitPanel();
+				//PagesController.hideWaitPanel();
 				if(result == null){
 //					Window.alert(Customization.WRONG_DATA_ERROR);
 					PagesController.MY_POP_UP.showError(new Label(Customization.WRONG_DATA_ERROR), new IMyAnswer() {
@@ -170,6 +175,7 @@ public class CityController{
 					});
 				}else{
 //					Window.alert(Customization.COPY_RESTAURANTS_IN_PROGRESS);
+					PagesController.hideWaitPanel();
 					PagesController.MY_POP_UP.showSuccess(new Label(Customization.COPY_RESTAURANTS_IN_PROGRESS), new IMyAnswer() {
 						
 						@Override
@@ -177,6 +183,7 @@ public class CityController{
 						}
 					});
 				}
+				observer.newData();
 			
 		
 			}
@@ -191,6 +198,7 @@ public class CityController{
 					public void answer(Boolean answer) {
 					}
 				});
+				observer.newData();
 			}
 		});
 	}
@@ -198,7 +206,7 @@ public class CityController{
 	 * Delete city from datastore
 	 * @param id - id of {@link City}
 	 */
-	public void deleteCity(Long id) {
+	public void deleteCity(final IObserver iObserver, Long id) {
 		PagesController.showWaitPanel();
 		storeService.deleteRestaurants(id, new AsyncCallback<Long>() {
 			
@@ -207,6 +215,8 @@ public class CityController{
 				List<Restaurant> restaurantsToDelete = restaurantController.getRestaurantsInCity(cityId);
 				cities.remove(cityId);
 				restaurantController.removeRestaurantLocally(restaurantsToDelete);
+				notifyAllObservers();
+				notifyObserver(iObserver);
 				PagesController.hideWaitPanel();
 			}
 			
@@ -285,7 +295,6 @@ public class CityController{
 						public void answer(Boolean answer) {
 						}
 					});
-//					Window.alert(Customization.OK);
 				}else{
 					String msg = "";
 						for (int i : response.getErrorCodes()) {
@@ -349,6 +358,33 @@ public class CityController{
 			}
 		});
 	}
+	
+	
+	public void refreshCitiesAndNotifyAll(final IObserver observer){
+	
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
+			
+			@Override
+			public void onSuccess(List<City> citiesList) {
+				
+				refreshCities(citiesList);
+				notifyAllObservers();
+				notifyObserver(observer);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.hideWaitPanel();
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+					}
+				});
+			}
+		});
+	}
+	
 	
 	private void notifyObserver(IObserver observer){
 		if(observer != null){

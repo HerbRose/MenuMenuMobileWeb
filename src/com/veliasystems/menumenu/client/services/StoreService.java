@@ -181,4 +181,6 @@ public interface StoreService extends RemoteService {
 	Map<Long ,List<Restaurant>> getRestaurantsForUser(String email, long cityId, long lastRestaurantSyncDate);
 
 	User authorization(String login);
+	
+	void addUserToTests(User user);
 }

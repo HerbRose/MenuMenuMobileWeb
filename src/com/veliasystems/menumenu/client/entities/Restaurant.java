@@ -2,6 +2,7 @@ package com.veliasystems.menumenu.client.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ public class Restaurant implements Serializable {
 	private long id;
 	
 	private String name;
+	private String normalizedName = null; //only set on server side
 	private String address;
 	/**
 	 * @deprecated
@@ -71,9 +73,19 @@ public class Restaurant implements Serializable {
 	private String mainMenuScreenSizeImageString = null;
 	private String mainMenuScaleSizeImageString = null;
 	
+	private Long menuPublishTimeInMiliSec = new Date().getTime();
+	
 	{
 		id = Util.getRandom(9999999);
 	}
+	public Long getMenuPublishTimeInMiliSec() {
+		return menuPublishTimeInMiliSec;
+	}
+
+	public void setMenuPublishTimeInMiliSec(Long logoPublishTimeInMiliSec) {
+		this.menuPublishTimeInMiliSec = logoPublishTimeInMiliSec;
+	}
+
 	/**
 	 * default constructor
 	 */
@@ -112,6 +124,20 @@ public class Restaurant implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	/**
+	 * 
+	 * @return {@link String} with normalized name
+	 */
+	public String getNormalizedName() {
+		return normalizedName;
+	}
+	/**
+	 * This method should be used only on <b>server</b> side
+	 * @param normalizedName {@link String} with normalized name
+	 */
+	public void setNormalizedName(String normalizedName) {
+		this.normalizedName = normalizedName;
 	}
 	/**
 	 * 
@@ -168,6 +194,7 @@ public class Restaurant implements Serializable {
 	 * @param lng - {@link String}
 	 */
 	public void setLng(String lng) {
+		if(lng == null) return;
 		setLongitude(Double.valueOf(lng));
 		this.lng = lng;
 	}
@@ -183,6 +210,7 @@ public class Restaurant implements Serializable {
 	 * @param lat - {@link String}
 	 */
 	public void setLat(String lat) {
+		if(lat == null) return;
 		setLatitude(Double.valueOf(lat));
 		this.lat = lat;
 	}
