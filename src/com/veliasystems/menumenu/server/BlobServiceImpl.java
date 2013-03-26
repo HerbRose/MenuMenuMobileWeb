@@ -63,8 +63,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	private DAO dao = new DAO();
 
-	private BlobstoreService blobstoreService = BlobstoreServiceFactory
-			.getBlobstoreService();
+	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
 	
 	private static final Logger log = Logger.getLogger(BlobServiceImpl.class
@@ -79,7 +78,7 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 
 	
 	public List<ImageBlob> getAllImages(Restaurant r) {
-		System.out.println("BlobServiceImpl::getAllImages");
+//		System.out.println("BlobServiceImpl::getAllImages");
 		return getAllImages("" + r.getId());
 	}
 
