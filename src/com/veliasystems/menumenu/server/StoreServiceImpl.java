@@ -190,11 +190,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if(cityQuery == null) return new ArrayList<City>();
 		return cityQuery.filter("id IN", cityIdsList).list();
 	}
-	/**
-	 * return date in milliseconds when data was last time modified
-	 * @param entityIdString
-	 * @return
-	 */
+	
 	private long getLastChangeTime(String entityIdString){
 		if(entityIdString == null || entityIdString.isEmpty()) return -1;
 		
@@ -230,7 +226,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Map<Long ,List<City>> response = new HashMap<Long, List<City>>();
 
 		long lastDateSync = getLastChangeTime(LastModified.cityListIdString) ;
-		
 		if(lastDateSync > lastCitySyncDate){
 			User user = findUser(email);
 			List<City> cities = loadCities(user);
@@ -265,15 +260,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		long lastDateSync = getLastChangeTime(LastModified.restaurantListPrefix+cityId);
 		if(lastDateSync > lastRestaurantSyncDate){
 			User user = findUser(email);
-			List<Restaurant> restaurants = loadRestaurants(user, cityId);
-//			List<Restaurant> restaurantsInCity = new ArrayList<Restaurant>();
-//			for (Restaurant restaurant : restaurants) {
-//				if(restaurant.getCityId() == cityId){
-//					restaurantsInCity.add(restaurant);
-//				}
-//				response.put(lastDateSync, restaurantsInCity);
-//			}
-			response.put(lastDateSync, restaurants);
+			List<Restaurant> restaurants = loadRestaurants(user);
+			List<Restaurant> restaurantsInCity = new ArrayList<Restaurant>();
+			for (Restaurant restaurant : restaurants) {
+				if(restaurant.getCityId() == cityId){
+					restaurantsInCity.add(restaurant);
+				}
+				response.put(lastDateSync, restaurantsInCity);
+			}
 		}else{
 			response.put(lastDateSync, null);
 		}
@@ -1043,11 +1037,11 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param cityId - id of {@link City}
 	 * @return List of {@link Restaurant} 
 	 */
-	public List<Restaurant> loadRestaurants( long cityId ) {
+	public List<Restaurant> loadRestaurants( Long cityId ) {
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
 		//System.out.println(restQuery.filter("city =", city).order("name").count());
-		return getImageLists( restQuery.filter("cityId", cityId).list() );
+		return getImageLists( restQuery.filter("cityId =", cityId).list() );
 	}
 	
 	@Override
@@ -1087,46 +1081,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			List<Long> restaurantsId = user.getRestaurantsId();
 			if(restaurantsId != null && !restaurantsId.isEmpty()){
 				restaurantsSet.addAll(loadRestaurants(restaurantsId));
-			}
-		}
-		
-		return new ArrayList<Restaurant>(restaurantsSet);
-	}
-	/**
-	 * load restaurant for user in city
-	 * @param user - logged {@link User}
-	 * @return List of {@link Restaurant} for {@link User}
-	 */
-	private List<Restaurant> loadRestaurants(User user, long cityId){
-		
-		if(user == null) return new ArrayList<Restaurant>();
-		Set<Restaurant> restaurantsSet = new HashSet<Restaurant>();
-		
-		if(user.isAdmin()){
-			return loadRestaurants(cityId); //loadRestaurants();
-		}
-		if(user.isAgent()){
-			if(user.getCitiesId().contains(cityId)){
-				return loadRestaurants(cityId); //loadRestaurants();
-			}
-//			List<Long> citiesId = user.getCitiesId();
-//			
-//			if(citiesId != null && !citiesId.isEmpty()){
-//				restaurantsSet.addAll(loadRestaurantsByCitiesId(citiesId));
-//			}
-		}
-		if(user.isRestaurator()){
-			List<Long> restaurantsId = user.getRestaurantsId();
-//			if(restaurantsId != null && !restaurantsId.isEmpty()){
-//				restaurantsSet.addAll(loadRestaurants(restaurantsId));
-//			}
-			if(restaurantsId != null){
-				List<Restaurant> restaurants = loadRestaurants(restaurantsId);
-				for (Restaurant restaurant : restaurants) {
-					if(restaurant.getCityId() == cityId){
-						restaurantsSet.add(restaurant);
-					}
-				}
 			}
 		}
 		
@@ -1214,6 +1168,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				 }
 				 dao.ofy().delete(imageBlobList);
 			}
+		}else{
+			System.out.println("restaurantQuery is: " + restaurantQuery);
 		}
 		
 		dao.ofy().delete(restaurantsList);
