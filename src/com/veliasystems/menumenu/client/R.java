@@ -43,6 +43,7 @@ public class R {
 	public static final String POLISH_CODE = "pl";
 	public static final String LANGUAGE = "gwtLocale";
 
+	
 	// results from server side
 
 	public static final String ERROR_CODES_RESULT_FOR_MAP = "ErrorCodes";

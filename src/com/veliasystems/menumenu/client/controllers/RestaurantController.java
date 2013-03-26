@@ -903,14 +903,6 @@ public class RestaurantController {
 		
 	}
 	
-	private void updateRestaurantList(List<Restaurant> restaurants) {
-		for (Restaurant restaurant : restaurants) {
-			
-			this.restaurants.put(restaurant.getId(), restaurant);
-		}
-		
-	}
-	
 	public void refreshRestaurantsAndNotifyAll(final IObserver observer) {
 		
 		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<Restaurant>>() {
@@ -948,5 +940,13 @@ public class RestaurantController {
 	}
 	private void notifieObserver(IObserver observer){
 		observer.newData();
+	}
+	
+	private void updateRestaurantList(List<Restaurant> restaurants) {
+		for (Restaurant restaurant : restaurants) {
+			
+			this.restaurants.put(restaurant.getId(), restaurant);
+		}
+		
 	}
 }

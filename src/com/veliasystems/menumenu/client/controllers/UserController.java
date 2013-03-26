@@ -493,4 +493,6 @@ public class UserController {
 		console.log(message);
 	}-*/;
 	
+
+	
 }

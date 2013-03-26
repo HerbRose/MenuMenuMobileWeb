@@ -3,8 +3,10 @@ package com.veliasystems.menumenu.client.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.jdo.annotations.Persistent;
 import javax.persistence.Id;
 
 import com.veliasystems.menumenu.client.Util;

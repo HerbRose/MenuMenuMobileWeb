@@ -1368,7 +1368,6 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	
 
-
 	private boolean validate(String nameCity){
 		String matcher =".*[^-]-.*[^-]";
 		if(nameCity.matches(matcher)) {
@@ -1849,8 +1848,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			return null;
 		}
 		
-
-		City city = findCity(cityIdToLong);
+		City cityFrom = dao.ofy().find(City.class, cityIdFromLong);
 		
 		if(cityFrom == null){
 			return null;

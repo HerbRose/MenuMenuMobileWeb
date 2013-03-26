@@ -94,6 +94,7 @@ public class LoadDataScreen extends JQMPage {
 			
 			@Override
 			public void onFailure(Throwable caught) {
+//				Window.alert(Customization.CONNECTION_ERROR)
 				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
 					
 					@Override
@@ -106,9 +107,7 @@ public class LoadDataScreen extends JQMPage {
 				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
 				
 			}
-			
 		});
-		
 		
 	}
 	
@@ -169,7 +168,6 @@ public class LoadDataScreen extends JQMPage {
 				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
 				
 			}
-			
 		});
 		
 	}
