@@ -107,7 +107,6 @@ public class CityInfoScreen extends MyPage implements IObserver{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				PagesController.showWaitPanel();
 				JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
 			}
 		});
@@ -118,7 +117,7 @@ public class CityInfoScreen extends MyPage implements IObserver{
     	addButton.addClickHandler(new ClickHandler() {	
 			@Override
 			public void onClick(ClickEvent event) {
-				PagesController.showWaitPanel();
+				Document.get().getElementById("load").setClassName(R.LOADING);
 				JQMContext.changePage(new AddRestaurantScreen(city), Transition.SLIDE);	
 			}
 		});
