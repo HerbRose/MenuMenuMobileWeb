@@ -635,7 +635,9 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}else{
 			message += "Now you have granted access to following new restaurant: "+ restaurantName +"\n\n"+
 					   "Thank you: MenuMenu team.\n\n"+
-					   "This email has been generated automatically. Please do not reply to this email address."; 
+					   "This email has been generated automatically. Please do not reply to this email address.\n\n"+
+					   "Click on the link below to log in into your account:\n\n"+
+					   R.HOST_URL; 
 		}
 		List<String> toAddress = new ArrayList<String>();
 		toAddress.add(user.getEmail());
