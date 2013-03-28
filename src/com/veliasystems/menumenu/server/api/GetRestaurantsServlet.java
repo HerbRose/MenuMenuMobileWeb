@@ -295,7 +295,7 @@ public class GetRestaurantsServlet extends HttpServlet {
 		
 	
 		resp.getWriter().print(gson.toJson(attributes));
-		log.warning("Time of getting restaurant: " + ((new Date().getTime() - start) * 1000) + " seconds" );
+		log.info("Time of getting restaurant: " + ((new Date().getTime() - start) / 1000) + "seconds");
 		if(jsonp != null) {
 			resp.getWriter().print(")");
 		}
