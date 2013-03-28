@@ -10,7 +10,7 @@ import com.veliasystems.menumenu.client.translations.Messages;
  */
 public class Customization {
 	
-	private static Messages translated = GWT.create(Messages.class);
+	private static Messages translated = GWT.create(Messages.class); 
 
 	public static final long NEW_CITY = 1;//used when need copy data for city
 	public static final long DO_NOTHING = 0;//used when need copy data for city
