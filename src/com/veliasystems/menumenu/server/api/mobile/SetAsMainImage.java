@@ -73,9 +73,8 @@ public class SetAsMainImage extends HttpServlet {
     		}
     		resp.flushBuffer();
         }
-		
-		
-		ImageBlob imageBlob = new ImageBlob(restId, blobKey, new Date(), myImageType); // created temporary
+
+		ImageBlob imageBlob = storeService.getImageBlobByBlobKey(blobKey);
 		
 		Restaurant restaurant = storeService.setMainImage(imageBlob);
 		
