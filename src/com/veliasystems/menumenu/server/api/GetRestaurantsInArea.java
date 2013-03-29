@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
@@ -134,191 +137,129 @@ public class GetRestaurantsInArea extends HttpServlet {
 		if (jsonp != null) {
 			resp.getWriter().print(jsonp + "(");
 		}
-		List<ImageBlob> emptyBlobsList = blobService.getDefaultEmptyMenu();
+		
+		List< Map<String,Object> > attributes = new ArrayList< Map<String,Object>>();
 		ImageBlob emptyDefoultMenu;
 		
-		if(emptyBlobsList.isEmpty()){
-			emptyDefoultMenu = null;
+		if(blobService.getDefaultEmptyMenu().isEmpty()){
+			emptyDefoultMenu = new ImageBlob();
 		}else{
-			emptyDefoultMenu = emptyBlobsList.get(0);
+			emptyDefoultMenu = blobService.getDefaultEmptyMenu().get(0);
 		}
-		
-		List<Map<String, Object>> attributes = new ArrayList<Map<String, Object>>();
+		String emptyDefaultMenuString = emptyDefoultMenu.getImageUrl();
+		boolean emptyDefaultMenuExist;
+		if(emptyDefoultMenu == null) emptyDefaultMenuExist = false;
+		else {
+			emptyDefaultMenuString = getBlobKey(emptyDefaultMenuString);
+			emptyDefaultMenuExist = checkIfBlobExist(emptyDefaultMenuString);
+		}
 
-		for (Restaurant restaurant : restaurantList) {
-			
+		for (Restaurant r : restaurantList) {
+			if(r.isVisibleForApp()){
 					Map<String, Object> map = new HashMap<String, Object>();
+					
+					map.put("id", "" + r.getId());
+					map.put("name", r.getName());
+					map.put("city", getCityName(r.getCityId()));
+					map.put("district", r.getDistrict());
+					map.put("address", r.getAddress());
+					map.put("lat", "" + r.getLat());
+					map.put("lng", "" + r.getLng());
+					map.put("phoneRestaurant", r.getPhoneRestaurant());
+					map.put("openHours", r.getOpenHours());
+					map.put("menuPublishTime", r.getMenuPublishTimeInMiliSec());
+					
+					boolean logoImageExist = true;
+					boolean menuImageExist = true;
+					boolean profileImageExist = true;
+					boolean menuImageScreenSizeExist = true;
+					boolean menuImageScaleSizeExist = true;
+					
+					String logoImageString = (r.getMainLogoImageString()!=null) ? r.getMainLogoImageString() : null;
+					String menuImageString = (r.getMainMenuImageString()!=null) ?r.getMainMenuImageString() : null;
+					String profileImageString = (r.getMainProfileImageString()!=null) ? r.getMainProfileImageString() : null;
+					String menuImageScreenString = (r.getMainMenuScreenSizeImageString()!=null) ? r.getMainMenuScreenSizeImageString() : null;
+					String menuImageScaleString = (r.getMainMenuScaleSizeImageString()!=null) ? r.getMainMenuScaleSizeImageString() : null;
 
-					List<String> blobkeys = new ArrayList<String>();
-
-					String logoImageString = (restaurant
-							.getMainLogoImageString() != null) ? restaurant
-							.getMainLogoImageString() : null;
-					if (logoImageString != null) {
-						String[] logoImageStringArray = logoImageString
-								.split("=");
-						if (logoImageStringArray.length > 1)
-							logoImageString = logoImageStringArray[1];
-						blobkeys.add(logoImageString);
+					logoImageExist = checkIfStringExist(logoImageString); 
+					if(logoImageExist){
+						logoImageString = getBlobKey(logoImageString);
+						logoImageExist = checkIfBlobExist(logoImageString);
+					}	
+					
+					profileImageExist = checkIfStringExist(profileImageString);	
+					if(profileImageExist){
+						profileImageString = getBlobKey(profileImageString);
+						profileImageExist = checkIfBlobExist(profileImageString);
+					}
+					
+					menuImageExist = checkIfStringExist(menuImageString);
+					if(menuImageExist){
+						menuImageString = getBlobKey(menuImageString);
+						menuImageExist = checkIfBlobExist(menuImageString);
+					}
+					
+					menuImageScreenSizeExist = checkIfStringExist(menuImageScreenString);
+					if(menuImageScreenSizeExist){
+						menuImageScreenString = getBlobKey(menuImageScreenString);
+						menuImageScreenSizeExist = checkIfBlobExist(menuImageScreenString);
+					}
+					
+					menuImageScaleSizeExist = checkIfStringExist(menuImageScaleString);
+					if(menuImageScaleSizeExist){
+						menuImageScaleString = getBlobKey(menuImageScaleString);
+						menuImageScaleSizeExist = checkIfBlobExist(menuImageScaleString);
 					}
 
-					String menuImageString = (restaurant
-							.getMainMenuImageString() != null) ? addHostToUrl(restaurant
-							.getMainMenuImageString()) : null;
-					if (menuImageString != null) {
-						String[] menuImageStringArray = menuImageString
-								.split("=");
-						if (menuImageStringArray.length > 1)
-							menuImageString = menuImageStringArray[1];
-						blobkeys.add(menuImageString);
-					}
-
-					String profileImageString = (restaurant
-							.getMainProfileImageString() != null) ? addHostToUrl(restaurant
-							.getMainProfileImageString()) : null;
-					if (profileImageString != null) {
-						String[] profileImageStringArray = profileImageString
-								.split("=");
-						if (profileImageStringArray.length > 1)
-							profileImageString = profileImageStringArray[1];
-						blobkeys.add(profileImageString);
-					}
-
-					List<ImageBlob> imageBlobs = storeService
-							.getImageBlobs(blobkeys);
-
-					map.put("id", "" + restaurant.getId());
-					map.put("name", restaurant.getName());
-					map.put("city", getCityName(restaurant.getCityId()));
-					map.put("district", restaurant.getDistrict());
-					map.put("address", restaurant.getAddress());
-					map.put( "logoImage", (restaurant.getMainLogoImageString()== null || restaurant.getMainLogoImageString().isEmpty()) ? "EMPTY" : addHostToUrl(restaurant.getMainLogoImageString()) );
-					
-//					if(r.getMainMenuImageString()!=null){
-//						map.put("menuImage", (r.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(r.getMainMenuImageString()));
-//						map.put("menuImageDefault", false);
-//					}else{
-//						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						map.put("menuImageDefault", true);
-//					}
-//					//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-////					map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
-////					map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
-//					if(r.getMainMenuScaleSizeImageString()!=null){
-//						map.put("menuImageScreenSize", (r.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
-//					}else{
-//						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//					}
-//					
-//					
-//					if(r.getMainMenuScreenSizeImageString()!=null){
-//						map.put("menuImageScaleSize", (r.getMainMenuScreenSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(r.getMainMenuScaleSizeImageString()));
-//					}else{
-//						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//					}
-					
-//					if(restaurant.getMainMenuImageString()!=null && !restaurant.getMainMenuImageString().isEmpty()){
-//						map.put("menuImage", addHostToUrl(restaurant.getMainMenuImageString()));
-//						map.put("menuImageDefault", false);
-//						if(restaurant.getMainMenuScreenSizeImageString()!=null && !restaurant.getMainMenuScreenSizeImageString().isEmpty()){
-//							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
-//						} else {
-//							map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuImageString()));
-//						}
-//						
-//						if(restaurant.getMainMenuScaleSizeImageString()!=null && !restaurant.getMainMenuScaleSizeImageString().isEmpty()){
-//							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
-//						} else {
-//							map.put("menuImageScaleSize", addHostToUrl(restaurant.getMainMenuImageString()));
-//						}
-//					}else{
-//						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						map.put("menuImageDefault", true);
-//					}
-					
-					if(restaurant.getMainMenuImageString()!= null && restaurant.getMainMenuImageString().contains("=")){
-						
-						String blobKey = restaurant.getMainMenuImageString().split("=")[1];
-						ImageBlob menuImg = storeService.getImageBlobByBlobKey(blobKey);
-						
-						if(menuImg!= null && menuImg.getImageType() == ImageType.MENU){
-							
-							map.put("menuImage", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
-							map.put("menuImageDefault", false);
-							
-							if(menuImg.getBlobKeyScaleSize()!=null){
-								if(!menuImg.getBlobKeyScaleSize().isEmpty()){
-									map.put("menuImageScaleSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKeyScaleSize()));
-								} else {
-									map.put("menuImageScaleSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
-								}
-							} else {
-								map.put("menuImageScaleSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
-							}
-							
-							if(menuImg.getBlobKeyScreenSize()!=null){
-								if(!menuImg.getBlobKeyScreenSize().isEmpty()){
-									map.put("menuImageScreenSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKeyScreenSize()));
-								} else {
-									map.put("menuImageScreenSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
-								}
-							} else {
-								map.put("menuImageScreenSize", addHostToUrl("/blobServe?blob-key=" + menuImg.getBlobKey()));
-							}
-							
-						}
-						
+					if(logoImageExist){
+						ImageBlob imgBlob = storeService.getImageBlobByBlobKey(logoImageString);
+						map.put("logoImage", addHostToUrl("blobServe?blob-key=" + logoImageString));	
+						addToMapImageDeatails(map, imgBlob);	
 					} else {
-						map.put("menuImage", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-						map.put("menuImageDefault", true);
+						map.put("logoImage", "EMPTY");
+						addDefaultImageDetails(map, ImageType.LOGO);
 					}
 					
-					
-					//map.put( "menuImage", (r.getMainMenuImageString()!=null) ? addHostToUrl(r.getMainMenuImageString()) : (emptyDefoultMenu != null?addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//					map.put("menuImageScreenSize", (r.getMainMenuScreenSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScreenSizeImageString()) : "EMPTY");
-//					map.put("menuImageScaleSize", (r.getMainMenuScaleSizeImageString()!=null) ? addHostToUrl(r.getMainMenuScaleSizeImageString()) : "EMPTY");
-//					if(restaurant.getMainMenuScreenSizeImageString()!=null && !restaurant.getMainMenuScreenSizeImageString().isEmpty()){
-//						map.put("menuImageScreenSize", addHostToUrl(restaurant.getMainMenuScreenSizeImageString()));
-//					}else{
-////						map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						
-//						if(restaurant.getMainMenuImageString()!=null){
-//							map.put("menuImageScreenSize", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
-//						} else {
-//							map.put("menuImageScreenSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						}
-//					}
-					
-//					
-//					if(restaurant.getMainMenuScaleSizeImageString()!=null){
-//						map.put("menuImageScaleSize", (restaurant.getMainMenuScaleSizeImageString().isEmpty() ) ? "EMPTY" : addHostToUrl(restaurant.getMainMenuScaleSizeImageString()));
-//					}else{				
-////						map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						if(restaurant.getMainMenuImageString()!=null){
-//							map.put("menuImageScaleSize", (restaurant.getMainMenuImageString().isEmpty() )? "EMPTY" : addHostToUrl(restaurant.getMainMenuImageString()));
-//						} else {
-//							map.put("menuImageScaleSize", (emptyDefoultMenu != null ? addHostToUrl(emptyDefoultMenu.getImageUrl()):"EMPTY" ));
-//						}
-//						
-//					}
-					map.put("menuPublishTime", restaurant.getMenuPublishTimeInMiliSec());
-					map.put( "profileImage", (restaurant.getMainProfileImageString()==null || restaurant.getMainProfileImageString().isEmpty()) ?  "EMPTY" : addHostToUrl(restaurant.getMainProfileImageString()) );
-					map.put("lat", "" + restaurant.getLat());
-					map.put("lng", "" + restaurant.getLng());
-					map.put("phoneRestaurant", restaurant.getPhoneRestaurant());
-					for (ImageBlob imageBlob : imageBlobs) {
-						map.put(imageBlob.getImageType() + "DateCreate",
-								imageBlob.getDateCreated() + "");
-						map.put(imageBlob.getImageType()+"Height", imageBlob.getHeight()+"");
-						map.put(imageBlob.getImageType()+"Width", imageBlob.getWidth()+"");
+					if(profileImageExist){
+						ImageBlob imgBlob = storeService.getImageBlobByBlobKey(profileImageString);
+						map.put("profileImage", addHostToUrl("blobServe?blob-key=" + profileImageString));
+						addToMapImageDeatails(map, imgBlob);
+					} else {
+						map.put("profileImage", "EMPTY");
+						addDefaultImageDetails(map, ImageType.PROFILE);
 					}
-					map.put("openHours", restaurant.getOpenHours());
+					
+					if(menuImageExist){	
+						ImageBlob imgBlob = storeService.getImageBlobByBlobKey(menuImageString);
+						map.put("menuImage", addHostToUrl("blobServe?blob-key=" + menuImageString));
+						map.put("menuImageDefault", false);
+						addToMapImageDeatails(map, imgBlob);
+						
+						map.put("menuImageScreenSize", (menuImageScreenSizeExist ? addHostToUrl("blobServe?blob-key=" + menuImageScreenString) : 
+							addHostToUrl("blobServe?blob-key=" + menuImageString)));
+						
+						map.put("menuImageScaleSize", (menuImageScaleSizeExist ? addHostToUrl("blobServe?blob-key=" + menuImageScaleString) : 
+							addHostToUrl("blobServe?blob-key=" + menuImageString)));
+
+					} else {
+						if(emptyDefaultMenuExist){
+							map.put("menuImage", addHostToUrl("blobServe?blob-key=" + emptyDefaultMenuString));
+							map.put("menuImageScreenSize", addHostToUrl("blobServe?blob-key=" + emptyDefaultMenuString));
+							map.put("menuImageScaleSize", addHostToUrl("blobServe?blob-key=" + emptyDefaultMenuString));
+							map.put("menuImageDefault", true);
+							addToMapImageDeatails(map, emptyDefoultMenu);
+						} else {
+							map.put("menuImage", "EMPTY");
+							map.put("menuImageScreenSize", "EMPTY");
+							map.put("menuImageScaleSize", "EMPTY");
+							map.put("menuImageDefault", true);
+							addDefaultImageDetails(map, ImageType.MENU);
+						}
+					}	
 					attributes.add(map);
 				}
+			
+			}
 		
 			cityMap.clear();
 
@@ -329,6 +270,50 @@ public class GetRestaurantsInArea extends HttpServlet {
 		}
 		resp.flushBuffer();
 
+	}
+	
+	private String getBlobKey(String url){
+		String[] urlArray = url.split("=");
+		if(urlArray.length > 1){
+			url = urlArray[1];
+		}
+		return url;
+	}
+	private boolean checkIfBlobExist(String url){
+		BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
+		BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(new BlobKey(url));
+		if(blobInfo == null) return false;
+		return true;
+	}
+
+	private boolean checkIfStringExist(String url){
+		if(url == null || url.isEmpty()) return false;
+		return true;
+	}
+	
+	private void addToMapImageDeatails(Map<String, Object> map, ImageBlob imageBlob){
+		if(imageBlob != null) {
+			if(imageBlob.getImageType() != ImageType.EMPTY_MENU){
+				map.put(imageBlob.getImageType()+"DateCreate", imageBlob.getDateCreated()+"");
+				map.put(imageBlob.getImageType()+"DateCreateInMiliS", imageBlob.getDateCreated().getTime()+"");
+				map.put(imageBlob.getImageType()+"Height", imageBlob.getHeight()+"");
+				map.put(imageBlob.getImageType()+"Width", imageBlob.getWidth()+"");
+			} else {
+				map.put(ImageType.MENU+"DateCreate", imageBlob.getDateCreated()+"");
+				map.put(ImageType.MENU+"DateCreateInMiliS", imageBlob.getDateCreated().getTime()+"");
+				map.put(ImageType.MENU+"Height", imageBlob.getHeight()+"");
+				map.put(ImageType.MENU+"Width", imageBlob.getWidth()+"");
+			}		
+		} else {
+			log.warning("image blob is null");
+		}
+	}
+	
+	private void addDefaultImageDetails(Map<String, Object> map, ImageType imgType){
+		map.put(imgType+"DateCreate", "");
+		map.put(imgType+"DateCreateInMiliS", "");
+		map.put(imgType+"Height", "");
+		map.put(imgType+"Width", "");
 	}
 
 	private Map<Long, City> cityMap = new HashMap<Long, City>();
