@@ -14,7 +14,7 @@ public class UserToAdd implements Serializable {
 
 	private static final long serialVersionUID = 5694392315830957411L;
 	
-	
+	 
 	/**
 	 * The user email (and login)
 	 */
