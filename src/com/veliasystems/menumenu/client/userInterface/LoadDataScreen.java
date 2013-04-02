@@ -17,6 +17,7 @@ import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.IObserver;
 import com.veliasystems.menumenu.client.controllers.ImagesController;
 import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
@@ -29,9 +30,15 @@ import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
-public class LoadDataScreen extends JQMPage {
+/**
+ * {@link Deprecated}
+ *
+ */
+@Deprecated
+public class LoadDataScreen extends JQMPage{
 	
 	private StoreServiceAsync storeService = GWT.create(StoreService.class);
 	private RestaurantController restaurantController = RestaurantController.getInstance();
@@ -42,108 +49,178 @@ public class LoadDataScreen extends JQMPage {
 	
 	private String email;
 	
-	public LoadDataScreen(String login){
-		email = login;
-		PagesController.showWaitPanel();
-		
-		storeService.getAllData(login, new AsyncCallback<Map<String,Object>>() {
-			
-			@Override
-			public void onSuccess(Map<String, Object> result) {
-				if(result == null){
-					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
-				}
-				else{
-					setData(result);
-					changePage();	
-				}
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-//				Window.alert(Customization.CONNECTION_ERROR)
-				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
-					
-					@Override
-					public void answer(Boolean answer) {
-						
-					}
-				});
-				Cookies.removeCookie(R.LOADED);
-				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
-				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
-				
-			}
-		});
-		
-	}
+//	public LoadDataScreen(String login){
+//		email = login;
+//		PagesController.showWaitPanel();
+//		
+////		storeService.getAllData(login, new AsyncCallback<Map<String,Object>>() {
+////			
+////			@Override
+////			public void onSuccess(Map<String, Object> result) {
+////				if(result == null){
+////					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+////				}
+////				else{
+////					setData(result);
+////					changePage();	
+////				}
+////				
+////			}
+////			
+////			@Override
+////			public void onFailure(Throwable caught) {
+//////				Window.alert(Customization.CONNECTION_ERROR)
+////				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
+////					
+////					@Override
+////					public void answer(Boolean answer) {
+////						
+////					}
+////				});
+////				Cookies.removeCookie(R.LOADED);
+////				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
+////				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+////				
+////			}
+////		});
+//		
+//		storeService.authorization(login, new AsyncCallback<User>() {
+//			
+//			@Override
+//			public void onSuccess(User user) {
+//				if(user == null){
+////					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+//					JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_INCORRECT));
+//				}
+//				else{
+//					userController.setLoggedUser(user);
+//					long date = new Date().getTime();
+//					date += 1000*60*60*24*3; //three days
+//					cookieController.setCookie(CookieNames.LOGGED_IN, email, date);
+//					changePage();	
+//				}
+//				
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
+//					
+//					@Override
+//					public void answer(Boolean answer) {
+//						
+//					}
+//				});
+//				Cookies.removeCookie(R.LOADED);
+//				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
+////				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+//				JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_INCORRECT));
+//			}
+//			
+//		});
+//		
+//	}
 	
 	public LoadDataScreen(String login, String password) {
 		this.email = login;
 		PagesController.showWaitPanel();
-		storeService.getAllData(login, password, new AsyncCallback<Map<String,Object>>() {
-			
-			@Override
-			public void onSuccess(Map<String, Object> result) {
-				if(result == null){
-					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
-					
-				}
-				else{
-					setData(result);
-					long date = new Date().getTime();
-					date += 1000*60*60*24*3; //three days
-					cookieController.setCookie(CookieNames.LOGGED_IN, email, date);
-					changePage();	
-				}
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+//		storeService.getAllData(login, password, new AsyncCallback<Map<String,Object>>() {
+//			
+//			@Override
+//			public void onSuccess(Map<String, Object> result) {
+//				if(result == null){
+//					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+//					
+//				}
+//				else{
+//					setData(result);
+//					long date = new Date().getTime();
+//					date += 1000*60*60*24*3; //three days
+//					cookieController.setCookie(CookieNames.LOGGED_IN, email, date);
+//					changePage();	
+//				}
+//				
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+		
+//		storeService.authorization(login, password, new AsyncCallback<User>() {
+//			
+//			@Override
+//			public void onSuccess(User user) {
+//				if(user == null){
+////					JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+//					JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_INCORRECT));
+//				}
+//				else{
+//					userController.setLoggedUser(user);
+//					long date = new Date().getTime();
+//					date += 1000*60*60*24*3; //three days
+//					cookieController.setCookie(CookieNames.LOGGED_IN, email, date);
+//					changePage();	
+//				}
+//				
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
+//					
+//					@Override
+//					public void answer(Boolean answer) {
+//						
+//					}
+//				});
+//				Cookies.removeCookie(R.LOADED);
+//				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
+////				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+//				JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_INCORRECT));
+//			}
+//			
+//		});
 		
 	}
 	
-	private void setData(Map<String, Object> data){
-		List<Restaurant> restaurants = (List<Restaurant>) data.get("Restaurants") ;
-		Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
-		for (Restaurant restaurant : restaurants) {
-			restaurantsFromServer.put(restaurant.getId(), restaurant);
-		}
-		List<City> cities = (List<City>) data.get("Cities") ;
-		Map<Long, City> citiesFromServer = new HashMap<Long, City>();
-		for (City city : cities) {
-			citiesFromServer.put(city.getId(), city);
-		}
-		List<User> users = (List<User>) data.get("Users");
-		Map<String, User> usersFromServer = new HashMap<String, User>();
-		for (User user : users) {
-			usersFromServer.put(user.getEmail(), user);
-		}
-		List<ImageBlob> defaultEmptyProfile = (List<ImageBlob>) data.get("DefaultEmptyProfile");
-		Map<String, ImageBlob> defoultEmptyProfilImageBlobMap = new HashMap<String, ImageBlob>();
-		for (ImageBlob imageBlob : defaultEmptyProfile) {
-			defoultEmptyProfilImageBlobMap.put(imageBlob.getId(), imageBlob);
-		}
-		
-		
-		userController.setUsers(usersFromServer);
-		
-		userController.setUserType(email);
-		restaurantController.setRestaurants(restaurantsFromServer);
-		cityController.setCities(citiesFromServer);
-		imagesController.setDefoultEmptyMenuImageBlobMap(defoultEmptyProfilImageBlobMap);
-
-	}
-	
-	private static native void consoleLog(String message)/*-{
-		console.log(message);
-	}-*/;
+//	private void setData(Map<String, Object> data){
+//		List<Restaurant> restaurants = (List<Restaurant>) data.get("Restaurants") ;
+//		Map<Long, Restaurant> restaurantsFromServer = new HashMap<Long, Restaurant>();
+//		for (Restaurant restaurant : restaurants) {
+//			restaurantsFromServer.put(restaurant.getId(), restaurant);
+//		}
+//		List<City> cities = (List<City>) data.get("Cities") ;
+//		Map<Long, City> citiesFromServer = new HashMap<Long, City>();
+//		for (City city : cities) {
+//			citiesFromServer.put(city.getId(), city);
+//		}
+//		List<User> users = (List<User>) data.get("Users");
+//		Map<String, User> usersFromServer = new HashMap<String, User>();
+//		for (User user : users) {
+//			usersFromServer.put(user.getEmail(), user);
+//		}
+//		List<ImageBlob> defaultEmptyProfile = (List<ImageBlob>) data.get("DefaultEmptyProfile");
+//		Map<String, ImageBlob> defoultEmptyProfilImageBlobMap = new HashMap<String, ImageBlob>();
+//		for (ImageBlob imageBlob : defaultEmptyProfile) {
+//			defoultEmptyProfilImageBlobMap.put(imageBlob.getId(), imageBlob);
+//		}
+//		
+//		
+//		userController.setUsers(usersFromServer);
+//		
+//		userController.setUserType(email);
+//		restaurantController.setRestaurants(restaurantsFromServer);
+//		cityController.setCities(citiesFromServer);
+//		imagesController.setDefoultEmptyMenuImageBlobMap(defoultEmptyProfilImageBlobMap);
+//
+//	}
+//	
+//	private static native void consoleLog(String message)/*-{
+//		console.log(message);
+//	}-*/;
 	
 	@Override
 	protected void onPageShow() {
@@ -192,5 +269,5 @@ public class LoadDataScreen extends JQMPage {
 			JQMContext.changePage(PagesController.getPage(Pages.PAGE_CITY_LIST), Transition.SLIDE);
 		}
 	}
-	
+
 }

@@ -1,21 +1,17 @@
 package com.veliasystems.menumenu.client.userInterface;
 
-import java.util.Comparator;
 import java.util.List;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
-import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
@@ -94,9 +90,8 @@ public class CityListScreen extends MyPage implements IObserver{
 		
 
 		
-	    cityList = CityController.getInstance().getCitiesList();
-	    addCities(cityList);
-	    	       
+//	    cityList = CityController.getInstance().getCitiesList();
+//	    addCities(cityList);       
 	    getHeader().setLeftButton(logoutButton);
 	  
 	    
@@ -138,14 +133,14 @@ public class CityListScreen extends MyPage implements IObserver{
 	
 	private void addCities(List<City> cities){
 					
-		for(City city: cities){
-			final CityInfoScreen cityInfoScreen;
-			if(CityController.cityMapView.containsKey(city.getId())){
-				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
-			}else{
-				cityInfoScreen = new CityInfoScreen(city);
-				CityController.cityMapView.put(city.getId(), cityInfoScreen);
-			}
+		for(final City city: cities){
+//			final CityInfoScreen cityInfoScreen;
+//			if(CityController.cityMapView.containsKey(city.getId())){
+//				cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
+//			}else{
+//				cityInfoScreen = new CityInfoScreen(city);
+//				CityController.cityMapView.put(city.getId(), cityInfoScreen);
+//			}
 			
 			final MyListItem cityItem = new MyListItem();
 			cityItem.setText(city.getCity());
@@ -154,6 +149,13 @@ public class CityListScreen extends MyPage implements IObserver{
 				@Override
 				public void onClick(ClickEvent event) {
 					PagesController.showWaitPanel();
+					CityInfoScreen cityInfoScreen;
+					if(CityController.cityMapView.containsKey(city.getId())){
+						cityInfoScreen = CityController.cityMapView.get(city.getId()) ;
+					}else{
+						cityInfoScreen = new CityInfoScreen(city);
+						CityController.cityMapView.put(city.getId(), cityInfoScreen);
+					}
 					JQMContext.changePage(cityInfoScreen);
 				}
 			});
@@ -169,12 +171,13 @@ public class CityListScreen extends MyPage implements IObserver{
 		
 		cookieController.clearCookie(CookieNames.RESTAURANT_ID);
 		
-		if(userController.isUserType(UserType.ADMIN) || userController.isUserType(UserType.AGENT)){
-			getContentPanel().add(adminPanelWrapper);
-		}
-		
-		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
-		PagesController.hideWaitPanel();
+//		if(userController.isUserType(UserType.ADMIN) || userController.isUserType(UserType.AGENT)){
+//			getContentPanel().add(adminPanelWrapper);
+//		}
+//		
+//		PagesController.contentWidth = getOffsetWidth(getContent().getElement());
+//		PagesController.hideWaitPanel();
+		cityController.refreshCities(this);
 	}
 
 	@Override
@@ -185,6 +188,7 @@ public class CityListScreen extends MyPage implements IObserver{
 		getContentPanel().clear();
 		cityList = cityController.getCitiesList();
 	    addCities(cityList);
+	    getContentPanel().add(adminPanelWrapper);
 	}
 	
 	private native int getOffsetWidth(Element element)/*-{
@@ -195,5 +199,6 @@ public class CityListScreen extends MyPage implements IObserver{
 	@Override
 	public void newData() {
 		refreshCityList();
+		PagesController.hideWaitPanel();
 	}
 }

@@ -1,6 +1,7 @@
 package com.veliasystems.menumenu.client.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +9,13 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.services.EmailService;
 import com.veliasystems.menumenu.client.services.EmailServiceAsync;
@@ -33,6 +37,7 @@ public class UserController {
 	private Map<String, User> users = new HashMap<String, User>();
 	private UserType userType;
 	private String loggedUser;
+	private CookieController cookieController = CookieController.getInstance();
 	private UserController() {
 	}
 	/**
@@ -258,6 +263,30 @@ public class UserController {
 	public void setUsers(Map<String, User> users) {
 		this.users = users;
 	}
+	
+	/**
+	 * Sets required data for logged user
+	 * @param user logged user
+	 */
+	public void setLoggedUser(User user) {
+		long date = new Date().getTime();
+		long expirationDate = date + 1000*60*60*24*3; //three days
+		cookieController.setCookie(CookieNames.LOGGED_IN, date+"", expirationDate);
+		cookieController.setCookie(CookieNames.LOGIN, user.getEmail());
+		
+		if(user == null) return;
+		users.put(user.getEmail(), user);
+		loggedUser = user.getEmail();
+		if(user.isAdmin()){
+			userType = UserType.ADMIN;
+		}else if(user.isAgent()){
+			userType = UserType.AGENT;
+		}else{
+			userType = UserType.RESTAURATOR;
+		}
+		
+	}
+	
 	/**
 	 * @deprecated
 	 * @param login
@@ -470,11 +499,60 @@ public class UserController {
 		else iObserver.onChange();
 	}
 	
-	
-	private static native void consoleLog(String message)/*-{
-		console.log(message);
-	}-*/;
-	
+	public void authorization(String login, String password, final IObserver observer){
+		PagesController.showWaitPanel();
+		storeService.authorization(login, password, new AsyncCallback<User>() {
+			
+			@Override
+			public void onSuccess(User user) {
+				if(user != null){
+					setLoggedUser(user);
+				}
+				
+				observer.newData();
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new  IMyAnswer() {
+					
+					@Override
+					public void answer(Boolean answer) {
+						
+					}
+				});	
+				
+				cookieController.clearCookie(CookieNames.RESTAURANT_ID);
+				observer.newData();
+//				JQMContext.changePage(com.veliasystems.menumenu.client.userInterface.Pages.PAGE_LOGIN_WRONG);
+//				JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_INCORRECT));
+			}
+			
+		});
+	}
+	public void authorization(String login) {
+		PagesController.showWaitPanel();
+		storeService.authorization(login, new AsyncCallback<User>() {
+			
+			@Override
+			public void onSuccess(User user) {
+				if(user != null){
+					setLoggedUser(user);
+					PagesController.getInstance().changePageAfterLogin();
+				}else{
+					JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_CORRECT));
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
 
 	
 }

@@ -2,6 +2,8 @@ package com.veliasystems.menumenu.client.userInterface;
 
 import java.util.Date;
 
+import org.apache.commons.httpclient.methods.GetMethod;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
@@ -13,22 +15,30 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sksamuel.jqm4gwt.JQMContext;
+import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.MenuMenuMobileWeb;
 import com.veliasystems.menumenu.client.R;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.IObserver;
+import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.controllers.RestaurantController;
+import com.veliasystems.menumenu.client.controllers.UserController;
+import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListItem;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
+import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyRestaurantInfoPanel;
 
 
-public class LoginScreen extends MyPage{
+public class LoginScreen extends MyPage implements IObserver{
 
 //	JQMHeader header;
 	private MyButton cancelButton;
@@ -55,6 +65,8 @@ public class LoginScreen extends MyPage{
 	private boolean isWrongData = false;
 
 	private CookieController cookieController = CookieController.getInstance();
+	private UserController userController = UserController.getInstance();
+	private RestaurantController restaurantController = RestaurantController.getInstance();
 	
 	public LoginScreen(boolean isWrongLogin){
 		super();
@@ -80,7 +92,8 @@ public class LoginScreen extends MyPage{
 					long date = new Date().getTime();
 					date += 1000*60*60*24*3; //three days
 					cookieController.setCookie(CookieNames.LOGIN, nameBox.getValue(), date);
-					JQMContext.changePage(new LoadDataScreen(nameBox.getValue(), passwordBox.getValue()));
+					userController.authorization(nameBox.getValue(), passwordBox.getValue(), getMe());
+//					JQMContext.changePage(new LoadDataScreen(nameBox.getValue(), passwordBox.getValue()));
 				}
 			}
 		});
@@ -233,6 +246,7 @@ public class LoginScreen extends MyPage{
 	
 	@Override
 	protected void onPageShow() {
+		super.onPageShow();
 		namePanel.setWidth( JS.getElementOffsetWidth(getElement())-40 );
 		passwordPanel.setWidth( JS.getElementOffsetWidth(getElement())-40 );
 		
@@ -258,11 +272,12 @@ public class LoginScreen extends MyPage{
 		if(footer.getWidgetCount() == 0){
 			setFooterWithFlags();
 		}
-		
-		super.onPageShow();
 	}
 	
-
+	private LoginScreen getMe(){
+		return this;
+	}
+	
 	public String getCurrentLocale(){	
 	    String ret = Window.Location.getParameter("locale");
 	    if (ret==null || ret.isEmpty()) ret = R.ENGLISH_CODE; // default
@@ -283,5 +298,34 @@ public class LoginScreen extends MyPage{
 	    $wnd.location.replace(tmp);
 	    console.log(locale);
      }-*/;
+
+
+	@Override
+	public void onChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void newData() {
+
+		if( userController.getLoggedUser() != null){
+			PagesController.getInstance().changePageAfterLogin();
+		}else{
+			PagesController.hideWaitPanel();
+			
+			PagesController.MY_POP_UP.showError(new Label(Customization.WRONG_LOGIN_DATA), new IMyAnswer() {
+				
+				@Override
+				public void answer(Boolean answer) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
+	}
+	
+	
 	
 }

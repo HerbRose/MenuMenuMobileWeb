@@ -7,10 +7,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
+import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
+import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.userInterface.LoadDataScreen;
 import com.veliasystems.menumenu.client.userInterface.NewUserPage;
-import com.veliasystems.menumenu.client.userInterface.Pages;
 import com.veliasystems.menumenu.client.userInterface.WelcomeMobilePage;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
 
@@ -51,25 +52,29 @@ public class MenuMenuMobileWeb implements EntryPoint {
 		final boolean isOSMobile = osType.toLowerCase().indexOf("ipad") >= 0 || osType.toLowerCase().indexOf("iphone") >= 0;
 		final boolean isAndroid = osType.toLowerCase().indexOf("android") >= 0;
 		
-		
-		
 		if (logged != null && !logged.equals("null") && !logged.isEmpty()) loggedIn = true; //it's weird, but it seems to be working
 		
 		if (loggedIn) {	
-			if(isMobile()) JQMContext.changePage( new LoadDataScreen(logged) );
-			else {
-				R.isMobile = false;
-				JQMContext.changePage( new LoadDataScreen(logged) );
-			}
+//			if(isMobile()) JQMContext.changePage( new LoadDataScreen(logged) );
+//			else {
+//				R.isMobile = false;
+//				JQMContext.changePage( new LoadDataScreen(logged) );
+//			}
+			
+			if(!isMobile()) R.isMobile = false;
+			UserController.getInstance().authorization(cookieController.getCookie(CookieNames.LOGIN));
+			
+			
 		} else {
 			if(isOSMobile || isAndroid) {
 				JQMContext.changePage( new WelcomeMobilePage());
 			}
 			else {
 				R.isMobile = false;
-				JQMContext.changePage( Pages.PAGE_LOGIN_OK );
+//				JQMContext.changePage( Pages.PAGE_LOGIN_OK );
+				JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_CORRECT));
 			}
-		}	
+		}
 	}
 	
 	private native boolean isMobile()/*-{

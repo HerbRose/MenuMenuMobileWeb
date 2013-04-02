@@ -116,8 +116,8 @@ public class UploadRestaurantsPanel extends FlowPanel implements IManager, IObse
 	private void checkWhenHideSpinner(){
 		numberOfNewDataSuccess = 0;
 		PagesController.showWaitPanel();
-		CityController.getInstance().refreshCitiesAndNotifyAll(this);
-		RestaurantController.getInstance().refreshRestaurantsAndNotifyAll(this);
+//		CityController.getInstance().refreshCitiesAndNotifyAll(this);
+//		RestaurantController.getInstance().refreshRestaurantsAndNotifyAll(this);
 	}
 
 	@Override

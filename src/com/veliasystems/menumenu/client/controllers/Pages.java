@@ -4,6 +4,7 @@ package com.veliasystems.menumenu.client.controllers;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.veliasystems.menumenu.client.userInterface.AddRestaurantScreen;
 import com.veliasystems.menumenu.client.userInterface.CityListScreen;
+import com.veliasystems.menumenu.client.userInterface.LoginScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsListScreen;
 import com.veliasystems.menumenu.client.userInterface.RestaurantsManagerScreen;
 
@@ -33,7 +34,9 @@ public enum Pages {
 	 */
 	PAGE_RESTAURANT_MANAGER,
 	PAGE_ADMINISTRATION,
-	POP_UP;
+	POP_UP,
+	PAGE_LOGIN_CORRECT,
+	PAGE_LOGIN_INCORRECT;
 	
 	
 	/**
@@ -62,6 +65,12 @@ public enum Pages {
 				break;
 			case PAGE_ADMINISTRATION:
 					page = new RestaurantsManagerScreen();
+				break;
+			case PAGE_LOGIN_CORRECT:
+				page = new LoginScreen(false);
+				break;
+			case PAGE_LOGIN_INCORRECT:
+				page = new LoginScreen(true);
 				break;
 			default:
 				page = new JQMPage();

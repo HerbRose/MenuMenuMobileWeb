@@ -18,8 +18,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveCityWrapper;
 import com.veliasystems.menumenu.client.entities.City;
+import com.veliasystems.menumenu.client.entities.LastModified;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.StoreService;
 import com.veliasystems.menumenu.client.services.StoreServiceAsync;
@@ -325,12 +327,20 @@ public class CityController{
 
 	public void refreshCities(final IObserver observer) {
 		PagesController.showWaitPanel();
-		
-		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), Util.getLastModifieTime(LastModified.cityListIdString), new AsyncCallback< Map<Long ,List<City>> >() {
 			
 			@Override
-			public void onSuccess(List<City> citiesList) {
-				refreshCities(citiesList);
+			public void onSuccess(Map<Long ,List<City>> responseMap) {
+				
+				Set<Long> isNewData = responseMap.keySet();
+				
+				for (Long lastSync : isNewData) {
+					List<City> cities = responseMap.get(lastSync);
+					if(cities != null){
+						refreshCities(cities);
+						Util.setLastModifieTime(LastModified.cityListIdString, lastSync);
+					}
+				}
 				notifyObserver(observer);
 			}
 
@@ -346,17 +356,24 @@ public class CityController{
 				});
 			}
 		});
-	}
-	
+	}	
 	
 	public void refreshCitiesAndNotifyAll(final IObserver observer){
 	
-		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<City>>() {
+		storeService.getCitiesForUser(userController.getLoggedUser().getEmail(), Util.getLastModifieTime(LastModified.cityListIdString), new AsyncCallback<Map<Long ,List<City>>>() {
 			
 			@Override
-			public void onSuccess(List<City> citiesList) {
+			public void onSuccess(Map<Long ,List<City>> responseMap) {
 				
-				refreshCities(citiesList);
+				Set<Long> isNewData = responseMap.keySet();
+				
+				for (Long lastSync : isNewData) {
+					List<City> cities = responseMap.get(lastSync);
+					if(cities != null){
+						refreshCities(cities);
+						Util.setLastModifieTime(LastModified.cityListIdString, lastSync);
+					}
+				}
 				notifyAllObservers();
 				notifyObserver(observer);
 			}

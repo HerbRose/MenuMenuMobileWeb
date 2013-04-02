@@ -15,6 +15,16 @@ public class Util
 
     private static String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     
+    private static Map<String, Long> lastModyfieMap = new HashMap<String, Long>();
+   	public static long getLastModifieTime( String id ){
+   		Long time = lastModyfieMap.get(id);
+   		if(time == null) return 0;
+   		return time;
+   	}
+   	public static void setLastModifieTime(String id, long time){
+   		lastModyfieMap.put(id, time);
+   	}
+   	
 	public static long getRandom() {
 	   return (long) (Math.random() * 999999999);
 	}

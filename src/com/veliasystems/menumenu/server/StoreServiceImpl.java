@@ -53,6 +53,7 @@ import com.veliasystems.menumenu.client.entities.BackUpBlobKey;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.LastModified;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.entities.UserToAdd;
@@ -110,6 +111,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return dao.ofy().find(City.class, cityId);
 	}
 	public User findUser(String email){
+		if(email == null) return null;
+		email = email.trim();
 		return dao.ofy().find(User.class, email);
 	}
 	public ImageBlob findImageBlob(BlobKey blobKey){
@@ -152,13 +155,13 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		if( user.isAdmin() ){
 			return new ArrayList<City>(loadCitiesEntity());
 		}
-		if( user.isAgent() ){ // is not necessary but just in case
+		if( user.isAgent() ){
 			List<Long> citiesIdList = user.getCitiesId();
 			if(citiesIdList!=null && !citiesIdList.isEmpty()){
 				listCities.addAll(loadCities(citiesIdList));
 			}
 		}
-		if( user.isRestaurator() ){// is not necessary but just in case
+		if( user.isRestaurator() ){
 			List<Long> restaurantsIdListFromUser = user.getRestaurantsId();
 			if(restaurantsIdListFromUser!=null && !restaurantsIdListFromUser.isEmpty()){
 				List<City> restaurantsCities = loadCitiesByRestaurant(loadRestaurants(restaurantsIdListFromUser));
@@ -189,16 +192,54 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	/**
+	 * return date in milliseconds when data was last time modified
+	 * @param entityIdString
+	 * @return
+	 */
+	private long getLastChangeTime(String entityIdString){
+		if(entityIdString == null || entityIdString.isEmpty()) return -1;
+		
+		LastModified lastModyfied = dao.ofy().find(LastModified.class, entityIdString);
+		if(lastModyfied == null) return new Date().getTime();
+		return lastModyfied.getTime();
+	}
+	private void setLastChangeTime(String entityIdString){
+		if(entityIdString == null || entityIdString.isEmpty()) return;
+		
+		LastModified lastModyfied = dao.ofy().find(LastModified.class, entityIdString);
+		if(lastModyfied == null){
+			lastModyfied = new LastModified(entityIdString, new Date().getTime());
+		}else{
+			lastModyfied.setTime(new Date().getTime());
+		}
+		saveLastModified(lastModyfied);
+	}
+	private void saveLastModified(LastModified lastModyfied){
+		dao.ofy().put(lastModyfied);
+	}
+	private void deleteLastModified(String id){
+		dao.ofy().delete(LastModified.class, id);
+	}
+	/**
 	 * 
 	 * @param email the {@link User#email}
 	 * @return List of {@link City} available for the {@link User}
 	 */
 	@Override
-	public List<City> getCitiesForUser(String email){
+	public Map<Long ,List<City>> getCitiesForUser(String email, long lastCitySyncDate){
+		Map<Long ,List<City>> response = new HashMap<Long, List<City>>();
+
+		long lastDateSync = getLastChangeTime(LastModified.cityListIdString) ;
 		
-		User user = findUser(email);
-		return loadCities(user);
-		
+		if(lastDateSync > lastCitySyncDate){
+			User user = findUser(email);
+			List<City> cities = loadCities(user);
+			response.put(lastDateSync, cities);
+		}else{
+			response.put(lastDateSync, null);
+		}
+
+		return response;
 	}
 	
 	/**
@@ -212,7 +253,37 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		User user = findUser(email);
 		return loadRestaurants(user);
 		
-	}	
+	}
+
+	/**
+	 * 
+	 * @param email the {@link User#email}
+	 * @param cityId the city id
+	 * @param lastRestaurantSyncDate data in milliseconds 
+	 * @return List of {@link Restaurant} available for the {@link User}
+	 */
+	@Override
+	public Map<Long ,List<Restaurant>> getRestaurantsForUser(String email, long cityId, long lastRestaurantSyncDate){
+		Map<Long ,List<Restaurant>> response = new HashMap<Long, List<Restaurant>>();
+		long lastDateSync = getLastChangeTime(LastModified.restaurantListPrefix+cityId);
+		if(lastDateSync > lastRestaurantSyncDate){
+			User user = findUser(email);
+			List<Restaurant> restaurants = loadRestaurants(user, cityId);
+//			List<Restaurant> restaurantsInCity = new ArrayList<Restaurant>();
+//			for (Restaurant restaurant : restaurants) {
+//				if(restaurant.getCityId() == cityId){
+//					restaurantsInCity.add(restaurant);
+//				}
+//				response.put(lastDateSync, restaurantsInCity);
+//			}
+			response.put(lastDateSync, restaurants);
+		}else{
+			response.put(lastDateSync, null);
+		}
+		return response;
+		
+	}
+	
 	/**
 	 * 
 	 * @param restList - List of {@link Restaurant} 
@@ -321,7 +392,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		dao.ofy().put(r);
+//		dao.ofy().put(r);
+		put(r);
 	}
 	/**
 	 * @deprecated
@@ -397,7 +469,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	
 	@Override
 	public void saveRestaurants(List <Restaurant> restaurants){
-		
+		if(restaurants == null || restaurants.isEmpty()) return;
+		long cityId = restaurants.get(0).getCityId();
 		for (Restaurant restaurant : restaurants) {
 			restaurant.setLogoImages(null);
 			restaurant.setMenuImages(null);
@@ -406,6 +479,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		
 		dao.ofy().put(restaurants);
+		setLastChangeTime(LastModified.restaurantListPrefix+cityId);
 	}
 	
 	@Override
@@ -445,7 +519,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		r.setNormalizedName(normalizeName(r.getName()));
 	
-		dao.ofy().put(r);
+//		dao.ofy().put(r);
+		put(r);
 		String responseMessage = "New restaurant added ";
 		if(isAdded){
 			responseMessage += "\nThe message was sent to added user"; 
@@ -727,7 +802,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setMenuImages(null);
 			r.setProfileImages(null);
 			r.setNormalizedName(normalizeName(r.getName()));
-			dao.ofy().put(r);
+//			dao.ofy().put(r);
+			put(r);
 			if(usersToAdd != null) {
 				addUsersToRestaurant(usersToAdd, r, userEmail);
 			}
@@ -786,7 +862,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			r.setProfileImages(null);
 			r.setNormalizedName(normalizeName(r.getName()));
 			// r.setCityId(getCityId(r.getCity()));
-			dao.ofy().put(r);
+//			dao.ofy().put(r);
+			put(r);
 			return r;
 			// System.out.println("saved succes: " + r.getName());
 	}
@@ -963,7 +1040,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
 		//System.out.println(restQuery.filter("city =", city).order("name").count());
-		return getImageLists( restQuery.filter("city =", city).order("name").list() );
+		return getImageLists( restQuery.filter("city", city).order("name").list() );
 	}
 	/**
 	 * 
@@ -974,7 +1051,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
 		if (restQuery==null) return new ArrayList<Restaurant>();
 		//System.out.println(restQuery.filter("city =", city).order("name").count());
-		return getImageLists( restQuery.filter("cityId =", cityId).list() );
+		return getImageLists( restQuery.filter("cityId", cityId).list() );
 	}
 	
 	@Override
@@ -1019,6 +1096,48 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		return new ArrayList<Restaurant>(restaurantsSet);
 	}
+	
+	/**
+	 * load restaurant for user in city
+	 * @param user - logged {@link User}
+	 * @return List of {@link Restaurant} for {@link User}
+	 */
+	private List<Restaurant> loadRestaurants(User user, long cityId){
+		
+		if(user == null) return new ArrayList<Restaurant>();
+		Set<Restaurant> restaurantsSet = new HashSet<Restaurant>();
+		
+		if(user.isAdmin()){
+			return loadRestaurants(cityId); //loadRestaurants();
+		}
+		if(user.isAgent()){
+			if(user.getCitiesId().contains(cityId)){
+				return loadRestaurants(cityId); //loadRestaurants();
+			}
+//			List<Long> citiesId = user.getCitiesId();
+//			
+//			if(citiesId != null && !citiesId.isEmpty()){
+//				restaurantsSet.addAll(loadRestaurantsByCitiesId(citiesId));
+//			}
+		}
+		if(user.isRestaurator()){
+			List<Long> restaurantsId = user.getRestaurantsId();
+//			if(restaurantsId != null && !restaurantsId.isEmpty()){
+//				restaurantsSet.addAll(loadRestaurants(restaurantsId));
+//			}
+			if(restaurantsId != null){
+				List<Restaurant> restaurants = loadRestaurants(restaurantsId);
+				for (Restaurant restaurant : restaurants) {
+					if(restaurant.getCityId() == cityId){
+						restaurantsSet.add(restaurant);
+					}
+				}
+			}
+		}
+		
+		return new ArrayList<Restaurant>(restaurantsSet);
+	}
+	
 	/**
 	 * 
 	 * @param restaurants - list of {@link Restaurant}
@@ -1105,6 +1224,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		dao.ofy().delete(restaurantsList);
 		dao.ofy().delete(City.class, cityId);
+		setLastChangeTime(LastModified.cityListIdString);
+		deleteLastModified(LastModified.restaurantListPrefix+cityId);
 		return cityId;
 	}
 	
@@ -1152,7 +1273,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 				break;
 		}
 		
-		dao.ofy().put(r);
+		put(r);
+//		dao.ofy().put(r);
 		return r;
 	}
 
@@ -1235,7 +1357,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 					c.setCity(r.getCity());
 					c.setCountry("Poland");
 					c.setNormalizedCityName(normalizeName(c.getCity()));
-					dao.ofy().put(c);
+//					dao.ofy().put(c);
+					put(c);
 					city.add(c.getCity());
 					Long id = c.getId();
 					r.setCityId(id);
@@ -1293,7 +1416,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		c.setCity(cityName);
 		c.setCountry(country);
 		c.setNormalizedCityName(normalizeName(cityName));
-		dao.ofy().put(c);
+//		dao.ofy().put(c);
+		put(c);
 		return c;
 	}
 	
@@ -1321,13 +1445,44 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		if(isOk){
 			city.setNormalizedCityName(normalizeName(city.getCity()));
-			dao.ofy().put(city);		
+//			dao.ofy().put(city);	
+			put(city);
 		}
 		
 		responseSaveWrapper.setCity(city);
 		responseSaveWrapper.setErrorCodes(errorCodes);
 		
 		return responseSaveWrapper;
+	}
+	
+	private void put(Object object){
+		if(object == null) return;
+		
+		dao.ofy().put(object);
+		
+		if(object instanceof City){
+//			Util.setCityLastDateSync();
+			setLastChangeTime(LastModified.cityListIdString);
+		}else if(object instanceof Restaurant) {
+//			Util.setRestaurantLastDateSync();
+			Restaurant restaurant = (Restaurant) object;
+			setLastChangeTime(LastModified.restaurantListPrefix+restaurant.getCityId());
+		}
+	}
+	
+	private void delete(Object object){
+		if(object == null) return;
+		
+		dao.ofy().delete(object);
+		
+		if(object instanceof City){
+//			Util.setCityLastDateSync();
+			setLastChangeTime(LastModified.cityListIdString);
+		}else if(object instanceof Restaurant) {
+//			Util.setRestaurantLastDateSync();
+			Restaurant restaurant = (Restaurant) object;
+			setLastChangeTime(LastModified.restaurantListPrefix+restaurant.getCityId());
+		}
 	}
 	
 	/**
@@ -1360,6 +1515,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //			}
 //		}
 //	}
+	
+	
 	
 	@Override
 	public Map<String, Object> getAllData(String login, String password){
@@ -1434,11 +1591,34 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	 * @param login - {@link User} login
 	 * @return {@link User} if is permitted or null if not
 	 */
-	private User authorization(String login){
+	@Override
+	public User authorization(String login){
+		if(login == null || login.isEmpty()){
+			return null;
+		}
 		Query<User> userQuery = dao.ofy().query(User.class);
 		if(userQuery != null){
 			for (User user : userQuery) {
 				if(user.getEmail().equalsIgnoreCase(login)) return user ;
+			}
+		}	
+		return null;
+	}
+	@Override
+	public User authorization(String login, String password){
+		if(login == null || login.isEmpty() || password ==null || password.isEmpty() ){
+			return null;
+		}
+		Query<User> userQuery = dao.ofy().query(User.class);
+		if(userQuery != null){
+			for (User user : userQuery) {
+				if(user.getEmail().equalsIgnoreCase(login)){
+					if(user.getPassword().equals(password)){
+						return user ;
+					}else {
+						return null; //no more users with this email
+					}
+				}
 			}
 		}	
 		return null;
@@ -1722,7 +1902,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 			cityTo.setCity(newCityName);
 			cityTo.setCountry(cityFrom.getCountry());
 			cityTo.setNormalizedCityName(newCityName);
-			dao.ofy().put(cityTo);
+//			dao.ofy().put(cityTo);
+			put(cityTo);
 			
 		}else{
 			cityTo = findCity(cityIdToLong);
@@ -1856,7 +2037,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		
 		if(restaurant != null){
 			restaurant.setVisibleForApp(isPublish);
-			dao.ofy().put(restaurant);
+//			dao.ofy().put(restaurant);
+			put(restaurant);
 			return true;
 		}else{
 			log.severe("StoreServiceImpl::publishRestaurant(), restaurant (id: "+restaurantId+ ") not found");
@@ -1868,7 +2050,7 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		Query<Restaurant> query = dao.ofy().query(Restaurant.class);
 		if(query == null) return;
 
-		List<Restaurant> restaurants = query.filter("lat =", null).list();
+		List<Restaurant> restaurants = query.filter("lat", null).list();
 		if(restaurants == null || restaurants.isEmpty()){
 			log.info("no restaurants found");
 			return;

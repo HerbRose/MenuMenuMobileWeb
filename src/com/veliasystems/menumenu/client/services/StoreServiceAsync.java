@@ -76,16 +76,26 @@ public interface StoreServiceAsync {
 
 	void saveRestaurant(Restaurant r, AsyncCallback<Restaurant> callback);
 
-	void getCitiesForUser(String email, AsyncCallback<List<City>> callback);
-
+	void getCitiesForUser(String email, long lastCitySyncDate,
+			AsyncCallback<Map<Long, List<City>>> callback);
+	
 	void saveUser(User user, AsyncCallback<User> callback);
 
 	void getRestaurantsForUser(String email,
 			AsyncCallback<List<Restaurant>> callback);
+	
+	void getRestaurantsForUser(String email, long cityId,
+			long lastRestaurantSyncDate,
+			AsyncCallback<Map<Long, List<Restaurant>>> callback);
 
 	void confirmUser(User user, UserToAdd userToAdd,
 			AsyncCallback<ResponseUserWrapper> callback);
 
 	void addUserToTests(User user, AsyncCallback<Void> asyncCallback);
+	
+	void authorization(String login, AsyncCallback<User> callback);
+
+	void authorization(String login, String password,
+			AsyncCallback<User> asyncCallback);
 
 }

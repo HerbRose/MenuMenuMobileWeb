@@ -20,6 +20,7 @@ import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.CookieController;
 import com.veliasystems.menumenu.client.controllers.CookieNames;
 import com.veliasystems.menumenu.client.controllers.ErrorCodes;
+import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseUserWrapper;
 import com.veliasystems.menumenu.client.entities.User;
@@ -133,7 +134,8 @@ public class NewUserPage extends MyPage{
 									long date = new Date().getTime();
 									date += 1000*60*60*24*3; //three days
 									cookieController.setCookie(CookieNames.LOGIN, email, date);
-									JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
+//									JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
+									JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_CORRECT));
 								} else{
 									String msg = "";
 									for (int i : result.getErrorCodes()) {

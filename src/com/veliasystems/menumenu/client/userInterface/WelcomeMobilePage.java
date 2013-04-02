@@ -11,6 +11,7 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.R;
+import com.veliasystems.menumenu.client.controllers.Pages;
 import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
@@ -101,7 +102,8 @@ public class WelcomeMobilePage extends MyPage{
 	}
 	private void goToLoginScreen(){
 		PagesController.showWaitPanel();
-		JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
+//		JQMContext.changePage(Pages.PAGE_LOGIN_OK, Transition.SLIDE);
+		JQMContext.changePage(PagesController.getPage(Pages.PAGE_LOGIN_CORRECT));
 	}
 	
 	@Override

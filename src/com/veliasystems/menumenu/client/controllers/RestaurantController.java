@@ -18,9 +18,11 @@ import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
 import com.veliasystems.menumenu.client.Customization;
+import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.responseWrappers.ResponseSaveRestaurantWrapper;
 import com.veliasystems.menumenu.client.entities.ImageBlob;
 import com.veliasystems.menumenu.client.entities.ImageType;
+import com.veliasystems.menumenu.client.entities.LastModified;
 import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.services.BlobService;
 import com.veliasystems.menumenu.client.services.BlobServiceAsync;
@@ -840,20 +842,19 @@ public class RestaurantController {
 		});
 		
 	}
-	public void refreshRestaurants(final IObserver addRestauratorPanel) {
+	public void refreshRestaurants(final IObserver observer) {
 		
 		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<Restaurant>>() {
 			
 			@Override
 			public void onSuccess(List<Restaurant> restaurants) {
 				refreshRestaurantList(restaurants);
-				notifieObserver(addRestauratorPanel);
+				notifieObserver(observer);
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-//				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
 					
 					@Override
@@ -866,22 +867,28 @@ public class RestaurantController {
 		
 	}
 	
-	public void refreshRestaurantsAndNotifyAll(final IObserver observer) {
+	public void refreshRestaurants(final IObserver observer, final long cityId) {
 		
-		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<Restaurant>>() {
+		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), cityId, Util.getLastModifieTime(LastModified.restaurantListPrefix+cityId), new AsyncCallback<Map<Long ,List<Restaurant>>>() {
 			
 			@Override
-			public void onSuccess(List<Restaurant> restaurants) {
-				refreshRestaurantList(restaurants);
+			public void onSuccess(Map<Long ,List<Restaurant>> responseMap) {
+				Set<Long> isNewData = responseMap.keySet();
 				
-				notifyAllObservers();
+				for (Long lastSync : isNewData) {
+					List<Restaurant> restaurants = responseMap.get(lastSync);
+					
+					if(restaurants != null){
+						updateRestaurantList(responseMap.get(lastSync));
+						Util.setLastModifieTime(LastModified.restaurantListPrefix+cityId, lastSync);
+					}
+				}
 				notifieObserver(observer);
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				PagesController.hideWaitPanel();
-//				Window.alert(Customization.CONNECTION_ERROR);
 				PagesController.MY_POP_UP.showError(new Label(Customization.CONNECTION_ERROR), new IMyAnswer() {
 					
 					@Override
@@ -894,6 +901,14 @@ public class RestaurantController {
 		
 	}
 
+	private void updateRestaurantList(List<Restaurant> restaurants) {
+		for (Restaurant restaurant : restaurants) {
+			
+			this.restaurants.put(restaurant.getId(), restaurant);
+		}
+		
+	}
+	
 	private void refreshRestaurantList(List<Restaurant> restaurants) {
 		this.restaurants.clear();
 		for (Restaurant restaurant : restaurants) {

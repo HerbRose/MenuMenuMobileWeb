@@ -1,11 +1,14 @@
 package com.veliasystems.menumenu.client.userInterface;
 
-
+/**
+ *{@link Deprecated}
+ */
+@Deprecated
 public class Pages {
 	
 	//public static UploadImageScreen		PAGE_UPLOAD			= new UploadImageScreen();
 	
-	public static CityInfoScreen		PAGE_CITY_INFO		;//= new CityInfoScreen();
+//	public static CityInfoScreen		PAGE_CITY_INFO		;//= new CityInfoScreen();
 //	public static CityListScreen		PAGE_CITY_LIST		;//= new CityListScreen();
 	
 //	public static AddRestaurantScreen	PAGE_ADD_RESTAURANT ;//= new AddRestaurantScreen();
@@ -13,7 +16,7 @@ public class Pages {
 //	public static RestaurantsListScreen	PAGE_RESTAURANT_LIST ;//= new RestaurantsListScreen();
 
 //	public static HomePageScreen		PAGE_HOME			;//= new HomePageScreen();
-	public static LoginScreen			PAGE_LOGIN_WRONG			= new LoginScreen(true);
-	public static LoginScreen			PAGE_LOGIN_OK 		= new LoginScreen(false);
+//	public static LoginScreen			PAGE_LOGIN_WRONG	= new LoginScreen(true);
+//	public static LoginScreen			PAGE_LOGIN_OK 		= new LoginScreen(false);
 
 }

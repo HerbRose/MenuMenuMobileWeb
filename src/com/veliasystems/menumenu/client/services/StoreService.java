@@ -170,13 +170,20 @@ public interface StoreService extends RemoteService {
 	List<Object> addNewRestaurant(Restaurant restaurant, List<String> usersEmailToAdd,
 			String emailAddingUser);
 
-	List<City> getCitiesForUser(String email);
+	Map<Long, List<City>> getCitiesForUser(String email, long lastCitySyncDate);
 
 	User saveUser(User user);
 
 	List<Restaurant> getRestaurantsForUser(String email);
+	
+	Map<Long ,List<Restaurant>> getRestaurantsForUser(String email, long cityId, long lastRestaurantSyncDate);
 
 	ResponseUserWrapper confirmUser(User user, UserToAdd userToAdd);
 
 	void addUserToTests(User user);
+	
+	User authorization(String login);
+	
+	User authorization(String login, String password);
+	
 }
