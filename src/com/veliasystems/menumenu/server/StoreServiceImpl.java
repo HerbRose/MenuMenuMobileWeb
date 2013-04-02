@@ -1237,15 +1237,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	@Override
 	public Restaurant setMainImage(ImageBlob imageBlob) {
 		// TODO Auto-generated method stub
-		
 		Long restId = Long.valueOf(imageBlob.getRestaurantId());
-		
+				
 		Restaurant r =dao.ofy().query(Restaurant.class).filter("id =", restId).get();
 		
 		if(r == null){
 			return r; //null
 		}
-		
+
 		switch(imageBlob.getImageType()){
 			case PROFILE:
 				r.setMainProfileImageString(imageBlob.getImageUrl());
