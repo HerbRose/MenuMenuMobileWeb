@@ -31,7 +31,9 @@
 .myHeader {
 	position: relative;
 }
-
+.contentPanel{
+	padding-bottom: 10px;
+}
 .malinaPanel { /* gorny pasek */
 	height: 15px !important;
 	background: url("/img/layout/headerBackgroundRed.png") repeat #BF2135

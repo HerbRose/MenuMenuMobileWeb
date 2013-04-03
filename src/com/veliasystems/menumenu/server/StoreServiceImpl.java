@@ -243,6 +243,24 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	}
 	
 	/**
+	 * @param email user email (login)
+	 * @return map where key is {@link City#id} and value is {@link City#city}  
+	 */
+	@Override
+	public Map<Long ,String> getCitiesNameAndIdForUser(String email){
+		Map<Long ,String> cityIdAndName = new HashMap<Long, String>();
+		
+		User user = findUser(email);
+		List<City> cities = loadCities(user);
+		
+		for (City city : cities) {
+			cityIdAndName.put(city.getId(), city.getCity());
+		}
+		
+		return cityIdAndName;
+	}
+	
+	/**
 	 * 
 	 * @param email the {@link User#email}
 	 * @return List of {@link Restaurant} available for the {@link User}
@@ -282,6 +300,27 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}
 		return response;
 		
+	}
+	
+	/**
+	 * 
+	 * @param email user email (login)
+	 * @return map were key is a {@link Restaurant#id} and value is a String contain {@link Restaurant#name} + {@link Restaurant#address}
+	 */
+	@Override
+	public Map<Long ,String> getRestaurantsNameAndIdForUser(String email){
+		
+		Map<Long ,String> restaurantsNameAndId = new HashMap<Long, String>();
+		if(email == null || email.isEmpty()) return restaurantsNameAndId;
+		
+		User user = findUser(email);
+		List<Restaurant> restaurants = loadRestaurantsWithOutImagesList(user);
+		
+		for (Restaurant restaurant : restaurants) {
+			restaurantsNameAndId.put(restaurant.getId(), restaurant.getName()+ " " + restaurant.getAddress());
+		}
+		
+		return restaurantsNameAndId;
 	}
 	
 	/**
@@ -1070,9 +1109,39 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 	/**
 	 * 
 	 * @param user - logged {@link User}
-	 * @return List of {@link Restaurant} for {@link User}
+	 * @return List of {@link Restaurant} for given {@link User}
 	 */
 	private List<Restaurant> loadRestaurants(User user){
+		
+		if(user == null) return new ArrayList<Restaurant>();
+		Set<Restaurant> restaurantsSet = new HashSet<Restaurant>();
+		
+		if(user.isAdmin()){
+			return loadRestaurants();
+		}
+		if(user.isAgent()){
+			List<Long> citiesId = user.getCitiesId();
+			
+			if(citiesId != null && !citiesId.isEmpty()){
+				restaurantsSet.addAll(loadRestaurantsByCitiesId(citiesId));
+			}
+		}
+		if(user.isRestaurator()){
+			List<Long> restaurantsId = user.getRestaurantsId();
+			if(restaurantsId != null && !restaurantsId.isEmpty()){
+				restaurantsSet.addAll(loadRestaurants(restaurantsId));
+			}
+		}
+		
+		return new ArrayList<Restaurant>(restaurantsSet);
+	}
+	/**
+	 * method find all restaurant for given user. This method do not return images links list in restaurant. 
+	 * To get restaurants with images links list use {@link StoreServiceImpl#loadRestaurants(User)}
+	 * @param user - logged {@link User}
+	 * @return List of {@link Restaurant} for given {@link User} <strong>with out images links list! </strong>
+	 */
+	private List<Restaurant> loadRestaurantsWithOutImagesList(User user){
 		
 		if(user == null) return new ArrayList<Restaurant>();
 		Set<Restaurant> restaurantsSet = new HashSet<Restaurant>();

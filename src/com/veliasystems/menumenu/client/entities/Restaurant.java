@@ -3,10 +3,8 @@ package com.veliasystems.menumenu.client.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.jdo.annotations.Persistent;
 import javax.persistence.Id;
 
 import com.veliasystems.menumenu.client.Util;
@@ -413,12 +411,23 @@ public class Restaurant implements Serializable {
 		
 		Restaurant r = (Restaurant) obj;
 		
-		if(this.getName().equalsIgnoreCase(r.getName()) && this.getAddress().equalsIgnoreCase(r.getAddress()) && this.getCityId() == (r.getCityId())){
+		if(this.getName().equalsIgnoreCase(r.getName()) && this.getAddress().equalsIgnoreCase(r.getAddress()) && this.getCityId() == (r.getCityId())){ 
 			return true;
 		}
 		
 		return false;
 		
+	}
+	
+	@Override
+	public int hashCode() {
+		int resoult = 37;
+		
+		resoult = (resoult << 5) - resoult + name.hashCode();
+		resoult = (resoult << 5) - resoult + address.hashCode();
+		resoult = (resoult << 5) - resoult + (int) (cityId^(cityId>>>32));
+		
+		return resoult ;
 	}
 	
 	public double getLatitude() {

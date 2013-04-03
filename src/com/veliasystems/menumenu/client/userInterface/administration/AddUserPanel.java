@@ -1,6 +1,6 @@
 package com.veliasystems.menumenu.client.userInterface.administration;
 
-import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -18,8 +18,6 @@ import com.veliasystems.menumenu.client.controllers.PagesController;
 import com.veliasystems.menumenu.client.controllers.RestaurantController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.controllers.UserType;
-import com.veliasystems.menumenu.client.entities.City;
-import com.veliasystems.menumenu.client.entities.Restaurant;
 import com.veliasystems.menumenu.client.entities.User;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyListCombo;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPopUp.IMyAnswer;
@@ -54,8 +52,7 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 	 */
 	private int synchronizeStatus = 0;
 	
-	public AddUserPanel() {
-		
+	public AddUserPanel(){
 		
 		setStyleName("barPanel", true);
 		show(false);
@@ -210,8 +207,10 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 		if(isVisable){
 			container.setWidth( JS.getElementOffsetWidth(getParent().getElement())-40 );
 			
-			cityController.refreshCities(this);
-			restaurantController.refreshRestaurants(this);
+//			cityController.refreshCities(this);
+			cityController.refreshCitiesNameAndId(this);
+			restaurantController.refreshRestaurantsNameAndId(this);
+//			restaurantController.refreshRestaurants(this);
 			
 		}
 	}
@@ -244,16 +243,26 @@ public class AddUserPanel extends FlowPanel implements IManager, IObserver {
 			}
 			
 			
-			List<Restaurant> restaurantList = restaurantController.getRestaurantsList();
-			for (Restaurant item : restaurantList) {
-				String nameToDisplay = item.getName() + " " + item.getAddress();
-				restaurantListCombo.addListItem(restaurantListCombo.getNewCheckBoxItem(nameToDisplay), item.getId());
+//			List<Restaurant> restaurantList = restaurantController.getRestaurantsList();
+			Map<Long, String> restaurantNameMap = restaurantController.getRestaurantsNameAndId();
+			for (Long restaurantId : restaurantNameMap.keySet()) {
+				String nameToDisplay = restaurantNameMap.get(restaurantId);
+				restaurantListCombo.addListItem(restaurantListCombo.getNewCheckBoxItem(nameToDisplay), restaurantId);
 				
 			}
+//			for (Restaurant item : restaurantList) {
+//				String nameToDisplay = item.getName() + " " + item.getAddress();
+//				restaurantListCombo.addListItem(restaurantListCombo.getNewCheckBoxItem(nameToDisplay), item.getId());
+//				
+//			}
 			if(user.isAdmin()){
-				List<City> citiesList = cityController.getCitiesList();
-				for (City city : citiesList) {
-					citiesListCombo.addListItem(citiesListCombo.getNewCheckBoxItem(city.getCity()), city.getId());
+//				List<City> citiesList = cityController.getCitiesList();
+//				for (City city : citiesList) {
+//					citiesListCombo.addListItem(citiesListCombo.getNewCheckBoxItem(city.getCity()), city.getId());
+//				}
+				Map<Long, String> citiesNameMap = cityController.getCitiesNameAndId();
+				for (Long cityId : citiesNameMap.keySet()) {
+					citiesListCombo.addListItem(citiesListCombo.getNewCheckBoxItem(citiesNameMap.get(cityId)), cityId);
 				}
 			}
 			PagesController.hideWaitPanel();

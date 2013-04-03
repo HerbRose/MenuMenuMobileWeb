@@ -98,4 +98,10 @@ public interface StoreServiceAsync {
 	void authorization(String login, String password,
 			AsyncCallback<User> asyncCallback);
 
+	void getCitiesNameAndIdForUser(String email,
+			AsyncCallback<Map<Long, String>> callback);
+
+	void getRestaurantsNameAndIdForUser(String email,
+			AsyncCallback<Map<Long, String>> callback);
+
 }

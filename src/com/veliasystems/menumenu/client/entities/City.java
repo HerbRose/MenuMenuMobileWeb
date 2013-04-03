@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 
-import com.google.gwt.user.client.ui.Image;
-
 public class City implements Serializable{
 
 	/**
@@ -13,7 +11,13 @@ public class City implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * city id, auto generated.
+	 */
 	@Id private Long id;
+	/**
+	 * name of the city
+	 */
 	private String city;
 	private String normalizedCityName = null;
 	
@@ -84,8 +88,8 @@ public class City implements Serializable{
 		
 		City c = (City) cityToCheck;
 		
-		String thisCityNameWithOutWhiteSpace = this.getCity().replaceAll(" ", "");
-		String cityToCheckNameWithOutWhiteSpace = c.getCity().replaceAll(" ", "");
+//		String thisCityNameWithOutWhiteSpace = this.getCity().replaceAll(" ", "");
+//		String cityToCheckNameWithOutWhiteSpace = c.getCity().replaceAll(" ", "");
 		
 //		if(thisCityNameWithOutWhiteSpace.equalsIgnoreCase(cityToCheckNameWithOutWhiteSpace)){
 //			return true;
@@ -99,6 +103,16 @@ public class City implements Serializable{
 //			return true;
 //		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int resoult = 37;
+		
+		resoult = (resoult << 5) - resoult + city.hashCode();
+		resoult = (resoult << 5) - resoult + country.hashCode();
+		
+		return resoult ;
 	}
 	
 	/**

@@ -25,7 +25,10 @@ import com.veliasystems.menumenu.client.controllers.CityController;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.City;
 import com.veliasystems.menumenu.client.entities.User;
-
+/**
+ * {@link Deprecated}
+ */
+@Deprecated
 public class AddAgentPanel extends FlowPanel implements IManager {
 
 	

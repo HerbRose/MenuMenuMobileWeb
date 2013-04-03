@@ -44,7 +44,7 @@ public class CityController{
 	private UserController userController = UserController.getInstance();
 	private RestaurantController restaurantController = RestaurantController.getInstance();
 	private Map<Long, City> cities = new HashMap<Long, City>(); //key is a cityId
-
+	private Map<Long, String> citiesNameAndId = null;
 	
 	private CityController() {
 	}
@@ -57,6 +57,11 @@ public class CityController{
 		
 		return instance;
 	}
+	
+	public Map<Long, String> getCitiesNameAndId() {
+		return citiesNameAndId;
+	}
+	
 	/**
 	 * add observer to list only if observer != null and list doesn't contains this observer.
 	 * @param observer
@@ -357,6 +362,25 @@ public class CityController{
 			}
 		});
 	}	
+	
+	public void refreshCitiesNameAndId(final IObserver observer){
+		PagesController.showWaitPanel();
+		storeService.getCitiesNameAndIdForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<Map<Long,String>>() {
+			
+			@Override
+			public void onSuccess(Map<Long, String> citiesNameAndId) {
+				CityController.this.citiesNameAndId = citiesNameAndId;
+				observer.newData();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
 	
 	public void refreshCitiesAndNotifyAll(final IObserver observer){
 	

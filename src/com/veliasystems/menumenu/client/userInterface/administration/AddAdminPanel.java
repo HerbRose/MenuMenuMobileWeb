@@ -12,7 +12,10 @@ import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.Util;
 import com.veliasystems.menumenu.client.controllers.UserController;
 import com.veliasystems.menumenu.client.entities.User;
-
+/**
+ * {@link Deprecated}
+ */
+@Deprecated
 public class AddAdminPanel extends FlowPanel implements IManager {
 
 	

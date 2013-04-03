@@ -185,5 +185,9 @@ public interface StoreService extends RemoteService {
 	User authorization(String login);
 	
 	User authorization(String login, String password);
+
+	Map<Long, String> getCitiesNameAndIdForUser(String email);
+
+	Map<Long, String> getRestaurantsNameAndIdForUser(String email);
 	
 }

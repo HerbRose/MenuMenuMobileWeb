@@ -59,6 +59,7 @@ public class RestaurantController {
 	private JQMPage lastOpenPage = null;
 	
 	private Map<Long, Restaurant> restaurants = new HashMap<Long, Restaurant>();
+	private Map<Long, String> restaurantsNameAndId = null;
 
 	private RestaurantController() {
 		
@@ -70,6 +71,10 @@ public class RestaurantController {
 //	public boolean isFromCityView() {
 //		return fromCityView;
 //	}
+	
+	public Map<Long, String> getRestaurantsNameAndId() {
+		return restaurantsNameAndId;
+	}
 	/**
 	 * Sets given page to last visited
 	 * @param lastOpenPage - {@link JQMPage} 
@@ -372,6 +377,7 @@ public class RestaurantController {
 		else{
 			restaurants.put(restaurant.getId(), restaurant); //add/change restaurant in our list
 		}
+		
 //		
 	}
 	
@@ -842,6 +848,26 @@ public class RestaurantController {
 		});
 		
 	}
+	
+	public void refreshRestaurantsNameAndId(final IObserver observer) {
+		PagesController.showWaitPanel();
+		storeService.getRestaurantsNameAndIdForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<Map<Long,String>>() {
+
+			@Override
+			public void onSuccess(Map<Long, String> restaurantsNameAndId) {
+				RestaurantController.this.restaurantsNameAndId = restaurantsNameAndId;
+				observer.newData();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+		});
+	}
+	
 	public void refreshRestaurants(final IObserver observer) {
 		
 		storeService.getRestaurantsForUser(userController.getLoggedUser().getEmail(), new AsyncCallback<List<Restaurant>>() {
