@@ -421,67 +421,67 @@ public interface Messages extends Constants {
 	String popUpWarningHeader();
 	
 	
-	//not translated
-	@DefaultStringValue("")
+	
+	@DefaultStringValue("Posting photo means that you accept rules. Do you agree?")
 	String publishProfileInfo();
 	
-	//not translated
-	@DefaultStringValue("")
+	
+	@DefaultStringValue("Posting photo means that you accept rules. Do you agree?")
 	String publishImageInfo();
 	
-	//not translated
+	
 	@DefaultStringValue("Input email for another user to be accessed to this restaurant")
 	String inputEmailforUser();
 	
-	//not translated
+	
 	@DefaultStringValue("Error while creating new user profile, please contact to administrator")
 	String userAddProblem();
 	
-	//not translated
+	
 	@DefaultStringValue("Monday")
 	String monday();
 	
-	//not translated
+	
 	@DefaultStringValue("Tuesday")
 	String tuesday();
 	
-	//not translated
+	
 	@DefaultStringValue("Wednesday")
 	String wednesday();
 	
-	//not translated
+	
 	@DefaultStringValue("Thursday")
 	String thursday();
 	
-	//not translated
+	
 	@DefaultStringValue("Friday")
 	String friday();
 	
-	//not translated
+	
 	@DefaultStringValue("Saturday")
 	String saturday();
 	
-	//not translated
+	
 	@DefaultStringValue("Sunday")
 	String sunday();
 	
-	//not translated
+	
 	@DefaultStringValue("Restaurant Open Hours")
 	String restaurantOpenHours();
 	
-	//not translated
+	
 	@DefaultStringValue("Open")
 	String open();
 	
-	//not translated
+	
 	@DefaultStringValue("Closed")
 	String closed();
 
-	//not translated
+	
 	@DefaultStringValue("Input Hours")
 	String inputHours();
 	
-	//not translated
+	
 	@DefaultStringValue("Missing open hours")
 	String missingOpenHours();
 
