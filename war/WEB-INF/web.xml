@@ -148,6 +148,16 @@
   </servlet-mapping>
   
    <servlet>
+     <servlet-name>GetRestaurantsForUser</servlet-name>
+     <servlet-class>com.veliasystems.menumenu.server.api.mobile.GetRestaurants</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>GetRestaurantsForUser</servlet-name>
+     <url-pattern>/getRestaurantsForUser</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
     <servlet-name>PublishRestaurantServlet</servlet-name>
     <servlet-class>com.veliasystems.menumenu.server.api.mobile.PublishRestaurantServlet</servlet-class>
   </servlet>

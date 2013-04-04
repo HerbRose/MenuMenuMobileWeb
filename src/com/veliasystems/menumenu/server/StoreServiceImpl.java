@@ -1442,6 +1442,34 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		}	
 		return null;
 	}
+	
+	public Map<String, Object> getAllRestaurantsForUser(String login, String password){
+		User user = authorization(login);
+		if(user == null) return null;
+		if(!user.getPassword().equals(password)) return null;
+		
+		Map<String, Object> allData = new HashMap<String, Object>();
+		
+		List<Restaurant> restlist = loadRestaurants(user);
+		
+		
+		Collections.sort(restlist, new Comparator<Restaurant>() {
+
+			@Override
+			public int compare(Restaurant o1, Restaurant o2) {
+					if(o1.getNormalizedName() != null && o2.getNormalizedName()!=null){
+						return o1.getNormalizedName().compareToIgnoreCase(o2.getNormalizedName());
+					}
+					return o1.getName().compareToIgnoreCase(o2.getName());		 	
+
+			}
+			
+		});
+		
+		allData.put("Restaurants", restlist);
+		
+		return allData;
+	}
 	@Override
 	public Map<String, Object> getAllData(String login){
 		User user = authorization(login);
