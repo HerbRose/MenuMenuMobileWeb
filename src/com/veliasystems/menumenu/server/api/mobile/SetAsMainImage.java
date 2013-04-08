@@ -76,6 +76,14 @@ public class SetAsMainImage extends HttpServlet {
 
 		ImageBlob imageBlob = storeService.getImageBlobByBlobKey(blobKey);
 		
+		if(imageBlob == null){
+			log.warning("SetAsMainImage::doGet: Null image blob: " + imageType);
+        	resp.getWriter().print(gson.toJson("Null image blobk for blobKey: " + blobKey));
+    		if(jsonp != null) {
+    			resp.getWriter().print(")");
+    		}
+    		resp.flushBuffer();
+		}
 		Restaurant restaurant = storeService.setMainImage(imageBlob);
 		
 		resp.getWriter().print(gson.toJson(restaurant));
