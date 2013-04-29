@@ -9,6 +9,7 @@ import java.util.List;
 import javax.jdo.annotations.Persistent;
 import javax.persistence.Id;
 
+import com.googlecode.objectify.annotation.Indexed;
 import com.veliasystems.menumenu.client.Util;
 
 public class Restaurant implements Serializable {

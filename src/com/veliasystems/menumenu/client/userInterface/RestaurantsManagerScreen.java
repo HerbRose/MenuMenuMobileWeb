@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -16,12 +15,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabBar;
-import com.google.gwt.user.client.ui.TabBar.Tab;
 import com.google.gwt.user.client.ui.Widget;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Transition;
-import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.veliasystems.menumenu.client.Customization;
 import com.veliasystems.menumenu.client.JS;
 import com.veliasystems.menumenu.client.controllers.CityController;
@@ -43,6 +40,7 @@ import com.veliasystems.menumenu.client.userInterface.administration.LastUploade
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsManagerPanel;
 import com.veliasystems.menumenu.client.userInterface.administration.RestaurantsOpenHours;
 import com.veliasystems.menumenu.client.userInterface.administration.UploadRestaurantsPanel;
+import com.veliasystems.menumenu.client.userInterface.administration.UsersPanel;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.BackButton;
 import com.veliasystems.menumenu.client.userInterface.myWidgets.MyPage;
 
@@ -94,6 +92,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 	private IManager lastUploadedImages;
 	private IManager restaurantOpenHours;
 	private IManager uploadRestaurantManager;
+	private IManager usersPanel;
 
 	private IManager currentlyDisplayedPanel = null;
 	
@@ -315,6 +314,7 @@ public class RestaurantsManagerScreen extends MyPage implements
 		add(setDefaultEmptyProfile());
 		add(setEditDataPanel());
 		add(setRemoveUsersPanel());
+		add(setUsersPanel());
 		add(setCityManager());
 		add(setLastImages());
 		add(setRestaurantOpenHours());
@@ -458,6 +458,12 @@ public class RestaurantsManagerScreen extends MyPage implements
 		return (FlowPanel) uploadRestaurantManager;
 	}
 	
+	private FlowPanel setUsersPanel(){
+		usersPanel = new UsersPanel();
+		panelList.put(panelCount++, usersPanel);
+		tabBar.addTab(usersPanel.getName());
+		return (FlowPanel) usersPanel;
+	}
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) { // <--- IS IT NECESSARY ???
 		return addDomHandler(handler, ClickEvent.getType());

@@ -496,6 +496,19 @@ public interface Messages extends Constants {
 
 	@DefaultStringValue("Copy")
 	String copy();
-		
+
+	@DefaultStringValue("Users 2")
+	String usersPanel();
+	
+	@DefaultStringValue("Admin")
+	String admin();
+	
+	@DefaultStringValue("Agent")
+	String agent();
+	
+	@DefaultStringValue("Restaurator")
+	String restaurator();
+	
+	
 	
 }

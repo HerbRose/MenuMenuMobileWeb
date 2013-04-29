@@ -274,6 +274,14 @@ public class Customization {
 
 
 	public static final String COPY = translated.copy();
+	
+	public static final String USERS_PANEL = translated.usersPanel();
+	
+	public static final String ADMIN = translated.admin();
+	
+	public static final String AGENT = translated.agent();
+
+	public static final String RESTAURATOR = translated.restaurator();
 }
   
   
