@@ -66,7 +66,11 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 		resp.setContentType("text/html; charset=UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		
-		List<Restaurant> rests = storeService.loadRestaurants(cityId);
+		resp.setDateHeader("Expires", 0);
+		resp.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate,max-stale=0,post-check=0,pre-check=0");
+		//resp.addHeader("Keep-Alive", "timeout=3, max=993");
+		
+		List<Restaurant> rests = storeService.loadRestaurantsForWeb(cityId);
 		
 		String output = "";
 		
@@ -245,6 +249,8 @@ public class GetRestaurantsHTMLOutput extends HttpServlet{
 		if (url.startsWith("http://")) return url;
 		return getHostName() + url;
 	}
+	
+	
 	public static final String getHostName() {
     	String hostUrl; 
         String environment = System.getProperty("com.google.appengine.runtime.environment");

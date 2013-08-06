@@ -101,6 +101,32 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 	public List<ImageBlob> getAllImages(Restaurant r) {
 		return getAllImages("" + r.getId());
 	}
+	
+	
+	public List<ImageBlob> getPublishedImages(Restaurant r) {
+		
+		List<ImageBlob> images = new ArrayList<ImageBlob>();
+		
+		Query<ImageBlob> imgQuery = dao.ofy().query(ImageBlob.class);
+		if (imgQuery == null)
+			return images;
+
+		Query<ImageBlob> q;
+		
+		q = imgQuery.filter("imageUrl =", r.getMainLogoImageString());
+		if (q!=null) images.add( q.get() );// logo
+		
+		q = imgQuery.filter("imageUrl =", r.getMainMenuImageString());
+		if (q!=null) images.add( q.get() );// menu
+		
+		q = imgQuery.filter("imageUrl =", r.getMainProfileImageString());
+		if (q!=null) images.add( q.get() );// profile
+		
+		
+		return images;
+	}
+	
+	
 
 	
 	/**
@@ -116,6 +142,15 @@ public class BlobServiceImpl extends RemoteServiceServlet implements
 		return imgQuery.filter("restId =", restaurantId).order("-dateCreated")
 				.list();
 	}
+	
+	
+	public List<ImageBlob> getPublishedImages(String restaurantId) {
+		Query<Restaurant> rq = dao.ofy().query(Restaurant.class);		
+		if (rq == null) return new ArrayList<ImageBlob>();
+		Restaurant r = rq.filter("restId =", restaurantId).get();
+		return getPublishedImages(r);
+	}
+	
 
 	@Override
 	public ImageBlob getLastUploadedImage(String restaurantId) {

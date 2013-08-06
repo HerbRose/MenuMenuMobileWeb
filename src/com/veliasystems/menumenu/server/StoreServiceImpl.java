@@ -977,6 +977,14 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return getImageLists( restQuery.filter("cityId =", cityId).list() );
 	}
 	
+	public List<Restaurant> loadRestaurantsForWeb( Long cityId ) {
+		Query<Restaurant> restQuery = dao.ofy().query(Restaurant.class);
+		if (restQuery==null) return new ArrayList<Restaurant>();
+		//System.out.println(restQuery.filter("city =", city).order("name").count());
+		return getImageListsForWeb( restQuery.filter("cityId =", cityId).list() );
+	}
+	
+	
 	@Override
 	public Restaurant loadRestaurant( Long id ){
 		
@@ -1029,6 +1037,8 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 //		List<City> cityList = dao.ofy().query(City.class).list();
 		
 		for ( Restaurant r : restaurants ) {
+			
+			
 			List<ImageBlob> images = blobService.getAllImages(r);
 			
 			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
@@ -1068,6 +1078,58 @@ public class StoreServiceImpl extends RemoteServiceServlet implements StoreServi
 		return restaurants;
 	}
 
+	private List<Restaurant> getImageListsForWeb( List<Restaurant> restaurants ) {
+//		
+//		List<City> cityList = dao.ofy().query(City.class).list();
+		
+		for ( Restaurant r : restaurants ) {
+			
+			if (!r.isVisibleForApp()) continue;
+			
+		//	List<ImageBlob> images = blobService.getPublishedImages(r);
+			List<ImageBlob> images = blobService.getAllImages(r);
+			
+			List<ImageBlob> logoImages = new ArrayList<ImageBlob>();
+			List<ImageBlob> menuImages = new ArrayList<ImageBlob>();
+			List<ImageBlob> profileImages = new ArrayList<ImageBlob>();
+			
+			
+			for ( ImageBlob blob : images ) {
+				
+				if (blob.getImageType() == null) continue;
+				
+				switch (blob.getImageType()) {
+				case LOGO : {
+								logoImages.add(blob);
+								break; }
+				case MENU : {
+								menuImages.add(blob);
+								break; }
+				case PROFILE : {
+								profileImages.add(blob);
+								break; }
+				default : //System.out.println("Unknown ImageType found: " + blob.getImageType().name());
+				}
+			}
+			
+			
+			r.setLogoImages(logoImages);
+			r.setMenuImages(menuImages);
+			r.setProfileImages(profileImages);
+			
+			
+//			for (City item : cityList) {	//?????		
+//					if(r.getCity().equalsIgnoreCase(item.getCity())){
+//						r.setCityId(item.getId());
+//					}	
+//			}			
+					
+		}
+		
+		return restaurants;
+	}
+
+	
 	
 	@Override
 	public void deleteRestaurant(Restaurant r) {
